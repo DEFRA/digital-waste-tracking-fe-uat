@@ -2,7 +2,7 @@ import allure from 'allure-commandline'
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
-const oneHour = 60 * 60 * 1000
+// const oneHour = 60 * 60 * 1000
 
 const execArgv = ['--loader', 'esm-module-alias/loader']
 
@@ -33,11 +33,12 @@ export const config = {
   // then the current working directory is where your `package.json` resides, so `wdio`
   // will be called from there.
   //
-  specs: ['./test/specs/**/*.e2e.js'],
-  // Patterns to exclude.
-  exclude: [
-    // 'path/to/excluded/files'
-  ],
+  // specs: ['./test/specs/**/*.e2e.js'],
+  specs: ['./test/features/**/*.feature'],
+  // // Patterns to exclude.
+  // exclude: [
+  //   // 'path/to/excluded/files'
+  // ],
   // injectGlobals: false,
   //
   // ============
@@ -111,16 +112,17 @@ export const config = {
   //
   // If you only want to run your tests until a specific amount of tests have failed use
   // bail (default is 0 - don't bail, run all tests).
-  bail: 1,
+  bail: 0,
   //
   // Set a base URL in order to shorten url command calls. If your `url` parameter starts
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'http://localhost:3000',
+  baseUrl: 'https://www.gov.uk',
   //
   // Default timeout for all waitFor* commands.
-  waitforTimeout: 10000,
+  waitforTimeout: 120000,
   waitforInterval: 200,
   //
   // Default timeout in milliseconds for request
@@ -142,7 +144,11 @@ export const config = {
   //
   // Make sure you have the wdio adapter package for the specific framework installed
   // before running any tests.
-  framework: 'mocha',
+  framework: 'cucumber',
+  cucumberOpts: {
+    timeout: 120000,
+    require: ['./test/step-definitions/**/*.js']
+  },
   //
   // The number of times to retry the entire specfile when it fails as a whole
   // specFileRetries: 1,
@@ -162,21 +168,39 @@ export const config = {
     [
       'allure',
       {
-        outputDir: 'allure-results'
+        outputDir: 'allure-results',
+        useCucumberStepReporter: true,
+        disableWebdriverStepsReporting: false,
+        disableWebdriverScreenshotsReporting: false
       }
     ]
   ],
 
-  // Options to be passed to Mocha.
-  // See the full list at http://mochajs.org/
-  mochaOpts: {
-    ui: 'bdd',
-    timeout: debug ? oneHour : 60000
-  },
+  // // Options to be passed to Mocha.
+  // // See the full list at http://mochajs.org/
+  // mochaOpts: {
+  //   ui: 'bdd',
+  //   timeout: debug ? oneHour : 60000
+  // },
   //
   // =====
   // Hooks
   // =====
+  //
+  // =====
+  // Cucumber Hooks
+  // =====
+  beforeScenario: async function (world, result, context) {},
+
+  afterStep: async function (step, scenario, result) {
+    if (result.error) {
+      await browser.takeScreenshot()
+    }
+  },
+
+  afterScenario: async function (world, result, context) {
+    await browser.takeScreenshot()
+  },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
   // it and to build services around it. You can either apply a single function or an array of
   // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
@@ -261,19 +285,19 @@ export const config = {
    * @param {boolean} result.passed    true if test has passed, otherwise false
    * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
    */
-  afterTest: async function (
-    test,
-    context,
-    { error, result, duration, passed, retries }
-  ) {
-    await browser.takeScreenshot()
+  // afterTest: async function (
+  //   test,
+  //   context,
+  //   { error, result, duration, passed, retries }
+  // ) {
+  //   await browser.takeScreenshot()
 
-    if (error) {
-      browser.executeScript(
-        'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "At least 1 assertion failed"}}'
-      )
-    }
-  },
+  //   if (error) {
+  //     browser.executeScript(
+  //       'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "At least 1 assertion failed"}}'
+  //     )
+  //   }
+  // },
 
   /**
    * Hook that gets executed after the suite has ended

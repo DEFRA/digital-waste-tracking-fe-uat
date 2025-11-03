@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 
-const oneMinute = 60 * 1000
+// const oneMinute = 60 * 1000
 
 export const config = {
   //
@@ -14,14 +14,16 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: `https://digital-waste-tracking-fe-uat.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
+  // baseUrl: `https://digital-waste-tracking-fe-uat.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
+  baseUrl: 'https://www.gov.uk',
 
   // Connection to remote chromedriver
   hostname: process.env.CHROMEDRIVER_URL || '127.0.0.1',
   port: process.env.CHROMEDRIVER_PORT || 4444,
 
   // Tests to run
-  specs: ['./test/specs/**/*.js'],
+  // specs: ['./test/specs/**/*.js'],
+  specs: ['./test/features/**/*.feature'],
   // Tests to exclude
   exclude: [],
   maxInstances: 1,
@@ -66,41 +68,67 @@ export const config = {
 
   // Number of failures before the test suite bails.
   bail: 0,
-  waitforTimeout: 10000,
+  waitforTimeout: 120000,
   waitforInterval: 200,
   connectionRetryTimeout: 6000,
   connectionRetryCount: 3,
-  framework: 'mocha',
+  framework: 'cucumber',
+  cucumberOpts: {
+    timeout: 120000,
+    require: ['./test/step-definitions/**/*.js']
+  },
 
   reporters: [
+    'spec',
     [
-      // Spec reporter provides rolling output to the logger so you can see it in-progress
-      'spec',
-      {
-        addConsoleLogs: true,
-        realtimeReporting: true,
-        color: false
-      }
-    ],
-    [
-      // Allure is used to generate the final HTML report
       'allure',
       {
-        outputDir: 'allure-results'
+        outputDir: 'allure-results',
+        useCucumberStepReporter: true,
+        disableWebdriverStepsReporting: false,
+        disableWebdriverScreenshotsReporting: false
       }
     ]
   ],
 
-  // Options to be passed to Mocha.
-  // See the full list at http://mochajs.org/
-  mochaOpts: {
-    ui: 'bdd',
-    timeout: oneMinute
-  },
+  // reporters: [
+  //   [
+  //     // Spec reporter provides rolling output to the logger so you can see it in-progress
+  //     'spec',
+  //     {
+  //       addConsoleLogs: true,
+  //       realtimeReporting: true,
+  //       color: false
+  //     }
+  //   ],
+  //   [
+  //     // Allure is used to generate the final HTML report
+  //     'allure',
+  //     {
+  //       outputDir: 'allure-results'
+  //     }
+  //   ]
+  // ],
+
   //
   // =====
   // Hooks
   // =====
+  //
+  // =====
+  // Cucumber Hooks
+  // =====
+  beforeScenario: async function (world, result, context) {},
+
+  afterStep: async function (step, scenario, result) {
+    if (result.error) {
+      await browser.takeScreenshot()
+    }
+  },
+
+  afterScenario: async function (world, result, context) {
+    await browser.takeScreenshot()
+  },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
   // it and to build services around it. You can either apply a single function or an array of
   // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
@@ -185,15 +213,15 @@ export const config = {
    * @param {boolean} result.passed    true if test has passed, otherwise false
    * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
    */
-  afterTest: async function (
-    test,
-    context,
-    { error, result, duration, passed, retries }
-  ) {
-    if (error) {
-      await browser.takeScreenshot()
-    }
-  },
+  // afterTest: async function (
+  //   test,
+  //   context,
+  //   { error, result, duration, passed, retries }
+  // ) {
+  //   if (error) {
+  //     await browser.takeScreenshot()
+  //   }
+  // },
 
   /**
    * Hook that gets executed after the suite has ended
