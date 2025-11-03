@@ -20,7 +20,9 @@ export const config = {
   key: process.env.BROWSERSTACK_KEY,
 
   // Tests to run
-  specs: ['./test/specs/**/*.js'],
+  // specs: ['./test/specs/**/*.js'],
+  specs: ['./test/features/**/*.feature'],
+
   // Tests to exclude
   exclude: [],
   maxInstances: 1,
@@ -70,39 +72,70 @@ export const config = {
 
   // Number of failures before the test suite bails.
   bail: 0,
-  waitforTimeout: 10000,
+  waitforTimeout: 120000,
   waitforInterval: 200,
   connectionRetryTimeout: 120000,
   connectionRetryCount: 3,
 
-  framework: 'mocha',
-
+  framework: 'cucumber',
+  cucumberOpts: {
+    timeout: 120000,
+    require: ['./test/step-definitions/**/*.js']
+  },
   reporters: [
+    'spec',
     [
-      // Spec reporter provides rolling output to the logger so you can see it in-progress
-      'spec',
-      {
-        addConsoleLogs: true,
-        realtimeReporting: true,
-        color: false
-      }
-    ],
-    [
-      // Allure is used to generate the final HTML report
       'allure',
       {
-        outputDir: 'allure-results'
+        outputDir: 'allure-results',
+        useCucumberStepReporter: true,
+        disableWebdriverStepsReporting: false,
+        disableWebdriverScreenshotsReporting: false
       }
     ]
   ],
 
+  // reporters: [
+  //   [
+  //     // Spec reporter provides rolling output to the logger so you can see it in-progress
+  //     'spec',
+  //     {
+  //       addConsoleLogs: true,
+  //       realtimeReporting: true,
+  //       color: false
+  //     }
+  //   ],
+  //   [
+  //     // Allure is used to generate the final HTML report
+  //     'allure',
+  //     {
+  //       outputDir: 'allure-results'
+  //     }
+  //   ]
+  // ],
+
   // Options to be passed to Mocha.
   // See the full list at http://mochajs.org/
-  mochaOpts: {
-    ui: 'bdd',
-    timeout: oneMinute
-  },
+  // mochaOpts: {
+  //   ui: 'bdd',
+  //   timeout: oneMinute
+  // },
   //
+  //
+  // =====
+  // Cucumber Hooks
+  // =====
+  beforeScenario: async function (world, result, context) {},
+
+  afterStep: async function (step, scenario, result) {
+    if (result.error) {
+      await browser.takeScreenshot()
+    }
+  },
+
+  afterScenario: async function (world, result, context) {
+    await browser.takeScreenshot()
+  },
   // =====
   // Hooks
   // =====
@@ -190,15 +223,15 @@ export const config = {
    * @param {boolean} result.passed    true if test has passed, otherwise false
    * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
    */
-  afterTest: async function (
-    test,
-    context,
-    { error, result, duration, passed, retries }
-  ) {
-    if (error) {
-      await browser.takeScreenshot()
-    }
-  },
+  // afterTest: async function (
+  //   test,
+  //   context,
+  //   { error, result, duration, passed, retries }
+  // ) {
+  //   if (error) {
+  //     await browser.takeScreenshot()
+  //   }
+  // },
 
   /**
    * Hook that gets executed after the suite has ended
