@@ -1,34 +1,35 @@
 import { Page } from 'page-objects/page'
-import { browser } from '@wdio/globals'
+import { config } from '../../wdio.conf.js'
 
 class HomePage extends Page {
-  open() {
-    return super.open(
-      '/government/organisations/department-for-environment-food-rural-affairs'
-    )
-  }
-
+  // locators
   get heading() {
     return $(
       '.gem-c-organisation-logo.brand--department-for-environment-food-rural-affairs'
     )
   }
 
-  get navigationLinkByText() {
-    return $(`=Bringing food into Great Britain`)
+  // methods
+  open() {
+    return super.open(
+      '/government/organisations/department-for-environment-food-rural-affairs'
+    )
   }
-  // get gatewayRadioButton() {
-  //   return $('input[id="authProvider-2"]')
-  // }
 
-  // // Wait for page to load (replaces the hardcoded pause)
-  // async waitForPageLoad() {
-  //   await browser.pause(10000)
-  // }
+  // assertions
+  async verifyUserIsOnHomePage() {
+    await expect(this.heading).toBeDisplayed()
+    await expect(this.heading).toHaveText(
+      'Department\nfor Environment,\nFood & Rural Affairs'
+    )
+  }
 
-  // Take screenshot if needed
-  async takeScreenshot() {
-    return await browser.takeScreenshot()
+  async verifySuperNavigationSectionIsDisplayed() {
+    await expect(this.superNavigationSection).toBeDisplayed()
+  }
+
+  async verifyUserNavigatedCorrectlyToTargetPage(targetUrl) {
+    await expect(await this.getUrl()).toBe(config.baseUrl + targetUrl)
   }
 }
 

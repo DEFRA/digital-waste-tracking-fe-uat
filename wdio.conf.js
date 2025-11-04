@@ -79,7 +79,15 @@ export const config = {
   },
 
   reporters: [
-    'spec',
+    [
+      // Spec reporter provides rolling output to the logger so you can see it in-progress
+      'spec',
+      {
+        addConsoleLogs: true,
+        realtimeReporting: true,
+        color: false
+      }
+    ],
     [
       'allure',
       {

@@ -1,4 +1,5 @@
 import { browser, $ } from '@wdio/globals'
+import { config } from '../../wdio.conf.js'
 
 class Page {
   get pageHeading() {
@@ -18,17 +19,27 @@ class Page {
   }
 
   async clickLink(element) {
-    await element.waitForDisplayed({ timeout: 3000 })
+    await element.waitForDisplayed({ timeout: config.waitforTimeout })
     return await element.click()
   }
 
+  async clickOnLinkWithText(linkText) {
+    const link = await $(`=${linkText}`)
+    await link.waitForClickable({ timeout: config.waitforTimeout })
+    return await link.click()
+  }
+
   async getTextFrom(element) {
-    await element.waitForDisplayed({ timeout: 3000 })
+    await element.waitForDisplayed({ timeout: config.waitforTimeout })
     return await element.getText()
   }
 
   async elementIsDisplayed(element) {
-    return await element.waitForDisplayed({ timeout: 3000 })
+    return await element.waitForDisplayed({ timeout: config.waitforTimeout })
+  }
+
+  async getUrl() {
+    return await browser.getUrl()
   }
 }
 

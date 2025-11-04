@@ -190,7 +190,13 @@ export const config = {
   // =====
   // Cucumber Hooks
   // =====
-  beforeScenario: async function (world, result, context) {},
+  beforeScenario: async function (world, result, context) {
+    // Re-open a fresh browser session for each scenario
+    // This ensures test isolation - each scenario starts with a clean browser state
+    if (browser.sessionId) {
+      await browser.reloadSession()
+    }
+  },
 
   afterStep: async function (step, scenario, result) {
     if (result.error) {

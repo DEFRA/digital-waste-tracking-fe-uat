@@ -3,26 +3,24 @@ import HomePage from '../page-objects/home.page.js'
 
 Given('a user navigates the home page of DEFRA website', async () => {
   await HomePage.open()
-  // await HomePage.waitForPageLoad()
-  await expect(HomePage.heading).toBeDisplayed()
-  await expect(HomePage.heading).toHaveText(
-    'Department\nfor Environment,\nFood & Rural Affairs'
-  )
+  await HomePage.verifyUserIsOnHomePage()
 })
 
-When(/^user clicks on the "([A-Za-z]+)" link$/, async (link) => {
-  await HomePage.clickLink(HomePage.menuLink)
-  await HomePage.takeScreenshot()
+When(/^user clicks on the "([A-Za-z\s]+)" link$/, async (link) => {
+  if (link === 'Menu') {
+    await HomePage.clickLink(HomePage.menuLink)
+  } else {
+    await HomePage.clickOnLinkWithText(link)
+  }
 })
 
 Then('the user is displayed with super-navigation-section', async () => {
-  await expect(HomePage.superNavigationSection).toBeDisplayed()
+  await HomePage.verifySuperNavigationSectionIsDisplayed()
 })
 
-Given('a user navigates to waste receiving website', async () => {
-  await HomePage.open()
-  // Wait for the page to load
-  await HomePage.waitForPageLoad()
-  // Optionally take screenshot for debugging
-  // await HomePage.takeScreenshot()
-})
+Then(
+  /^the user is navigated to the "([A-Za-z\s\-/]+)" page$/,
+  async (expectedUrl) => {
+    await HomePage.verifyUserNavigatedCorrectlyToTargetPage(expectedUrl)
+  }
+)
