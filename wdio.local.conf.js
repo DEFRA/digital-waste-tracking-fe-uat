@@ -1,4 +1,9 @@
 import allure from 'allure-commandline'
+import {
+  initialiseAccessibilityChecking,
+  generateAccessibilityReports,
+  generateAccessibilityReportIndex
+} from './test/accessibility-checking.js'
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
@@ -190,7 +195,12 @@ export const config = {
   // =====
   // Cucumber Hooks
   // =====
-  beforeScenario: async function (world, result, context) {
+  beforeScenario: async function (world, context) {
+    const tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+    if (tags.includes('accessibility')) {
+      await initialiseAccessibilityChecking()
+    }
+
     // Re-open a fresh browser session for each scenario
     // This ensures test isolation - each scenario starts with a clean browser state
     if (browser.sessionId) {
@@ -205,6 +215,11 @@ export const config = {
   },
 
   afterScenario: async function (world, result, context) {
+    const tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+    if (tags.includes('accessibility')) {
+      generateAccessibilityReports(globalThis.pageName)
+      generateAccessibilityReportIndex()
+    }
     await browser.takeScreenshot()
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance

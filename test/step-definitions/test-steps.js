@@ -1,18 +1,13 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
 import HomePage from '../page-objects/home.page.js'
-import {
-  initialiseAccessibilityChecking,
-  analyseAccessibility,
-  generateAccessibilityReports,
-  generateAccessibilityReportIndex
-} from '../accessibility-checking.js'
+import { analyseAccessibility } from '../accessibility-checking.js'
 
 Given('a user navigates the home page of DEFRA website', async () => {
   await HomePage.open()
-  await initialiseAccessibilityChecking()
+  globalThis.pageName = 'start-page'
+
+  // ToDo: Check if the page is not already analysed
   await analyseAccessibility()
-  generateAccessibilityReports('start-page-tests')
-  generateAccessibilityReportIndex()
 
   // await HomePage.verifyUserIsOnHomePage()
 })
