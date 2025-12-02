@@ -14,7 +14,7 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: `http://localhost:3000`,
+  baseUrl: `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
 
   user: process.env.BROWSERSTACK_USER,
   key: process.env.BROWSERSTACK_KEY,

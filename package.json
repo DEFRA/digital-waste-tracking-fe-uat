@@ -28,7 +28,8 @@
     "lint:fix": "eslint . --fix",
     "postinstall": "npm run setup:husky",
     "setup:husky": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module",
-    "report": "allure generate allure-results --single-file --clean",
+    "report:plain": "allure generate allure-results --single-file --clean",
+    "report": "allure generate allure-results --single-file --clean && node -e \"import('./allure-accessibility-plugin/allure-accessibility-integration.js').then(m => m.integrateAccessibilityWithAllure())\"",
     "report:publish": "npm run report; ./bin/publish-tests.sh",
     "source:clean:test:report": ". ./env.sh && npm run report:clean && npm run test ; npm run report:generate && npm run report:open"
   },
@@ -43,6 +44,7 @@
     "@wdio/mocha-framework": "9.9.0",
     "@wdio/spec-reporter": "9.19.2",
     "allure-commandline": "2.32.0",
+    "axe-core": "4.11.0",
     "esm-module-alias": "2.2.1",
     "global-agent": "3.0.0",
     "undici": "7.3.0"

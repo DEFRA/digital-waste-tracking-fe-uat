@@ -119,7 +119,7 @@ export const config = {
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
   // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://www.gov.uk',
+  baseUrl: `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 120000,
