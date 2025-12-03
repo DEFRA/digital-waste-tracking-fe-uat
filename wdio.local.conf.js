@@ -195,9 +195,17 @@ export const config = {
   // =====
   // Cucumber Hooks
   // =====
-  beforeScenario: async function (world, context) {
-    const tags = world.pickle.tags.map((tag) => tag.name).join(', ')
-    if (tags.includes('accessibility')) {
+  beforeScenario: async function (world, cucumberWorld) {
+    // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
+    // as 'this' in step definitions. We need to ensure properties are set on the world object
+    // that will be accessible in step definitions.
+
+    // Initialize world object properties here
+    // These will be accessible in step definitions via 'this'
+    cucumberWorld.pageName = null // Initialize, will be set in step definitions
+    cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+
+    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       await initialiseAccessibilityChecking()
     }
 
@@ -214,12 +222,15 @@ export const config = {
     }
   },
 
-  afterScenario: async function (world, result, context) {
-    const tags = world.pickle.tags.map((tag) => tag.name).join(', ')
-    if (tags.includes('accessibility')) {
-      generateAccessibilityReports(globalThis.pageName)
+  afterScenario: async function (world, result, cucumberWorld) {
+    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
+      // Access the pageName from the world object
+      const pageName = cucumberWorld?.pageName
+      // Use pageName from either world object or scenario context
+      generateAccessibilityReports(pageName)
       generateAccessibilityReportIndex()
     }
+
     await browser.takeScreenshot()
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
