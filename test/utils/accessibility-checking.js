@@ -2,8 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import { browser } from '@wdio/globals'
 import AxeBuilder from '@axe-core/webdriverio'
+import logger from '@wdio/logger'
 import { generateAccessibilityHTMLReport } from './generate-accessibility-html-report.js'
 
+const log = logger('accessibility-checking')
 const reportDirectory = path.join('./reports')
 
 export async function initialiseAccessibilityChecking() {
@@ -12,7 +14,10 @@ export async function initialiseAccessibilityChecking() {
     fs.mkdirSync(reportDirectory)
   }
 
-  const builder = new AxeBuilder({ client: browser })
+  const builder = new AxeBuilder({ client: browser }).withTags([
+    'wcag2a',
+    'wcag2aa'
+  ])
   return builder
 }
 
@@ -22,18 +27,13 @@ export async function analyseAccessibility(builder, pageName) {
   if (isAnalysed === undefined) {
     await browser.sharedStore.set(pageName, 'analysed')
     const result = await builder.analyze()
-    // console.log("--------------------------------")
-    // console.log(`page ${pageName} is being analyzed `)
-    // console.log("--------------------------------")
-    // console.log('Acessibility Results:', JSON.stringify(result))
+    log.info(`Page ${pageName} is being analyzed `)
     generateAccessibilityHTMLReport(
       JSON.stringify(result),
       path.join(reportDirectory, `${pageName}-accessibility-result.html`)
     )
   } else {
-    // console.log('--------------------------------')
-    // console.log(`Page ${pageName} has already been analysed`)
-    // console.log('--------------------------------')
+    log.info(`Page ${pageName} has already been analysed`)
   }
 }
 
