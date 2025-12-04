@@ -36,6 +36,7 @@
     "source:clean:test:report": ". ./env.sh && npm run report:clean && npm run test ; npm run report:generate && npm run report:open"
   },
   "dependencies": {
+    "@axe-core/webdriverio": "4.11.0",
     "@wdio/allure-reporter": "9.9.0",
     "@wdio/browserstack-service": "9.9.1",
     "@wdio/cli": "9.19.2",
@@ -52,6 +53,7 @@
     "undici": "7.3.0"
   },
   "devDependencies": {
+    "@wdio/shared-store-service": "9.21.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",

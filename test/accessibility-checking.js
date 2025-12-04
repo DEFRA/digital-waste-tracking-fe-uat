@@ -1,49 +1,29 @@
-import * as wcagChecker from '../dist/wcagchecker.js'
 import fs from 'fs'
 import path from 'path'
 import { browser } from '@wdio/globals'
 const reportDirectory = path.join('./reports')
+import AxeBuilder from '@axe-core/webdriverio'
 
 export async function initialiseAccessibilityChecking() {
+  // ToDo: Move this to beforeAll hook
   if (!fs.existsSync(reportDirectory)) {
     fs.mkdirSync(reportDirectory)
   }
 
-  await wcagChecker.init(browser)
+  const builder = new AxeBuilder({ client: browser })
+  return builder
 }
 
-export async function analyseAccessibility(suffix) {
-  try {
-    await wcagChecker.analyse(browser, suffix)
-  } catch (err) {
-    if (err.message && err.message.includes('[object Object]')) {
-      const reportDir = './reports'
-      if (!fs.existsSync(reportDir)) {
-        fs.mkdirSync(reportDir, { recursive: true })
-      }
-      const jsonViolations = await browser.execute(() => {
-        try {
-          if (typeof window.violations === 'undefined') {
-            return JSON.stringify({ error: 'window.violations is undefined' })
-          }
-          return JSON.stringify(window.violations)
-        } catch (e) {
-          return JSON.stringify({ error: e.message })
-        }
-      })
-      // Handle null / undefined response from browser
-      const safeData =
-        typeof jsonViolations === 'string'
-          ? jsonViolations
-          : JSON.stringify({ error: 'No data returned from browser.execute' })
-
-      fs.writeFileSync(
-        path.join(reportDir, `violations-${suffix || 'unknown'}.json`),
-        safeData
-      )
-    } else {
-      throw err
-    }
+export async function analyseAccessibility(builder,pageName) {
+  const isAnalysed = await browser.sharedStore.get(pageName)
+  if(isAnalysed === undefined){
+    await browser.sharedStore.set(pageName, 'analysed')
+    const result = await builder.analyze()
+    // console.log('Acessibility Results:', result)
+  }else{
+    console.log("--------------------------------")
+    console.log(`Page ${pageName} has already been analysed`)
+    console.log("--------------------------------")
   }
 }
 

@@ -4,6 +4,8 @@ import {
   generateAccessibilityReports,
   generateAccessibilityReportIndex
 } from './test/accessibility-checking.js'
+import { setValue, getValue } from '@wdio/shared-store-service'
+import AxeBuilder from '@axe-core/webdriverio' 
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
@@ -38,7 +40,6 @@ export const config = {
   // then the current working directory is where your `package.json` resides, so `wdio`
   // will be called from there.
   //
-  // specs: ['./test/specs/**/*.e2e.js'],
   specs: ['./test/features/**/*.feature'],
   // // Patterns to exclude.
   // exclude: [
@@ -123,7 +124,6 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  // baseUrl: 'http://localhost:3000',
   baseUrl: `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
   //
   // Default timeout for all waitFor* commands.
@@ -141,7 +141,7 @@ export const config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  // services: [],
+  services: ['shared-store'],
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -204,9 +204,10 @@ export const config = {
     // These will be accessible in step definitions via 'this'
     cucumberWorld.pageName = null // Initialize, will be set in step definitions
     cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+    cucumberWorld.axeBuilder = null
 
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
-      await initialiseAccessibilityChecking()
+      cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
     }
 
     // Re-open a fresh browser session for each scenario
@@ -223,12 +224,17 @@ export const config = {
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
+    const val1 = await browser.sharedStore.get(cucumberWorld?.pageName)
+    console.log("--------------------------------")
+    console.log(`afterScenario - value ${cucumberWorld?.pageName}`, val1)
+    console.log("--------------------------------")
+
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       // Access the pageName from the world object
       const pageName = cucumberWorld?.pageName
-      // Use pageName from either world object or scenario context
-      generateAccessibilityReports(pageName)
-      generateAccessibilityReportIndex()
+      // // Use pageName from either world object or scenario context
+      // generateAccessibilityReports(pageName)
+      // generateAccessibilityReportIndex()
     }
 
     await browser.takeScreenshot()
