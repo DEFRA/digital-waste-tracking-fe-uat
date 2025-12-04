@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import {
-  initialiseAccessibilityChecking
+  initialiseAccessibilityChecking,
   // generateAccessibilityReports,
-  // generateAccessibilityReportIndex
+  generateAccessibilityReportIndex
 } from './test/utils/accessibility-checking.js'
 
 // const oneMinute = 60 * 1000
@@ -76,6 +76,7 @@ export const config = {
   waitforInterval: 200,
   connectionRetryTimeout: 6000,
   connectionRetryCount: 3,
+  services: ['shared-store'],
   framework: 'cucumber',
   cucumberOpts: {
     timeout: 120000,
@@ -131,13 +132,18 @@ export const config = {
   // Cucumber Hooks
   // =====
   beforeScenario: async function (world, cucumberWorld) {
+    // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
+    // as 'this' in step definitions. We need to ensure properties are set on the world object
+    // that will be accessible in step definitions.
+
     // Initialize world object properties here
     // These will be accessible in step definitions via 'this'
     cucumberWorld.pageName = null // Initialize, will be set in step definitions
     cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+    cucumberWorld.axeBuilder = null
 
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
-      await initialiseAccessibilityChecking()
+      cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
     }
 
     // Re-open a fresh browser session for each scenario
@@ -154,14 +160,14 @@ export const config = {
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
-    // // Access world object properties set in step definitions
-    // if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
-    //   // Access the pageName from the world object
-    //   const pageName = cucumberWorld?.pageName
-    //   // Use pageName from either world object or scenario context
-    //   generateAccessibilityReports(pageName)
-    //   generateAccessibilityReportIndex()
-    // }
+    // Access world object properties set in step definitions
+    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
+      // Access the pageName from the world object
+      // const pageName = cucumberWorld?.pageName
+      // Use pageName from either world object or scenario context
+      // generateAccessibilityReports(pageName)
+      generateAccessibilityReportIndex()
+    }
     await browser.takeScreenshot()
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance

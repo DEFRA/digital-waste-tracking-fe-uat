@@ -1,8 +1,8 @@
 import allure from 'allure-commandline'
 import {
-  initialiseAccessibilityChecking
+  initialiseAccessibilityChecking,
   // generateAccessibilityReports,
-  // generateAccessibilityReportIndex
+  generateAccessibilityReportIndex
 } from './test/utils/accessibility-checking.js'
 // import { setValue, getValue } from '@wdio/shared-store-service'
 // import AxeBuilder from '@axe-core/webdriverio'
@@ -239,7 +239,7 @@ export const config = {
       // const pageName = cucumberWorld?.pageName
       // // Use pageName from either world object or scenario context
       // generateAccessibilityReports(pageName)
-      // generateAccessibilityReportIndex()
+      generateAccessibilityReportIndex()
     }
 
     await browser.takeScreenshot()
