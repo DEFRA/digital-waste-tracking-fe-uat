@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { browser } from '@wdio/globals'
 import AxeBuilder from '@axe-core/webdriverio'
+import { generateAccessibilityHTMLReport } from './generate-accessibility-html-report.js'
+
 const reportDirectory = path.join('./reports')
 
 export async function initialiseAccessibilityChecking() {
@@ -15,42 +17,25 @@ export async function initialiseAccessibilityChecking() {
 }
 
 export async function analyseAccessibility(builder, pageName) {
+  // await browser.sharedStore.set(randomUUID(), 'analysed')
   const isAnalysed = await browser.sharedStore.get(pageName)
   if (isAnalysed === undefined) {
     await browser.sharedStore.set(pageName, 'analysed')
-    await builder.analyze()
-    // console.log('Acessibility Results:', result)
+    const result = await builder.analyze()
+    // console.log("--------------------------------")
+    // console.log(`page ${pageName} is being analyzed `)
+    // console.log("--------------------------------")
+    // console.log('Acessibility Results:', JSON.stringify(result))
+    generateAccessibilityHTMLReport(
+      JSON.stringify(result),
+      path.join(reportDirectory, `${pageName}-accessibility-result.html`)
+    )
   } else {
     // console.log('--------------------------------')
     // console.log(`Page ${pageName} has already been analysed`)
     // console.log('--------------------------------')
   }
 }
-
-// export function generateAccessibilityReports(filePrefix) {
-//   const categoryReport = wcagChecker.getHtmlReportByCategory()
-//   const guidelineReport = wcagChecker.getHtmlReportByGuideLine()
-
-//   if (categoryReport && categoryReport.length > 0) {
-//     fs.writeFileSync(
-//       path.join(reportDirectory, `${filePrefix}-accessibility-category.html`),
-//       categoryReport,
-//       (err) => {
-//         if (err) throw err
-//       }
-//     )
-//   }
-
-//   if (guidelineReport && guidelineReport.length > 0) {
-//     fs.writeFileSync(
-//       path.join(reportDirectory, `${filePrefix}-accessibility-guideline.html`),
-//       guidelineReport,
-//       (err) => {
-//         if (err) throw err
-//       }
-//     )
-//   }
-// }
 
 // export function generateAccessibilityReportIndex() {
 //   if (!fs.existsSync(reportDirectory)) {

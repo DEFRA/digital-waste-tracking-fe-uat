@@ -1,6 +1,6 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
 import HomePage from '../page-objects/home.page.js'
-import { analyseAccessibility } from '../accessibility-checking.js'
+import { analyseAccessibility } from '../utils/accessibility-checking.js'
 
 Given('a user navigates the home page of DEFRA website', async function () {
   // Set the pageName on the world object

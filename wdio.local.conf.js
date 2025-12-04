@@ -3,7 +3,7 @@ import {
   initialiseAccessibilityChecking
   // generateAccessibilityReports,
   // generateAccessibilityReportIndex
-} from './test/accessibility-checking.js'
+} from './test/utils/accessibility-checking.js'
 // import { setValue, getValue } from '@wdio/shared-store-service'
 // import AxeBuilder from '@axe-core/webdriverio'
 
@@ -225,8 +225,13 @@ export const config = {
 
   afterScenario: async function (world, result, cucumberWorld) {
     // const val1 = await browser.sharedStore.get(cucumberWorld?.pageName)
+    // const store = await browser.sharedStore.get('*')
     // console.log('--------------------------------')
-    // console.log(`afterScenario - value ${cucumberWorld?.pageName}`, val1)
+    // console.log(
+    //   `afterScenario - sharedStore value ${cucumberWorld?.pageName}`,
+    //   val1
+    // )
+    // console.log('this is state of store', store)
     // console.log('--------------------------------')
 
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {

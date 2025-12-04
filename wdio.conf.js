@@ -1,9 +1,9 @@
 import fs from 'node:fs'
 import {
-  initialiseAccessibilityChecking,
-  generateAccessibilityReports,
-  generateAccessibilityReportIndex
-} from './test/accessibility-checking.js'
+  initialiseAccessibilityChecking
+  // generateAccessibilityReports,
+  // generateAccessibilityReportIndex
+} from './test/utils/accessibility-checking.js'
 
 // const oneMinute = 60 * 1000
 
@@ -154,14 +154,14 @@ export const config = {
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
-    // Access world object properties set in step definitions
-    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
-      // Access the pageName from the world object
-      const pageName = cucumberWorld?.pageName
-      // Use pageName from either world object or scenario context
-      generateAccessibilityReports(pageName)
-      generateAccessibilityReportIndex()
-    }
+    // // Access world object properties set in step definitions
+    // if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
+    //   // Access the pageName from the world object
+    //   const pageName = cucumberWorld?.pageName
+    //   // Use pageName from either world object or scenario context
+    //   generateAccessibilityReports(pageName)
+    //   generateAccessibilityReportIndex()
+    // }
     await browser.takeScreenshot()
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
