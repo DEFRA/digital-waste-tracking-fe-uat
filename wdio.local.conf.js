@@ -1,11 +1,8 @@
 import allure from 'allure-commandline'
 import {
   initialiseAccessibilityChecking,
-  // generateAccessibilityReports,
   generateAccessibilityReportIndex
 } from './test/utils/accessibility-checking.js'
-// import { setValue, getValue } from '@wdio/shared-store-service'
-// import AxeBuilder from '@axe-core/webdriverio'
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
@@ -217,23 +214,9 @@ export const config = {
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
-    // const val1 = await browser.sharedStore.get(cucumberWorld?.pageName)
-    // const store = await browser.sharedStore.get('*')
-    // console.log('--------------------------------')
-    // console.log(
-    //   `afterScenario - sharedStore value ${cucumberWorld?.pageName}`,
-    //   val1
-    // )
-    // console.log('this is state of store', store)
-    // console.log('--------------------------------')
-
-    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
-      // Access the pageName from the world object
-      // const pageName = cucumberWorld?.pageName
-      // // Use pageName from either world object or scenario context
-      // generateAccessibilityReports(pageName)
-      generateAccessibilityReportIndex()
-    }
+    // if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
+    //   generateAccessibilityReportIndex()
+    // }
 
     await browser.takeScreenshot()
   },
@@ -372,6 +355,8 @@ export const config = {
    * @param {<Object>} results object containing test results
    */
   onComplete: function (exitCode, config, capabilities, results) {
+    generateAccessibilityReportIndex()
+
     const reportError = new Error('Could not generate Allure report')
     const generation = allure(['generate', 'allure-results', '--clean'])
 

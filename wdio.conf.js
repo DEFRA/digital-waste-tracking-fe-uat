@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import {
   initialiseAccessibilityChecking,
-  // generateAccessibilityReports,
   generateAccessibilityReportIndex
 } from './test/utils/accessibility-checking.js'
 
@@ -160,14 +159,6 @@ export const config = {
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
-    // Access world object properties set in step definitions
-    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
-      // Access the pageName from the world object
-      // const pageName = cucumberWorld?.pageName
-      // Use pageName from either world object or scenario context
-      // generateAccessibilityReports(pageName)
-      generateAccessibilityReportIndex()
-    }
     await browser.takeScreenshot()
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
@@ -301,6 +292,8 @@ export const config = {
    * @param {<Object>} results object containing test results
    */
   onComplete: function (exitCode, config, capabilities, results) {
+    generateAccessibilityReportIndex()
+
     // !Do Not Remove! Required for test status to show correctly in portal.
     if (results?.failed && results.failed > 0) {
       fs.writeFileSync('FAILED', JSON.stringify(results))
