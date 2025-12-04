@@ -1,11 +1,11 @@
 import allure from 'allure-commandline'
 import {
-  initialiseAccessibilityChecking,
-  generateAccessibilityReports,
-  generateAccessibilityReportIndex
+  initialiseAccessibilityChecking
+  // generateAccessibilityReports,
+  // generateAccessibilityReportIndex
 } from './test/accessibility-checking.js'
-import { setValue, getValue } from '@wdio/shared-store-service'
-import AxeBuilder from '@axe-core/webdriverio' 
+// import { setValue, getValue } from '@wdio/shared-store-service'
+// import AxeBuilder from '@axe-core/webdriverio'
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
@@ -224,14 +224,14 @@ export const config = {
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
-    const val1 = await browser.sharedStore.get(cucumberWorld?.pageName)
-    console.log("--------------------------------")
-    console.log(`afterScenario - value ${cucumberWorld?.pageName}`, val1)
-    console.log("--------------------------------")
+    // const val1 = await browser.sharedStore.get(cucumberWorld?.pageName)
+    // console.log('--------------------------------')
+    // console.log(`afterScenario - value ${cucumberWorld?.pageName}`, val1)
+    // console.log('--------------------------------')
 
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       // Access the pageName from the world object
-      const pageName = cucumberWorld?.pageName
+      // const pageName = cucumberWorld?.pageName
       // // Use pageName from either world object or scenario context
       // generateAccessibilityReports(pageName)
       // generateAccessibilityReportIndex()

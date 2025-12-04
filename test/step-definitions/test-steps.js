@@ -9,7 +9,7 @@ Given('a user navigates the home page of DEFRA website', async function () {
 
   // ToDo: Check if the page is not already analysed
   if (this.tags.includes('@accessibility')) {
-    await analyseAccessibility(this.axeBuilder,this.pageName)
+    await analyseAccessibility(this.axeBuilder, this.pageName)
   }
 
   // await HomePage.verifyUserIsOnHomePage()
