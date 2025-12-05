@@ -13,10 +13,11 @@ export async function initialiseAccessibilityChecking() {
   if (!fs.existsSync(reportDirectory)) {
     fs.mkdirSync(reportDirectory)
   }
-
+  // ToDo: check with Naheed and adjust as per accessibility requirements
   const builder = new AxeBuilder({ client: browser }).withTags([
     'wcag2a',
-    'wcag2aa'
+    'wcag2aa',
+    'wcag22aa'
   ])
   return builder
 }
