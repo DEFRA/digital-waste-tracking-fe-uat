@@ -46,13 +46,13 @@
     "@wdio/local-runner": "9.19.2",
     "@wdio/mocha-framework": "9.9.0",
     "@wdio/spec-reporter": "9.19.2",
+    "@wdio/shared-store-service": "9.21.0",
     "allure-commandline": "2.32.0",
     "esm-module-alias": "2.2.1",
     "global-agent": "3.0.0",
     "undici": "7.3.0"
   },
   "devDependencies": {
-    "@wdio/shared-store-service": "9.21.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",
