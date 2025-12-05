@@ -33,7 +33,7 @@
     "report:generate": "npm run report:generate:allure && npm run report:add:accessibility",
     "report:clean": "rm -rf allure-results && rm -rf allure-report && rm -rf reports",
     "report:open": "open ./allure-report/index.html",
-    "report:publish": "npm run report; ./bin/publish-tests.sh",
+    "report:publish": "npm run report:generate; ./bin/publish-tests.sh",
     "source:clean:test:report": ". ./env.sh && npm run report:clean && npm run test ; npm run report:generate && npm run report:open"
   },
   "dependencies": {
