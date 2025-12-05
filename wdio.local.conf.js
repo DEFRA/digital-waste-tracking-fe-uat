@@ -214,10 +214,6 @@ export const config = {
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
-    // if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
-    //   generateAccessibilityReportIndex()
-    // }
-
     await browser.takeScreenshot()
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance

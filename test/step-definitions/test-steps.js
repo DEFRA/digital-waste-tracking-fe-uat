@@ -7,7 +7,6 @@ Given('a user navigates the home page of DEFRA website', async function () {
   this.pageName = 'start-page'
   await HomePage.open()
 
-  // ToDo: Check if the page is not already analysed
   if (this.tags.includes('@accessibility')) {
     await analyseAccessibility(this.axeBuilder, this.pageName)
   }
