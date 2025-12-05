@@ -47,7 +47,6 @@
     "@wdio/mocha-framework": "9.9.0",
     "@wdio/spec-reporter": "9.19.2",
     "allure-commandline": "2.32.0",
-    "axe-core": "4.11.0",
     "esm-module-alias": "2.2.1",
     "global-agent": "3.0.0",
     "undici": "7.3.0"
