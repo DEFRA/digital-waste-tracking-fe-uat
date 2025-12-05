@@ -11,9 +11,7 @@ class HomePage extends Page {
 
   // methods
   open() {
-    return super.open(
-      '/government/organisations/department-for-environment-food-rural-affairs'
-    )
+    return super.open('/')
   }
 
   // assertions

@@ -1,4 +1,8 @@
 import allure from 'allure-commandline'
+import {
+  initialiseAccessibilityChecking,
+  generateAccessibilityReportIndex
+} from './test/utils/accessibility-checking.js'
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
@@ -33,7 +37,6 @@ export const config = {
   // then the current working directory is where your `package.json` resides, so `wdio`
   // will be called from there.
   //
-  // specs: ['./test/specs/**/*.e2e.js'],
   specs: ['./test/features/**/*.feature'],
   // // Patterns to exclude.
   // exclude: [
@@ -118,8 +121,7 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://www.gov.uk',
+  baseUrl: `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 120000,
@@ -136,7 +138,7 @@ export const config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  // services: [],
+  services: ['shared-store'],
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -176,13 +178,6 @@ export const config = {
     ]
   ],
 
-  // // Options to be passed to Mocha.
-  // // See the full list at http://mochajs.org/
-  // mochaOpts: {
-  //   ui: 'bdd',
-  //   timeout: debug ? oneHour : 60000
-  // },
-  //
   // =====
   // Hooks
   // =====
@@ -190,7 +185,21 @@ export const config = {
   // =====
   // Cucumber Hooks
   // =====
-  beforeScenario: async function (world, result, context) {
+  beforeScenario: async function (world, cucumberWorld) {
+    // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
+    // as 'this' in step definitions. We need to ensure properties are set on the world object
+    // that will be accessible in step definitions.
+
+    // Initialize world object properties here
+    // These will be accessible in step definitions via 'this'
+    cucumberWorld.pageName = null // Initialize, will be set in step definitions
+    cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+    cucumberWorld.axeBuilder = null
+
+    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
+      cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
+    }
+
     // Re-open a fresh browser session for each scenario
     // This ensures test isolation - each scenario starts with a clean browser state
     if (browser.sessionId) {
@@ -204,7 +213,7 @@ export const config = {
     }
   },
 
-  afterScenario: async function (world, result, context) {
+  afterScenario: async function (world, result, cucumberWorld) {
     await browser.takeScreenshot()
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
@@ -342,6 +351,8 @@ export const config = {
    * @param {<Object>} results object containing test results
    */
   onComplete: function (exitCode, config, capabilities, results) {
+    generateAccessibilityReportIndex()
+
     const reportError = new Error('Could not generate Allure report')
     const generation = allure(['generate', 'allure-results', '--clean'])
 

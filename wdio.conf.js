@@ -1,4 +1,8 @@
 import fs from 'node:fs'
+import {
+  initialiseAccessibilityChecking,
+  generateAccessibilityReportIndex
+} from './test/utils/accessibility-checking.js'
 
 // const oneMinute = 60 * 1000
 
@@ -14,8 +18,7 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  // baseUrl: `https://digital-waste-tracking-fe-uat.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
-  baseUrl: 'https://www.gov.uk',
+  baseUrl: `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
 
   // Connection to remote chromedriver
   hostname: process.env.CHROMEDRIVER_URL || '127.0.0.1',
@@ -72,6 +75,7 @@ export const config = {
   waitforInterval: 200,
   connectionRetryTimeout: 6000,
   connectionRetryCount: 3,
+  services: ['shared-store'],
   framework: 'cucumber',
   cucumberOpts: {
     timeout: 120000,
@@ -126,7 +130,27 @@ export const config = {
   // =====
   // Cucumber Hooks
   // =====
-  beforeScenario: async function (world, result, context) {},
+  beforeScenario: async function (world, cucumberWorld) {
+    // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
+    // as 'this' in step definitions. We need to ensure properties are set on the world object
+    // that will be accessible in step definitions.
+
+    // Initialize world object properties here
+    // These will be accessible in step definitions via 'this'
+    cucumberWorld.pageName = null // Initialize, will be set in step definitions
+    cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+    cucumberWorld.axeBuilder = null
+
+    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
+      cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
+    }
+
+    // Re-open a fresh browser session for each scenario
+    // This ensures test isolation - each scenario starts with a clean browser state
+    if (browser.sessionId) {
+      await browser.reloadSession()
+    }
+  },
 
   afterStep: async function (step, scenario, result) {
     if (result.error) {
@@ -134,7 +158,7 @@ export const config = {
     }
   },
 
-  afterScenario: async function (world, result, context) {
+  afterScenario: async function (world, result, cucumberWorld) {
     await browser.takeScreenshot()
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
@@ -268,6 +292,8 @@ export const config = {
    * @param {<Object>} results object containing test results
    */
   onComplete: function (exitCode, config, capabilities, results) {
+    generateAccessibilityReportIndex()
+
     // !Do Not Remove! Required for test status to show correctly in portal.
     if (results?.failed && results.failed > 0) {
       fs.writeFileSync('FAILED', JSON.stringify(results))
