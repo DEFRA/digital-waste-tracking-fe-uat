@@ -20,6 +20,7 @@ class IsWasteReceiverPage extends Page {
   async verifyUserIsOnIsWasteReceiverPage() {
     await expect(browser).toHaveUrl(config.baseUrl + '/is-waste-receiver')
     await expect(this.heading).toBeDisplayed()
+    // ToDo : improve this after the sync process is implemented
     // await expect(this.heading).toHaveText('Is your organisation a waste receiver?')
   }
 }

@@ -9,9 +9,9 @@ so that I can report my waste movements.
   Scenario: User should be able to login for the first time using a Government Gateway account
     Given a user is on Report of waste registration start page
     And user proceeds to login using a Government Gateway account
-    # When user enters their Government user Id and password
-    # Then they should be logged in successfully
-    # And redirected to "Is your <organisation name> a waste receiver?" page
+    When user enters their Government user Id and password
+    Then they should be logged in successfully
+    And redirected to "Is <organisation name> a waste receiver?" page
  
   @env_dev @env_test
   Scenario: User should be able to login for the first time using a Gov.uk account

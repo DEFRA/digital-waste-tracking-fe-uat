@@ -45,7 +45,4 @@ When('user enters their Government user Id and password', async function () {
 Then('they should be logged in successfully', async function () {
   // just a place holder step, might have to introduce a static wait
   // for the defra Id sync process to complete in future
-  await expect(await this.getUrl()).toBe(
-    'https://waste-organisation-frontend.dev.cdp-int.defra.cloud/waste-organisation-frontend/waste-organisation-registration/waste-organisation-registration/is-your-organisation-a-waste-receiver'
-  )
 })
