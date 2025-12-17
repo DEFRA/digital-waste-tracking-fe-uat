@@ -10,23 +10,25 @@ class Page {
     return browser.url(path)
   }
 
-  get menuLink() {
-    return $('button[id="super-navigation-menu-toggle"]')
-  }
-
-  get superNavigationSection() {
-    return $('div[id="super-navigation-menu"]')
-  }
-
-  async clickLink(element) {
+  async click(element) {
     await element.waitForDisplayed({ timeout: config.waitforTimeout })
     return await element.click()
   }
+
+  // async select(element) {
+  //   await element.waitForDisplayed({ timeout: config.waitforTimeout })
+  //   return await element.se
+  // }
 
   async clickOnLinkWithText(linkText) {
     const link = await $(`=${linkText}`)
     await link.waitForClickable({ timeout: config.waitforTimeout })
     return await link.click()
+  }
+
+  async enterText(element, text) {
+    await element.waitForDisplayed({ timeout: config.waitforTimeout })
+    return await element.setValue(text)
   }
 
   async getTextFrom(element) {

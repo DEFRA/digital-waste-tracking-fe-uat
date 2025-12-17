@@ -1,12 +1,15 @@
 import { Page } from 'page-objects/page'
 import { config } from '../../wdio.conf.js'
+import { browser, $ } from '@wdio/globals'
 
 class HomePage extends Page {
   // locators
   get heading() {
-    return $(
-      '.gem-c-organisation-logo.brand--department-for-environment-food-rural-affairs'
-    )
+    return $('h1')
+  }
+
+  get startNowButton() {
+    return $('#start-now-button')
   }
 
   // methods
@@ -17,13 +20,19 @@ class HomePage extends Page {
   // assertions
   async verifyUserIsOnHomePage() {
     await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'Department\nfor Environment,\nFood & Rural Affairs'
-    )
+    await expect(this.heading).toHaveText('Report receipt of waste')
   }
 
-  async verifySuperNavigationSectionIsDisplayed() {
-    await expect(this.superNavigationSection).toBeDisplayed()
+  async verifyUserNavigatedCorrectlyToDefraIdService(env) {
+    if (env === 'dev') {
+      await expect(browser).toHaveUrl(
+        /https:\/\/cdp-defra-id-stub.dev.cdp-int.defra.cloud\/cdp-defra-id-stub\/authorize/
+      )
+    } else {
+      await expect(browser).toHaveUrl(
+        'https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/oauth2/authresp'
+      )
+    }
   }
 
   async verifyUserNavigatedCorrectlyToTargetPage(targetUrl) {
