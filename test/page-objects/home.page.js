@@ -1,5 +1,4 @@
 import { Page } from 'page-objects/page'
-import { config } from '../../wdio.conf.js'
 import { browser, $ } from '@wdio/globals'
 
 class HomePage extends Page {
@@ -33,10 +32,6 @@ class HomePage extends Page {
         'https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/oauth2/authresp'
       )
     }
-  }
-
-  async verifyUserNavigatedCorrectlyToTargetPage(targetUrl) {
-    await expect(await this.getUrl()).toBe(config.baseUrl + targetUrl)
   }
 }
 

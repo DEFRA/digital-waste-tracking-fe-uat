@@ -15,10 +15,73 @@ class Page {
     return await element.click()
   }
 
-  // async select(element) {
-  //   await element.waitForDisplayed({ timeout: config.waitforTimeout })
-  //   return await element.se
-  // }
+  /**
+   * Click an element using JavaScript execution (bypasses visibility/interactability checks)
+   * @param {string} elementId - The ID of the element to click
+   * @param {string} elementName - Optional name for logging purposes
+   * @returns {Promise<boolean>} - Returns true if click was successful
+   */
+  async clickUsingJavaScript(elementId, elementName = 'element') {
+    // console.log(`Clicking ${elementName} using JavaScript...`)
+
+    const clicked = await browser.execute((id) => {
+      const element = document.getElementById(id)
+      if (element) {
+        element.click()
+        // Trigger click event for any listeners
+        const clickEvent = new Event('click', { bubbles: true })
+        element.dispatchEvent(clickEvent)
+        return true
+      }
+      return false
+    }, elementId)
+
+    if (!clicked) {
+      throw new Error(`Failed to find ${elementName} with id: ${elementId}`)
+    }
+
+    // console.log(`✓ ${elementName} clicked via JavaScript`)
+    return clicked
+  }
+
+  /**
+   * Select a radio button using JavaScript execution (bypasses visibility checks)
+   * @param {string} radioId - The ID of the radio button to select
+   * @param {string} radioName - Optional name for logging purposes
+   * @returns {Promise<boolean>} - Returns true if selection was successful
+   */
+  async selectRadioUsingJavaScript(radioId, radioName = 'radio button') {
+    // console.log(`Selecting ${radioName} using JavaScript...`)
+
+    const selected = await browser.execute((id) => {
+      const radio = document.getElementById(id)
+      if (radio) {
+        radio.click()
+        radio.checked = true
+        // Trigger change event for any listeners
+        const changeEvent = new Event('change', { bubbles: true })
+        radio.dispatchEvent(changeEvent)
+        return true
+      }
+      return false
+    }, radioId)
+
+    if (!selected) {
+      throw new Error(`Failed to find ${radioName} with id: ${radioId}`)
+    }
+
+    // console.log(`✓ ${radioName} selected via JavaScript`)
+
+    // Verify it's selected
+    const isSelected = await browser.execute((id) => {
+      const radio = document.getElementById(id)
+      return radio ? radio.checked : false
+    }, radioId)
+
+    // console.log(`${radioName} checked state:`, isSelected)
+
+    return isSelected
+  }
 
   async clickOnLinkWithText(linkText) {
     const link = await $(`=${linkText}`)
@@ -42,6 +105,10 @@ class Page {
 
   async getUrl() {
     return await browser.getUrl()
+  }
+
+  async verifyUserNavigatedCorrectlyToTargetPage(targetUrl) {
+    await expect(await this.getUrl()).toBe(config.baseUrl + targetUrl)
   }
 }
 
