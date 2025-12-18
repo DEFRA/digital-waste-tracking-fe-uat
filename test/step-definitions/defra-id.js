@@ -3,6 +3,7 @@ import HomePage from '../page-objects/home.page.js'
 import DefraIdChooseSignInPage from '../page-objects/defra-id-choose-sign-in.page.js'
 import DefraIdGovtGatewayPage from '../page-objects/defra-id-govt-gateway.page.js'
 import DefraIdGovUKPage from '../page-objects/defra-id-gov-uk.page.js'
+import { getValueFromPool } from '@wdio/shared-store-service'
 
 Given(
   'user proceeds to login using a Government Gateway account',
@@ -23,6 +24,7 @@ Given(
 
 Given('user proceeds to login using a Gov.uk account', async function () {
   await HomePage.click(HomePage.startNowButton)
+
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     process.env.ENVIRONMENT
   )
@@ -36,9 +38,9 @@ Given('user proceeds to login using a Gov.uk account', async function () {
 })
 
 When('user enters their Government user Id and password', async function () {
-  // ToDo : parameterize the user id and password
+  this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
   await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
-    '520924829145',
+    this.govGatewayUser,
     'Pepsi12345*'
   )
 })
@@ -49,9 +51,6 @@ Then('they should be logged in successfully', async function () {
 })
 
 When('user enters their Gov.uk email address and password', async function () {
-  // ToDo : parameterize the user id and password
-  await DefraIdGovUKPage.loginWithGovUK(
-    'padmaja.gandham+1@equalexperts.com',
-    'Pepsi12345*'
-  )
+  this.govUKUser = await getValueFromPool('availableGovUKUsers')
+  await DefraIdGovUKPage.loginWithGovUK(this.govUKUser, 'Pepsi12345*')
 })

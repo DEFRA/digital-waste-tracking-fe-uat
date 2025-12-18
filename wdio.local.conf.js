@@ -3,6 +3,8 @@ import {
   initialiseAccessibilityChecking,
   generateAccessibilityReportIndex
 } from './test/utils/accessibility-checking.js'
+import { readFileSync } from 'fs'
+import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
@@ -215,6 +217,11 @@ export const config = {
 
   afterScenario: async function (world, result, cucumberWorld) {
     await browser.takeScreenshot()
+    await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+    await addValueToPool(
+      'availableGovGatewayUsers',
+      cucumberWorld.govGatewayUser
+    )
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
   // it and to build services around it. You can either apply a single function or an array of
@@ -225,7 +232,24 @@ export const config = {
    * @param {object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  // onPrepare: function (config, capabilities) {},
+  onPrepare: async function (config, capabilities) {
+    // Load test configuration from test.config.json
+    // try {
+    const testConfigData = readFileSync(
+      `./test/support/${process.env.ENVIRONMENT}.config.json`,
+      'utf8'
+    )
+    const testConfig = JSON.parse(testConfigData)
+    await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+    await setResourcePool(
+      'availableGovGatewayUsers',
+      testConfig.govGatewayLogin
+    )
+    // } catch (error) {
+    //   console.error('❌ Failed to load test configuration:', error.message)
+    //   throw error
+    // }
+  },
   /**
    * Gets executed before a worker process is spawned and can be used to initialise specific service
    * for that worker as well as modify runtime environments in an async fashion.
