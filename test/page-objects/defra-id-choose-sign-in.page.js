@@ -2,8 +2,6 @@ import { Page } from 'page-objects/page'
 import { config } from '../../wdio.conf.js'
 import { $ } from '@wdio/globals'
 
-// as DefraId is a 3rd party service, trying to capture all pages in a single page object
-
 class DefraIdChooseSignInPage extends Page {
   // Choose Sign In Page locators
 
@@ -31,12 +29,9 @@ class DefraIdChooseSignInPage extends Page {
     await this.replacementForm.waitForExist({
       timeout: config.waitforTimeout
     })
-    // console.log('✓ Replacement form exists in DOM')
 
     // Wait for radio button to exist
-    // console.log(`Waiting for ${methodName} radio button to exist...`)
     await radioElement.waitForExist({ timeout: config.waitforTimeout })
-    // console.log(`✓ ${methodName} radio button exists`)
 
     // Get the radio button ID for direct DOM manipulation
     const radioId = methodName === 'Government Gateway' ? 'scp' : 'one'
@@ -47,19 +42,10 @@ class DefraIdChooseSignInPage extends Page {
     // Small wait for any event handlers
     // eslint-disable-next-line wdio/no-pause -- Required to allow navigation to start
     await browser.pause(500)
-
-    // if (!isSelected) {
-    //   // console.warn(
-    //   //   `Warning: ${methodName} radio not showing as selected, but click was executed`
-    //   // )
-    // } else {
-    //   // console.log(`✓ Successfully selected ${methodName}\n`)
-    // }
   }
 
   async clickContinueButton() {
     await this.continueButton.waitForExist({ timeout: config.waitforTimeout })
-    // console.log('✓ Continue button exists in DOM')
 
     // Use base class method to click using JavaScript
     await this.clickUsingJavaScript('continueReplacement', 'Continue button')

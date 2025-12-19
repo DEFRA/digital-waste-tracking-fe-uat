@@ -22,8 +22,6 @@ class Page {
    * @returns {Promise<boolean>} - Returns true if click was successful
    */
   async clickUsingJavaScript(elementId, elementName = 'element') {
-    // console.log(`Clicking ${elementName} using JavaScript...`)
-
     const clicked = await browser.execute((id) => {
       const element = document.getElementById(id)
       if (element) {
@@ -40,7 +38,6 @@ class Page {
       throw new Error(`Failed to find ${elementName} with id: ${elementId}`)
     }
 
-    // console.log(`✓ ${elementName} clicked via JavaScript`)
     return clicked
   }
 
@@ -51,8 +48,6 @@ class Page {
    * @returns {Promise<boolean>} - Returns true if selection was successful
    */
   async selectRadioUsingJavaScript(radioId, radioName = 'radio button') {
-    // console.log(`Selecting ${radioName} using JavaScript...`)
-
     const selected = await browser.execute((id) => {
       const radio = document.getElementById(id)
       if (radio) {
@@ -70,15 +65,11 @@ class Page {
       throw new Error(`Failed to find ${radioName} with id: ${radioId}`)
     }
 
-    // console.log(`✓ ${radioName} selected via JavaScript`)
-
     // Verify it's selected
     const isSelected = await browser.execute((id) => {
       const radio = document.getElementById(id)
       return radio ? radio.checked : false
     }, radioId)
-
-    // console.log(`${radioName} checked state:`, isSelected)
 
     return isSelected
   }
