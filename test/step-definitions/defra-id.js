@@ -18,7 +18,9 @@ Given(
       'Government Gateway'
     )
     await DefraIdChooseSignInPage.clickContinueButton()
-    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage()
+    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
+      this.testConfig.govtGatewayLoginUrl
+    )
   }
 )
 
@@ -34,7 +36,9 @@ Given('user proceeds to login using a Gov.uk account', async function () {
     'GOV.UK One Login'
   )
   await DefraIdChooseSignInPage.clickContinueButton()
-  await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
+  await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage(
+    this.testConfig.govUKBaseUrl
+  )
 })
 
 When('user enters their Government user Id and password', async function () {

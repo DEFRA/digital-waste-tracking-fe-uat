@@ -151,7 +151,8 @@ export const config = {
   framework: 'cucumber',
   cucumberOpts: {
     timeout: 120000,
-    require: ['./test/step-definitions/**/*.js']
+    require: ['./test/step-definitions/**/*.js'],
+    tags: `@env_${process.env.ENVIRONMENT}`
   },
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -197,6 +198,14 @@ export const config = {
     cucumberWorld.pageName = null // Initialize, will be set in step definitions
     cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
     cucumberWorld.axeBuilder = null
+    cucumberWorld.env = process.env.ENVIRONMENT
+
+    // Load test configuration from <env>.config.json
+    const testConfigData = readFileSync(
+      `./test/support/${process.env.ENVIRONMENT}.config.json`,
+      'utf8'
+    )
+    cucumberWorld.testConfig = JSON.parse(testConfigData)
 
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
@@ -233,8 +242,7 @@ export const config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    */
   onPrepare: async function (config, capabilities) {
-    // Load test configuration from test.config.json
-    // try {
+    // Load test configuration from <env>.config.json
     const testConfigData = readFileSync(
       `./test/support/${process.env.ENVIRONMENT}.config.json`,
       'utf8'
@@ -245,10 +253,6 @@ export const config = {
       'availableGovGatewayUsers',
       testConfig.govGatewayLogin
     )
-    // } catch (error) {
-    //   console.error('❌ Failed to load test configuration:', error.message)
-    //   throw error
-    // }
   },
   /**
    * Gets executed before a worker process is spawned and can be used to initialise specific service

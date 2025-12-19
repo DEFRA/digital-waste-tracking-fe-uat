@@ -5,7 +5,6 @@ import logger from '@wdio/logger'
 
 const log = logger('defra-id-gov-uk-page')
 class DefraIdGovUKPage extends Page {
-  // Gov uk Page locators
   get heading() {
     return $('h1')
   }
@@ -26,9 +25,10 @@ class DefraIdGovUKPage extends Page {
     return $("button[type='Submit']")
   }
 
-  async verifyUserIsOnGovUKLoginPage() {
+  async verifyUserIsOnGovUKLoginPage(govUKBaseUrl) {
+    this.govUKBaseUrl = govUKBaseUrl
     await expect(await this.getUrl()).toBe(
-      'https://signin.integration.account.gov.uk/sign-in-or-create'
+      this.govUKBaseUrl + '/sign-in-or-create'
     )
     // Wait for heading to be displayed
     await expect(this.heading).toBeDisplayed()
@@ -56,9 +56,7 @@ class DefraIdGovUKPage extends Page {
     })
     await this.click(this.signInButton)
 
-    await expect(browser).toHaveUrl(
-      'https://signin.integration.account.gov.uk/enter-email'
-    )
+    await expect(browser).toHaveUrl(this.govUKBaseUrl + '/enter-email')
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(
       'Enter your email address to sign in to your GOV.UK One Login'
@@ -73,9 +71,7 @@ class DefraIdGovUKPage extends Page {
     })
     await this.click(this.continueButton)
 
-    await expect(browser).toHaveUrl(
-      'https://signin.integration.account.gov.uk/enter-password'
-    )
+    await expect(browser).toHaveUrl(this.govUKBaseUrl + '/enter-password')
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Enter your password')
 

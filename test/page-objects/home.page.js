@@ -22,16 +22,8 @@ class HomePage extends Page {
     await expect(this.heading).toHaveText('Report receipt of waste')
   }
 
-  async verifyUserNavigatedCorrectlyToDefraIdService(env) {
-    if (env === 'dev') {
-      await expect(browser).toHaveUrl(
-        /https:\/\/cdp-defra-id-stub.dev.cdp-int.defra.cloud\/cdp-defra-id-stub\/authorize/
-      )
-    } else {
-      await expect(browser).toHaveUrl(
-        'https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/oauth2/authresp'
-      )
-    }
+  async verifyUserNavigatedCorrectlyToDefraIdService(defraIdServiceUrl) {
+    await expect(browser).toHaveUrl(new RegExp(defraIdServiceUrl))
   }
 }
 

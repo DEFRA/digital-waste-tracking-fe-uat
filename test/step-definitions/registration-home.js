@@ -21,9 +21,9 @@ When(/^user clicks on the "(["A-Za-z\s]+)" button$/, async function (link) {
   await HomePage.click(HomePage.startNowButton)
 })
 
-Then('user sholuld be redirected to Defra Id service', async function () {
+Then('user should be redirected to Defra Id service', async function () {
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-    process.env.ENVIRONMENT
+    this.testConfig.defraIdServiceUrl
   )
   // await DefraId.verifyUserIsOnDefraIdChooseSignInPage()
 })

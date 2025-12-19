@@ -26,10 +26,8 @@ class DefraIdGovtGatewayPage extends Page {
     return $('#loginForm #continue')
   }
 
-  async verifyUserIsOnGovernmentGatewayLoginPage() {
-    await expect(await this.getUrl()).toBe(
-      'https://www.ete.access.service.gov.uk/login/signin/creds'
-    )
+  async verifyUserIsOnGovernmentGatewayLoginPage(govtGatewayLoginUrl) {
+    await expect(await this.getUrl()).toBe(govtGatewayLoginUrl)
     // Wait for heading to be displayed
     await expect(this.govGatewayLoginPageheading).toBeDisplayed()
 

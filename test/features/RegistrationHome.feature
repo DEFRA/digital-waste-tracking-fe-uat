@@ -9,6 +9,6 @@ so that I can register as a waste receiver.
   Scenario: User should be able to login for the first time using a Government Gateway account
     Given a user is on Report of waste registration start page
     When user clicks on the "Start now" button
-    Then user sholuld be redirected to Defra Id service
+    Then user should be redirected to Defra Id service
 
 # Note: there will be seperate tests defined for feedback link etc. when the tickets get played
