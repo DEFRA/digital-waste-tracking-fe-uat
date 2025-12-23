@@ -98,6 +98,7 @@ export const config = {
       'allure',
       {
         outputDir: 'allure-results',
+        issueLinkTemplate: 'https://eaflood.atlassian.net/browse/{}',
         useCucumberStepReporter: true,
         disableWebdriverStepsReporting: false,
         disableWebdriverScreenshotsReporting: false

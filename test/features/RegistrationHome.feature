@@ -1,3 +1,4 @@
+@feature=RegistrationHome @issue=DWT-1163
 Feature: Home page of Waste receiver registration portal
 """
 As a user of a waste receiving organisation, 

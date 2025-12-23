@@ -42,11 +42,13 @@ Given('user proceeds to login using a Gov.uk account', async function () {
 })
 
 When('user enters their Government user Id and password', async function () {
-  this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
-  await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
-    this.govGatewayUser,
-    'Pepsi12345*'
-  )
+  if (this.env === 'test') {
+    this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
+    await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
+      this.govGatewayUser,
+      'Pepsi12345*'
+    )
+  }
 })
 
 Then('they should be logged in successfully', async function () {
