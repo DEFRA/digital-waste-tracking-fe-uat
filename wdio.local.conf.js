@@ -3,6 +3,8 @@ import {
   initialiseAccessibilityChecking,
   generateAccessibilityReportIndex
 } from './test/utils/accessibility-checking.js'
+import { readFileSync } from 'fs'
+import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
@@ -149,7 +151,8 @@ export const config = {
   framework: 'cucumber',
   cucumberOpts: {
     timeout: 120000,
-    require: ['./test/step-definitions/**/*.js']
+    require: ['./test/step-definitions/**/*.js'],
+    tags: `@env_${process.env.ENVIRONMENT}`
   },
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -171,6 +174,7 @@ export const config = {
       'allure',
       {
         outputDir: 'allure-results',
+        issueLinkTemplate: 'https://eaflood.atlassian.net/browse/{}',
         useCucumberStepReporter: true,
         disableWebdriverStepsReporting: false,
         disableWebdriverScreenshotsReporting: false
@@ -195,6 +199,14 @@ export const config = {
     cucumberWorld.pageName = null // Initialize, will be set in step definitions
     cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
     cucumberWorld.axeBuilder = null
+    cucumberWorld.env = process.env.ENVIRONMENT
+
+    // Load test configuration from <env>.config.json
+    const testConfigData = readFileSync(
+      `./test/support/${process.env.ENVIRONMENT}.config.json`,
+      'utf8'
+    )
+    cucumberWorld.testConfig = JSON.parse(testConfigData)
 
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
@@ -215,6 +227,11 @@ export const config = {
 
   afterScenario: async function (world, result, cucumberWorld) {
     await browser.takeScreenshot()
+    await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+    await addValueToPool(
+      'availableGovGatewayUsers',
+      cucumberWorld.govGatewayUser
+    )
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
   // it and to build services around it. You can either apply a single function or an array of
@@ -225,7 +242,19 @@ export const config = {
    * @param {object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  // onPrepare: function (config, capabilities) {},
+  onPrepare: async function (config, capabilities) {
+    // Load test configuration from <env>.config.json
+    const testConfigData = readFileSync(
+      `./test/support/${process.env.ENVIRONMENT}.config.json`,
+      'utf8'
+    )
+    const testConfig = JSON.parse(testConfigData)
+    await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+    await setResourcePool(
+      'availableGovGatewayUsers',
+      testConfig.govGatewayLogin
+    )
+  },
   /**
    * Gets executed before a worker process is spawned and can be used to initialise specific service
    * for that worker as well as modify runtime environments in an async fashion.

@@ -1,0 +1,7 @@
+{
+  "govUKLogin": ["padmaja.gandham+1@equalexperts.com", "b"],
+  "govGatewayLogin": ["520924829145", "520924829146"],
+  "defraIdServiceUrl": "https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/oauth2/authresp",
+  "govtGatewayLoginUrl": "https://www.ete.access.service.gov.uk/login/signin/creds",
+  "govUKBaseUrl": "https://signin.integration.account.gov.uk"
+}
