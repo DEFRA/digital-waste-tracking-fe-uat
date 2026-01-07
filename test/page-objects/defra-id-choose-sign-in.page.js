@@ -25,16 +25,24 @@ class DefraIdChooseSignInPage extends Page {
     return $('#replacementSelectIdentityProvider #continueReplacement')
   }
 
-  async selectSignInMethod(radioElement, methodName) {
+  async selectSignInMethod(methodName) {
+    let radioElement
+    let radioId
+
     await this.replacementForm.waitForExist({
       timeout: config.waitforTimeout
     })
 
+    if (methodName === 'Government Gateway') {
+      radioElement = this.govGatewayRadio
+      radioId = 'scp'
+    } else {
+      radioElement = this.govUKOneLoginRadio
+      radioId = 'one'
+    }
+
     // Wait for radio button to exist
     await radioElement.waitForExist({ timeout: config.waitforTimeout })
-
-    // Get the radio button ID for direct DOM manipulation
-    const radioId = methodName === 'Government Gateway' ? 'scp' : 'one'
 
     // Use base class method to select radio button using JavaScript
     await this.selectRadioUsingJavaScript(radioId, `${methodName} radio button`)

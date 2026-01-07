@@ -1,10 +1,8 @@
 @feature=Login @issue=DWT-1163
 Feature: Login as a user for waste receiving organisation
-"""
-As a user of a waste receiving organisation, 
-I want to login to the waste receiver registration portal 
-so that I can report my waste movements.
-"""
+  As a user of a waste receiving organisation, 
+  I want to login to the waste receiver registration portal 
+  so that I can report my waste movements.
 
   @env_test 
   Scenario: User should be able to login for the first time using a Government Gateway account

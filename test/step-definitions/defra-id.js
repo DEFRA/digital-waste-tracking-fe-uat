@@ -13,10 +13,7 @@ Given(
       process.env.ENVIRONMENT
     )
     await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-    await DefraIdChooseSignInPage.selectSignInMethod(
-      DefraIdChooseSignInPage.govGatewayRadio,
-      'Government Gateway'
-    )
+    await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
     await DefraIdChooseSignInPage.clickContinueButton()
     await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
       this.testConfig.govtGatewayLoginUrl
@@ -31,10 +28,7 @@ Given('user proceeds to login using a Gov.uk account', async function () {
     process.env.ENVIRONMENT
   )
   await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-  await DefraIdChooseSignInPage.selectSignInMethod(
-    DefraIdChooseSignInPage.govUKOneLoginRadio,
-    'GOV.UK One Login'
-  )
+  await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
   await DefraIdChooseSignInPage.clickContinueButton()
   await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage(
     this.testConfig.govUKBaseUrl
