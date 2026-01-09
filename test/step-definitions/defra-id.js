@@ -13,6 +13,9 @@ Given(
       process.env.ENVIRONMENT
     )
     await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
+    // --DEBUG line ---
+    await browser.takeScreenshot()
+    // --DEBUG line -- End ---
     await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
     await DefraIdChooseSignInPage.clickContinueButton()
     await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
