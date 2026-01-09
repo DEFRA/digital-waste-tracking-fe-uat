@@ -27,6 +27,10 @@ class DefraIdGovtGatewayPage extends Page {
   }
 
   async verifyUserIsOnGovernmentGatewayLoginPage(govtGatewayLoginUrl) {
+    await this.govGatewayLoginPageheading.waitForDisplayed({
+      timeout: config.waitforTimeout
+    })
+
     await expect(await this.getUrl()).toBe(govtGatewayLoginUrl)
     // Wait for heading to be displayed
     await expect(this.govGatewayLoginPageheading).toBeDisplayed()
