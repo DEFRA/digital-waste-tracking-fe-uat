@@ -13,7 +13,7 @@ export async function initialiseAccessibilityChecking() {
   if (!fs.existsSync(reportDirectory)) {
     fs.mkdirSync(reportDirectory)
   }
-  // ToDo: check with Naheed and adjust as per accessibility requirements
+  // ToDo: adjust as per accessibility requirements
   const builder = new AxeBuilder({ client: browser }).withTags([
     'wcag2a',
     'wcag2aa',
@@ -22,7 +22,10 @@ export async function initialiseAccessibilityChecking() {
   return builder
 }
 
-export async function analyseAccessibility(builder, pageName) {
+export async function analyseAccessibility(tags, builder, pageName) {
+  if (!tags.includes('@accessibility')) {
+    return
+  }
   // await browser.sharedStore.set(randomUUID(), 'analysed')
   const isAnalysed = await browser.sharedStore.get(pageName)
   if (isAnalysed === undefined) {

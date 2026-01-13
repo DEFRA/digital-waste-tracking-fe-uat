@@ -1,6 +1,9 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
 
+// This page is now obsolete as it is now lives outside of our service
+// and will be maintained by Defra content team
+// leaving it here for now and will be removed in the future
 class HomePage extends Page {
   // locators
   get heading() {
