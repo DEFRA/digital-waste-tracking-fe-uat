@@ -1,4 +1,5 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
+import HomePage from '../page-objects/home.page.js'
 import UKPermitPage from '../page-objects/uk-permit.page.js'
 import CannotUseServicePage from '../page-objects/cannot-use-service.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
@@ -44,5 +45,19 @@ Then(
     const rows = dataTable.hashes()
     // Verify the error message is displayed on the page
     await UKPermitPage.verifyErrorMessage(rows[0].message)
+  }
+)
+
+Given(
+  'a user has indicated that they are a permitted waste receiver',
+  async function () {
+    this.pageName = 'uk-permit-page'
+    await UKPermitPage.open()
+    await UKPermitPage.verifyUserIsOnUKPermitPage()
+    await UKPermitPage.selectYesOption()
+    await UKPermitPage.click(UKPermitPage.continueButton)
+    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+      this.testConfig.defraIdServiceUrl
+    )
   }
 )

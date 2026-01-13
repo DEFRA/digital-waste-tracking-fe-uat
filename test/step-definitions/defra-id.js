@@ -8,10 +8,10 @@ import { getValueFromPool } from '@wdio/shared-store-service'
 Given(
   'user proceeds to login using a Government Gateway account',
   async function () {
-    await HomePage.click(HomePage.startNowButton)
-    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-      process.env.ENVIRONMENT
-    )
+    // await HomePage.click(HomePage.startNowButton)
+    // await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+    //   process.env.ENVIRONMENT
+    // )
     await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
     // --DEBUG line ---
     await browser.takeScreenshot()
