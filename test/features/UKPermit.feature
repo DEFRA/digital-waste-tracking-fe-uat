@@ -24,7 +24,6 @@ Feature: Permitted waste receiver
     When user clicks on the "Continue" button
     Then user should be presented with an error message as below
       | message            |
-      | There is a problem |
-      # | Select Yes if you operate one or more licensed or permitted waste receiving sites |
+      | Select Yes if you operate one or more licensed or permitted waste receiving sites |
 
 # Note: there will be seperate tests defined for feedback link etc. when the tickets get played
