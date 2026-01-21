@@ -11,12 +11,22 @@ Feature: Login as a user for waste receiving organisation
     And user proceeds to login using a Government Gateway account
     When user enters their Government user Id and password
     Then they should be logged in successfully
-    # And redirected to "Is <organisation name> a waste receiver?" page
- 
+    And user is redirected to "What do you want to do next?" page 
+
   @env_test @accessibility
   Scenario: User should be able to login for the first time using a Gov.uk account
     Given a user has indicated that they are a permitted waste receiver
     And user proceeds to login using a Gov.uk account
     When user enters their Gov.uk email address and password
     Then they should be logged in successfully
-    # And redirected to "Is <organisation name> a waste receiver?" page
+    And user is redirected to "What do you want to do next?" page
+
+  @env_dev
+  Scenario: User should be able to login [using defraId mock] and presented with different options to continue
+    Given a user is registered in Defra Id mock service
+    And a user is on are you a permitted waste receiver page
+    And user selects the "Yes" option to indicate they are a permitted waste receiver
+    And user clicks on the "Continue" button
+    And user should be redirected to Defra Id service
+    When user successfully logs in to the Defra Id mock service
+    Then user is redirected to "What do you want to do next?" page

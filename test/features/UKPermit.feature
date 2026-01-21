@@ -1,4 +1,4 @@
-@feature=UKPermit
+@feature=Permitted-waste-receiver
 Feature: Permitted waste receiver
   As a user of a waste receiving organisation, 
   And I access the waste receiver registration portal 

@@ -23,6 +23,9 @@ export async function initialiseAccessibilityChecking() {
 }
 
 export async function analyseAccessibility(tags, builder, pageName) {
+  // console.log("--------------------------------")
+  // console.log(`This is tags being checked ${tags} `)
+  // console.log("--------------------------------")
   if (!tags.includes('@accessibility')) {
     return
   }
@@ -31,6 +34,9 @@ export async function analyseAccessibility(tags, builder, pageName) {
   if (isAnalysed === undefined) {
     await browser.sharedStore.set(pageName, 'analysed')
     const result = await builder.analyze()
+    // console.log("--------------------------------")
+    // console.log(`Page ${pageName} is being analyzed `)
+    // console.log("--------------------------------")
     log.info(`Page ${pageName} is being analyzed `)
     generateAccessibilityHTMLReport(
       JSON.stringify(result),

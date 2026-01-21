@@ -13,11 +13,11 @@ class UKPermitPage extends Page {
   }
 
   get yesOption() {
-    return $('#isPermitYes')
+    return $('#yes')
   }
 
   get noOption() {
-    return $('#isPermit-2')
+    return $('#no')
   }
 
   get errorMessage() {
@@ -26,7 +26,7 @@ class UKPermitPage extends Page {
 
   // methods
   open() {
-    return super.open('/uk-permit')
+    return super.open('/')
   }
 
   async selectYesOption() {

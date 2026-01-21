@@ -2,6 +2,7 @@ import { Page } from 'page-objects/page'
 import { config } from '../../wdio.conf.js'
 import { $, browser } from '@wdio/globals'
 import logger from '@wdio/logger'
+import { v4 as uuidv4 } from 'uuid'
 
 const log = logger('defra-id-stub-page')
 class DefraIdStubPage extends Page {
@@ -11,6 +12,10 @@ class DefraIdStubPage extends Page {
 
   get newRegistrationLink() {
     return $('.govuk-link')
+  }
+
+  get userIdInput() {
+    return $('#userId')
   }
 
   get emailInput() {
@@ -37,17 +42,32 @@ class DefraIdStubPage extends Page {
     return $("button[type='Submit']")
   }
 
+  get relationshipIdInput() {
+    return $('#relationshipId')
+  }
+
+  get organisationNameInput() {
+    return $('#organisationName')
+  }
+
+  get organisationIdInput() {
+    return $('#organisationId')
+  }
+
+  get finishLink() {
+    return $('=Finish')
+  }
+
+  get loginLink() {
+    return $('=Login')
+  }
+
+  get userList() {
+    return $$('.govuk-table__row>th')
+  }
+
   async registerNewUser(email) {
     log.info(`Register with email: ${email}`)
-    // Verify fields exist and are ready
-    await this.newRegistrationLink.waitForExist({
-      timeout: config.waitforTimeout
-    })
-
-    await this.newRegistrationLink.waitForClickable({
-      timeout: config.waitforTimeout
-    })
-    await this.click(this.newRegistrationLink)
 
     await expect(browser).toHaveUrl(
       'https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register'
@@ -58,24 +78,72 @@ class DefraIdStubPage extends Page {
     await this.emailInput.waitForExist({
       timeout: config.waitforTimeout
     })
+
+    const userId = await this.userIdInput.getValue()
+
     await this.enterText(this.emailInput, email)
-    await this.enrolmentNumberInput.waitForExist({
-      timeout: config.waitforTimeout
-    })
+    await this.enterText(this.firstNameInput, 'PTest')
+    await this.enterText(this.lastNameInput, 'PLast')
     await this.enterText(this.enrolmentNumberInput, '1')
-    await this.enrolmentRequestCountInput.waitForExist({
-      timeout: config.waitforTimeout
-    })
     await this.enterText(this.enrolmentRequestCountInput, '1')
     await this.continueButton.waitForClickable({
       timeout: config.waitforTimeout
     })
     await this.click(this.continueButton)
 
-    // // ToDo: When 500 error issue is fixed in dev
-    // // await expect(browser).toHaveUrl(this.govUKBaseUrl + '/enter-password')
-    // // await expect(this.heading).toBeDisplayed()
-    // // await expect(this.heading).toHaveText('xxxx')
+    await expect(browser).toHaveUrl(
+      `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
+    )
+
+    await this.relationshipIdInput.waitForExist({
+      timeout: config.waitforTimeout
+    })
+
+    await this.enterText(this.relationshipIdInput, uuidv4())
+    await this.enterText(this.organisationNameInput, 'POrganisation')
+    await this.enterText(this.organisationIdInput, uuidv4())
+
+    await this.continueButton.waitForClickable({
+      timeout: config.waitforTimeout
+    })
+    await this.click(this.continueButton)
+
+    await expect(browser).toHaveUrl(
+      `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
+    )
+
+    await this.finishLink.waitForExist({
+      timeout: config.waitforTimeout
+    })
+    await this.finishLink.click()
+
+    await expect(browser).toHaveUrl(
+      `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/summary`
+    )
+
+    await this.loginLink.waitForExist({
+      timeout: config.waitforTimeout
+    })
+    await this.loginLink.click()
+
+    // assert user was created successfully
+    await expect(browser).toHaveUrl(
+      `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/login`
+    )
+    const userList = await this.userList.getElements()
+    const users = await userList.map(async (user) => await user.getText())
+    expect(users).toContain(email)
+  }
+
+  async loginAsAUser(email) {
+    log.info(`Logging in as a user with email: ${email}`)
+    const userList = await this.userList.getElements()
+    const userId = await userList.findIndex(
+      async (user) => (await user.getText()) === email
+    )
+    await $(
+      `.govuk-table__row.govuk-table__row:nth-child(${userId - 1})>td:nth-child(2)`
+    ).click()
   }
 }
 
