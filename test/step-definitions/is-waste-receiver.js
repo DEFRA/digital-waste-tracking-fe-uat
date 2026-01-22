@@ -2,6 +2,8 @@ import { Given } from '@wdio/cucumber-framework'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import IsWasteReceiverPage from '../page-objects/is-waste-receiver.page.js'
 
+// this is now obsolote as per new design , will be removed in the future
+
 Given(
   'redirected to "Is <organisation name> a waste receiver?" page',
   async function () {
