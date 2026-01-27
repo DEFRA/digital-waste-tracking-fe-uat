@@ -30,3 +30,10 @@ Feature: Login as a user for waste receiving organisation
     And user should be redirected to Defra Id service
     When user successfully logs in to the Defra Id mock service
     Then user is redirected to "What do you want to do next?" page
+
+  @env_dev @mongodb
+  Scenario: Testing mongodb connectivity
+    Given I connect to MongoDB database
+    When I query the waste-movement-inputs collection
+    Then I should receive a document or null result
+    And I close the MongoDB connection
