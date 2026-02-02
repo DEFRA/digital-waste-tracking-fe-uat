@@ -1,10 +1,10 @@
 import { BaseAPI } from './base-api.js'
 
-export class WasteMovementBackendAPI extends BaseAPI {
-  constructor(baseUrl, httpProxy, orgBackendServicePassword) {
+export class WasteOrganisationBackendAPI extends BaseAPI {
+  constructor(baseUrl, httpProxy) {
     super(baseUrl, httpProxy)
     // Create Basic Authorization header with base64 encoded credentials
-    const credentials = `WASTE_MOVEMENT_EXTERNAL_API:${orgBackendServicePassword}`
+    const credentials = `WASTE_MOVEMENT_EXTERNAL_API:${process.env.ORGANISATION_BACKEND_PASSWORD}`
     this.base64Credentials = Buffer.from(credentials).toString('base64')
   }
 
@@ -35,12 +35,13 @@ export class WasteMovementBackendAPI extends BaseAPI {
   async createApiCodeForOrganisation(organisationId) {
     const requestHeaders = {
       Authorization: `Basic ${this.base64Credentials}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      // 'x-api-key': process.env.xapikey //ToDo: temp change do not checkin
     }
 
     const { statusCode, headers, json } = await this.post(
       `/organisation/${organisationId}/apiCodes`,
-      { name: 'org1' },
+      JSON.stringify({ name: 'org1' }),
       requestHeaders
     )
 
