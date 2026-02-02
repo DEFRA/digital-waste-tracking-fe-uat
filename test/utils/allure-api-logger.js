@@ -18,7 +18,7 @@ export async function logAllureRequest(
   data = null
 ) {
   allure.startStep(`${method} Request to ${endpoint}`)
-  
+
   try {
     // Attach request details to Allure report
     allure.addAttachment('Request URL', url, 'text/plain')
@@ -65,7 +65,7 @@ export async function logAllureResponse(
   body = null
 ) {
   allure.startStep(`${method} Response from ${endpoint}`)
-  
+
   try {
     allure.addAttachment('Response Status', `${statusCode}`, 'text/plain')
     allure.addAttachment(

@@ -35,7 +35,7 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
   async createApiCodeForOrganisation(organisationId) {
     const requestHeaders = {
       Authorization: `Basic ${this.base64Credentials}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
       // 'x-api-key': process.env.xapikey //ToDo: temp change do not checkin
     }
 
