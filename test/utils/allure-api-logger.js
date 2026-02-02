@@ -1,0 +1,89 @@
+/**
+ * Allure API Logging Helper
+ *
+ * Provides Allure reporting functionality for API requests and responses
+ */
+
+import allure from '@wdio/allure-reporter'
+
+/**
+ * Log API request details to Allure report
+ * @param {string} method - HTTP method (GET, POST, PUT, etc.)
+ * @param {string} endpoint - API endpoint path
+ * @param {string} url - Full request URL
+ * @param {Object} headers - Request headers
+ * @param {boolean} usingProxy - Whether the request is using a proxy
+ * @param {string|Object} [data] - Request body data
+ */
+export async function logAllureRequest(
+  method,
+  endpoint,
+  url,
+  headers,
+  httpProxy,
+  data = null
+) {
+  await allure.step(`${method} Request to ${endpoint}`, async () => {
+    // Attach request details to Allure report
+    allure.attachment('Request URL', url, 'text/plain')
+    allure.attachment(
+      'Request Headers',
+      JSON.stringify(headers, null, 2),
+      'application/json'
+    )
+    if (httpProxy) {
+      allure.attachment('Using Proxy URL', httpProxy, 'text/plain')
+    }
+    if (data) {
+      try {
+        // Try to parse as JSON for better formatting
+        const jsonData = typeof data === 'string' ? JSON.parse(data) : data
+        allure.attachment(
+          'Request Body',
+          JSON.stringify(jsonData, null, 2),
+          'application/json'
+        )
+      } catch {
+        // If not JSON, attach as plain text
+        allure.attachment('Request Body', data, 'text/plain')
+      }
+    }
+  })
+}
+
+/**
+ * Log API response details to Allure report
+ * @param {string} method - HTTP method (GET, POST, PUT, etc.)
+ * @param {string} endpoint - API endpoint path
+ * @param {number} statusCode - Response status code
+ * @param {Object} headers - Response headers
+ * @param {Object} body - Response body
+ */
+export async function logAllureResponse(
+  method,
+  endpoint,
+  statusCode,
+  headers,
+  body = null
+) {
+  await allure.step(`${method} Response from ${endpoint}`, async () => {
+    allure.attachment('Response Status', `${statusCode}`, 'text/plain')
+    allure.attachment(
+      'Response Headers',
+      JSON.stringify(headers, null, 2),
+      'application/json'
+    )
+    allure.attachment(
+      'Response Info',
+      `Response received with content-type: ${headers['content-type'] || 'unknown'}`,
+      'text/plain'
+    )
+    if (body) {
+      allure.attachment(
+        'Response Body',
+        JSON.stringify(body, null, 2),
+        'application/json'
+      )
+    }
+  })
+}

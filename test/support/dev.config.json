@@ -1,3 +1,4 @@
 {
-  "defraIdServiceUrl": "https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub"
+  "defraIdServiceUrl": "https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub",
+  "wasteOrganisationBackendServiceUrl": "https://waste-organisation-backend.dev.cdp-int.defra.cloud"
 }
