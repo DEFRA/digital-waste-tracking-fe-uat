@@ -1,0 +1,35 @@
+meta {
+  name: Create API Code
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/organisation/{{$randomUUID}}/apiCodes
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{x-api-key}}
+}
+
+body:json {
+  {
+    "name": "org1"
+  }
+}
+
+vars:post-response {
+  code: res.body.code
+  organisationId: req.url.split('/')[5]
+}
+
+script:post-response {
+  console.log(req.url.split('/')[5])
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

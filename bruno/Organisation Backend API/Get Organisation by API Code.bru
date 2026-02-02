@@ -1,0 +1,20 @@
+meta {
+  name: Get Organisation by API Code
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/organisation/{{code}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{x-api-key}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
