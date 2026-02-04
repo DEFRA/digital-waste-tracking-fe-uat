@@ -13,11 +13,11 @@ class UKPermitPage extends Page {
   }
 
   get yesOption() {
-    return $('#yes')
+    return $('#isPermitYes')
   }
 
   get noOption() {
-    return $('#no')
+    return $('#isPermitNo')
   }
 
   get errorMessage() {
