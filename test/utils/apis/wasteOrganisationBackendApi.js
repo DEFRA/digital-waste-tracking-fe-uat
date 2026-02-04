@@ -16,6 +16,10 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       Authorization: `Basic ${this.base64Credentials}`,
       'Content-Type': 'application/json'
     }
+    // this will ever be added only when running test from local machine
+    if (process.env.xapikey) {
+      requestHeaders['x-api-key'] = process.env.xapikey
+    }
 
     const { statusCode, headers, json } = await this.get(
       `/organisation/${apiCode}`,
@@ -36,12 +40,45 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
     const requestHeaders = {
       Authorization: `Basic ${this.base64Credentials}`,
       'Content-Type': 'application/json'
-      // 'x-api-key': process.env.xapikey //ToDo: temp change do not checkin
+    }
+    // this will ever be added only when running test from local machine
+    if (process.env.xapikey) {
+      requestHeaders['x-api-key'] = process.env.xapikey
     }
 
     const { statusCode, headers, json } = await this.post(
       `/organisation/${organisationId}/apiCodes`,
       JSON.stringify({ name: 'org1' }),
+      requestHeaders
+    )
+
+    return {
+      statusCode,
+      headers,
+      json
+    }
+  }
+
+  /**
+   * @returns {Promise<import('./base-api.js').JsonResponse>}
+   */
+  async disableApiCodeForOrganisation(organisationId, apiCode) {
+    const requestHeaders = {
+      Authorization: `Basic ${this.base64Credentials}`,
+      'Content-Type': 'application/json'
+    }
+    // this will ever be added only when running test from local machine
+    if (process.env.xapikey) {
+      requestHeaders['x-api-key'] = process.env.xapikey
+    }
+
+    const { statusCode, headers, json } = await this.put(
+      `/organisation/${organisationId}/apiCodes/${apiCode}`,
+      JSON.stringify({
+        apiCode: {
+          isDisabled: true
+        }
+      }),
       requestHeaders
     )
 
