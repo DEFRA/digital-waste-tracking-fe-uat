@@ -30,7 +30,7 @@ Given('user proceeds to login using a Gov.uk account', async function () {
 })
 
 When('user enters their Government user Id and password', async function () {
-  if (this.env === 'test') {
+  if (this.env.ENVIRONMENT === 'test') {
     this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
     await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
       this.govGatewayUser,

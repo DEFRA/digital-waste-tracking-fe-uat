@@ -1,0 +1,28 @@
+meta {
+  name: Update API Code
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/organisation/{{organisationId}}/apiCodes/{{code}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{x-api-key}}
+}
+
+body:json {
+  {
+    "apiCode": {
+      "isDisabled": true
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

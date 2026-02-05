@@ -5,6 +5,7 @@ import {
 } from './test/utils/accessibility-checking.js'
 import { readFileSync } from 'fs'
 import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
+import { ApiFactory } from './test/utils/apis/api-factory.js'
 
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
@@ -199,7 +200,7 @@ export const config = {
     cucumberWorld.pageName = null // Initialize, will be set in step definitions
     cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
     cucumberWorld.axeBuilder = null
-    cucumberWorld.env = process.env.ENVIRONMENT
+    cucumberWorld.env = process.env
 
     // Load test configuration from <env>.config.json
     const testConfigData = readFileSync(
@@ -207,6 +208,10 @@ export const config = {
       'utf8'
     )
     cucumberWorld.testConfig = JSON.parse(testConfigData)
+    cucumberWorld.apis = ApiFactory.create(
+      cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl,
+      cucumberWorld.env.HTTP_PROXY
+    )
 
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
