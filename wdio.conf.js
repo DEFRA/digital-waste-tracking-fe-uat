@@ -82,8 +82,8 @@ export const config = {
   cucumberOpts: {
     timeout: 60000,
     require: ['./test/step-definitions/**/*.js'],
-    // tags: `@env_${process.env.ENVIRONMENT}`
-    tags: `@local`
+    tags: `@env_${process.env.ENVIRONMENT}`
+    // tags: `@local`
   },
 
   reporters: [
