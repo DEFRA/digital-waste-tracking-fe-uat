@@ -29,6 +29,7 @@ Feature: Login as a user for waste receiving organisation
     And user clicks on the "Continue" button
     And user should be redirected to Defra Id service
     When user successfully logs in to the Defra Id mock service
+    And user has selected a business
     Then user is redirected to "What do you want to do next?" page
 
   # @env_dev @mongodb

@@ -1,4 +1,4 @@
-import { Then } from '@wdio/cucumber-framework'
+import { Then, Given } from '@wdio/cucumber-framework'
 import NextActionPage from '../page-objects/next-action.page.js'
 
 Then(
@@ -7,3 +7,7 @@ Then(
     await NextActionPage.verifyUserIsOnChooseNextActionPage()
   }
 )
+
+Given('user selects option to view his api code', async function () {
+  await NextActionPage.selectConnectYourSoftwareRadio()
+})

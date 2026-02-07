@@ -66,6 +66,15 @@ class DefraIdStubPage extends Page {
     return $$('.govuk-table__row>th')
   }
 
+  // Select your organisation
+  get selectFirstOrganisationRadioButton() {
+    return $('#relationshipId')
+  }
+
+  get getFirstOrganisationIdInput() {
+    return $('#relationshipId-item-hint')
+  }
+
   async registerNewUser(email) {
     log.info(`Register with email: ${email}`)
 
@@ -138,12 +147,40 @@ class DefraIdStubPage extends Page {
   async loginAsAUser(email) {
     log.info(`Logging in as a user with email: ${email}`)
     const userList = await this.userList.getElements()
-    const userId = await userList.findIndex(
-      async (user) => (await user.getText()) === email
+
+    // Find the user row with the matching email
+    let userRow = null
+    for (const user of userList) {
+      const userText = await user.getText()
+      if (userText === email) {
+        // Get the parent row and then the action cell
+        userRow = await user.parentElement().$('td:nth-child(2)>a')
+        break
+      }
+    }
+
+    if (!userRow) {
+      throw new Error(`User with email "${email}" not found in the user list`)
+    }
+
+    // Wait for element to be displayed before scrolling
+    await userRow.waitForDisplayed({ timeout: config.waitforTimeout })
+    await userRow.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    await userRow.waitForClickable({ timeout: config.waitforTimeout })
+    await userRow.click()
+
+    await expect(browser).toHaveUrl(
+      /https:\/\/cdp-defra-id-stub\.dev\.cdp-int\.defra\.cloud\/cdp-defra-id-stub\/organisations/
     )
-    await $(
-      `.govuk-table__row.govuk-table__row:nth-child(${userId - 1})>td:nth-child(2)`
-    ).click()
+  }
+
+  async selectFirstOrganisation() {
+    await this.selectFirstOrganisationRadioButton.click()
+    await this.continueButton.click()
+  }
+
+  async getFirstOrganisationId() {
+    return await this.getFirstOrganisationIdInput.getText()
   }
 }
 

@@ -88,4 +88,29 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       json
     }
   }
+
+  /**
+   * @returns {Promise<import('./base-api.js').JsonResponse>}
+   */
+  async getAllApiCodesForOrganisation(organisationId) {
+    const requestHeaders = {
+      Authorization: `Basic ${this.base64Credentials}`,
+      'Content-Type': 'application/json'
+    }
+    // this will ever be added only when running test from local machine
+    if (process.env.xapikey) {
+      requestHeaders['x-api-key'] = process.env.xapikey
+    }
+
+    const { statusCode, headers, json } = await this.get(
+      `/organisation/${organisationId}/apiCodes`,
+      requestHeaders
+    )
+
+    return {
+      statusCode,
+      headers,
+      json
+    }
+  }
 }

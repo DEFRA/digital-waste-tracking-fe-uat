@@ -3,6 +3,9 @@ import DefraIdChooseSignInPage from '../page-objects/defra-id-choose-sign-in.pag
 import DefraIdGovtGatewayPage from '../page-objects/defra-id-govt-gateway.page.js'
 import DefraIdGovUKPage from '../page-objects/defra-id-gov-uk.page.js'
 import DefraIdStubPage from '../page-objects/defra-id-stub.page.js'
+import UKPermitPage from '../page-objects/uk-permit.page.js'
+import HomePage from '../page-objects/home.page.js'
+import NextActionPage from '../page-objects/next-action.page.js'
 import { getValueFromPool } from '@wdio/shared-store-service'
 
 Given(
@@ -62,5 +65,72 @@ When(
   'user successfully logs in to the Defra Id mock service',
   async function () {
     await DefraIdStubPage.loginAsAUser(this.userEmail)
+  }
+)
+
+When('user has selected a business', async function () {
+  await DefraIdStubPage.selectFirstOrganisation()
+})
+
+Given(
+  'a user is logged in to the waste receiver registration portal',
+  async function () {
+    this.userEmail = `test1770292433626@test.com`
+    // this.userEmail = `test${Date.now()}@test.com`
+    // await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
+    // await DefraIdStubPage.registerNewUser(this.userEmail)
+
+    await UKPermitPage.open()
+    await UKPermitPage.verifyUserIsOnUKPermitPage()
+
+    await UKPermitPage.selectYesOption()
+
+    await UKPermitPage.click(UKPermitPage.continueButton)
+
+    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+      this.testConfig.defraIdServiceUrl
+    )
+
+    await DefraIdStubPage.loginAsAUser(this.userEmail)
+
+    const temp = await DefraIdStubPage.getFirstOrganisationId()
+    this.organisationId = temp
+      .replace(/Organisation ID:/g, '')
+      .replace(/\| Role: Employee/g, '')
+      .trim()
+    await DefraIdStubPage.selectFirstOrganisation()
+
+    await NextActionPage.verifyUserIsOnChooseNextActionPage()
+  }
+)
+
+Given(
+  'a user is logged in to the waste receiver registration portal using a Government Gateway account',
+  async function () {
+    await UKPermitPage.open()
+    await UKPermitPage.verifyUserIsOnUKPermitPage()
+    await UKPermitPage.selectYesOption()
+    await UKPermitPage.click(UKPermitPage.continueButton)
+    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+      this.testConfig.defraIdServiceUrl
+    )
+
+    await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
+    // --DEBUG line ---
+    await browser.takeScreenshot()
+    // --DEBUG line -- End ---
+    await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
+    await DefraIdChooseSignInPage.clickContinueButton()
+    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
+      this.testConfig.govtGatewayLoginUrl
+    )
+
+    this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
+    await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
+      this.govGatewayUser,
+      'Pepsi12345*'
+    )
+
+    await NextActionPage.verifyUserIsOnChooseNextActionPage()
   }
 )
