@@ -12,7 +12,11 @@ class ManageApiCodePage extends Page {
   }
 
   get createAPICodeButton() {
-    return $('=Create additional code')
+    return $('button[class="govuk-button govuk-button--secondary"]')
+  }
+
+  get createNewCodeButton() {
+    return $('button[type="submit"]')
   }
 
   get notificationBanner() {
@@ -50,49 +54,34 @@ class ManageApiCodePage extends Page {
   }
 
   async verifyAPICodeIsDisplayed(expectedApiCode, status) {
-    const apiList = await this.apiCodeList.getElements()
-
-    const apiCodeRow = await apiList.find(async (apiCode) => {
-      const apiCodeText = await apiCode
-        .$('dd.govuk-summary-list__value')
-        .getText()
-      if (expectedApiCode !== '' && apiCodeText === expectedApiCode) {
-        return apiCode
-      } else {
-        return apiCode
-      }
-    })
-
+    const activeAPICodes = await this.getListOfActiveAPICodes()
     if (status === 'active') {
-      const disableButton = await apiCodeRow.$(
-        'dd.govuk-summary-list__actions>a'
-      )
-      await expect(await disableButton.isDisplayed()).toBe(true)
-      await expect(disableButton).toBeDisplayed()
-      await expect(disableButton).toHaveText('Disable')
+      expect(activeAPICodes).toContain(expectedApiCode)
     } else {
-      const disableText = await apiCodeRow.$(
-        'dd.govuk-summary-list__actions>strong'
-      )
-      await expect(await disableText.isDisplayed()).toBe(true)
-      await expect(disableText).toBeDisplayed()
-      await expect(disableText).toHaveText('Disabled')
+      expect(activeAPICodes).not.toContain(expectedApiCode)
     }
   }
 
   async clickDisableButtonForAPICode(expectedApiCode) {
     const apiList = await this.apiCodeList.getElements()
 
-    const apiCodeRow = await apiList.find(async (apiCode) => {
+    let apiCodeRow = null
+
+    for (const apiCode of apiList) {
       const apiCodeText = await apiCode
         .$('dd.govuk-summary-list__value')
         .getText()
+
       if (expectedApiCode !== '' && apiCodeText === expectedApiCode) {
-        return apiCode
-      } else {
-        return apiCode
+        apiCodeRow = apiCode
+        break
       }
-    })
+    }
+
+    if (!apiCodeRow) {
+      throw new Error(`API Code "${expectedApiCode}" not found in the list`)
+    }
+
     const disableButton = await apiCodeRow.$('dd.govuk-summary-list__actions>a')
     await expect(disableButton).toBeDisplayed()
     await disableButton.click()
@@ -117,6 +106,12 @@ class ManageApiCodePage extends Page {
     browser.refresh()
     const activeAPICodes = await this.getListOfActiveAPICodes()
     expect(activeAPICodes.length).toBe(previousActiveAPICodes.length + 1)
+  }
+
+  async userCreatesANewAPICode() {
+    browser.refresh()
+    await this.createNewCodeButton.waitForDisplayed()
+    await this.createNewCodeButton.click()
   }
 }
 

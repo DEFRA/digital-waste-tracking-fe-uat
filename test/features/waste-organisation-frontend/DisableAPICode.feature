@@ -30,5 +30,17 @@ So that I can prevent that API code from being used to access the DWT service.
     # # ToDo: When the Team A integration is complete
     # # And user should still be able to submit movements using this API Code
 
+  @env_dev @accessibility
+  Scenario: User should be able to create a new API code when all existing API codes are disabled
+    Given a user is logged in to the waste receiver registration portal
+    And user selects option to view his api code
+    And user is on the View API Code page
+    And user disables all existing API codes
+    When user tries to create new API code
+    Then an additional API code should be created for the organisation
+    And display the new API code in the API code list
+    # # ToDo: When the Team A integration is complete
+    # # And user should still be able to submit movements using this API Code
+
 # # back button
 # "Report of waste" link in header

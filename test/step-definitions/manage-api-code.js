@@ -1,4 +1,4 @@
-import { When, Then } from '@wdio/cucumber-framework'
+import { When, Then, Given } from '@wdio/cucumber-framework'
 import ManageApiCodePage from '../page-objects/manage-api-code.page.js'
 import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
@@ -102,4 +102,23 @@ Then('an additional API code should be created for the organisation', () => {
 When('user tries to create an additional API code', async function () {
   this.activeAPICodes = await ManageApiCodePage.getListOfActiveAPICodes()
   await ManageApiCodePage.userCreatesAnAdditionalAPICode()
+})
+
+Given('user disables all existing API codes', async function () {
+  const activeApiCode = await ManageApiCodePage.getListOfActiveAPICodes()
+  for (const apiCode of activeApiCode) {
+    const response =
+      await this.apis.wasteOrganisationBackendAPI.disableApiCodeForOrganisation(
+        this.organisationId,
+        apiCode
+      )
+    expect(response.statusCode).toBe(200)
+  }
+})
+
+When('user tries to create new API code', async function () {
+  this.pageName = 'view-api-code-with-all-codes-disabled-page'
+  await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+  this.activeAPICodes = []
+  await ManageApiCodePage.userCreatesANewAPICode()
 })
