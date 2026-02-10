@@ -12,7 +12,7 @@ class ManageApiCodePage extends Page {
   }
 
   get createAPICodeButton() {
-    return $('#start-now-button')
+    return $('=Create additional code')
   }
 
   get notificationBanner() {
@@ -25,6 +25,24 @@ class ManageApiCodePage extends Page {
   }
 
   // assertions
+  async getListOfActiveAPICodes() {
+    const apiList = await this.apiCodeList.getElements()
+
+    const activeAPICodes = []
+
+    for (const apiCode of apiList) {
+      const disableButton = await apiCode.$('dd.govuk-summary-list__actions>a')
+
+      if (await disableButton.isDisplayed()) {
+        const apiCodeText = await apiCode
+          .$('dd.govuk-summary-list__value')
+          .getText()
+        activeAPICodes.push(apiCodeText)
+      }
+    }
+
+    return activeAPICodes
+  }
 
   async verifyUserIsOnYourApiCodePage() {
     await expect(this.heading).toBeDisplayed()
@@ -88,6 +106,17 @@ class ManageApiCodePage extends Page {
         `The code ${apiCode} cannot be used to send any new waste movements.`
       )
     ).toBe(true)
+  }
+
+  async userCreatesAnAdditionalAPICode() {
+    await this.createAPICodeButton.waitForDisplayed()
+    await this.createAPICodeButton.click()
+  }
+
+  async verifyAdditionalAPICodeIsCreated(previousActiveAPICodes) {
+    browser.refresh()
+    const activeAPICodes = await this.getListOfActiveAPICodes()
+    expect(activeAPICodes.length).toBe(previousActiveAPICodes.length + 1)
   }
 }
 

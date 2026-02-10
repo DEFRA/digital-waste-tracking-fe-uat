@@ -4,7 +4,7 @@ As a waste receiver using the service
 I need to be able to disable an API code for my organisation
 So that I can prevent that API code from being used to access the DWT service.
 
-  @env_dev
+  @env_dev @accessibility
   Scenario: Waste receiver should be able to disable an API code for their organisation
     Given a user is logged in to the waste receiver registration portal
     And user selects option to view his api code

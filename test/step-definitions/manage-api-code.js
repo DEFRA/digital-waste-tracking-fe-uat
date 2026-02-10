@@ -33,7 +33,8 @@ Then(
       this.activeApiCode = activeApiCode
     } else {
       await ManageApiCodePage.verifyAPICodeIsDisplayed('', status)
-      // Todo : set active api code here as well
+      const activeApiCode = await ManageApiCodePage.getListOfActiveAPICodes()
+      this.activeApiCode = activeApiCode[0]
     }
   }
 )
@@ -72,6 +73,7 @@ Then(
   /^the API code should (be disabled|not be disabled)$/,
   async function (status) {
     await ManageApiCodePage.verifyUserIsOnYourApiCodePage()
+    this.pageName = 'view-api-code-with-active-codes-page'
     if (status.includes('not')) {
       await ManageApiCodePage.verifyAPICodeIsDisplayed(
         this.activeApiCode,
@@ -88,3 +90,16 @@ Then(
     }
   }
 )
+
+Then('display the new API code in the API code list', async function () {
+  await ManageApiCodePage.verifyAdditionalAPICodeIsCreated(this.activeAPICodes)
+})
+
+Then('an additional API code should be created for the organisation', () => {
+  // just added this for completeness, but does nothing
+})
+
+When('user tries to create an additional API code', async function () {
+  this.activeAPICodes = await ManageApiCodePage.getListOfActiveAPICodes()
+  await ManageApiCodePage.userCreatesAnAdditionalAPICode()
+})
