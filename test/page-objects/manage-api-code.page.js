@@ -1,9 +1,6 @@
 import { Page } from 'page-objects/page'
 import { $ } from '@wdio/globals'
 
-// This page is now obsolete as it is now lives outside of our service
-// and will be maintained by Defra content team
-// leaving it here for now and will be removed in the future
 class ManageApiCodePage extends Page {
   // locators
   get heading() {
@@ -16,6 +13,10 @@ class ManageApiCodePage extends Page {
 
   get createAPICodeButton() {
     return $('#start-now-button')
+  }
+
+  get notificationBanner() {
+    return $('.govuk-notification-banner__content')
   }
 
   // methods
@@ -37,7 +38,9 @@ class ManageApiCodePage extends Page {
       const apiCodeText = await apiCode
         .$('dd.govuk-summary-list__value')
         .getText()
-      if (apiCodeText === expectedApiCode) {
+      if (expectedApiCode !== '' && apiCodeText === expectedApiCode) {
+        return apiCode
+      } else {
         return apiCode
       }
     })
@@ -57,6 +60,34 @@ class ManageApiCodePage extends Page {
       await expect(disableText).toBeDisplayed()
       await expect(disableText).toHaveText('Disabled')
     }
+  }
+
+  async clickDisableButtonForAPICode(expectedApiCode) {
+    const apiList = await this.apiCodeList.getElements()
+
+    const apiCodeRow = await apiList.find(async (apiCode) => {
+      const apiCodeText = await apiCode
+        .$('dd.govuk-summary-list__value')
+        .getText()
+      if (expectedApiCode !== '' && apiCodeText === expectedApiCode) {
+        return apiCode
+      } else {
+        return apiCode
+      }
+    })
+    const disableButton = await apiCodeRow.$('dd.govuk-summary-list__actions>a')
+    await expect(disableButton).toBeDisplayed()
+    await disableButton.click()
+  }
+
+  async verifyDisableApiCodeNotificationBannerIsDisplayed(apiCode) {
+    await expect(this.notificationBanner).toBeDisplayed()
+    const notificationBannerText = await this.notificationBanner.getText()
+    await expect(
+      notificationBannerText.includes(
+        `The code ${apiCode} cannot be used to send any new waste movements.`
+      )
+    ).toBe(true)
   }
 }
 

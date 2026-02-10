@@ -75,10 +75,10 @@ When('user has selected a business', async function () {
 Given(
   'a user is logged in to the waste receiver registration portal',
   async function () {
-    this.userEmail = `test1770292433626@test.com`
-    // this.userEmail = `test${Date.now()}@test.com`
-    // await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-    // await DefraIdStubPage.registerNewUser(this.userEmail)
+    // this.userEmail = `test1770725948706@test.com`
+    this.userEmail = `test${Date.now()}@test.com`
+    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
+    await DefraIdStubPage.registerNewUser(this.userEmail)
 
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
@@ -105,8 +105,8 @@ Given(
 )
 
 Given(
-  'a user is logged in to the waste receiver registration portal using a Government Gateway account',
-  async function () {
+  'a user is logged in to the waste receiver registration portal using a {string} account',
+  async function (accountType) {
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
     await UKPermitPage.selectYesOption()
@@ -119,17 +119,28 @@ Given(
     // --DEBUG line ---
     await browser.takeScreenshot()
     // --DEBUG line -- End ---
-    await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
-    await DefraIdChooseSignInPage.clickContinueButton()
-    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
-      this.testConfig.govtGatewayLoginUrl
-    )
+    if (accountType === 'Government Gateway') {
+      await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
+      await DefraIdChooseSignInPage.clickContinueButton()
+      await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
+        this.testConfig.govtGatewayLoginUrl
+      )
 
-    this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
-    await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
-      this.govGatewayUser,
-      'Pepsi12345*'
-    )
+      this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
+      await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
+        this.govGatewayUser,
+        'Pepsi12345*'
+      )
+    } else {
+      await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
+      await DefraIdChooseSignInPage.clickContinueButton()
+      await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage(
+        this.testConfig.govUKBaseUrl
+      )
+
+      this.govUKUser = await getValueFromPool('availableGovUKUsers')
+      await DefraIdGovUKPage.loginWithGovUK(this.govUKUser, 'Pepsi12345*')
+    }
 
     await NextActionPage.verifyUserIsOnChooseNextActionPage()
   }
