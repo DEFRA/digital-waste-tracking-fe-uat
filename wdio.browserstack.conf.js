@@ -1,30 +1,27 @@
-// import { ProxyAgent, setGlobalDispatcher } from 'undici'
-// import { bootstrap } from 'global-agent'
-import allure from 'allure-commandline'
-import {
-  initialiseAccessibilityChecking,
-  generateAccessibilityReportIndex
-} from './test/utils/accessibility-checking.js'
+import { ProxyAgent, setGlobalDispatcher } from 'undici'
+import { bootstrap } from 'global-agent'
+import { initialiseAccessibilityChecking } from './test/utils/accessibility-checking.js'
+import fs from 'node:fs'
 import { readFileSync } from 'fs'
 import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
 
 // const debug = process.env.DEBUG
-const oneMinute = 60 * 1000
+// const oneMinute = 60 * 1000
 // const oneHour = 60 * 60 * 1000
 
-// /**
-//  * Enable webdriver.io to use the outbound proxy.
-//  * This is required for the test suite to be able to talk to BrowserStack.
-//  */
-// if (process.env.HTTP_PROXY) {
-//   const dispatcher = new ProxyAgent({
-//     uri: process.env.HTTP_PROXY
-//   })
-//   setGlobalDispatcher(dispatcher)
-//   bootstrap()
-//   global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
-// }
+/**
+ * Enable webdriver.io to use the outbound proxy.
+ * This is required for the test suite to be able to talk to BrowserStack.
+ */
+if (process.env.HTTP_PROXY) {
+  const dispatcher = new ProxyAgent({
+    uri: process.env.HTTP_PROXY
+  })
+  setGlobalDispatcher(dispatcher)
+  bootstrap()
+  global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
+}
 
 // const oneMinute = 60 * 1000
 
@@ -103,12 +100,12 @@ export const config = {
         },
         acceptInsecureCerts: true,
         forceLocal: false,
-        browserstackLocal: true
+        browserstackLocal: true,
         // **this is only needed for CDP runs and must be disabled for local runs
-        // opts: {
-        //   proxyHost: 'localhost',
-        //   proxyPort: 3128
-        // }
+        opts: {
+          proxyHost: 'localhost',
+          proxyPort: 3128
+        }
       }
     ]
   ],
@@ -256,24 +253,9 @@ export const config = {
    * @param {<Object>} results object containing test results
    */
   onComplete: function (exitCode, config, capabilities, results) {
-    generateAccessibilityReportIndex()
-
-    const reportError = new Error('Could not generate Allure report')
-    const generation = allure(['generate', 'allure-results', '--clean'])
-
-    return new Promise((resolve, reject) => {
-      const generationTimeout = setTimeout(() => reject(reportError), oneMinute)
-
-      generation.on('exit', function (exitCode) {
-        clearTimeout(generationTimeout)
-
-        if (exitCode !== 0) {
-          return reject(reportError)
-        }
-
-        allure(['open'])
-        resolve()
-      })
-    })
+    // !Do Not Remove! Required for test status to show correctly in portal.
+    if (results?.failed && results.failed > 0) {
+      fs.writeFileSync('FAILED', JSON.stringify(results))
+    }
   }
 }
