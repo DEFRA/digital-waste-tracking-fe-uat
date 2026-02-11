@@ -1,5 +1,5 @@
-import { ProxyAgent, setGlobalDispatcher } from 'undici'
-import { bootstrap } from 'global-agent'
+// import { ProxyAgent, setGlobalDispatcher } from 'undici'
+// import { bootstrap } from 'global-agent'
 import allure from 'allure-commandline'
 import {
   initialiseAccessibilityChecking,
@@ -13,18 +13,18 @@ import { ApiFactory } from './test/utils/apis/api-factory.js'
 const oneMinute = 60 * 1000
 // const oneHour = 60 * 60 * 1000
 
-/**
- * Enable webdriver.io to use the outbound proxy.
- * This is required for the test suite to be able to talk to BrowserStack.
- */
-if (process.env.HTTP_PROXY) {
-  const dispatcher = new ProxyAgent({
-    uri: process.env.HTTP_PROXY
-  })
-  setGlobalDispatcher(dispatcher)
-  bootstrap()
-  global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
-}
+// /**
+//  * Enable webdriver.io to use the outbound proxy.
+//  * This is required for the test suite to be able to talk to BrowserStack.
+//  */
+// if (process.env.HTTP_PROXY) {
+//   const dispatcher = new ProxyAgent({
+//     uri: process.env.HTTP_PROXY
+//   })
+//   setGlobalDispatcher(dispatcher)
+//   bootstrap()
+//   global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
+// }
 
 // const oneMinute = 60 * 1000
 
@@ -103,12 +103,12 @@ export const config = {
         },
         acceptInsecureCerts: true,
         forceLocal: false,
-        browserstackLocal: true,
+        browserstackLocal: true
         // **this is only needed for CDP runs and must be disabled for local runs
-        opts: {
-          proxyHost: 'localhost',
-          proxyPort: 3128
-        }
+        // opts: {
+        //   proxyHost: 'localhost',
+        //   proxyPort: 3128
+        // }
       }
     ]
   ],
