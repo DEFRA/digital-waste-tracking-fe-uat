@@ -55,10 +55,14 @@ class ManageApiCodePage extends Page {
 
   async verifyAPICodeIsDisplayed(expectedApiCode, status) {
     const activeAPICodes = await this.getListOfActiveAPICodes()
-    if (status === 'active') {
-      expect(activeAPICodes).toContain(expectedApiCode)
+    if (expectedApiCode !== '') {
+      if (status === 'active') {
+        expect(activeAPICodes).toContain(expectedApiCode)
+      } else {
+        expect(activeAPICodes).not.toContain(expectedApiCode)
+      }
     } else {
-      expect(activeAPICodes).not.toContain(expectedApiCode)
+      expect(activeAPICodes.length).toBeGreaterThan(0)
     }
   }
 

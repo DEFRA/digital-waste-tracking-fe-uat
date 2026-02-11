@@ -37,7 +37,7 @@ When('user enters their Government user Id and password', async function () {
     this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
     await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
       this.govGatewayUser,
-      'Pepsi12345*'
+      this.env.defraGovGatewayPassword
     )
   }
 })
@@ -50,7 +50,10 @@ Then('they should be logged in successfully', async function () {
 
 When('user enters their Gov.uk email address and password', async function () {
   this.govUKUser = await getValueFromPool('availableGovUKUsers')
-  await DefraIdGovUKPage.loginWithGovUK(this.govUKUser, 'Pepsi12345*')
+  await DefraIdGovUKPage.loginWithGovUK(
+    this.govUKUser,
+    this.env.defraGovUKPassword
+  )
 })
 
 Given('a user is registered in Defra Id mock service', async function () {
@@ -129,7 +132,7 @@ Given(
       this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
       await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
         this.govGatewayUser,
-        'Pepsi12345*'
+        this.env.defraGovGatewayPassword
       )
     } else {
       await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
@@ -139,7 +142,10 @@ Given(
       )
 
       this.govUKUser = await getValueFromPool('availableGovUKUsers')
-      await DefraIdGovUKPage.loginWithGovUK(this.govUKUser, 'Pepsi12345*')
+      await DefraIdGovUKPage.loginWithGovUK(
+        this.govUKUser,
+        this.env.defraGovUKPassword
+      )
     }
 
     await NextActionPage.verifyUserIsOnChooseNextActionPage()

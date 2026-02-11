@@ -1,6 +1,10 @@
 {
-  "govUKLogin": ["padmaja.gandham+1@equalexperts.com", "b"],
-  "govGatewayLogin": ["520924829145", "520924829146"],
+  "govUKLogin": [
+    "autotest.ee2026+1102261@gmail.com",
+    "autotest.ee2026+1102262@gmail.com",
+    "autotest.ee2026+1102263@gmail.com"
+  ],
+  "govGatewayLogin": ["858098260796", "991609337677", "150575801214"],
   "defraIdServiceUrl": "https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/oauth2/authresp",
   "govtGatewayLoginUrl": "https://www.ete.access.service.gov.uk/login/signin/creds",
   "govUKBaseUrl": "https://signin.integration.account.gov.uk",

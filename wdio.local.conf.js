@@ -127,12 +127,12 @@ export const config = {
   baseUrl: `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
   //
   // Default timeout for all waitFor* commands.
-  waitforTimeout: 120000,
+  waitforTimeout: 10000,
   waitforInterval: 200,
   //
   // Default timeout in milliseconds for request
   // if browser driver or grid doesn't send response
-  connectionRetryTimeout: 120000,
+  connectionRetryTimeout: 60000,
   //
   // Default request retries count
   connectionRetryCount: 3,
@@ -151,9 +151,10 @@ export const config = {
   // before running any tests.
   framework: 'cucumber',
   cucumberOpts: {
-    timeout: 120000,
+    timeout: 60000,
     require: ['./test/step-definitions/**/*.js'],
-    tags: `@env_${process.env.ENVIRONMENT}`
+    // tags: `@env_${process.env.ENVIRONMENT}`
+    tags: `@local`
   },
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -232,11 +233,15 @@ export const config = {
 
   afterScenario: async function (world, result, cucumberWorld) {
     await browser.takeScreenshot()
-    await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
-    await addValueToPool(
-      'availableGovGatewayUsers',
-      cucumberWorld.govGatewayUser
-    )
+    if (cucumberWorld.govUKUser !== undefined) {
+      await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+    }
+    if (cucumberWorld.govGatewayUser !== undefined) {
+      await addValueToPool(
+        'availableGovGatewayUsers',
+        cucumberWorld.govGatewayUser
+      )
+    }
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
   // it and to build services around it. You can either apply a single function or an array of

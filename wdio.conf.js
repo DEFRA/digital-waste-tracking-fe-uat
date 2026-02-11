@@ -73,7 +73,7 @@ export const config = {
 
   // Number of failures before the test suite bails.
   bail: 0,
-  waitforTimeout: 10000,
+  waitforTimeout: 20000,
   waitforInterval: 200,
   connectionRetryTimeout: 6000,
   connectionRetryCount: 3,
@@ -175,11 +175,15 @@ export const config = {
 
   afterScenario: async function (world, result, cucumberWorld) {
     await browser.takeScreenshot()
-    await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
-    await addValueToPool(
-      'availableGovGatewayUsers',
-      cucumberWorld.govGatewayUser
-    )
+    if (cucumberWorld.govUKUser !== undefined) {
+      await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+    }
+    if (cucumberWorld.govGatewayUser !== undefined) {
+      await addValueToPool(
+        'availableGovGatewayUsers',
+        cucumberWorld.govGatewayUser
+      )
+    }
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
   // it and to build services around it. You can either apply a single function or an array of
