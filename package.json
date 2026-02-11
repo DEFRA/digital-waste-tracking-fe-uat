@@ -15,8 +15,8 @@
   },
   "scripts": {
     "clean": "rm -rf allure-results && rm -rf allure-report",
-    "test": "npm run clean && wdio run wdio.conf.js",
-    "test:browserstack": "npm run clean && wdio run wdio.browserstack.conf.js",
+    "test": "npm run clean && wdio run wdio.${PROFILE:+$PROFILE.}conf.js",
+    "test:browserstack": ". ./env.sh && npm run clean && wdio run wdio.browserstack.conf.js",
     "test:local": ". ./env.sh && npm run clean && wdio run wdio.local.conf.js",
     "test:local:debug": ". ./env.sh && npm run clean && DEBUG=true wdio run wdio.local.conf.js",
     "test:github": "npm run clean && wdio run wdio.github.conf.js",
