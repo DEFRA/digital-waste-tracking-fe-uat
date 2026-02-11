@@ -78,7 +78,7 @@ export const config = {
         browserVersion: 'latest',
         consoleLogs: 'info'
       }
-    },
+    }
     // {
     //   browserName: 'Edge',
     //   'bstack:options': {
