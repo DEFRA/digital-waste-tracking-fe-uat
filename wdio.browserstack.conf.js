@@ -1,6 +1,17 @@
-import fs from 'node:fs'
 import { ProxyAgent, setGlobalDispatcher } from 'undici'
 import { bootstrap } from 'global-agent'
+import allure from 'allure-commandline'
+import {
+  initialiseAccessibilityChecking,
+  generateAccessibilityReportIndex
+} from './test/utils/accessibility-checking.js'
+import { readFileSync } from 'fs'
+import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
+import { ApiFactory } from './test/utils/apis/api-factory.js'
+
+// const debug = process.env.DEBUG
+const oneMinute = 60 * 1000
+// const oneHour = 60 * 60 * 1000
 
 /**
  * Enable webdriver.io to use the outbound proxy.
@@ -62,6 +73,7 @@ export const config = {
   ],
 
   services: [
+    'shared-store',
     [
       'browserstack',
       {
@@ -69,16 +81,17 @@ export const config = {
         testObservabilityOptions: {
           user: process.env.BROWSERSTACK_USER,
           key: process.env.BROWSERSTACK_KEY,
-          projectName: 'cdp-node-env-test-suite', // should match project in browserstack
+          projectName: 'digital-waste-tracking-fe', // should match project in browserstack
           buildName: `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}`
         },
         acceptInsecureCerts: true,
         forceLocal: false,
-        browserstackLocal: true,
-        opts: {
-          proxyHost: 'localhost',
-          proxyPort: 3128
-        }
+        browserstackLocal: true
+        // **this is only needed for CDP runs and must be disabled for local runs
+        // opts: {
+        //   proxyHost: 'localhost',
+        //   proxyPort: 3128
+        // }
       }
     ]
   ],
@@ -97,7 +110,8 @@ export const config = {
   framework: 'cucumber',
   cucumberOpts: {
     timeout: 120000,
-    require: ['./test/step-definitions/**/*.js']
+    require: ['./test/step-definitions/**/*.js'],
+    tags: `@env_${process.env.ENVIRONMENT}`
   },
 
   reporters: [
@@ -142,7 +156,39 @@ export const config = {
   // =====
   // Cucumber Hooks
   // =====
-  beforeScenario: async function (world, result, context) {},
+  beforeScenario: async function (world, cucumberWorld) {
+    // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
+    // as 'this' in step definitions. We need to ensure properties are set on the world object
+    // that will be accessible in step definitions.
+
+    // Initialize world object properties here
+    // These will be accessible in step definitions via 'this'
+    cucumberWorld.pageName = null // Initialize, will be set in step definitions
+    cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+    cucumberWorld.axeBuilder = null
+    cucumberWorld.env = process.env
+
+    // Load test configuration from <env>.config.json
+    const testConfigData = readFileSync(
+      `./test/support/${process.env.ENVIRONMENT}.config.json`,
+      'utf8'
+    )
+    cucumberWorld.testConfig = JSON.parse(testConfigData)
+    cucumberWorld.apis = ApiFactory.create(
+      cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl,
+      cucumberWorld.env.HTTP_PROXY
+    )
+
+    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
+      cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
+    }
+
+    // Re-open a fresh browser session for each scenario
+    // This ensures test isolation - each scenario starts with a clean browser state
+    if (browser.sessionId) {
+      await browser.reloadSession()
+    }
+  },
 
   afterStep: async function (step, scenario, result) {
     if (result.error) {
@@ -150,23 +196,67 @@ export const config = {
     }
   },
 
-  afterScenario: async function (world, result, context) {
+  afterScenario: async function (world, result, cucumberWorld) {
     await browser.takeScreenshot()
-  },
-  // afterTest: async function (
-  //   test,
-  //   context,
-  //   { error, result, duration, passed, retries }
-  // ) {
-  //   if (error) {
-  //     await browser.takeScreenshot()
-  //   }
-  // },
-
-  onComplete: function (exitCode, config, capabilities, results) {
-    // !Do Not Remove! Required for test status to show correctly in portal.
-    if (results?.failed && results.failed > 0) {
-      fs.writeFileSync('FAILED', JSON.stringify(results))
+    if (cucumberWorld.govUKUser !== undefined) {
+      await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
     }
+    if (cucumberWorld.govGatewayUser !== undefined) {
+      await addValueToPool(
+        'availableGovGatewayUsers',
+        cucumberWorld.govGatewayUser
+      )
+    }
+  },
+  // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
+  // it and to build services around it. You can either apply a single function or an array of
+  // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
+  // resolved to continue.
+  /**
+   * Gets executed once before all workers get launched.
+   * @param {object} config wdio configuration object
+   * @param {Array.<Object>} capabilities list of capabilities details
+   */
+  onPrepare: async function (config, capabilities) {
+    // Load test configuration from <env>.config.json
+    const testConfigData = readFileSync(
+      `./test/support/${process.env.ENVIRONMENT}.config.json`,
+      'utf8'
+    )
+    const testConfig = JSON.parse(testConfigData)
+    await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+    await setResourcePool(
+      'availableGovGatewayUsers',
+      testConfig.govGatewayLogin
+    )
+  },
+  /**
+   * Gets executed after all workers got shut down and the process is about to exit. An error
+   * thrown in the onComplete hook will result in the test run failing.
+   * @param {object} exitCode 0 - success, 1 - fail
+   * @param {object} config wdio configuration object
+   * @param {Array.<Object>} capabilities list of capabilities details
+   * @param {<Object>} results object containing test results
+   */
+  onComplete: function (exitCode, config, capabilities, results) {
+    generateAccessibilityReportIndex()
+
+    const reportError = new Error('Could not generate Allure report')
+    const generation = allure(['generate', 'allure-results', '--clean'])
+
+    return new Promise((resolve, reject) => {
+      const generationTimeout = setTimeout(() => reject(reportError), oneMinute)
+
+      generation.on('exit', function (exitCode) {
+        clearTimeout(generationTimeout)
+
+        if (exitCode !== 0) {
+          return reject(reportError)
+        }
+
+        allure(['open'])
+        resolve()
+      })
+    })
   }
 }
