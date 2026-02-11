@@ -49,7 +49,7 @@ export const config = {
 
   // Tests to run
   // specs: ['./test/specs/**/*.js'],
-  specs: ['./test/features/**/*.feature'],
+  specs: ['./test/features/waste-organisation-frontend/*.feature'],
 
   // Tests to exclude
   exclude: [],
@@ -69,7 +69,24 @@ export const config = {
         os: 'Windows',
         osVersion: '11'
       }
-    }
+    },
+    {
+      browserName: 'Chrome',
+      'bstack:options': {
+        os: 'OS X',
+        osVersion: 'Ventura',
+        browserVersion: 'latest',
+        consoleLogs: 'info'
+      }
+    },
+    // {
+    //   browserName: 'Edge',
+    //   'bstack:options': {
+    //     os: 'Windows',
+    //     osVersion: '11',
+    //     browserVersion: 'latest'
+    //   }
+    // }
   ],
 
   services: [
@@ -86,12 +103,12 @@ export const config = {
         },
         acceptInsecureCerts: true,
         forceLocal: false,
-        browserstackLocal: true
+        browserstackLocal: true,
         // **this is only needed for CDP runs and must be disabled for local runs
-        // opts: {
-        //   proxyHost: 'localhost',
-        //   proxyPort: 3128
-        // }
+        opts: {
+          proxyHost: 'localhost',
+          proxyPort: 3128
+        }
       }
     ]
   ],
