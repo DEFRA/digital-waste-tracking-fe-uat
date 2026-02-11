@@ -52,6 +52,7 @@ class DefraIdGovtGatewayPage extends Page {
       timeout: config.waitforTimeout
     })
 
+    log.info('Attempting to login with Government Gateway user ID: ', userId)
     // Wait for GOV.UK Design System JavaScript to initialize
     // eslint-disable-next-line wdio/no-pause -- Wait for GOV.UK JS initialization
     await browser.pause(1000)

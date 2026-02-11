@@ -8,11 +8,24 @@ class NextActionPage extends Page {
     return $('h1')
   }
 
+  get connectYourSoftwareRadio() {
+    return $('#connectYourSoftware')
+  }
+
+  get continueButton() {
+    return $('button[type="submit"]')
+  }
+
   // assertions
   async verifyUserIsOnChooseNextActionPage() {
     await expect(browser).toHaveUrl(config.baseUrl + '/next-action')
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('What do you want to do?')
+  }
+
+  async selectConnectYourSoftwareRadio() {
+    await this.connectYourSoftwareRadio.click()
+    await this.continueButton.click()
   }
 }
 
