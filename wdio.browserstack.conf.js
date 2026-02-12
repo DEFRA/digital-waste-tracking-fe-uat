@@ -14,14 +14,15 @@ import { ApiFactory } from './test/utils/apis/api-factory.js'
  * Enable webdriver.io to use the outbound proxy.
  * This is required for the test suite to be able to talk to BrowserStack.
  */
-if (process.env.HTTP_PROXY) {
-  const dispatcher = new ProxyAgent({
-    uri: process.env.HTTP_PROXY
-  })
-  setGlobalDispatcher(dispatcher)
-  bootstrap()
-  global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
-}
+// if (process.env.HTTP_PROXY) {
+const dispatcher = new ProxyAgent({
+  // uri: process.env.HTTP_PROXY
+  uri: 'http://localhost:3128'
+})
+setGlobalDispatcher(dispatcher)
+bootstrap()
+global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
+// }
 
 // const oneMinute = 60 * 1000
 
@@ -50,7 +51,7 @@ export const config = {
 
   // Tests to exclude
   exclude: [],
-  maxInstances: 1,
+  // maxInstances: 1,
 
   commonCapabilities: {
     'bstack:options': {
@@ -103,6 +104,8 @@ export const config = {
         browserstackLocal: true,
         // **this is only needed for CDP runs and must be disabled for local runs
         opts: {
+          binarypath: '/root/.browserstack/BrowserStackLocal',
+          verbose: true,
           proxyHost: 'localhost',
           proxyPort: 3128
         }
