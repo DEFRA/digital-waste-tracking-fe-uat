@@ -59,32 +59,40 @@ export const config = {
     }
   },
 
+  // https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices
   capabilities: [
+    // windows
     {
-      browserName: 'Chrome', // Set as required
+      browserName: 'Chrome',
       'bstack:options': {
+        idleTimeout: 300,
+        resolution: '1920x1080',
         browserVersion: 'latest',
         os: 'Windows',
         osVersion: '11'
       }
     },
     {
+      browserName: 'Edge',
+      'bstack:options': {
+        idleTimeout: 300,
+        resolution: '1920x1080',
+        browserVersion: 'latest',
+        os: 'Windows',
+        osVersion: '11'
+      }
+    },
+    // macOS
+    {
       browserName: 'Chrome',
       'bstack:options': {
-        os: 'OS X',
-        osVersion: 'Ventura',
+        idleTimeout: 300,
+        resolution: '1920x1080',
         browserVersion: 'latest',
-        consoleLogs: 'info'
+        os: 'OS X',
+        osVersion: 'Sonoma' // Changed from 'Sequoia'
       }
     }
-    // {
-    //   browserName: 'Edge',
-    //   'bstack:options': {
-    //     os: 'Windows',
-    //     osVersion: '11',
-    //     browserVersion: 'latest'
-    //   }
-    // }
   ],
 
   services: [
