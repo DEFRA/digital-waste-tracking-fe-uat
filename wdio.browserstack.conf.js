@@ -104,7 +104,7 @@ export const config = {
         browserstackLocal: true,
         // **this is only needed for CDP runs and must be disabled for local runs
         opts: {
-          // binarypath: '/root/.browserstack/BrowserStackLocal',
+          binarypath: '/root/.browserstack/BrowserStackLocal',
           verbose: true,
           proxyHost: 'localhost',
           proxyPort: 3128
