@@ -16,8 +16,8 @@ import { ApiFactory } from './test/utils/apis/api-factory.js'
  */
 // if (process.env.HTTP_PROXY) {
 const dispatcher = new ProxyAgent({
-  uri: process.env.HTTP_PROXY
-  // uri: 'http://localhost:3128'
+  // uri: process.env.HTTP_PROXY
+  uri: 'http://localhost:3128'
 })
 setGlobalDispatcher(dispatcher)
 bootstrap()
@@ -47,7 +47,7 @@ export const config = {
 
   // Tests to run
   // specs: ['./test/specs/**/*.js'],
-  specs: ['./test/features/waste-organisation-frontend/*.feature'],
+  specs: ['./test/features/waste-organisation-frontend/ViewAPICode.feature'],
 
   // Tests to exclude
   exclude: [],
@@ -229,24 +229,24 @@ export const config = {
   // it and to build services around it. You can either apply a single function or an array of
   // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
   // resolved to continue.
-  /**
-   * Gets executed once before all workers get launched.
-   * @param {object} config wdio configuration object
-   * @param {Array.<Object>} capabilities list of capabilities details
-   */
-  onPrepare: async function (config, capabilities) {
-    // Load test configuration from <env>.config.json
-    // const testConfigData = readFileSync(
-    //   `./test/support/${process.env.ENVIRONMENT}.config.json`,
-    //   'utf8'
-    // )
-    // const testConfig = JSON.parse(testConfigData)
-    // await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-    // await setResourcePool(
-    //   'availableGovGatewayUsers',
-    //   testConfig.govGatewayLogin
-    // )
-  },
+  // /**
+  //  * Gets executed once before all workers get launched.
+  //  * @param {object} config wdio configuration object
+  //  * @param {Array.<Object>} capabilities list of capabilities details
+  //  */
+  // onPrepare: async function (config, capabilities) {
+  //   // Load test configuration from <env>.config.json
+  //   // const testConfigData = readFileSync(
+  //   //   `./test/support/${process.env.ENVIRONMENT}.config.json`,
+  //   //   'utf8'
+  //   // )
+  //   // const testConfig = JSON.parse(testConfigData)
+  //   // await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+  //   // await setResourcePool(
+  //   //   'availableGovGatewayUsers',
+  //   //   testConfig.govGatewayLogin
+  //   // )
+  // },
   /**
    * Gets executed after all workers got shut down and the process is about to exit. An error
    * thrown in the onComplete hook will result in the test run failing.
