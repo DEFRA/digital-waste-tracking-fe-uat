@@ -47,7 +47,7 @@ export const config = {
 
   // Tests to run
   // specs: ['./test/specs/**/*.js'],
-  specs: ['./test/features/waste-organisation-frontend/ViewAPICode.feature'],
+  specs: ['./test/features/waste-organisation-frontend/*.feature'],
 
   // Tests to exclude
   exclude: [],
