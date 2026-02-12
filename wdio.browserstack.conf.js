@@ -3,7 +3,7 @@ import { bootstrap } from 'global-agent'
 import { initialiseAccessibilityChecking } from './test/utils/accessibility-checking.js'
 import fs from 'node:fs'
 import { readFileSync } from 'fs'
-import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
+// import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
 
 // const debug = process.env.DEBUG
@@ -215,15 +215,15 @@ export const config = {
 
   afterScenario: async function (world, result, cucumberWorld) {
     await browser.takeScreenshot()
-    if (cucumberWorld.govUKUser !== undefined) {
-      await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
-    }
-    if (cucumberWorld.govGatewayUser !== undefined) {
-      await addValueToPool(
-        'availableGovGatewayUsers',
-        cucumberWorld.govGatewayUser
-      )
-    }
+    // if (cucumberWorld.govUKUser !== undefined) {
+    //   await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+    // }
+    // if (cucumberWorld.govGatewayUser !== undefined) {
+    //   await addValueToPool(
+    //     'availableGovGatewayUsers',
+    //     cucumberWorld.govGatewayUser
+    //   )
+    // }
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
   // it and to build services around it. You can either apply a single function or an array of
@@ -236,16 +236,16 @@ export const config = {
    */
   onPrepare: async function (config, capabilities) {
     // Load test configuration from <env>.config.json
-    const testConfigData = readFileSync(
-      `./test/support/${process.env.ENVIRONMENT}.config.json`,
-      'utf8'
-    )
-    const testConfig = JSON.parse(testConfigData)
-    await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-    await setResourcePool(
-      'availableGovGatewayUsers',
-      testConfig.govGatewayLogin
-    )
+    // const testConfigData = readFileSync(
+    //   `./test/support/${process.env.ENVIRONMENT}.config.json`,
+    //   'utf8'
+    // )
+    // const testConfig = JSON.parse(testConfigData)
+    // await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+    // await setResourcePool(
+    //   'availableGovGatewayUsers',
+    //   testConfig.govGatewayLogin
+    // )
   },
   /**
    * Gets executed after all workers got shut down and the process is about to exit. An error

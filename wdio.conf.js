@@ -195,17 +195,19 @@ export const config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    */
   onPrepare: async function (config, capabilities) {
-    // Load test configuration from <env>.config.json
-    const testConfigData = readFileSync(
-      `./test/support/${process.env.ENVIRONMENT}.config.json`,
-      'utf8'
-    )
-    const testConfig = JSON.parse(testConfigData)
-    await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-    await setResourcePool(
-      'availableGovGatewayUsers',
-      testConfig.govGatewayLogin
-    )
+    if (process.env.ENVIRONMENT === 'test') {
+      // Load test configuration from <env>.config.json
+      const testConfigData = readFileSync(
+        `./test/support/${process.env.ENVIRONMENT}.config.json`,
+        'utf8'
+      )
+      const testConfig = JSON.parse(testConfigData)
+      await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+      await setResourcePool(
+        'availableGovGatewayUsers',
+        testConfig.govGatewayLogin
+      )
+    }
   },
   /**
    * Gets executed before a worker process is spawned and can be used to initialise specific service
