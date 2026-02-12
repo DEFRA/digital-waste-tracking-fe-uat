@@ -14,15 +14,15 @@ import { ApiFactory } from './test/utils/apis/api-factory.js'
  * Enable webdriver.io to use the outbound proxy.
  * This is required for the test suite to be able to talk to BrowserStack.
  */
-// if (process.env.HTTP_PROXY) {
-const dispatcher = new ProxyAgent({
-  // uri: process.env.HTTP_PROXY
-  uri: 'http://localhost:3128'
-})
-setGlobalDispatcher(dispatcher)
-bootstrap()
-global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
-// }
+// Only use proxy if HTTP_PROXY is set (for CDP environments)
+if (process.env.HTTP_PROXY) {
+  const dispatcher = new ProxyAgent({
+    uri: process.env.HTTP_PROXY || 'http://localhost:3128'
+  })
+  setGlobalDispatcher(dispatcher)
+  bootstrap()
+  global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
+}
 
 // const oneMinute = 60 * 1000
 
@@ -102,7 +102,7 @@ export const config = {
       {
         testObservability: true, // Disable if you do not want to use the browserstack test observer functionality
         testObservabilityOptions: {
-          user: process.env.BROWSERSTACK_USER,
+          user: process.env.BROWSERSTACK_USERNAME,
           key: process.env.BROWSERSTACK_KEY,
           projectName: 'digital-waste-tracking-fe', // should match project in browserstack
           buildName: `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}`
@@ -110,20 +110,22 @@ export const config = {
         acceptInsecureCerts: true,
         forceLocal: false,
         browserstackLocal: true,
-        // **this is only needed for CDP runs and must be disabled for local runs
-        opts: {
-          binarypath: '/root/.browserstack/BrowserStackLocal',
-          verbose: true,
-          proxyHost: 'localhost',
-          proxyPort: 3128
-        }
+        // **this is only needed for CDP runs with proxy
+        ...(process.env.HTTP_PROXY && {
+          opts: {
+            binarypath: '/root/.browserstack/BrowserStackLocal',
+            verbose: true,
+            proxyHost: 'localhost',
+            proxyPort: 3128
+          }
+        })
       }
     ]
   ],
 
   execArgv: ['--loader', 'esm-module-alias/loader'],
 
-  logLevel: 'info',
+  logLevel: 'debug', // Changed from 'info' for better debugging
 
   // Number of failures before the test suite bails.
   bail: 0,
@@ -181,6 +183,39 @@ export const config = {
   // =====
   // Cucumber Hooks
   // =====
+  onPrepare: function (config, capabilities) {
+    // eslint-disable-next-line no-console
+    console.log('========================================')
+    // eslint-disable-next-line no-console
+    console.log('🔧 BrowserStack Configuration Debug Info')
+    // eslint-disable-next-line no-console
+    console.log('========================================')
+    // eslint-disable-next-line no-console
+    console.log('ENVIRONMENT:', process.env.ENVIRONMENT)
+    // eslint-disable-next-line no-console
+    console.log('Cucumber tag filter:', config.cucumberOpts.tags)
+    // eslint-disable-next-line no-console
+    console.log('Base URL:', config.baseUrl)
+    // eslint-disable-next-line no-console
+    console.log('HTTP_PROXY:', process.env.HTTP_PROXY ? 'SET' : 'NOT SET')
+    // eslint-disable-next-line no-console
+    console.log(
+      'BROWSERSTACK_USERNAME:',
+      process.env.BROWSERSTACK_USERNAME ? 'SET' : '❌ NOT SET'
+    )
+    // eslint-disable-next-line no-console
+    console.log(
+      'BROWSERSTACK_KEY:',
+      process.env.BROWSERSTACK_KEY ? 'SET' : '❌ NOT SET'
+    )
+    // eslint-disable-next-line no-console
+    console.log('Specs:', config.specs)
+    // eslint-disable-next-line no-console
+    console.log('Capabilities count:', capabilities.length)
+    // eslint-disable-next-line no-console
+    console.log('========================================\n')
+  },
+
   beforeScenario: async function (world, cucumberWorld) {
     // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
     // as 'this' in step definitions. We need to ensure properties are set on the world object
