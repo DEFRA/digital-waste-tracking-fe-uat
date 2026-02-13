@@ -46,7 +46,6 @@ export const config = {
   key: process.env.BROWSERSTACK_KEY,
 
   // Tests to run
-  // specs: ['./test/specs/**/*.js'],
   specs: ['./test/features/waste-organisation-frontend/*.feature'],
 
   // Tests to exclude
@@ -70,6 +69,11 @@ export const config = {
         browserVersion: 'latest',
         os: 'Windows',
         osVersion: '11'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
       }
     },
     {
@@ -80,6 +84,11 @@ export const config = {
         browserVersion: 'latest',
         os: 'Windows',
         osVersion: '11'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
       }
     },
     // macOS
@@ -91,6 +100,11 @@ export const config = {
         browserVersion: 'latest',
         os: 'OS X',
         osVersion: 'Sonoma' // Changed from 'Sequoia'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
       }
     }
   ],
@@ -129,14 +143,13 @@ export const config = {
 
   // Number of failures before the test suite bails.
   bail: 0,
-  waitforTimeout: 120000,
+  waitforTimeout: 120000, // 120 seconds for element waits
   waitforInterval: 200,
-  connectionRetryTimeout: 6000,
+  connectionRetryTimeout: 120000, // Increased from 6000 (6s) to 120000 (120s) for BrowserStack
   connectionRetryCount: 3,
-
   framework: 'cucumber',
   cucumberOpts: {
-    timeout: 120000,
+    timeout: 180000, // Increased from 120000 (120s) to 180000 (180s) for BrowserStack network latency
     require: ['./test/step-definitions/**/*.js'],
     tags: `@env_${process.env.ENVIRONMENT}`
   },
@@ -153,68 +166,13 @@ export const config = {
       }
     ]
   ],
-  //   [
-  //     // Spec reporter provides rolling output to the logger so you can see it in-progress
-  //     'spec',
-  //     {
-  //       addConsoleLogs: true,
-  //       realtimeReporting: true,
-  //       color: false
-  //     }
-  //   ],
-  //   [
-  //     // Allure is used to generate the final HTML report
-  //     'allure',
-  //     {
-  //       outputDir: 'allure-results'
-  //     }
-  //   ]
-  // ],
-
-  // Options to be passed to Mocha.
-  // See the full list at http://mochajs.org/
-  // mochaOpts: {
-  //   ui: 'bdd',
-  //   timeout: oneMinute
-  // },
 
   // Hooks
   //
   // =====
   // Cucumber Hooks
   // =====
-  onPrepare: function (config, capabilities) {
-    // eslint-disable-next-line no-console
-    console.log('========================================')
-    // eslint-disable-next-line no-console
-    console.log('🔧 BrowserStack Configuration Debug Info')
-    // eslint-disable-next-line no-console
-    console.log('========================================')
-    // eslint-disable-next-line no-console
-    console.log('ENVIRONMENT:', process.env.ENVIRONMENT)
-    // eslint-disable-next-line no-console
-    console.log('Cucumber tag filter:', config.cucumberOpts.tags)
-    // eslint-disable-next-line no-console
-    console.log('Base URL:', config.baseUrl)
-    // eslint-disable-next-line no-console
-    console.log('HTTP_PROXY:', process.env.HTTP_PROXY ? 'SET' : 'NOT SET')
-    // eslint-disable-next-line no-console
-    console.log(
-      'BROWSERSTACK_USERNAME:',
-      process.env.BROWSERSTACK_USERNAME ? 'SET' : '❌ NOT SET'
-    )
-    // eslint-disable-next-line no-console
-    console.log(
-      'BROWSERSTACK_KEY:',
-      process.env.BROWSERSTACK_KEY ? 'SET' : '❌ NOT SET'
-    )
-    // eslint-disable-next-line no-console
-    console.log('Specs:', config.specs)
-    // eslint-disable-next-line no-console
-    console.log('Capabilities count:', capabilities.length)
-    // eslint-disable-next-line no-console
-    console.log('========================================\n')
-  },
+  onPrepare: function (config, capabilities) {},
 
   beforeScenario: async function (world, cucumberWorld) {
     // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
@@ -252,12 +210,25 @@ export const config = {
 
   afterStep: async function (step, scenario, result) {
     if (result.error) {
-      await browser.takeScreenshot()
+      try {
+        await browser.takeScreenshot()
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(
+          'Failed to take screenshot after step error:',
+          error.message
+        )
+      }
     }
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
-    await browser.takeScreenshot()
+    try {
+      await browser.takeScreenshot()
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to take screenshot after scenario:', error.message)
+    }
     // if (cucumberWorld.govUKUser !== undefined) {
     //   await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
     // }
