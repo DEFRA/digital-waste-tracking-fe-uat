@@ -3,7 +3,7 @@ import { bootstrap } from 'global-agent'
 import { initialiseAccessibilityChecking } from './test/utils/accessibility-checking.js'
 import fs from 'node:fs'
 import { readFileSync } from 'fs'
-// import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
+import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
 
 // const debug = process.env.DEBUG
@@ -172,7 +172,21 @@ export const config = {
   // =====
   // Cucumber Hooks
   // =====
-  onPrepare: function (config, capabilities) {},
+  onPrepare: async function (config, capabilities) {
+    if (process.env.ENVIRONMENT === 'test') {
+      // Load test configuration from <env>.config.json
+      const testConfigData = readFileSync(
+        `./test/support/${process.env.ENVIRONMENT}.config.json`,
+        'utf8'
+      )
+      const testConfig = JSON.parse(testConfigData)
+      await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+      await setResourcePool(
+        'availableGovGatewayUsers',
+        testConfig.govGatewayLogin
+      )
+    }
+  },
 
   beforeScenario: async function (world, cucumberWorld) {
     // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
@@ -229,38 +243,16 @@ export const config = {
       // eslint-disable-next-line no-console
       console.error('Failed to take screenshot after scenario:', error.message)
     }
-    // if (cucumberWorld.govUKUser !== undefined) {
-    //   await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
-    // }
-    // if (cucumberWorld.govGatewayUser !== undefined) {
-    //   await addValueToPool(
-    //     'availableGovGatewayUsers',
-    //     cucumberWorld.govGatewayUser
-    //   )
-    // }
+    if (cucumberWorld.govUKUser !== undefined) {
+      await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+    }
+    if (cucumberWorld.govGatewayUser !== undefined) {
+      await addValueToPool(
+        'availableGovGatewayUsers',
+        cucumberWorld.govGatewayUser
+      )
+    }
   },
-  // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
-  // it and to build services around it. You can either apply a single function or an array of
-  // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
-  // resolved to continue.
-  // /**
-  //  * Gets executed once before all workers get launched.
-  //  * @param {object} config wdio configuration object
-  //  * @param {Array.<Object>} capabilities list of capabilities details
-  //  */
-  // onPrepare: async function (config, capabilities) {
-  //   // Load test configuration from <env>.config.json
-  //   // const testConfigData = readFileSync(
-  //   //   `./test/support/${process.env.ENVIRONMENT}.config.json`,
-  //   //   'utf8'
-  //   // )
-  //   // const testConfig = JSON.parse(testConfigData)
-  //   // await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-  //   // await setResourcePool(
-  //   //   'availableGovGatewayUsers',
-  //   //   testConfig.govGatewayLogin
-  //   // )
-  // },
   /**
    * Gets executed after all workers got shut down and the process is about to exit. An error
    * thrown in the onComplete hook will result in the test run failing.

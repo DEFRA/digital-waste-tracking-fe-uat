@@ -153,8 +153,8 @@ export const config = {
   cucumberOpts: {
     timeout: 60000,
     require: ['./test/step-definitions/**/*.js'],
-    // tags: `@env_${process.env.ENVIRONMENT}`
-    tags: `@local`
+    tags: `@env_${process.env.ENVIRONMENT}`
+    // tags: `@local`
   },
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -242,6 +242,12 @@ export const config = {
         cucumberWorld.govGatewayUser
       )
     }
+    if (cucumberWorld.defraIdMockUser !== undefined) {
+      await addValueToPool(
+        'availableDefraIdMockUsers',
+        cucumberWorld.defraIdMockUser
+      )
+    }
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
   // it and to build services around it. You can either apply a single function or an array of
@@ -253,17 +259,21 @@ export const config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    */
   onPrepare: async function (config, capabilities) {
-    // Load test configuration from <env>.config.json
-    const testConfigData = readFileSync(
-      `./test/support/${process.env.ENVIRONMENT}.config.json`,
-      'utf8'
-    )
-    const testConfig = JSON.parse(testConfigData)
-    await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-    await setResourcePool(
-      'availableGovGatewayUsers',
-      testConfig.govGatewayLogin
-    )
+    if (process.env.ENVIRONMENT === 'test') {
+      // Load test configuration from <env>.config.json
+      const testConfigData = readFileSync(
+        `./test/support/${process.env.ENVIRONMENT}.config.json`,
+        'utf8'
+      )
+      const testConfig = JSON.parse(testConfigData)
+      await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+      await setResourcePool(
+        'availableGovGatewayUsers',
+        testConfig.govGatewayLogin
+      )
+    } else {
+      await setResourcePool('availableDefraIdMockUsers', [''])
+    }
   },
   /**
    * Gets executed before a worker process is spawned and can be used to initialise specific service
