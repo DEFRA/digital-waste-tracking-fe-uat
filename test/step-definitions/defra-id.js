@@ -57,11 +57,19 @@ When('user enters their Gov.uk email address and password', async function () {
 })
 
 Given('a user is registered in Defra Id mock service', async function () {
-  this.userEmail = `test${Date.now()}@test.com`
-  await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-  await DefraIdStubPage.registerNewUser(this.userEmail)
-  // await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl+"/login")
-  // await DefraIdStubPage.registerNewUser(`test1768840546651@test.com`)
+  // to handle gracefully when pool is empty
+  try {
+    this.defraIdMockUser = await getValueFromPool('availableDefraIdMockUsers')
+  } catch (error) {}
+
+  if (this.defraIdMockUser === undefined || this.defraIdMockUser === '') {
+    this.userEmail = `test${Date.now()}@test.com`
+    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
+    await DefraIdStubPage.registerNewUser(this.userEmail)
+    this.defraIdMockUser = this.userEmail
+  } else {
+    this.userEmail = this.defraIdMockUser
+  }
 })
 
 When(
@@ -78,10 +86,22 @@ When('user has selected a business', async function () {
 Given(
   'a user is logged in to the waste receiver registration portal',
   async function () {
-    // this.userEmail = `test1770725948706@test.com`
-    this.userEmail = `test${Date.now()}@test.com`
-    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-    await DefraIdStubPage.registerNewUser(this.userEmail)
+    // to handle gracefully when pool is empty
+    try {
+      this.defraIdMockUser = await getValueFromPool('availableDefraIdMockUsers')
+    } catch (error) {}
+
+    if (this.defraIdMockUser === undefined || this.defraIdMockUser === '') {
+      // this.userEmail = `test1770725948706@test.com`
+      this.userEmail = `test${Date.now()}@test.com`
+      await DefraIdStubPage.open(
+        this.testConfig.defraIdServiceUrl + '/register'
+      )
+      await DefraIdStubPage.registerNewUser(this.userEmail)
+      this.defraIdMockUser = this.userEmail
+    } else {
+      this.userEmail = this.defraIdMockUser
+    }
 
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
