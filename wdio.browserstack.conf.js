@@ -46,7 +46,9 @@ export const config = {
   key: process.env.BROWSERSTACK_KEY,
 
   // Tests to run
-  specs: ['./test/features/waste-organisation-frontend/*.feature'],
+  specs: [
+    './test/features/waste-organisation-frontend/User_Journeys_BrowserStack.feature'
+  ],
 
   // Tests to exclude
   exclude: [],
@@ -54,7 +56,9 @@ export const config = {
 
   commonCapabilities: {
     'bstack:options': {
-      buildName: `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}` // configure as required
+      // its preferable to run tests always on "test" or "ext-test" environment as they have real defraId integrations
+      // rather than mock defraId integrations
+      buildName: `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}`
     }
   },
 
@@ -100,6 +104,21 @@ export const config = {
         browserVersion: 'latest',
         os: 'OS X',
         osVersion: 'Sonoma' // Changed from 'Sequoia'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
+      }
+    },
+    // Android
+    {
+      browserName: 'chrome',
+      'bstack:options': {
+        osVersion: '13.0',
+        deviceName: 'Samsung Galaxy S23 Ultra',
+        consoleLogs: 'info',
+        idleTimeout: 300
       },
       timeouts: {
         script: 120000, // 120 seconds for async script execution
