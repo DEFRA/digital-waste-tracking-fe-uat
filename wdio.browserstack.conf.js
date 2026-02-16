@@ -215,18 +215,24 @@ export const config = {
     // Log BrowserStack session information
     const sessionId = browser.sessionId
     const capabilities = await browser.capabilities
-    const deviceInfo = capabilities.deviceName ? `Device: ${capabilities.deviceName}` : `OS: ${capabilities.os} ${capabilities.osVersion}`
-    
+    const deviceInfo = capabilities.deviceName
+      ? `Device: ${capabilities.deviceName}`
+      : `OS: ${capabilities.os} ${capabilities.osVersion}`
+
     // eslint-disable-next-line no-console
     console.log('\n🔧 BrowserStack Session Info:')
     // eslint-disable-next-line no-console
     console.log(`  Session ID: ${sessionId}`)
     // eslint-disable-next-line no-console
-    console.log(`  Browser: ${capabilities.browserName} ${capabilities.browserVersion || ''}`)
+    console.log(
+      `  Browser: ${capabilities.browserName} ${capabilities.browserVersion || ''}`
+    )
     // eslint-disable-next-line no-console
     console.log(`  ${deviceInfo}`)
     // eslint-disable-next-line no-console
-    console.log(`  View in Dashboard: https://automate.browserstack.com/dashboard/v2/search?query=${sessionId}`)
+    console.log(
+      `  View in Dashboard: https://automate.browserstack.com/dashboard/v2/search?query=${sessionId}`
+    )
 
     // Initialize world object properties here
     // These will be accessible in step definitions via 'this'
@@ -234,7 +240,7 @@ export const config = {
     cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
     cucumberWorld.axeBuilder = null
     cucumberWorld.env = process.env
-    cucumberWorld.browserstackSessionId = sessionId  // Make session ID accessible in steps
+    cucumberWorld.browserstackSessionId = sessionId // Make session ID accessible in steps
 
     // Load test configuration from <env>.config.json
     const testConfigData = readFileSync(
