@@ -47,7 +47,7 @@ export const config = {
 
   // Tests to run
   specs: [
-    './test/features/waste-organisation-frontend/User_Journeys_BrowserStack.feature'
+    './test/features/waste-organisation-frontend/compatability/*.feature'
   ],
 
   // Tests to exclude
