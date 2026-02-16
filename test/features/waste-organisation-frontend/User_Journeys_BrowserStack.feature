@@ -1,4 +1,4 @@
-@issue=DWT-1027
+@issue=DWT-1027 @env_test
 Feature: User Journeys - BrowserStack
 As a waste receiver using the DWT service
 I need to be able to log in to the DWT service and view my API code
