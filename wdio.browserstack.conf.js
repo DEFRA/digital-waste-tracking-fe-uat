@@ -111,14 +111,15 @@ export const config = {
         implicit: 0 // Don't use implicit waits (use explicit waits instead)
       }
     },
-    // Android
+    // macOS Safari
     {
-      browserName: 'chrome',
+      browserName: 'Safari',
       'bstack:options': {
-        osVersion: '13.0',
-        deviceName: 'Samsung Galaxy S23 Ultra',
-        consoleLogs: 'info',
-        idleTimeout: 300
+        idleTimeout: 300,
+        resolution: '1920x1080',
+        os: 'OS X',
+        osVersion: 'Sonoma',
+        browserVersion: '17.3'
       },
       timeouts: {
         script: 120000, // 120 seconds for async script execution
@@ -126,6 +127,21 @@ export const config = {
         implicit: 0 // Don't use implicit waits (use explicit waits instead)
       }
     }
+    // // Android
+    // {
+    //   browserName: 'chrome',
+    //   'bstack:options': {
+    //     osVersion: '13.0',
+    //     deviceName: 'Samsung Galaxy S23 Ultra',
+    //     consoleLogs: 'info',
+    //     idleTimeout: 300
+    //   },
+    //   timeouts: {
+    //     script: 120000, // 120 seconds for async script execution
+    //     pageLoad: 120000, // 120 seconds for page load
+    //     implicit: 0 // Don't use implicit waits (use explicit waits instead)
+    //   }
+    // }
   ],
 
   services: [
