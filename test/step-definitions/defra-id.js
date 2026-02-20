@@ -92,7 +92,6 @@ Given(
     } catch (error) {}
 
     if (this.defraIdMockUser === undefined || this.defraIdMockUser === '') {
-      // this.userEmail = `test1770725948706@test.com`
       this.userEmail = `test${Date.now()}@test.com`
       await DefraIdStubPage.open(
         this.testConfig.defraIdServiceUrl + '/register'
@@ -102,6 +101,8 @@ Given(
     } else {
       this.userEmail = this.defraIdMockUser
     }
+
+    // this.userEmail = `test1771414854367@test.com`
 
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()

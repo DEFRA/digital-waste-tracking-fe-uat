@@ -12,6 +12,10 @@ class NextActionPage extends Page {
     return $('#connectYourSoftware')
   }
 
+  get uploadSpreadsheetRadio() {
+    return $('#uploadSpreadsheet')
+  }
+
   get continueButton() {
     return $('button[type="submit"]')
   }
@@ -25,6 +29,11 @@ class NextActionPage extends Page {
 
   async selectConnectYourSoftwareRadio() {
     await this.connectYourSoftwareRadio.click()
+    await this.continueButton.click()
+  }
+
+  async selectUploadSpreadsheetRadio() {
+    await this.uploadSpreadsheetRadio.click()
     await this.continueButton.click()
   }
 }
