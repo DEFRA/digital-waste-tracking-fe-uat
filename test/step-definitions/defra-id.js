@@ -86,23 +86,23 @@ When('user has selected a business', async function () {
 Given(
   'a user is logged in to the waste receiver registration portal',
   async function () {
-    // // to handle gracefully when pool is empty
-    // try {
-    //   this.defraIdMockUser = await getValueFromPool('availableDefraIdMockUsers')
-    // } catch (error) {}
+    // to handle gracefully when pool is empty
+    try {
+      this.defraIdMockUser = await getValueFromPool('availableDefraIdMockUsers')
+    } catch (error) {}
 
-    // if (this.defraIdMockUser === undefined || this.defraIdMockUser === '') {
-    //   this.userEmail = `test${Date.now()}@test.com`
-    //   await DefraIdStubPage.open(
-    //     this.testConfig.defraIdServiceUrl + '/register'
-    //   )
-    //   await DefraIdStubPage.registerNewUser(this.userEmail)
-    //   this.defraIdMockUser = this.userEmail
-    // } else {
-    //   this.userEmail = this.defraIdMockUser
-    // }
+    if (this.defraIdMockUser === undefined || this.defraIdMockUser === '') {
+      this.userEmail = `test${Date.now()}@test.com`
+      await DefraIdStubPage.open(
+        this.testConfig.defraIdServiceUrl + '/register'
+      )
+      await DefraIdStubPage.registerNewUser(this.userEmail)
+      this.defraIdMockUser = this.userEmail
+    } else {
+      this.userEmail = this.defraIdMockUser
+    }
 
-    this.userEmail = `test1771414854367@test.com`
+    // this.userEmail = `test1771414854367@test.com`
 
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
