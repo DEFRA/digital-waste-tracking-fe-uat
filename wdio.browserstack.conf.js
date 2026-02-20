@@ -52,7 +52,7 @@ export const config = {
 
   // Tests to exclude
   exclude: [],
-  // maxInstances: 1,
+  maxInstances: 1,
 
   commonCapabilities: {
     'bstack:options': {
