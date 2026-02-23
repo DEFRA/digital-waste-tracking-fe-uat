@@ -18,7 +18,7 @@ When(
         this.apiCode
       )
     expect(response.statusCode).toBe(200)
-    this.defraOrganisationId = response.json.defraOrganisationId
+    this.defraOrganisationId = response.json.defraCustomerOrganisationId
   }
 )
 
