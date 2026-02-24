@@ -12,7 +12,7 @@ So that I can populate it with waste movement data before uploading.
     Then the template must get downloaded to the user's local machine
 
   @env_test @accessibility
-  Scenario Outline: Waste receiver should be able to login via "<account_type>" and upload waste movements using a spreadsheet
+  Scenario Outline: Waste receiver should be able to login via "<account_type>" and download the official spreadsheet template
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
     And user selects option to download spreadsheet template
     When user clicks on the Download spreadsheet button
