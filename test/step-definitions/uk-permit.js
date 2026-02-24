@@ -34,8 +34,8 @@ Then(
   'user should be redirected to "Sorry, you cannot use the service" page',
   async function () {
     this.pageName = 'cannot-use-service-page'
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
     await CannotUseServicePage.verifyUserIsOnCannotUseServicePage()
+    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }
 )
 
