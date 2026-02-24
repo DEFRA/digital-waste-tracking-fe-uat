@@ -15,7 +15,9 @@
   },
   "scripts": {
     "clean": "rm -rf allure-results && rm -rf allure-report",
-    "test": "npm run clean && wdio run wdio.${PROFILE:+$PROFILE.}conf.js",
+    "test": "npm run clean && npm run test:${PROFILE:-integration}",
+    "test:debug": "npm run clean && DEBUG=true wdio run wdio.conf.js --cucumberOpts.tags='@debug'",
+    "test:integration": "npm run clean && wdio run wdio.conf.js",
     "test:browserstack": ". ./env.sh && npm run clean && wdio run wdio.browserstack.conf.js",
     "test:local": ". ./env.sh && npm run clean && wdio run wdio.local.conf.js",
     "test:local:debug": ". ./env.sh && npm run clean && DEBUG=true wdio run wdio.local.conf.js",
@@ -34,7 +36,8 @@
     "report:clean": "rm -rf allure-results && rm -rf allure-report && rm -rf reports",
     "report:open": "open ./allure-report/index.html",
     "report:publish": "npm run report:generate; ./bin/publish-tests.sh",
-    "source:clean:test:report": ". ./env.sh && npm run report:clean && npm run test ; npm run report:generate && npm run report:open"
+    "source:clean:test:report": ". ./env.sh && npm run report:clean && npm run test ; npm run report:generate && npm run report:open",
+    "mongodb:run": "node test/utils/mongodb-client.js"
   },
   "dependencies": {
     "@axe-core/webdriverio": "4.11.1",
@@ -52,7 +55,8 @@
     "esm-module-alias": "2.2.1",
     "global-agent": "4.1.2",
     "mongodb": "^6.12.0",
-    "undici": "7.22.0"
+    "undici": "7.22.0",
+    "socks": "^2.8.3"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
