@@ -12,12 +12,19 @@ Then(
 )
 
 Given('user selects option to view his api code', async function () {
-  await NextActionPage.selectConnectYourSoftwareRadio()
+  await NextActionPage.selectNextAction('connectYourSoftware')
 })
 
 Given(
   'user selects option to upload waste movements using a spreadsheet',
   async function () {
-    await NextActionPage.selectUploadSpreadsheetRadio()
+    await NextActionPage.selectNextAction('uploadSpreadsheet')
+  }
+)
+
+Given(
+  'user selects option to download spreadsheet template',
+  async function () {
+    await NextActionPage.selectNextAction('downloadSpreadsheet')
   }
 )
