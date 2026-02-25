@@ -26,12 +26,16 @@ class DefraIdGovtGatewayPage extends Page {
     return $('#loginForm #continue')
   }
 
-  async verifyUserIsOnGovernmentGatewayLoginPage(govtGatewayLoginUrl) {
+  async setBaseUrl(url) {
+    this.baseUrl = url
+  }
+
+  async verifyUserIsOnGovernmentGatewayLoginPage() {
+    await expect(browser).toHaveUrl(this.baseUrl)
     await this.govGatewayLoginPageheading.waitForDisplayed({
       timeout: config.waitforTimeout
     })
 
-    await expect(await this.getUrl()).toBe(govtGatewayLoginUrl)
     // Wait for heading to be displayed
     await expect(this.govGatewayLoginPageheading).toBeDisplayed()
 
@@ -47,15 +51,14 @@ class DefraIdGovtGatewayPage extends Page {
    * @param {string} password - Government Gateway password
    */
   async loginWithGovernmentGateway(userId, password) {
+    log.info('Attempting to login with Government Gateway user ID: ', userId)
+
+    await this.waitForPageToLoad()
+
     // Wait for form to be displayed
     await this.form.waitForDisplayed({
       timeout: config.waitforTimeout
     })
-
-    log.info('Attempting to login with Government Gateway user ID: ', userId)
-    // Wait for GOV.UK Design System JavaScript to initialize
-    // eslint-disable-next-line wdio/no-pause -- Wait for GOV.UK JS initialization
-    await browser.pause(1000)
 
     // Verify fields exist and are ready
     await this.govGatewayUserIdInput.waitForExist({
@@ -69,17 +72,7 @@ class DefraIdGovtGatewayPage extends Page {
     await this.enterText(this.govGatewayPasswordInput, password)
 
     // Wait for continue button to be clickable
-    await this.govGatewayContinueButton.waitForClickable({
-      timeout: config.waitforTimeout
-    })
-    log.info('✓ Continue button is clickable')
-
-    await this.click(this.govGatewayContinueButton)
-
-    // Wait for navigation to start
-    // eslint-disable-next-line wdio/no-pause -- Wait for form submission
-    await browser.pause(1000)
-    log.info('✓ Login form submitted\n')
+    await this.clickJavascriptByPass(this.govGatewayContinueButton)
   }
 }
 

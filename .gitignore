@@ -13,3 +13,5 @@ allure-results/
 FAILED
 reports/
 env.sh
+*.log
+*.err

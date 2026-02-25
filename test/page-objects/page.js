@@ -15,6 +15,18 @@ class Page {
     return await element.click()
   }
 
+  async clickJavascriptByPass(elementMatcher) {
+    const element = await elementMatcher
+    await element.waitForExist({
+      timeout: config.waitforTimeout
+    })
+    await element.scrollIntoView()
+    await element.waitForClickable({
+      timeout: config.waitforTimeout
+    })
+    await browser.execute('arguments[0].click();', element)
+  }
+
   /**
    * Click an element using JavaScript execution (bypasses visibility/interactability checks)
    * @param {string} elementId - The ID of the element to click
@@ -100,6 +112,19 @@ class Page {
 
   async verifyUserNavigatedCorrectlyToTargetPage(targetUrl) {
     await expect(await this.getUrl()).toBe(config.baseUrl + targetUrl)
+  }
+
+  async waitForPageToLoad() {
+    await browser.waitUntil(
+      async () => {
+        const readyState = await browser.execute(() => document.readyState)
+        return readyState === 'complete'
+      },
+      {
+        timeout: config.waitforTimeout,
+        timeoutMsg: 'Page did not load within the expected time'
+      }
+    )
   }
 }
 
