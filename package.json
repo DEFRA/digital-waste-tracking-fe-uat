@@ -97,11 +97,9 @@
       "minimatch": "10.2.2"
     },
     "eslint-plugin-import": {
-      "eslint": "^8.57.0",
       "minimatch": "10.2.2"
     },
     "eslint-config-standard": {
-      "eslint": "^8.57.0",
       "minimatch": "10.2.2"
     },
     "@humanwhocodes/config-array": {
