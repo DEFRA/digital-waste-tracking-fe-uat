@@ -16,7 +16,19 @@ function getDefaultDownloadsDir() {
   }
 }
 
+async function waitForFileExists(filePath, currentTime = 0, timeout = 5000) {
+  if (fs.existsSync(filePath)) return true
+  if (currentTime === timeout) return false
+  // wait for 1 second
+  await new Promise((resolve, reject) => setTimeout(() => resolve(true), 1000))
+  // waited for 1 second
+  return waitForFileExists(filePath, currentTime + 1000, timeout)
+}
+
 class DownloadSpreadsheetPage extends Page {
+  downloadsDir = getDefaultDownloadsDir()
+  filePath = join(this.downloadsDir, 'receipt-of-waste-template.xlsx')
+
   // locators
   get heading() {
     return $('h1')
@@ -35,16 +47,17 @@ class DownloadSpreadsheetPage extends Page {
   }
 
   async downloadSpreadsheet() {
+    // delete the file if it exists
+    if (fs.existsSync(this.filePath)) {
+      fs.unlinkSync(this.filePath)
+    }
     this.click(this.downloadButton)
-    // giving time for the file to be downloaded
-    // eslint-disable-next-line wdio/no-pause
-    await browser.pause(1000)
   }
 
   async verifySpreadsheetIsDownloaded() {
-    const downloadsDir = getDefaultDownloadsDir()
-    const filePath = join(downloadsDir, 'receipt-of-waste-template.xlsx')
-    await expect(fs.existsSync(filePath)).toBe(true)
+    // giving time for the file to be downloaded
+    await waitForFileExists(this.filePath)
+    await expect(fs.existsSync(this.filePath)).toBe(true)
   }
 }
 
