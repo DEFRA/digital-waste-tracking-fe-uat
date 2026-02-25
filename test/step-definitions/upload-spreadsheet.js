@@ -13,8 +13,11 @@ When(
   }
 )
 
-Then('user should be redirected to {string} page', async function (s) {
-  this.pageName = 'upload-successful-page'
-  await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-  await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
-})
+Then(
+  'user should be redirected to "Upload successful" page',
+  async function () {
+    this.pageName = 'upload-successful-page'
+    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+    await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
+  }
+)
