@@ -28,7 +28,7 @@ class NextActionPage extends Page {
   async verifyUserIsOnChooseNextActionPage() {
     await expect(browser).toHaveUrl(config.baseUrl + '/next-action')
     await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('What do you want to do?')
+    await expect(this.heading).toHaveText('Report receipt of waste')
   }
 
   /**
