@@ -16,6 +16,10 @@ class NextActionPage extends Page {
     return $('#uploadSpreadsheet')
   }
 
+  get downloadSpreadsheetRadio() {
+    return $('#downloadSpreadsheet')
+  }
+
   get continueButton() {
     return $('button[type="submit"]')
   }
@@ -27,13 +31,25 @@ class NextActionPage extends Page {
     await expect(this.heading).toHaveText('What do you want to do?')
   }
 
-  async selectConnectYourSoftwareRadio() {
-    await this.connectYourSoftwareRadio.click()
-    await this.continueButton.click()
-  }
-
-  async selectUploadSpreadsheetRadio() {
-    await this.uploadSpreadsheetRadio.click()
+  /**
+   * @param {'connectYourSoftware' | 'uploadSpreadsheet' | 'downloadSpreadsheet'} option
+   */
+  async selectNextAction(option) {
+    let radio
+    switch (option) {
+      case 'connectYourSoftware':
+        radio = this.connectYourSoftwareRadio
+        break
+      case 'uploadSpreadsheet':
+        radio = this.uploadSpreadsheetRadio
+        break
+      case 'downloadSpreadsheet':
+        radio = this.downloadSpreadsheetRadio
+        break
+      default:
+        throw new Error(`Unknown next action: ${option}`)
+    }
+    await radio.click()
     await this.continueButton.click()
   }
 }
