@@ -4,7 +4,7 @@ As a waste receiver
 I want to download the official spreadsheet template
 So that I can populate it with waste movement data before uploading.
 
-  @env_dev @accessibility
+  @env_dev @accessibility @local
   Scenario: Waste receiver should be able to download the official spreadsheet template
     Given a user is logged in to the waste receiver registration portal
     And user selects option to download spreadsheet template
