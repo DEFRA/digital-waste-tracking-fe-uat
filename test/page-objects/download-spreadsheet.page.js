@@ -1,20 +1,19 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
-import { homedir, platform } from 'node:os'
 import { join } from 'node:path'
 import fs from 'fs'
 
-function getDefaultDownloadsDir() {
-  const home = homedir()
-  switch (platform()) {
-    case 'win32':
-      return join(home, 'Downloads')
-    case 'darwin':
-    case 'linux':
-    default:
-      return join(home, 'Downloads')
-  }
-}
+// function getDefaultDownloadsDir() {
+//   const home = homedir()
+//   switch (platform()) {
+//     case 'win32':
+//       return join(home, 'Downloads')
+//     case 'darwin':
+//     case 'linux':
+//     default:
+//       return join(home, 'Downloads')
+//   }
+// }
 
 async function waitForFileExists(filePath, currentTime = 0, timeout = 5000) {
   if (fs.existsSync(filePath)) return true
@@ -26,7 +25,7 @@ async function waitForFileExists(filePath, currentTime = 0, timeout = 5000) {
 }
 
 class DownloadSpreadsheetPage extends Page {
-  downloadsDir = getDefaultDownloadsDir()
+  downloadsDir = './test/data'
   filePath = join(this.downloadsDir, 'receipt-of-waste-template.xlsx')
 
   // locators

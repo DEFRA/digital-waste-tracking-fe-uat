@@ -58,7 +58,13 @@ export const config = {
           '--disable-remote-fonts',
           '--ignore-certificate-errors',
           '--disable-dev-shm-usage'
-        ]
+        ],
+        prefs: {
+          // Use absolute path for download directory
+          'download.default_directory': '/data',
+          'profile.default_content_settings.popups': 0, // Disable popup
+          'download.prompt_for_download': false // Auto-download
+        }
       }
     }
   ],
