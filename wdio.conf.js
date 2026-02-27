@@ -61,7 +61,7 @@ export const config = {
         ],
         prefs: {
           // Use absolute path for download directory
-          'download.default_directory': '/data',
+          'download.default_directory': '/home/seluser/Downloads',
           'profile.default_content_settings.popups': 0, // Disable popup
           'download.prompt_for_download': false // Auto-download
         }
