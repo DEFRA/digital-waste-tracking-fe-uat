@@ -1,8 +1,11 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
-import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
 import fs from 'fs'
 import logger from '@wdio/logger'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // function getDefaultDownloadsDir() {
 //   const home = homedir()
@@ -27,8 +30,8 @@ async function waitForFileExists(filePath, currentTime = 0, timeout = 5000) {
 
 const log = logger('download-spreadsheet-page')
 class DownloadSpreadsheetPage extends Page {
-  downloadsDir = 'test/data'
-  filePath = join(this.downloadsDir, 'receipt-of-waste-template.xlsx')
+  downloadsDir = path.resolve(__dirname, '../../test/data')
+  filePath = path.join(this.downloadsDir, 'receipt-of-waste-template.xlsx')
 
   // locators
   get heading() {
