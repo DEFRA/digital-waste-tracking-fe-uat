@@ -25,11 +25,13 @@ class DefraIdGovUKPage extends Page {
     return $("button[type='Submit']")
   }
 
-  async verifyUserIsOnGovUKLoginPage(govUKBaseUrl) {
-    this.govUKBaseUrl = govUKBaseUrl
-    await expect(await this.getUrl()).toBe(
-      this.govUKBaseUrl + '/sign-in-or-create'
-    )
+  async setBaseUrl(url) {
+    this.baseUrl = url
+  }
+
+  async verifyUserIsOnGovUKLoginPage() {
+    await expect(browser).toHaveUrl(this.baseUrl + '/sign-in-or-create')
+
     // Wait for heading to be displayed
     await expect(this.heading).toBeDisplayed()
 
@@ -56,7 +58,7 @@ class DefraIdGovUKPage extends Page {
     })
     await this.click(this.signInButton)
 
-    await expect(browser).toHaveUrl(this.govUKBaseUrl + '/enter-email')
+    await expect(browser).toHaveUrl(this.baseUrl + '/enter-email')
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(
       'Enter your email address to sign in to your GOV.UK One Login'
@@ -66,12 +68,9 @@ class DefraIdGovUKPage extends Page {
       timeout: config.waitforTimeout
     })
     await this.enterText(this.emailInput, email)
-    await this.continueButton.waitForClickable({
-      timeout: config.waitforTimeout
-    })
-    await this.click(this.continueButton)
+    await this.clickJavascriptByPass(this.continueButton)
 
-    await expect(browser).toHaveUrl(this.govUKBaseUrl + '/enter-password')
+    await expect(browser).toHaveUrl(this.baseUrl + '/enter-password')
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Enter your password')
 
@@ -79,10 +78,7 @@ class DefraIdGovUKPage extends Page {
       timeout: config.waitforTimeout
     })
     await this.enterText(this.passwordInput, password)
-    await this.continueButton.waitForClickable({
-      timeout: config.waitforTimeout
-    })
-    await this.click(this.continueButton)
+    await this.clickJavascriptByPass(this.continueButton)
   }
 }
 
