@@ -110,6 +110,10 @@ class ManageApiCodePage extends Page {
     browser.refresh()
     const activeAPICodes = await this.getListOfActiveAPICodes()
     expect(activeAPICodes.length).toBeGreaterThan(previousActiveAPICodes.length)
+    const added = activeAPICodes.filter(
+      (item) => !previousActiveAPICodes.includes(item)
+    )
+    return added[0]
   }
 
   async userCreatesANewAPICode() {

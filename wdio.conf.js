@@ -160,6 +160,8 @@ export const config = {
     cucumberWorld.env = process.env
     cucumberWorld.apis = ApiFactory.create(
       cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl,
+      cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
+      cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.env.HTTP_PROXY
     )
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
