@@ -31,3 +31,4 @@ So that I can connect more than one system to the Receipt of Waste service.
     | account_type |
     | Gov UK       |
     | Government Gateway |
+    
