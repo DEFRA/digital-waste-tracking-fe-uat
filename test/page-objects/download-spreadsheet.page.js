@@ -1,32 +1,16 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
-import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
 import fs from 'fs'
+import logger from '@wdio/logger'
 
-// function getDefaultDownloadsDir() {
-//   const home = homedir()
-//   switch (platform()) {
-//     case 'win32':
-//       return join(home, 'Downloads')
-//     case 'darwin':
-//     case 'linux':
-//     default:
-//       return join(home, 'Downloads')
-//   }
-// }
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-async function waitForFileExists(filePath, currentTime = 0, timeout = 5000) {
-  if (fs.existsSync(filePath)) return true
-  if (currentTime === timeout) return false
-  // wait for 1 second
-  await new Promise((resolve, reject) => setTimeout(() => resolve(true), 1000))
-  // waited for 1 second
-  return waitForFileExists(filePath, currentTime + 1000, timeout)
-}
-
+const log = logger('download-spreadsheet-page')
 class DownloadSpreadsheetPage extends Page {
-  downloadsDir = './test/data'
-  filePath = join(this.downloadsDir, 'receipt-of-waste-template.xlsx')
+  downloadsDir = path.resolve(__dirname, '../../test/data')
+  filePath = path.join(this.downloadsDir, 'receipt-of-waste-template.xlsx')
 
   // locators
   get heading() {
@@ -50,12 +34,20 @@ class DownloadSpreadsheetPage extends Page {
     if (fs.existsSync(this.filePath)) {
       fs.unlinkSync(this.filePath)
     }
+    log.info(`downloading spreadsheet to ${this.filePath}`)
     this.click(this.downloadButton)
   }
 
   async verifySpreadsheetIsDownloaded() {
     // giving time for the file to be downloaded
-    await waitForFileExists(this.filePath)
+    await browser.waitUntil(() => fs.existsSync(this.filePath), {
+      timeout: 15000,
+      timeoutMsg: `Spreadsheet did not download in time`
+    })
+    // also adding an explicit pause to see if it is an issue with wait
+    // ToDo:remove thie after debugging******
+    // eslint-disable-next-line wdio/no-pause
+    await browser.pause(10000)
     await expect(fs.existsSync(this.filePath)).toBe(true)
   }
 }

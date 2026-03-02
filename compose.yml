@@ -27,7 +27,7 @@ services:
     ports:
       - 4444:4444
     volumes:
-      - ./test/data:/data
+      - ./test/data:/home/seluser/Downloads
 
 ################################################################################
   mongodb:
