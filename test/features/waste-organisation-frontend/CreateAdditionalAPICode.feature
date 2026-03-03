@@ -13,5 +13,22 @@ So that I can connect more than one system to the Receipt of Waste service.
     When user tries to create an additional API code
     Then an additional API code should be created for the organisation
     And display the new API code in the API code list
-    # To Do when Team A integration is complete
-    # make sure the user is able to use the new API code to submit waste movements
+    And user should be able to use the new API code to submit waste movements
+
+  @env_test
+  Scenario Outline: account_type - Waste recevier should be able to create an additional API code
+    Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
+    # And I selected a business
+    And user selects option to view his api code
+    And user is on the View API Code page
+    And user should see the "active" API Code for the selected business
+    When user tries to create an additional API code
+    Then an additional API code should be created for the organisation
+    And display the new API code in the API code list
+    And user should be able to use the new API code to submit waste movements
+  
+  Examples:
+    | account_type |
+    | Gov UK       |
+    | Government Gateway |
+    

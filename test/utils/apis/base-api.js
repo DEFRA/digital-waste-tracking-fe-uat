@@ -32,9 +32,13 @@ export class BaseAPI {
       }
     }
 
-    if (this.httpProxy) {
+    if (
+      this.httpProxy &&
+      typeof this.httpProxy === 'string' &&
+      this.httpProxy.trim().length > 0
+    ) {
       this.agent = new ProxyAgent({
-        uri: this.httpProxy,
+        uri: this.httpProxy.trim(),
         ...baseOptions
       })
       this.usingProxy = true

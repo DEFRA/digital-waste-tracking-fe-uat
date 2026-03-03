@@ -10,28 +10,21 @@ So that I can use it to connect my software to the DWT service.
     And user selects option to view his api code
     When user is on the View API Code page
     Then user should see the "active" API Code for the selected business
-    # ToDo: When the Team A integration is complete
-    # And user should be able to submit movements using this API Code
+    And user should be able to use the new API code to submit waste movements
 
   @env_test @accessibility
-  Scenario: Waste receiver with a pre-existing active API Code logs in via Govt Gateway and gets the same active API Code
-    Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
+  Scenario Outline: Waste receiver with a pre-existing active API Code logs in via "<account_type>" and gets the same active API Code
+    Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
     # And I selected a business
     And user selects option to view his api code
     When user is on the View API Code page
     Then user should see the "active" API Code for the selected business
-    # ToDo: When the Team A integration is complete
-    # And user should be able to submit movements using this API Code
+    And user should be able to use the new API code to submit waste movements
 
-  @env_test
-  Scenario: Waste receiver with a pre-existing active API Code logs in via Gov.uk and gets the same active API Code
-    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
-    # And I selected a business
-    And user selects option to view his api code
-    When user is on the View API Code page
-    Then user should see the "active" API Code for the selected business
-    # ToDo: When the Team A integration is complete
-    # And user should be able to submit movements using this API Code
+    Examples:
+      | account_type       |
+      | Gov UK             |
+      | Government Gateway |
 
 # back button
 # multiple businesses

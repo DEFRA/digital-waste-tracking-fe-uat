@@ -211,6 +211,8 @@ export const config = {
     cucumberWorld.testConfig = JSON.parse(testConfigData)
     cucumberWorld.apis = ApiFactory.create(
       cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl,
+      cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
+      cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.env.HTTP_PROXY
     )
 
