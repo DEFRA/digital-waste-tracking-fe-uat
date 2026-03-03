@@ -35,7 +35,7 @@ class DownloadSpreadsheetPage extends Page {
       fs.unlinkSync(this.filePath)
     }
     log.info(`downloading spreadsheet to ${this.filePath}`)
-    this.click(this.downloadButton)
+    await this.click(this.downloadButton)
   }
 
   async verifySpreadsheetIsDownloaded() {
@@ -45,9 +45,6 @@ class DownloadSpreadsheetPage extends Page {
       timeoutMsg: `Spreadsheet did not download in time`
     })
     // also adding an explicit pause to see if it is an issue with wait
-    // ToDo:remove thie after debugging******
-    // eslint-disable-next-line wdio/no-pause
-    await browser.pause(10000)
     await expect(fs.existsSync(this.filePath)).toBe(true)
   }
 }
