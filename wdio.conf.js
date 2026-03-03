@@ -43,7 +43,7 @@ export const config = {
         }
       }),
       browserName: 'chrome',
-      'se:downloadsEnabled': true,
+      // 'se:downloadsEnabled': true,
       'goog:chromeOptions': {
         args: [
           '--no-sandbox',
