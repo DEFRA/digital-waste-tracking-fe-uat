@@ -8,10 +8,6 @@ class UploadSpreadsheetPage extends Page {
   }
 
   get fileUploadInput() {
-    return $('#file-upload-1-input')
-  }
-
-  get fileUploadButton() {
     return $('#file-upload-1')
   }
 
@@ -34,19 +30,7 @@ class UploadSpreadsheetPage extends Page {
 
     // Upload file to remote browser (needed for BrowserStack/Grid)
     const remoteFilePath = await browser.uploadFile(filePath)
-
-    // Make the hidden input visible temporarily using JavaScript
-    await browser.execute((inputId) => {
-      const input = document.querySelector(inputId)
-      if (input) {
-        input.removeAttribute('hidden')
-        input.removeAttribute('aria-hidden')
-        input.style.display = 'block'
-        input.style.visibility = 'visible'
-        input.style.opacity = '1'
-      }
-    }, '#file-upload-1-input')
-
+    
     // Now set the file path
     await this.fileUploadInput.setValue(remoteFilePath)
     await this.click(this.uploadButton)
