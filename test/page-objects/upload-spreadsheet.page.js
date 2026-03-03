@@ -30,7 +30,7 @@ class UploadSpreadsheetPage extends Page {
 
     // Upload file to remote browser (needed for BrowserStack/Grid)
     const remoteFilePath = await browser.uploadFile(filePath)
-    
+
     // Now set the file path
     await this.fileUploadInput.setValue(remoteFilePath)
     await this.click(this.uploadButton)
