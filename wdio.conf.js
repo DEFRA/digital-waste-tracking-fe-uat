@@ -43,6 +43,7 @@ export const config = {
         }
       }),
       browserName: 'chrome',
+      'se:downloadsEnabled': true,
       'goog:chromeOptions': {
         args: [
           '--no-sandbox',
@@ -61,7 +62,7 @@ export const config = {
         ],
         prefs: {
           // Use absolute path for download directory
-          'download.default_directory': '/home/seluser/Downloads',
+          // 'download.default_directory': '/home/seluser/Downloads',
           'profile.default_content_settings.popups': 0, // Disable popup
           'download.prompt_for_download': false // Auto-download
         }

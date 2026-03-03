@@ -1,16 +1,16 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
-import fs from 'fs'
+// import { fileURLToPath } from 'node:url'
+// import path from 'node:path'
 import logger from '@wdio/logger'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
+// const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const log = logger('download-spreadsheet-page')
+
 class DownloadSpreadsheetPage extends Page {
-  downloadsDir = path.resolve(__dirname, '../../test/data')
-  filePath = path.join(this.downloadsDir, 'receipt-of-waste-template.xlsx')
+  expectedFileName = 'receipt-of-waste-template.xlsx'
+  // /** Directory on the machine running the test where downloadFile() saves the file */
+  // downloadsDir = path.resolve(__dirname, '../../test/data')
 
   // locators
   get heading() {
@@ -31,21 +31,27 @@ class DownloadSpreadsheetPage extends Page {
 
   async downloadSpreadsheet() {
     // delete the file if it exists
-    if (fs.existsSync(this.filePath)) {
-      fs.unlinkSync(this.filePath)
-    }
-    log.info(`downloading spreadsheet to ${this.filePath}`)
+    await browser.deleteDownloadableFiles()
+
+    log.info(`downloading spreadsheet: ${this.expectedFileName}`)
     await this.click(this.downloadButton)
   }
 
   async verifySpreadsheetIsDownloaded() {
-    // giving time for the file to be downloaded
-    await browser.waitUntil(() => fs.existsSync(this.filePath), {
-      timeout: 15000,
-      timeoutMsg: `Spreadsheet did not download in time`
-    })
-    // also adding an explicit pause to see if it is an issue with wait
-    await expect(fs.existsSync(this.filePath)).toBe(true)
+    await browser.waitUntil(
+      async () => {
+        const { names } = await browser.getDownloadableFiles()
+        return names.includes(this.expectedFileName)
+      },
+      {
+        timeout: 15000,
+        timeoutMsg: `Spreadsheet "${this.expectedFileName}" did not appear in downloadable files in time`
+      }
+    )
+    const { names } = await browser.getDownloadableFiles()
+    await expect(names).toContain(this.expectedFileName)
+    // Todo: to be used in future
+    // await browser.downloadFile(this.expectedFileName, this.downloadsDir)
   }
 }
 
