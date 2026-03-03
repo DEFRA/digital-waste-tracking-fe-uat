@@ -53,7 +53,7 @@ class DefraIdGovUKPage extends Page {
       timeout: config.waitforTimeout
     })
 
-    await this.signInButton.waitForClickable({
+    await this.signInButton.waitForDisplayed({
       timeout: config.waitforTimeout
     })
     await this.click(this.signInButton)

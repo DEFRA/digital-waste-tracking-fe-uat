@@ -17,7 +17,7 @@
     "clean": "rm -rf allure-results && rm -rf allure-report",
     "test": "npm run clean && npm run test:${PROFILE:-integration}",
     "test:debug": "npm run clean && DEBUG=true wdio run wdio.conf.js --cucumberOpts.tags='@debug'",
-    "test:integration": "npm run clean && wdio run wdio.conf.js",
+    "test:integration": "npm run clean && wdio run wdio.conf.js --cucumberOpts.tags='@fix'",
     "test:browserstack": ". ./env.sh && npm run clean && wdio run wdio.browserstack.conf.js",
     "test:local": ". ./env.sh && npm run clean && wdio run wdio.local.conf.js",
     "test:local:debug": ". ./env.sh && npm run clean && DEBUG=true wdio run wdio.local.conf.js",

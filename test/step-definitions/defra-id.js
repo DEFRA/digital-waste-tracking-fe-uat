@@ -12,14 +12,10 @@ Given(
   'user proceeds to login using a Government Gateway account',
   async function () {
     await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-    // --DEBUG line ---
-    await browser.takeScreenshot()
-    // --DEBUG line -- End ---
     await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
     await DefraIdChooseSignInPage.clickContinueButton()
-    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
-      this.testConfig.govtGatewayLoginUrl
-    )
+    await DefraIdGovtGatewayPage.setBaseUrl(this.testConfig.govtGatewayLoginUrl)
+    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage()
   }
 )
 

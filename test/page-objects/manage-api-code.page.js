@@ -38,6 +38,7 @@ class ManageApiCodePage extends Page {
       const disableButton = await apiCode.$('dd.govuk-summary-list__actions>a')
 
       if (await disableButton.isDisplayed()) {
+        await disableButton.scrollIntoView()
         const apiCodeText = await apiCode
           .$('dd.govuk-summary-list__value')
           .getText()

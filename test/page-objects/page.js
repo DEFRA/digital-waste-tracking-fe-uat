@@ -21,9 +21,19 @@ class Page {
       timeout: config.waitforTimeout
     })
     await element.scrollIntoView()
-    await element.waitForClickable({
-      timeout: config.waitforTimeout
-    })
+    // Wait until element is clickable before attempting JavaScript click
+    // Bail out gracefully for devices that do not support that method
+    try {
+      await element.waitForClickable({ timeout: config.waitforTimeout })
+    } catch (error) {
+      if (
+        !error.message.includes(
+          'This command is only available for desktop and mobile browsers, not for native mobile apps.'
+        )
+      ) {
+        throw error
+      }
+    }
     await browser.execute('arguments[0].click();', element)
   }
 
