@@ -114,7 +114,7 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
     }
   }
 
-  async getBulkUploadIdByFileName(organisationId,fileName) {
+  async getBulkUploadIdByFileName(organisationId, fileName) {
     const requestHeaders = {
       Authorization: `Basic ${this.base64Credentials}`,
       'Content-Type': 'application/json'

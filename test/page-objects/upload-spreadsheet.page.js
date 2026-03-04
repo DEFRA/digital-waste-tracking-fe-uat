@@ -1,5 +1,7 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
+import path from 'node:path'
+import fs from 'node:fs'
 
 class UploadSpreadsheetPage extends Page {
   // locators
@@ -32,12 +34,20 @@ class UploadSpreadsheetPage extends Page {
   async uploadSpreadsheet(spreadsheetFile, mode = 'upload') {
     const filePath = `test/data/${spreadsheetFile}`
 
+    // Create a timestamped copy in the same directory (e.g. template.xlsx -> template.1709567890123.xlsx)
+    const dir = path.dirname(filePath)
+    const { name: baseName, ext } = path.parse(filePath)
+    const fileName = `${baseName}_${Date.now()}${ext}`
+    const copyPath = path.join(dir, fileName)
+    fs.copyFileSync(filePath, copyPath)
+
     // Upload file to remote browser (needed for BrowserStack/Grid)
-    const remoteFilePath = await browser.uploadFile(filePath)
+    const remoteFilePath = await browser.uploadFile(copyPath)
 
     // Now set the file path
     await this.fileUploadInput.setValue(remoteFilePath)
     await this.click(this.uploadButton)
+    return fileName
   }
 
   async verifyFileIsSelected(filename) {

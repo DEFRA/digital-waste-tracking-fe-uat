@@ -19,6 +19,13 @@ class UploadSuccessfulPage extends Page {
         ? 'Spreadsheet upload successful'
         : 'Spreadsheet update successful'
     )
+    const url = await browser.getUrl()
+    const match = url.match(
+      mode === 'upload'
+        ? /\/organisation\/([a-zA-Z0-9-]+)\/spreadsheet\/file-uploaded/
+        : /\/organisation\/([a-zA-Z0-9-]+)\/update-spreadsheet\/file-uploaded/
+    )
+    return match ? match[1] : null
   }
 }
 
