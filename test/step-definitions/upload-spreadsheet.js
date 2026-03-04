@@ -40,3 +40,10 @@ Then(
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }
 )
+
+Then('all the waste movements should be successfully created', () => {
+  //hard code the org Id or get it from /search page ?? 
+  //get the uploadId , for the uploaded file from waste-organisation-backend service 
+  //ToDo:get the list of waste records from waste-movement-backend service by using above bulkId/uploadId
+})
+
