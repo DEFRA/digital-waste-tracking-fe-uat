@@ -1,5 +1,6 @@
 import { Page } from 'page-objects/page'
 import { $ } from '@wdio/globals'
+import { browser } from '~/node_modules/@wdio/globals/build/index'
 
 class ManageApiCodePage extends Page {
   // locators
@@ -8,7 +9,7 @@ class ManageApiCodePage extends Page {
   }
 
   get apiCodeList() {
-    return $$('.govuk-summary-list>.govuk-summary-list__row')
+    return $$('.govuk-summary-list > .govuk-summary-list__row')
   }
 
   get createAPICodeButton() {
@@ -35,17 +36,15 @@ class ManageApiCodePage extends Page {
     const activeAPICodes = []
 
     for (const apiCode of apiList) {
-      const disableButton = await apiCode.$('dd.govuk-summary-list__actions>a')
-
-      if (await disableButton.isDisplayed()) {
+      const disableButton = await apiCode.$('.govuk-summary-list__actions > a')
+      if ((await disableButton.isExisting()) === true) {
         await disableButton.scrollIntoView()
         const apiCodeText = await apiCode
-          .$('dd.govuk-summary-list__value')
+          .$('.govuk-summary-list__value')
           .getText()
         activeAPICodes.push(apiCodeText)
       }
     }
-
     return activeAPICodes
   }
 
@@ -74,7 +73,7 @@ class ManageApiCodePage extends Page {
 
     for (const apiCode of apiList) {
       const apiCodeText = await apiCode
-        .$('dd.govuk-summary-list__value')
+        .$('.govuk-summary-list__value')
         .getText()
 
       if (expectedApiCode !== '' && apiCodeText === expectedApiCode) {
@@ -87,7 +86,7 @@ class ManageApiCodePage extends Page {
       throw new Error(`API Code "${expectedApiCode}" not found in the list`)
     }
 
-    const disableButton = await apiCodeRow.$('dd.govuk-summary-list__actions>a')
+    const disableButton = await apiCodeRow.$('.govuk-summary-list__actions > a')
     await expect(disableButton).toBeDisplayed()
     await disableButton.click()
   }
@@ -109,8 +108,12 @@ class ManageApiCodePage extends Page {
 
   async verifyAdditionalAPICodeIsCreated(previousActiveAPICodes) {
     await browser.refresh()
+    await this.waitForPageToLoad()
+    await this.verifyUserIsOnYourApiCodePage()
     const activeAPICodes = await this.getListOfActiveAPICodes()
-    expect(activeAPICodes.length).toBeGreaterThan(previousActiveAPICodes.length)
+    await expect(activeAPICodes.length).toBeGreaterThan(
+      previousActiveAPICodes.length
+    )
     const added = activeAPICodes.filter(
       (item) => !previousActiveAPICodes.includes(item)
     )

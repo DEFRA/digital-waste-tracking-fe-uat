@@ -28,10 +28,12 @@ class Page {
     } catch (error) {
       if (
         !error.message.includes(
-          'This command is only available for desktop and mobile browsers, not for native mobile apps.'
+          'The `waitForClickable` command is only available for desktop and mobile browsers.'
         )
       ) {
         throw error
+      } else {
+        await element.waitForDisplayed({ timeout: config.waitforTimeout })
       }
     }
     await browser.execute('arguments[0].click();', element)
