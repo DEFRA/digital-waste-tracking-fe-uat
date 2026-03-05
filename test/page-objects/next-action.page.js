@@ -20,6 +20,10 @@ class NextActionPage extends Page {
     return $('#downloadSpreadsheet')
   }
 
+  get updateSpreadsheetRadio() {
+    return $('#updateSpreadsheet')
+  }
+
   get continueButton() {
     return $('button[type="submit"]')
   }
@@ -45,6 +49,9 @@ class NextActionPage extends Page {
         break
       case 'downloadSpreadsheet':
         radio = this.downloadSpreadsheetRadio
+        break
+      case 'updateSpreadsheet':
+        radio = this.updateSpreadsheetRadio
         break
       default:
         throw new Error(`Unknown next action: ${option}`)
