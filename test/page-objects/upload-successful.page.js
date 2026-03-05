@@ -7,12 +7,18 @@ class UploadSuccessfulPage extends Page {
     return $('h1')
   }
 
-  async verifyUserIsOnUploadSuccessfulPage() {
+  async verifyUserIsOnUploadSuccessfulPage(mode = 'upload') {
     await expect(browser).toHaveUrl(
-      /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/file-uploaded/
+      mode === 'upload'
+        ? /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/file-uploaded/
+        : /\/organisation\/[a-zA-Z0-9-]+\/update-spreadsheet\/file-uploaded/
     )
     await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Spreadsheet upload successful')
+    await expect(this.heading).toHaveText(
+      mode === 'upload'
+        ? 'Spreadsheet upload successful'
+        : 'Spreadsheet update successful'
+    )
   }
 }
 

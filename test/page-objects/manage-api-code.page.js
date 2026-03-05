@@ -107,7 +107,7 @@ class ManageApiCodePage extends Page {
   }
 
   async verifyAdditionalAPICodeIsCreated(previousActiveAPICodes) {
-    browser.refresh()
+    await browser.refresh()
     const activeAPICodes = await this.getListOfActiveAPICodes()
     expect(activeAPICodes.length).toBeGreaterThan(previousActiveAPICodes.length)
     const added = activeAPICodes.filter(
@@ -117,7 +117,7 @@ class ManageApiCodePage extends Page {
   }
 
   async userCreatesANewAPICode() {
-    browser.refresh()
+    await browser.refresh()
     await this.createNewCodeButton.waitForDisplayed()
     await this.createNewCodeButton.click()
   }

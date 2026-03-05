@@ -15,17 +15,21 @@ class UploadSpreadsheetPage extends Page {
     return $('button[type="submit"]')
   }
 
-  async verifyUserIsOnUploadSpreadsheetPage() {
+  async verifyUserIsOnUploadSpreadsheetPage(mode = 'upload') {
     await expect(browser).toHaveUrl(
-      /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/begin-upload/
+      mode === 'upload'
+        ? /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/begin-upload/
+        : /\/organisation\/[a-zA-Z0-9-]+\/update-spreadsheet\/begin-upload/
     )
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(
-      'Upload a receipt of waste movement spreadsheet'
+      mode === 'upload'
+        ? 'Upload a receipt of waste movement spreadsheet'
+        : 'Update an existing spreadsheet'
     )
   }
 
-  async uploadSpreadsheet(spreadsheetFile) {
+  async uploadSpreadsheet(spreadsheetFile, mode = 'upload') {
     const filePath = `test/data/${spreadsheetFile}`
 
     // Upload file to remote browser (needed for BrowserStack/Grid)
