@@ -65,83 +65,83 @@ export const config = {
   // https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices
   capabilities: [
     // windows
-    // {
-    //   browserName: 'Chrome',
-    //   'bstack:options': {
-    //     idleTimeout: 300,
-    //     resolution: '1920x1080',
-    //     browserVersion: 'latest',
-    //     os: 'Windows',
-    //     osVersion: '11'
-    //   },
-    //   timeouts: {
-    //     script: 120000, // 120 seconds for async script execution
-    //     pageLoad: 120000, // 120 seconds for page load
-    //     implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    //   }
-    // },
-    // {
-    //   browserName: 'Edge',
-    //   'bstack:options': {
-    //     idleTimeout: 300,
-    //     resolution: '1920x1080',
-    //     browserVersion: 'latest',
-    //     os: 'Windows',
-    //     osVersion: '11'
-    //   },
-    //   timeouts: {
-    //     script: 120000, // 120 seconds for async script execution
-    //     pageLoad: 120000, // 120 seconds for page load
-    //     implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    //   }
-    // },
-    // // macOS
-    // {
-    //   browserName: 'Chrome',
-    //   'bstack:options': {
-    //     idleTimeout: 300,
-    //     resolution: '1920x1080',
-    //     browserVersion: 'latest',
-    //     os: 'OS X',
-    //     osVersion: 'Sonoma' // Changed from 'Sequoia'
-    //   },
-    //   timeouts: {
-    //     script: 120000, // 120 seconds for async script execution
-    //     pageLoad: 120000, // 120 seconds for page load
-    //     implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    //   }
-    // },
-    // // macOS Safari
-    // {
-    //   browserName: 'Safari',
-    //   'bstack:options': {
-    //     idleTimeout: 300,
-    //     resolution: '1920x1080',
-    //     os: 'OS X',
-    //     osVersion: 'Sonoma',
-    //     browserVersion: '17.3'
-    //   },
-    //   timeouts: {
-    //     script: 120000, // 120 seconds for async script execution
-    //     pageLoad: 120000, // 120 seconds for page load
-    //     implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    //   }
-    // },
-    // // Android
-    // {
-    //   browserName: 'chrome',
-    //   'bstack:options': {
-    //     osVersion: '13.0',
-    //     deviceName: 'Samsung Galaxy S23 Ultra',
-    //     consoleLogs: 'info',
-    //     idleTimeout: 300
-    //   },
-    //   timeouts: {
-    //     script: 120000, // 120 seconds for async script execution
-    //     pageLoad: 120000, // 120 seconds for page load
-    //     implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    //   }
-    // },
+    {
+      browserName: 'Chrome',
+      'bstack:options': {
+        idleTimeout: 300,
+        resolution: '1920x1080',
+        browserVersion: 'latest',
+        os: 'Windows',
+        osVersion: '11'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
+      }
+    },
+    {
+      browserName: 'Edge',
+      'bstack:options': {
+        idleTimeout: 300,
+        resolution: '1920x1080',
+        browserVersion: 'latest',
+        os: 'Windows',
+        osVersion: '11'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
+      }
+    },
+    // macOS
+    {
+      browserName: 'Chrome',
+      'bstack:options': {
+        idleTimeout: 300,
+        resolution: '1920x1080',
+        browserVersion: 'latest',
+        os: 'OS X',
+        osVersion: 'Sonoma' // Changed from 'Sequoia'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
+      }
+    },
+    // macOS Safari
+    {
+      browserName: 'Safari',
+      'bstack:options': {
+        idleTimeout: 300,
+        resolution: '1920x1080',
+        os: 'OS X',
+        osVersion: 'Sonoma',
+        browserVersion: '17.3'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
+      }
+    },
+    // Android
+    {
+      browserName: 'chrome',
+      'bstack:options': {
+        osVersion: '13.0',
+        deviceName: 'Samsung Galaxy S23 Ultra',
+        consoleLogs: 'info',
+        idleTimeout: 300
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
+      }
+    },
     // iOS
     {
       browserName: 'chromium',
