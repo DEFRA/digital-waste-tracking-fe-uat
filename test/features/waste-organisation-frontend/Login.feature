@@ -38,3 +38,4 @@ Feature: Login as a user for waste receiving organisation
     When I query the waste-movement-inputs collection
     Then I should receive a document or null result
     And I close the MongoDB connection
+    

@@ -87,12 +87,15 @@ Then(
       await ManageApiCodePage.verifyDisableApiCodeNotificationBannerIsDisplayed(
         this.activeApiCode
       )
+      this.disabledApiCode = this.activeApiCode
     }
   }
 )
 
 Then('display the new API code in the API code list', async function () {
-  await ManageApiCodePage.verifyAdditionalAPICodeIsCreated(this.activeAPICodes)
+  this.activeApiCode = await ManageApiCodePage.verifyAdditionalAPICodeIsCreated(
+    this.activeAPICodes
+  )
 })
 
 Then('an additional API code should be created for the organisation', () => {

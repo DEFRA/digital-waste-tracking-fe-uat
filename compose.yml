@@ -24,10 +24,10 @@ services:
 # containers.
   selenium-chrome:
     image: selenium/standalone-chrome:123.0
+    environment:
+      - SE_NODE_ENABLE_MANAGED_DOWNLOADS=true
     ports:
       - 4444:4444
-    volumes:
-      - ./test/data:/home/seluser/Downloads
 
 ################################################################################
   mongodb:

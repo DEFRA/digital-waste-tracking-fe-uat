@@ -28,3 +28,10 @@ Given(
     await NextActionPage.selectNextAction('downloadSpreadsheet')
   }
 )
+
+Given(
+  'user selects option to update waste movements using a spreadsheet',
+  async function () {
+    await NextActionPage.selectNextAction('updateSpreadsheet')
+  }
+)

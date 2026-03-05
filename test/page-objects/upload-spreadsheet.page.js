@@ -8,10 +8,6 @@ class UploadSpreadsheetPage extends Page {
   }
 
   get fileUploadInput() {
-    return $('#file-upload-1-input')
-  }
-
-  get fileUploadButton() {
     return $('#file-upload-1')
   }
 
@@ -19,33 +15,25 @@ class UploadSpreadsheetPage extends Page {
     return $('button[type="submit"]')
   }
 
-  async verifyUserIsOnUploadSpreadsheetPage() {
+  async verifyUserIsOnUploadSpreadsheetPage(mode = 'upload') {
     await expect(browser).toHaveUrl(
-      /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/begin-upload/
+      mode === 'upload'
+        ? /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/begin-upload/
+        : /\/organisation\/[a-zA-Z0-9-]+\/update-spreadsheet\/begin-upload/
     )
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(
-      'Upload a receipt of waste movement spreadsheet'
+      mode === 'upload'
+        ? 'Upload a receipt of waste movement spreadsheet'
+        : 'Update an existing spreadsheet'
     )
   }
 
-  async uploadSpreadsheet(spreadsheetFile) {
+  async uploadSpreadsheet(spreadsheetFile, mode = 'upload') {
     const filePath = `test/data/${spreadsheetFile}`
 
     // Upload file to remote browser (needed for BrowserStack/Grid)
     const remoteFilePath = await browser.uploadFile(filePath)
-
-    // Make the hidden input visible temporarily using JavaScript
-    await browser.execute((inputId) => {
-      const input = document.querySelector(inputId)
-      if (input) {
-        input.removeAttribute('hidden')
-        input.removeAttribute('aria-hidden')
-        input.style.display = 'block'
-        input.style.visibility = 'visible'
-        input.style.opacity = '1'
-      }
-    }, '#file-upload-1-input')
 
     // Now set the file path
     await this.fileUploadInput.setValue(remoteFilePath)
