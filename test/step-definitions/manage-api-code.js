@@ -33,8 +33,8 @@ Then(
       this.activeApiCode = activeApiCode
     } else {
       await ManageApiCodePage.verifyAPICodeIsDisplayed('', status)
-      const activeApiCode = await ManageApiCodePage.getListOfActiveAPICodes()
-      this.activeApiCode = activeApiCode[0]
+      this.activeAPICodes = await ManageApiCodePage.getListOfActiveAPICodes()
+      this.activeApiCode = this.activeAPICodes[0]
     }
   }
 )
@@ -122,6 +122,5 @@ Given('user disables all existing API codes', async function () {
 When('user tries to create new API code', async function () {
   this.pageName = 'view-api-code-with-all-codes-disabled-page'
   await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-  this.activeAPICodes = []
   await ManageApiCodePage.userCreatesANewAPICode()
 })

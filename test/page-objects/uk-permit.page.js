@@ -30,12 +30,12 @@ class UKPermitPage extends Page {
   }
 
   async selectYesOption() {
-    this.yesOption.waitForExist({ timeout: config.waitforTimeout })
+    await this.yesOption.waitForExist({ timeout: config.waitforTimeout })
     await this.yesOption.click()
   }
 
   async selectNoOption() {
-    this.noOption.waitForExist({ timeout: config.waitforTimeout })
+    await this.noOption.waitForExist({ timeout: config.waitforTimeout })
     await this.noOption.click()
   }
 

@@ -12,14 +12,10 @@ Given(
   'user proceeds to login using a Government Gateway account',
   async function () {
     await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-    // --DEBUG line ---
-    await browser.takeScreenshot()
-    // --DEBUG line -- End ---
     await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
     await DefraIdChooseSignInPage.clickContinueButton()
-    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
-      this.testConfig.govtGatewayLoginUrl
-    )
+    await DefraIdGovtGatewayPage.setBaseUrl(this.testConfig.govtGatewayLoginUrl)
+    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage()
   }
 )
 
@@ -27,9 +23,8 @@ Given('user proceeds to login using a Gov.uk account', async function () {
   await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
   await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
   await DefraIdChooseSignInPage.clickContinueButton()
-  await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage(
-    this.testConfig.govUKBaseUrl
-  )
+  await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
+  await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
 })
 
 When('user enters their Government user Id and password', async function () {
@@ -140,15 +135,14 @@ Given(
     )
 
     await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-    // --DEBUG line ---
-    await browser.takeScreenshot()
-    // --DEBUG line -- End ---
+
     if (accountType === 'Government Gateway') {
       await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
       await DefraIdChooseSignInPage.clickContinueButton()
-      await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage(
+      await DefraIdGovtGatewayPage.setBaseUrl(
         this.testConfig.govtGatewayLoginUrl
       )
+      await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage()
 
       this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
       await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
@@ -158,9 +152,8 @@ Given(
     } else {
       await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
       await DefraIdChooseSignInPage.clickContinueButton()
-      await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage(
-        this.testConfig.govUKBaseUrl
-      )
+      await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
+      await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
 
       this.govUKUser = await getValueFromPool('availableGovUKUsers')
       await DefraIdGovUKPage.loginWithGovUK(

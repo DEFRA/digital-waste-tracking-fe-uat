@@ -56,11 +56,8 @@ class DefraIdChooseSignInPage extends Page {
     await this.continueButton.waitForExist({ timeout: config.waitforTimeout })
 
     // Use base class method to click using JavaScript
-    await this.clickUsingJavaScript('continueReplacement', 'Continue button')
-
-    // Small wait for navigation to start
-    // eslint-disable-next-line wdio/no-pause -- Required to allow navigation to start after button click
-    await browser.pause(500)
+    await this.continueButton.scrollIntoView()
+    await this.continueButton.click()
   }
 
   // assertions

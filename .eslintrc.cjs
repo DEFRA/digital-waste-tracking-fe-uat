@@ -21,6 +21,7 @@ module.exports = {
   plugins: ['prettier', 'wdio'],
   rules: {
     'prettier/prettier': 'error',
-    'no-console': 'error'
+    'no-console': 'error',
+    "no-empty": [2, { "allowEmptyCatch": true }]
   }
 }

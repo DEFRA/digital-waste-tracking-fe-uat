@@ -15,6 +15,30 @@ class Page {
     return await element.click()
   }
 
+  async clickJavascriptByPass(elementMatcher) {
+    const element = await elementMatcher
+    await element.waitForExist({
+      timeout: config.waitforTimeout
+    })
+    await element.scrollIntoView()
+    // Wait until element is clickable before attempting JavaScript click
+    // Bail out gracefully for devices that do not support that method
+    try {
+      await element.waitForClickable({ timeout: config.waitforTimeout })
+    } catch (error) {
+      if (
+        !error.message.includes(
+          'The `waitForClickable` command is only available for desktop and mobile browsers.'
+        )
+      ) {
+        throw error
+      } else {
+        await element.waitForDisplayed({ timeout: config.waitforTimeout })
+      }
+    }
+    await browser.execute('arguments[0].click();', element)
+  }
+
   /**
    * Click an element using JavaScript execution (bypasses visibility/interactability checks)
    * @param {string} elementId - The ID of the element to click
@@ -100,6 +124,19 @@ class Page {
 
   async verifyUserNavigatedCorrectlyToTargetPage(targetUrl) {
     await expect(await this.getUrl()).toBe(config.baseUrl + targetUrl)
+  }
+
+  async waitForPageToLoad() {
+    await browser.waitUntil(
+      async () => {
+        const readyState = await browser.execute(() => document.readyState)
+        return readyState === 'complete'
+      },
+      {
+        timeout: config.waitforTimeout,
+        timeoutMsg: 'Page did not load within the expected time'
+      }
+    )
   }
 }
 
