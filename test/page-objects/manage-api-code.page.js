@@ -112,7 +112,7 @@ class ManageApiCodePage extends Page {
     await this.verifyUserIsOnYourApiCodePage()
     const activeAPICodes = await this.getListOfActiveAPICodes()
     await expect(activeAPICodes.length).toBeGreaterThan(
-      previousActiveAPICodes.length
+      previousActiveAPICodes?.length ?? 0
     )
     const added = activeAPICodes.filter(
       (item) => !previousActiveAPICodes.includes(item)
