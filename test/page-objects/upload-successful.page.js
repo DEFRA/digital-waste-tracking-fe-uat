@@ -27,6 +27,28 @@ class UploadSuccessfulPage extends Page {
     )
     return match ? match[1] : null
   }
+
+  async verifyFileHasBeenUploadedSuccessfullyToTheS3(
+    apiInstance,
+    organisationId,
+    fileName,
+    mode = 'upload'
+  ) {
+    await browser.waitUntil(
+      async () => {
+        const response = await apiInstance.getBulkUploadIdByFileName(
+          organisationId,
+          fileName
+        )
+        return response.statusCode === 200 && response.json.uploads.length > 0
+      },
+      {
+        timeout: 30000,
+        interval: 3000,
+        timeoutMsg: `File "${fileName}" was not found in S3 uploads for organisation "${organisationId}" within the timeout`
+      }
+    )
+  }
 }
 
 export default new UploadSuccessfulPage()

@@ -25,7 +25,7 @@ Then(
 )
 
 When(
-  'user selects a valid spreadsheet file {string} to update existing waste movements',
+  'user selects copy of a valid spreadsheet file {string} to update existing waste movements',
   async function (spreadsheetFile) {
     this.pageName = 'update-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage('update')
@@ -48,16 +48,15 @@ Then(
 )
 
 Then(
-  'all the waste movements should be successfully created',
-  async function () {
-    // get the uploadId , for the uploaded file from waste-organisation-backend service
-    const response =
-      await this.apis.wasteOrganisationBackendAPI.getBulkUploadIdByFileName(
-        this.organisationId,
-        this.uploadedFileName
-      )
-    expect(response.statusCode).toBe(200)
-    expect(response.json.uploads.length).toBeGreaterThan(0)
+  /^all the waste movements should be successfully (created|updated)$/,
+  async function (action) {
+    await UploadSuccessfulPage.verifyFileHasBeenUploadedSuccessfullyToTheS3(
+      this.apis.wasteOrganisationBackendAPI,
+      this.organisationId,
+      this.uploadedFileName,
+      action
+    )
+    // ToDo:to be picked up after https://eaflood.atlassian.net/browse/DWT-1304
     // ToDo:get the list of waste records from waste-movement-backend service by using above bulkId/uploadId
   }
 )

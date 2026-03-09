@@ -4,7 +4,7 @@ As a waste receiver
 I want to upload a spreadsheet containing waste movement data for my selected organisation
 So that I can submit waste movement data, correctly linked to the business I have selected 
 
-  @env_dev @accessibility @local
+  @env_dev @accessibility
   Scenario: Waste receiver should be able to upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
     And user selects option to upload waste movements using a spreadsheet
@@ -19,8 +19,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
     Then user should be redirected to "Upload successful" page
-    # To Do: pending dev work
-    # And all the waste movements should be successfully created
+    And all the waste movements should be successfully created
     # And email should sent to the user with the spreadsheet and WTIDs
   
   Examples:

@@ -7,6 +7,7 @@ import UKPermitPage from '../page-objects/uk-permit.page.js'
 import HomePage from '../page-objects/home.page.js'
 import NextActionPage from '../page-objects/next-action.page.js'
 import { getValueFromPool } from '@wdio/shared-store-service'
+import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 
 Given(
   'user proceeds to login using a Government Gateway account',
@@ -119,6 +120,9 @@ Given(
       .trim()
     await DefraIdStubPage.selectFirstOrganisation()
 
+    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+    await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
+
     await NextActionPage.verifyUserIsOnChooseNextActionPage()
   }
 )
@@ -161,6 +165,9 @@ Given(
         this.env.defraGovUKPassword
       )
     }
+
+    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+    await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
 
     await NextActionPage.verifyUserIsOnChooseNextActionPage()
   }
