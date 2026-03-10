@@ -201,7 +201,9 @@ export const config = {
   cucumberOpts: {
     timeout: 180000, // Increased from 120000 (120s) to 180000 (180s) for BrowserStack network latency
     require: ['./test/step-definitions/**/*.js'],
-    tags: `@browserstack`
+    tags: `@browserstack`,
+    failAmbiguousDefinitions: true,
+    ignoreUndefinedDefinitions: false
   },
 
   reporters: [

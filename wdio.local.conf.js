@@ -153,7 +153,9 @@ export const config = {
   cucumberOpts: {
     timeout: 60000,
     require: ['./test/step-definitions/**/*.js'],
-    tags: `@env_${process.env.ENVIRONMENT}`
+    tags: `@env_${process.env.ENVIRONMENT}`,
+    failAmbiguousDefinitions: true,
+    ignoreUndefinedDefinitions: false
     // tags: `@local`
   },
   //
