@@ -4,7 +4,6 @@ import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 
 When('user is on the View API Code page', async function () {
-  // await ManageApiCodePage.open()
   await ManageApiCodePage.verifyUserIsOnYourApiCodePage()
   this.pageName = 'view-api-code-with-active-codes-page'
   await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
@@ -117,6 +116,7 @@ Given('user disables all existing API codes', async function () {
       )
     expect(response.statusCode).toBe(200)
   }
+  this.activeAPICodes = []
 })
 
 When('user tries to create new API code', async function () {
