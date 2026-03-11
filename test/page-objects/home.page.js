@@ -16,7 +16,7 @@ class HomePage extends Page {
 
   // methods
   open() {
-    return super.open('/')
+    return super.open('/account')
   }
 
   // assertions

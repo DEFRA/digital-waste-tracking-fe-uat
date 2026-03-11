@@ -80,7 +80,7 @@ When('user has selected a business', async function () {
 })
 
 Given(
-  'a user is logged in to the waste receiver registration portal',
+  /^(?:a user is|I am) logged in to the waste receiver registration portal$/,
   async function () {
     // to handle gracefully when pool is empty
     try {
@@ -128,7 +128,7 @@ Given(
 )
 
 Given(
-  'a user is logged in to the waste receiver registration portal using a {string} account',
+  /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account$/,
   async function (accountType) {
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
