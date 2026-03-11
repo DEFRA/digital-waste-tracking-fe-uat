@@ -36,7 +36,11 @@ class MyAccountHomePage extends Page {
     const cardsText = await cards.map(async (card) => {
       return await card.getText()
     })
-    expect(cardsText).toEqual(['Report receipt of waste', 'Manage account','Service charge\nDue October 2026'])
+    expect(cardsText).toEqual([
+      'Report receipt of waste',
+      'Manage account',
+      'Service charge\nDue October 2026'
+    ])
   }
 
   async navigateToReportReceiptOfWasteOptionsPage() {
