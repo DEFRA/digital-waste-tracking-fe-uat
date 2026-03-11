@@ -142,6 +142,7 @@ class DefraIdStubPage extends Page {
     const userList = await this.userList.getElements()
     const users = await userList.map(async (user) => await user.getText())
     expect(users).toContain(email)
+    return userId
   }
 
   async loginAsAUser(email) {
