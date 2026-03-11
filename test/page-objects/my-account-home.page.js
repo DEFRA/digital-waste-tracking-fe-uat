@@ -9,18 +9,38 @@ class MyAccountHomePage extends Page {
     return $('h1')
   }
 
-  get ReportReceiptOfWasteButton() {
+  get reportReceiptOfWasteButton() {
     return $('a[data-testid="report-waste-link"]')
+  }
+
+  get switchOrganisationButton() {
+    return $('a[data-testid="switch-organisation-button"]')
+  }
+
+  get manageAccountButton() {
+    return $('a[data-testid="manage-account-link"]')
+  }
+
+  get accountCards() {
+    return $$('div[data-testid="account-cards"]>div')
   }
 
   async verifyUserIsOnMyAccountHomePage() {
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Waste receiving account')
     await expect(browser).toHaveUrl(config.baseUrl + '/account')
+
+    await expect(this.switchOrganisationButton).toBeDisplayed()
+
+    const cards = await this.accountCards.getElements()
+    const cardsText = await cards.map(async (card) => {
+      return await card.getText()
+    })
+    expect(cardsText).toEqual(['Report receipt of waste', 'Manage account','Service charge\nDue October 2026'])
   }
 
   async navigateToReportReceiptOfWasteOptionsPage() {
-    await this.ReportReceiptOfWasteButton.click()
+    await this.reportReceiptOfWasteButton.click()
   }
 }
 

@@ -26,7 +26,8 @@ So that I can use it to connect my software to the DWT service.
       | Gov UK             |
       | Government Gateway |
 
+  Scenario: Waste receiver with multiple businessess should be able to switch between businesses and view their API codes
+
 # back button
-# multiple businesses
 # "Report of waste" link in header
 # "copy" button

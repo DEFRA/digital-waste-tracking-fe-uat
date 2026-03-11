@@ -27,5 +27,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     | Gov UK       |
     | Government Gateway |
 
+  Scenario: Waste receiver with multiple businessess should be able to switch between businesses and upload waste movements using a spreadsheet
+  
 # dev work pending , to implement below scenario
 # user should not be able to continue without uploading a spreadsheet
