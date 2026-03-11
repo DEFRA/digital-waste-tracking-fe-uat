@@ -172,3 +172,10 @@ Given(
     await NextActionPage.verifyUserIsOnChooseNextActionPage()
   }
 )
+
+Given(
+  /^(?:a user is|I am) not logged in to the waste receiver registration portal$/,
+  async function () {
+    // Do nothing as we want to ensure user is not logged in for this step. Step definition is here to improve readability of the scenario
+  }
+)

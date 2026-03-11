@@ -5,14 +5,16 @@ Feature: Feedback Survey link for authenticated users
   So that I can provide feedback about the service
 
   @env_test @accessibility
-  Scenario: Authenticated user should see a feedback survey link on the portal
+  Scenario: Authenticated user should be able to access the feedback form via the feedback link
     Given I am logged in to the waste receiver registration portal using a "Gov UK" account
-    When I navigate to any page on the portal
-    Then I should see a beta banner and a feedback survey link
+    And I navigate to any page on the portal
+    And I should see a beta banner and a feedback survey link
+    When I click on the feedback survey link on the beta banner
+    Then the feedback form should open in a new tab
 
   @env_test @accessibility
-  Scenario: Authenticated user should be able to access the feedback form via the feedback link
-   Given I am logged in to the waste receiver registration portal using a "Gov UK" account
+  Scenario: Unauthenticated user should be able to access the feedback form via the feedback link
+    Given I am not logged in to the waste receiver registration portal
     And I navigate to any page on the portal
     When I click on the feedback survey link on the beta banner
     Then the feedback form should open in a new tab
