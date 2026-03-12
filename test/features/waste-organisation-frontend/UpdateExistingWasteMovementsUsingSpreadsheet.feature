@@ -28,7 +28,13 @@ So that I can make corrections or changes after submission.
       | Gov UK             |
       | Government Gateway |
 
-  Scenario: Waste receiver with multiple businessess should be able to switch between businesses and update existing waste movements using a spreadsheet
-
+  @env_test
+  Scenario: Waste receiver with multiple businesses can update existing waste movements for each selected business
+    Given a multi-business user is logged in via "Gov UK"
+    And the user successfully updates existing waste movements using a spreadsheet for the selected business
+    And all the waste movements should be successfully updated
+    When the user switches to a different business
+    Then the user should be able to successfully update existing waste movements using a spreadsheet for that business
+    And all the waste movements should be successfully updated
 # ToDo: e2e test for updating waste movements using a spreadsheet can be done only once TeamA 
 # completes the api development which can then be used to query waste movements using bulk upload id

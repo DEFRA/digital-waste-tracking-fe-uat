@@ -9,6 +9,10 @@ class MyAccountHomePage extends Page {
     return $('h1')
   }
 
+  open() {
+    return super.open('/account')
+  }
+
   get organisationName() {
     return $('p[data-testid="app-heading-organisation-name"]')
   }
@@ -27,6 +31,11 @@ class MyAccountHomePage extends Page {
 
   get accountCards() {
     return $$('div[data-testid="account-cards"]>div')
+  }
+
+  async isUserOnMyAccountHomePage() {
+    const currentUrl = await browser.getUrl()
+    return currentUrl.includes(config.baseUrl + '/account')
   }
 
   async verifyUserIsOnMyAccountHomePage(organisationName = undefined) {

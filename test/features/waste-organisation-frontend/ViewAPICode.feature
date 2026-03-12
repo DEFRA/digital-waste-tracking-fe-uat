@@ -26,8 +26,14 @@ So that I can use it to connect my software to the DWT service.
       | Gov UK             |
       | Government Gateway |
 
-  Scenario: Waste receiver with multiple businessess should be able to switch between businesses and view their API codes
-
+  @env_test
+  Scenario: Waste receiver with multiple businesses can submit waste movements using each business's API code
+    Given a multi-business user is logged in via "Gov UK"
+    And the user views the API code for the selected business
+    And user should be able to use the API code to submit waste movements
+    When the user switches to a different business
+    Then the user should see a different "active" API code for that business
+    And user should be able to use the API code to submit waste movements
 # back button
 # "Report of waste" link in header
 # "copy" button

@@ -151,6 +151,37 @@ Given(
   }
 )
 
+Given(
+  'a multi-business user is logged in via {string}',
+  async function (accountType) {
+    this.govUKUser = await getValueFromPool(
+      'availableMultipleBusinessesGovUKUsers'
+    )
+    this.userWithMultipleBusinesses = true
+
+    await UKPermitPage.open()
+    await UKPermitPage.verifyUserIsOnUKPermitPage()
+    await UKPermitPage.selectYesOption()
+    await UKPermitPage.click(UKPermitPage.continueButton)
+    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+      this.testConfig.defraIdServiceUrl
+    )
+
+    await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
+    await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
+    await DefraIdChooseSignInPage.clickContinueButton()
+    await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
+    await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
+    await DefraIdGovUKPage.loginWithGovUK(
+      this.govUKUser,
+      this.env.defraGovUKPassword
+    )
+
+    await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
+    this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(0)
+  }
+)
+
 Given('a user is associated with multiple businesses', async function () {
   this.govUKUser = await getValueFromPool(
     'availableMultipleBusinessesGovUKUsers'

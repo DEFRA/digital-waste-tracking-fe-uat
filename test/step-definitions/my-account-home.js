@@ -3,6 +3,10 @@ import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import DefraIdOrgPickerPage from '../page-objects/defra-id-org-picker.page.js'
 
 When('the user switches to a different business', async function () {
+  if (!(await MyAccountHomePage.isUserOnMyAccountHomePage())) {
+    await MyAccountHomePage.open()
+    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+  }
   await MyAccountHomePage.switchToDifferentBusiness()
   await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
   this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(1)
