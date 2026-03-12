@@ -249,6 +249,12 @@ export const config = {
         cucumberWorld.govGatewayUser
       )
     }
+    if (cucumberWorld.multipleBusinessesGovUKUser !== undefined) {
+      await addValueToPool(
+        'availableMultipleBusinessesGovUKUsers',
+        cucumberWorld.multipleBusinessesGovUKUser
+      )
+    }
     if (cucumberWorld.defraIdMockUserId !== undefined) {
       // cleanup the user from the defra id mock service
       log.info(
@@ -280,6 +286,10 @@ export const config = {
       await setResourcePool(
         'availableGovGatewayUsers',
         testConfig.govGatewayLogin
+      )
+      await setResourcePool(
+        'availableMultipleBusinessesGovUKUsers',
+        testConfig.multipleBusinessesGovUKLogin
       )
     }
   },

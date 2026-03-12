@@ -18,7 +18,7 @@ So that I can connect more than one system to the Receipt of Waste service.
   @env_test
   Scenario Outline: account_type - Waste recevier should be able to create an additional API code
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
-    # And I selected a business
+    And the user navigates to report receipt of waste
     And user selects option to view his api code
     And user is on the View API Code page
     And user should see the "active" API Code for the selected business

@@ -9,6 +9,10 @@ class MyAccountHomePage extends Page {
     return $('h1')
   }
 
+  get organisationName() {
+    return $('p[data-testid="app-heading-organisation-name"]')
+  }
+
   get reportReceiptOfWasteButton() {
     return $('a[data-testid="report-waste-link"]')
   }
@@ -25,11 +29,15 @@ class MyAccountHomePage extends Page {
     return $$('div[data-testid="account-cards"]>div')
   }
 
-  async verifyUserIsOnMyAccountHomePage() {
+  async verifyUserIsOnMyAccountHomePage(organisationName = undefined) {
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Waste receiving account')
     await expect(browser).toHaveUrl(config.baseUrl + '/account')
 
+    if (organisationName) {
+      await expect(this.organisationName).toBeDisplayed()
+      await expect(this.organisationName).toHaveText(organisationName)
+    }
     await expect(this.switchOrganisationButton).toBeDisplayed()
 
     const cards = await this.accountCards.getElements()
@@ -45,6 +53,21 @@ class MyAccountHomePage extends Page {
 
   async navigateToReportReceiptOfWasteOptionsPage() {
     await this.reportReceiptOfWasteButton.click()
+  }
+
+  async switchToDifferentBusiness() {
+    await this.switchOrganisationButton.click()
+  }
+
+  async navigateToManageAccountPage() {
+    await this.manageAccountButton.click()
+  }
+
+  async verifyUserIsOnDefraManageAccountPage() {
+    // Note : this is not our page, it is the defra id service page
+    await expect(browser).toHaveUrl(/\/management\/account-management\/me/i)
+    await expect(this.heading).toBeDisplayed()
+    await expect(this.heading).toHaveText('Your Defra account')
   }
 }
 

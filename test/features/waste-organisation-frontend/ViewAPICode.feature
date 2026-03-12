@@ -15,7 +15,7 @@ So that I can use it to connect my software to the DWT service.
   @env_test @accessibility
   Scenario Outline: Waste receiver with a pre-existing active API Code logs in via "<account_type>" and gets the same active API Code
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
-    # And I selected a business
+    And the user navigates to report receipt of waste
     And user selects option to view his api code
     When user is on the View API Code page
     Then user should see the "active" API Code for the selected business
