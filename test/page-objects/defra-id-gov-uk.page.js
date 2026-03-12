@@ -47,7 +47,9 @@ class DefraIdGovUKPage extends Page {
    * @param {string} password - Gov.uk password
    */
   async loginWithGovUK(email, password) {
-    log.info(`Login with Gov.uk email: ${email}`)
+    log.info(
+      `${process.env.WDIO_WORKER_ID} Logging in via Gov.uk with user: ${email}`
+    )
     // Verify fields exist and are ready
     await this.signInButton.waitForExist({
       timeout: config.waitforTimeout

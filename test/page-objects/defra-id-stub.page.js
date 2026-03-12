@@ -146,7 +146,9 @@ class DefraIdStubPage extends Page {
   }
 
   async loginAsAUser(email) {
-    log.info(`Logging in as a user with email: ${email}`)
+    log.info(
+      `${process.env.WDIO_WORKER_ID} Logging in via DefraId mock with user: ${email}`
+    )
     const userList = await this.userList.getElements()
 
     // Find the user row with the matching email

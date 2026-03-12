@@ -23,6 +23,10 @@ class DefraIdOrgPickerPage extends Page {
   }
 
   async selectOrganisation(index) {
+    await browser.waitUntil(
+      async () => (await this.organisationList.getElements()).length > 1,
+      { timeoutMsg: 'Organisation list did not load more than 1 item' }
+    )
     const organisationList = await this.organisationList.getElements()
     const radio = await organisationList[index].$('.govuk-radios__input')
     const label = await organisationList[index].$('label').getText()
