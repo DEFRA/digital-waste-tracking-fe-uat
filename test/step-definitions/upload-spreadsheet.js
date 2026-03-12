@@ -77,16 +77,6 @@ When(
 )
 
 Then(
-  'user should be redirected to "Spreadsheet update successful" page',
-  async function () {
-    this.pageName = 'spreadsheet-update-successful-page'
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-    this.organisationId =
-      await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage('update')
-  }
-)
-
-Then(
   /^all the waste movements should be successfully (created|updated)$/,
   async function (action) {
     await UploadSuccessfulPage.verifyFileHasBeenUploadedSuccessfullyToTheS3(
