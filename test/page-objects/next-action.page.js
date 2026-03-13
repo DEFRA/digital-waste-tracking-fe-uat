@@ -3,6 +3,11 @@ import { config } from '../../wdio.conf.js'
 import { browser, $ } from '@wdio/globals'
 
 class NextActionPage extends Page {
+  // methods
+  open() {
+    return super.open('/next-action')
+  }
+
   // locators
   get heading() {
     return $('h1')

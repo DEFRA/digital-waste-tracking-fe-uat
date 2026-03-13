@@ -4,6 +4,11 @@ import { browser } from '~/node_modules/@wdio/globals/build/index'
 import { config } from '../../wdio.conf.js'
 
 class MyAccountHomePage extends Page {
+  // methods
+  open() {
+    return super.open('/account')
+  }
+
   // locators
   get heading() {
     return $('h1')

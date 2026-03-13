@@ -1,8 +1,8 @@
 @feature=Permitted-waste-receiver
 Feature: Permitted waste receiver
-  As a user of a waste receiving organisation, 
-  And I access the waste receiver registration portal 
-  Then I need to indicate whether I am permitted to receive waste in the UK
+  As a user of a waste receiving organisation,
+  I access the waste receiver registration portal
+  I need to indicate whether I am permitted to receive waste in the UK
 
   @env_dev @env_test @issue=DWT-1366 @accessibility
   Scenario: User indicates that they are permitted to receive waste in the UK
@@ -23,7 +23,7 @@ Feature: Permitted waste receiver
     Given a user is on are you a permitted waste receiver page
     When user clicks on the "Continue" button
     Then user should be presented with an error message as below
-      | message            |
+      | message                                                                           |
       | Select Yes if you operate one or more licensed or permitted waste receiving sites |
 
 # Note: there will be seperate tests defined for feedback link etc. when the tickets get played
