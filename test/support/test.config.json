@@ -32,7 +32,7 @@
   "defraIdServiceUrl": "https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/oauth2/authresp",
   "govtGatewayLoginUrl": "https://www.ete.access.service.gov.uk/login/signin/creds",
   "govUKBaseUrl": "https://signin.integration.account.gov.uk",
-  "wasteOrganisationBackendServiceUrl": "https://ephemeral-protected.api.test.cdp-int.defra.cloud/waste-organisation-backend",
+  "wasteOrganisationBackendServiceUrl": "https://waste-organisation-backend.test.cdp-int.defra.cloud",
   "wasteMovementExternalApiBaseUrl": "https://waste-movement-external-api.api.test.cdp-int.defra.cloud",
   "cognitoOAuthBaseUrl": "https://waste-movement-external-api-6bf3a.auth.eu-west-2.amazoncognito.com"
 }

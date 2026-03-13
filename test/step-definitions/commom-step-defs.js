@@ -3,6 +3,7 @@ import NextActionPage from '../page-objects/next-action.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import UploadSuccessfulPage from '../page-objects/upload-successful.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
+import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.page.js'
 
 Then(
   /^(the )?user should be redirected to "([a-zA-Z0-9\-\s]+)" page(| of that business| of that new business)$/,
@@ -29,6 +30,12 @@ Then(
           await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(
             'update'
           )
+        break
+      case 'Confirm disable API code':
+        this.pageName = 'confirm-disable-api-code-page'
+        await ConfirmDisableApiCodePage.verifyUserIsOnConfirmDisableApiCodePage(
+          this.activeApiCode
+        )
         break
     }
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)

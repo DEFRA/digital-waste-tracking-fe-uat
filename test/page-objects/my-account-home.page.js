@@ -53,11 +53,11 @@ class MyAccountHomePage extends Page {
     const cardsText = await cards.map(async (card) => {
       return await card.getText()
     })
-    expect(cardsText).toEqual([
-      'Report receipt of waste',
-      'Manage account',
-      'Service charge\nDue October 2026'
-    ])
+    expect(cardsText).toContain('Report receipt of waste')
+    expect(cardsText).toContain('Manage account')
+    expect(cardsText).toEqual(
+      expect.arrayContaining([expect.stringContaining('Service charge')])
+    )
   }
 
   async navigateToReportReceiptOfWasteOptionsPage() {

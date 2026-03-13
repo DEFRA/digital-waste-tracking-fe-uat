@@ -73,17 +73,6 @@ When('user tries to disable an active API Code', async function () {
 })
 
 When(
-  'user should be redirected to "Confirm disable API code" page',
-  async function () {
-    await ConfirmDisableApiCodePage.verifyUserIsOnConfirmDisableApiCodePage(
-      this.activeApiCode
-    )
-    this.pageName = 'confirm-disable-api-code-page'
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-  }
-)
-
-When(
   'user selects the {string} option to disabling the API Code',
   async function (option) {
     if (option === 'Yes') {
