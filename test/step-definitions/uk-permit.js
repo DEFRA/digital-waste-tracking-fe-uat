@@ -1,7 +1,6 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
 import HomePage from '../page-objects/home.page.js'
 import UKPermitPage from '../page-objects/uk-permit.page.js'
-import CannotUseServicePage from '../page-objects/cannot-use-service.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 
 Given(
@@ -31,22 +30,13 @@ When(/^user clicks on the "(["A-Za-z\s]+)" button$/, async function (link) {
 })
 
 Then(
-  'user should be redirected to "Sorry, you cannot use the service" page',
-  async function () {
-    this.pageName = 'cannot-use-service-page'
-    await CannotUseServicePage.verifyUserIsOnCannotUseServicePage()
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-  }
-)
-
-Then(
   'user should be presented with an error message as below',
   async function (dataTable) {
     this.pageName = 'uk-permit-error-page'
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
     const rows = dataTable.hashes()
     // Verify the error message is displayed on the page
     await UKPermitPage.verifyErrorMessage(rows[0].message)
+    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }
 )
 
