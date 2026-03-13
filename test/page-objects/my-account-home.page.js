@@ -14,10 +14,6 @@ class MyAccountHomePage extends Page {
     return $('h1')
   }
 
-  open() {
-    return super.open('/account')
-  }
-
   get organisationName() {
     return $('p[data-testid="app-heading-organisation-name"]')
   }
