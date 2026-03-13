@@ -5,7 +5,11 @@
     "autotest.ee2026+1102263@gmail.com",
     "autotest.ee2026+2002261@gmail.com",
     "autotest.ee2026+2002262@gmail.com",
-    "autotest.ee2026+2002263@gmail.com"
+    "autotest.ee2026+2002263@gmail.com",
+    "autotest.ee2026+1203267@gmail.com",
+    "autotest.ee2026+1203268@gmail.com",
+    "autotest.ee2026+1203269@gmail.com",
+    "autotest.ee2026+12032610@gmail.com"
   ],
   "govGatewayLogin": [
     "858098260796",
@@ -13,7 +17,17 @@
     "150575801214",
     "980913504133",
     "515327393612",
-    "242685120382"
+    "242685120382",
+    "76 70 81 56 69 93",
+    "76 17 42 80 11 92",
+    "54 93 46 02 45 80",
+    "35 59 50 73 42 23"
+  ],
+  "multipleBusinessesGovUKLogin": [
+    "autotest.ee2026+1203263@gmail.com",
+    "autotest.ee2026+1203264@gmail.com",
+    "autotest.ee2026+1203265@gmail.com",
+    "autotest.ee2026+1203266@gmail.com"
   ],
   "defraIdServiceUrl": "https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/oauth2/authresp",
   "govtGatewayLoginUrl": "https://www.ete.access.service.gov.uk/login/signin/creds",

@@ -3,7 +3,7 @@ import { generateBaseWasteReceiptData } from '../utils/apis/test-data-manager.js
 import { authenticateAndSetToken } from '../utils/apis/auth.js'
 
 Then(
-  /^user should be able to use the (new|current) API code to submit waste movements$/,
+  /^user should be able to use the (new |current |)API code to submit waste movements$/,
   async function (apiCodeType) {
     const wasteReceiptData = generateBaseWasteReceiptData()
     wasteReceiptData.apiCode = this.activeApiCode

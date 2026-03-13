@@ -51,7 +51,9 @@ class DefraIdGovtGatewayPage extends Page {
    * @param {string} password - Government Gateway password
    */
   async loginWithGovernmentGateway(userId, password) {
-    log.info('Attempting to login with Government Gateway user ID: ', userId)
+    log.info(
+      `${process.env.WDIO_WORKER_ID} Logging in via Govt gateway with user: ${userId}`
+    )
 
     await this.waitForPageToLoad()
 

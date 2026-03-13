@@ -9,23 +9,32 @@ So that I can submit waste movement data, correctly linked to the business I hav
     Given a user is logged in to the waste receiver registration portal
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
-    Then user should be redirected to "Upload successful" page
+    Then the user should be redirected to "Upload successful" page
     And all the waste movements should be successfully created
     # And email should sent to the user with the spreadsheet and WTIDs
 
   @env_test @accessibility
   Scenario Outline: Waste receiver should be able to login via "<account_type>" and upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
+    And the user navigates to report receipt of waste
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
-    Then user should be redirected to "Upload successful" page
+    Then the user should be redirected to "Upload successful" page
     And all the waste movements should be successfully created
     # And email should sent to the user with the spreadsheet and WTIDs
-  
-  Examples:
-    | account_type |
-    | Gov UK       |
-    | Government Gateway |
 
-# dev work pending , to implement below scenario
+    Examples:
+      | account_type       |
+      | Gov UK             |
+      | Government Gateway |
+
+  @env_test
+  Scenario: Waste receiver with multiple businesses can upload waste movements for each selected business
+    Given a multi-business user is logged in via "Gov UK"
+    And the user successfully uploads a waste movement spreadsheet for the selected business
+    And all the waste movements should be successfully created
+    When the user switches to a different business
+    Then the user should be able to successfully upload a waste movement spreadsheet for that business
+    And all the waste movements should be successfully created
+# to implement below scenario
 # user should not be able to continue without uploading a spreadsheet

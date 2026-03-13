@@ -2,6 +2,36 @@ import { When, Then, Given } from '@wdio/cucumber-framework'
 import ManageApiCodePage from '../page-objects/manage-api-code.page.js'
 import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
+import MyAccountHomePage from '../page-objects/my-account-home.page.js'
+import NextActionPage from '../page-objects/next-action.page.js'
+
+async function navigateToApiCodePage(context) {
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+  await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
+  await NextActionPage.selectNextAction('connectYourSoftware')
+  await ManageApiCodePage.verifyUserIsOnYourApiCodePage()
+  const activeAPICodes = await ManageApiCodePage.getListOfActiveAPICodes()
+  context.activeApiCode = activeAPICodes[0]
+  return context.activeApiCode
+}
+
+Given(
+  'the user views the API code for the selected business',
+  async function () {
+    await navigateToApiCodePage(this)
+  }
+)
+
+Then(
+  'the user should see a different {string} API code for that business',
+  async function (status) {
+    const previousApiCode = this.activeApiCode
+    const newApiCode = await navigateToApiCodePage(this)
+    await ManageApiCodePage.verifyAPICodeIsDisplayed(newApiCode, status)
+    expect(newApiCode).not.toBe(previousApiCode)
+    this.activeApiCode = newApiCode
+  }
+)
 
 When('user is on the View API Code page', async function () {
   await ManageApiCodePage.verifyUserIsOnYourApiCodePage()
@@ -41,17 +71,6 @@ Then(
 When('user tries to disable an active API Code', async function () {
   await ManageApiCodePage.clickDisableButtonForAPICode(this.activeApiCode)
 })
-
-When(
-  'user should be redirected to "Confirm disable API code" page',
-  async function () {
-    await ConfirmDisableApiCodePage.verifyUserIsOnConfirmDisableApiCodePage(
-      this.activeApiCode
-    )
-    this.pageName = 'confirm-disable-api-code-page'
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-  }
-)
 
 When(
   'user selects the {string} option to disabling the API Code',

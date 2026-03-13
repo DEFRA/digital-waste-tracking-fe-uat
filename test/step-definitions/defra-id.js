@@ -8,6 +8,7 @@ import HomePage from '../page-objects/home.page.js'
 import NextActionPage from '../page-objects/next-action.page.js'
 import { getValueFromPool } from '@wdio/shared-store-service'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
+import DefraIdOrgPickerPage from '../page-objects/defra-id-org-picker.page.js'
 
 Given(
   'user proceeds to login using a Government Gateway account',
@@ -80,9 +81,6 @@ Given(
     )
     this.defraIdMockUser = this.userEmail
 
-    // this.defraIdMockUser = `test1773138030696@test.com`
-    // this.userEmail = `test1773138030696@test.com`
-
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
 
@@ -142,17 +140,60 @@ Given(
       await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
       await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
 
-      this.govUKUser = await getValueFromPool('availableGovUKUsers')
+      if (this.govUKUser === undefined)
+        this.govUKUser = await getValueFromPool('availableGovUKUsers')
+
       await DefraIdGovUKPage.loginWithGovUK(
         this.govUKUser,
         this.env.defraGovUKPassword
       )
     }
+  }
+)
 
-    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-    await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
+Given(
+  'a multi-business user is logged in via {string}',
+  async function (accountType) {
+    this.govUKUser = await getValueFromPool(
+      'availableMultipleBusinessesGovUKUsers'
+    )
+    this.userWithMultipleBusinesses = true
 
-    await NextActionPage.verifyUserIsOnChooseNextActionPage()
+    await UKPermitPage.open()
+    await UKPermitPage.verifyUserIsOnUKPermitPage()
+    await UKPermitPage.selectYesOption()
+    await UKPermitPage.click(UKPermitPage.continueButton)
+    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+      this.testConfig.defraIdServiceUrl
+    )
+
+    await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
+    await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
+    await DefraIdChooseSignInPage.clickContinueButton()
+    await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
+    await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
+    await DefraIdGovUKPage.loginWithGovUK(
+      this.govUKUser,
+      this.env.defraGovUKPassword
+    )
+
+    await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
+    this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(0)
+  }
+)
+
+Given('a user is associated with multiple businesses', async function () {
+  this.govUKUser = await getValueFromPool(
+    'availableMultipleBusinessesGovUKUsers'
+  )
+  this.userWithMultipleBusinesses = true
+})
+
+Given(
+  'the user has selected a business that he wants to act on behalf of',
+  async function () {
+    await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
+    this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(0)
   }
 )
 
