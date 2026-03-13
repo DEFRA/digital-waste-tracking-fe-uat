@@ -72,7 +72,7 @@ When('user has selected a business', async function () {
 })
 
 Given(
-  'a user is logged in to the waste receiver registration portal',
+  /^(?:a user is|I am) logged in to the waste receiver registration portal$/,
   async function () {
     this.userEmail = `test${Date.now()}@test.com`
     await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
@@ -109,7 +109,7 @@ Given(
 )
 
 Given(
-  'a user is logged in to the waste receiver registration portal using a {string} account',
+  /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account$/,
   async function (accountType) {
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
@@ -194,5 +194,12 @@ Given(
   async function () {
     await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
     this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(0)
+  }
+)
+
+Given(
+  /^(?:a user is|I am) not logged in to the waste receiver registration portal$/,
+  async function () {
+    // Do nothing as we want to ensure user is not logged in for this step. Step definition is here to improve readability of the scenario
   }
 )

@@ -6,6 +6,14 @@ class Page {
     return $('h1')
   }
 
+  get betaBanner() {
+    return $('.govuk-phase-banner')
+  }
+
+  get feedbackLink() {
+    return $('.govuk-phase-banner .govuk-link')
+  }
+
   open(path) {
     return browser.url(path)
   }
@@ -136,6 +144,38 @@ class Page {
         timeout: config.waitforTimeout,
         timeoutMsg: 'Page did not load within the expected time'
       }
+    )
+  }
+
+  async verifyBetaBannerIsDisplayed() {
+    await expect(this.betaBanner).toBeDisplayed()
+    await expect(this.betaBanner).toHaveText(expect.stringContaining('Beta'))
+    await expect(this.betaBanner).toHaveText(
+      expect.stringContaining('This is a new service. Help us improve it and')
+    )
+  }
+
+  async verifyFeedbackLinkIsDisplayed() {
+    await expect(this.feedbackLink).toBeDisplayed()
+    await expect(this.feedbackLink).toHaveAttribute(
+      'href',
+      'https://defragroup.eu.qualtrics.com/jfe/form/SV_1ALCrSKxbPNvlKC'
+    )
+    await expect(this.feedbackLink).toHaveText(
+      'give your feedback (opens in new tab)'
+    )
+  }
+
+  async clickFeedbackLink() {
+    await this.click(this.feedbackLink)
+  }
+
+  async verifyFeedbackFormOpenedInNewTab() {
+    const handles = await browser.getWindowHandles()
+    expect(handles.length).toBe(2)
+    await browser.switchToWindow(handles[1])
+    await expect(browser).toHaveUrl(
+      'https://defragroup.eu.qualtrics.com/jfe/form/SV_1ALCrSKxbPNvlKC'
     )
   }
 }
