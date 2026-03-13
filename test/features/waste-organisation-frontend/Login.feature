@@ -11,7 +11,7 @@ Feature: Login as a user for waste receiving organisation
     And user proceeds to login using a Government Gateway account
     When user enters their Government user Id and password
     Then they should be logged in successfully
-    And user is redirected to "account-home" page 
+    And the user should be redirected to "account-home" page
 
   @env_test @accessibility
   Scenario: User should be able to login for the first time using a Gov.uk account
@@ -19,7 +19,7 @@ Feature: Login as a user for waste receiving organisation
     And user proceeds to login using a Gov.uk account
     When user enters their Gov.uk email address and password
     Then they should be logged in successfully
-    And user is redirected to "account-home" page
+    And the user should be redirected to "account-home" page
 
   @env_dev
   Scenario: User should be able to login [using defraId mock] and presented with different options to continue
@@ -30,4 +30,4 @@ Feature: Login as a user for waste receiving organisation
     And user should be redirected to Defra Id service
     When user successfully logs in to the Defra Id mock service
     And user has selected a business
-    Then user is redirected to "account-home" page
+    Then the user should be redirected to "account-home" page

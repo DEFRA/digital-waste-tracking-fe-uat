@@ -1,7 +1,56 @@
-import { When, Then } from '@wdio/cucumber-framework'
+import { When, Then, Given } from '@wdio/cucumber-framework'
 import UploadSpreadsheetPage from '../page-objects/upload-spreadsheet.page.js'
 import UploadSuccessfulPage from '../page-objects/upload-successful.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
+import MyAccountHomePage from '../page-objects/my-account-home.page.js'
+import NextActionPage from '../page-objects/next-action.page.js'
+
+const spreadsheetActions = {
+  upload: {
+    action: 'uploadSpreadsheet',
+    file: 'Test1-spreadsheet.xlsx',
+    mode: undefined
+  },
+  update: {
+    action: 'updateSpreadsheet',
+    file: 'Test1-update-spreadsheet.xlsx',
+    mode: 'update'
+  }
+}
+
+async function processSpreadsheetForBusiness(context, type) {
+  const { action, file, mode } = spreadsheetActions[type]
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+  await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
+  await NextActionPage.selectNextAction(action)
+  await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage(mode)
+  context.uploadedFileName = await UploadSpreadsheetPage.uploadSpreadsheet(
+    file,
+    mode
+  )
+  context.organisationId =
+    await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(mode)
+}
+
+Given(
+  /^the user successfully (uploads a waste movement spreadsheet|updates existing waste movements using a spreadsheet) for the selected business$/,
+  async function (action) {
+    await processSpreadsheetForBusiness(
+      this,
+      action.startsWith('uploads') ? 'upload' : 'update'
+    )
+  }
+)
+
+Then(
+  /^the user should be able to successfully (upload a waste movement spreadsheet|update existing waste movements using a spreadsheet) for that business$/,
+  async function (action) {
+    await processSpreadsheetForBusiness(
+      this,
+      action.startsWith('upload ') ? 'upload' : 'update'
+    )
+  }
+)
 
 When(
   'user selects copy of a valid spreadsheet file {string} to upload',
@@ -11,16 +60,6 @@ When(
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
     this.uploadedFileName =
       await UploadSpreadsheetPage.uploadSpreadsheet(spreadsheetFile)
-  }
-)
-
-Then(
-  'user should be redirected to "Upload successful" page',
-  async function () {
-    this.pageName = 'upload-successful-page'
-    this.organisationId =
-      await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }
 )
 
@@ -34,16 +73,6 @@ When(
       spreadsheetFile,
       'update'
     )
-  }
-)
-
-Then(
-  'user should be redirected to "Spreadsheet update successful" page',
-  async function () {
-    this.pageName = 'spreadsheet-update-successful-page'
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-    this.organisationId =
-      await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage('update')
   }
 )
 

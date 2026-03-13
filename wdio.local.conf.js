@@ -214,8 +214,11 @@ export const config = {
       'utf8'
     )
     cucumberWorld.testConfig = JSON.parse(testConfigData)
+    const wasteOrganisationBackendServiceUrl = process.env.xapikey
+      ? `https://ephemeral-protected.api.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/waste-organisation-backend`
+      : cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl
     cucumberWorld.apis = ApiFactory.create(
-      cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl,
+      wasteOrganisationBackendServiceUrl,
       cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.env.HTTP_PROXY
@@ -249,6 +252,12 @@ export const config = {
         cucumberWorld.govGatewayUser
       )
     }
+    if (cucumberWorld.multipleBusinessesGovUKUser !== undefined) {
+      await addValueToPool(
+        'availableMultipleBusinessesGovUKUsers',
+        cucumberWorld.multipleBusinessesGovUKUser
+      )
+    }
     if (cucumberWorld.defraIdMockUserId !== undefined) {
       // cleanup the user from the defra id mock service
       log.info(
@@ -280,6 +289,10 @@ export const config = {
       await setResourcePool(
         'availableGovGatewayUsers',
         testConfig.govGatewayLogin
+      )
+      await setResourcePool(
+        'availableMultipleBusinessesGovUKUsers',
+        testConfig.multipleBusinessesGovUKLogin
       )
     }
   },
