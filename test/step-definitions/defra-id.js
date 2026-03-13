@@ -53,19 +53,10 @@ When('user enters their Gov.uk email address and password', async function () {
 })
 
 Given('a user is registered in Defra Id mock service', async function () {
-  // to handle gracefully when pool is empty
-  try {
-    this.defraIdMockUser = await getValueFromPool('availableDefraIdMockUsers')
-  } catch (error) {}
-
-  if (this.defraIdMockUser === undefined || this.defraIdMockUser === '') {
-    this.userEmail = `test${Date.now()}@test.com`
-    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-    await DefraIdStubPage.registerNewUser(this.userEmail)
-    this.defraIdMockUser = this.userEmail
-  } else {
-    this.userEmail = this.defraIdMockUser
-  }
+  this.userEmail = `test${Date.now()}@test.com`
+  await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
+  this.defraIdMockUserId = await DefraIdStubPage.registerNewUser(this.userEmail)
+  this.defraIdMockUser = this.userEmail
 })
 
 When(
@@ -82,23 +73,15 @@ When('user has selected a business', async function () {
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal$/,
   async function () {
-    // to handle gracefully when pool is empty
-    try {
-      this.defraIdMockUser = await getValueFromPool('availableDefraIdMockUsers')
-    } catch (error) {}
+    this.userEmail = `test${Date.now()}@test.com`
+    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
+    this.defraIdMockUserId = await DefraIdStubPage.registerNewUser(
+      this.userEmail
+    )
+    this.defraIdMockUser = this.userEmail
 
-    if (this.defraIdMockUser === undefined || this.defraIdMockUser === '') {
-      this.userEmail = `test${Date.now()}@test.com`
-      await DefraIdStubPage.open(
-        this.testConfig.defraIdServiceUrl + '/register'
-      )
-      await DefraIdStubPage.registerNewUser(this.userEmail)
-      this.defraIdMockUser = this.userEmail
-    } else {
-      this.userEmail = this.defraIdMockUser
-    }
-
-    // this.userEmail = `test1771414854367@test.com`
+    // this.defraIdMockUser = `test1773138030696@test.com`
+    // this.userEmail = `test1773138030696@test.com`
 
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()

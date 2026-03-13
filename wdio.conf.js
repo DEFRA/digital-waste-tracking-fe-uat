@@ -6,6 +6,10 @@ import {
 import { readFileSync } from 'fs'
 import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
+import { browser } from '@wdio/globals'
+import logger from '@wdio/logger'
+const log = logger('wdio.conf.js')
+
 // const oneMinute = 60 * 1000
 
 export const config = {
@@ -193,6 +197,15 @@ export const config = {
       await addValueToPool(
         'availableGovGatewayUsers',
         cucumberWorld.govGatewayUser
+      )
+    }
+    if (cucumberWorld.defraIdMockUserId !== undefined) {
+      // cleanup the user from the defra id mock service
+      log.info(
+        `cleaning up the user from the defra id mock service: ${cucumberWorld.defraIdMockUserId}`
+      )
+      await browser.url(
+        `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
       )
     }
   },
