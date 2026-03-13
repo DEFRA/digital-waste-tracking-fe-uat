@@ -4,8 +4,8 @@ Feature: Feedback Survey link for authenticated or unauthenticated users
   I want to have access to a feedback survey link on the portal
   So that I can provide feedback about the service
 
-  @env_test @accessibility
-  Scenario: Authenticated user should be able to access the feedback form via the feedback link
+  @env_dev @env_test @accessibility
+  Scenario: Authenticated Gov UK user should be able to access the feedback form via the feedback link
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to any page on the portal
     And the user should see a beta banner and a feedback survey link
@@ -20,7 +20,7 @@ Feature: Feedback Survey link for authenticated or unauthenticated users
     Then the feedback form should open in a new tab
 
   @env_dev
-  Scenario: Authenticated user should be able to access the feedback form via the feedback link
+  Scenario: Authenticated Defra ID user should be able to access the feedback form via the feedback link
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to any page on the portal
     And the user should see a beta banner and a feedback survey link
