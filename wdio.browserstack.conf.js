@@ -5,6 +5,7 @@ import fs from 'node:fs'
 import { readFileSync } from 'fs'
 import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
+import AllureReporter from '@wdio/allure-reporter'
 
 // const debug = process.env.DEBUG
 // const oneMinute = 60 * 1000
@@ -248,23 +249,18 @@ export const config = {
     // Log BrowserStack session information
     const sessionId = browser.sessionId
     const capabilities = await browser.capabilities
-    const deviceInfo = capabilities.deviceName
-      ? `Device: ${capabilities.deviceName}`
-      : `OS: ${capabilities.os} ${capabilities.osVersion}`
+    const requestedBstackOptions =
+      browser.options.capabilities?.['bstack:options'] ?? {}
+    const browserInfo =
+      `${capabilities.browserName} ${capabilities.browserVersion || ''}`.trim()
+    const deviceInfo = requestedBstackOptions.deviceName
+      ? `Device: ${requestedBstackOptions.deviceName}`
+      : `OS: ${requestedBstackOptions.os} ${requestedBstackOptions.osVersion}`
 
-    // eslint-disable-next-line no-console
-    console.log('\n🔧 BrowserStack Session Info:')
-    // eslint-disable-next-line no-console
-    console.log(`  Session ID: ${sessionId}`)
-    // eslint-disable-next-line no-console
-    console.log(
-      `  Browser: ${capabilities.browserName} ${capabilities.browserVersion || ''}`
-    )
-    // eslint-disable-next-line no-console
-    console.log(`  ${deviceInfo}`)
-    // eslint-disable-next-line no-console
-    console.log(
-      `  View in Dashboard: https://automate.browserstack.com/dashboard/v2/search?query=${sessionId}`
+    AllureReporter.addLabel('browser', browserInfo)
+    AllureReporter.addLabel('platform', deviceInfo)
+    AllureReporter.addDescription(
+      `**Browser:** ${browserInfo}<br>**${deviceInfo}**`
     )
 
     // Initialize world object properties here
