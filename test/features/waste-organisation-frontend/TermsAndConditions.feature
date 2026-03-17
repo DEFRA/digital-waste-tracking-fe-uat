@@ -4,7 +4,7 @@ Feature: Terms and conditions for authenticated or unauthenticated users
   I want to access the terms and conditions 
   So that I understand the legal responsibilities associated with using the service. 
 
-  @env_dev @env_test @accessibility
+  @env_test @accessibility
   Scenario: Authenticated Gov UK user should be able to see the Access declaration in T&Cs via the terms link
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to any page on the portal
