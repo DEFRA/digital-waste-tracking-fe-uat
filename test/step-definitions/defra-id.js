@@ -74,37 +74,61 @@ When('user has selected a business', async function () {
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal$/,
   async function () {
-    this.userEmail = `test${Date.now()}@test.com`
-    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-    this.defraIdMockUserId = await DefraIdStubPage.registerNewUser(
-      this.userEmail
-    )
-    this.defraIdMockUser = this.userEmail
+    if (this.env.ENVIRONMENT === 'dev') {
+      this.userEmail = `test${Date.now()}@test.com`
+      await DefraIdStubPage.open(
+        this.testConfig.defraIdServiceUrl + '/register'
+      )
+      this.defraIdMockUserId = await DefraIdStubPage.registerNewUser(
+        this.userEmail
+      )
+      this.defraIdMockUser = this.userEmail
 
-    await UKPermitPage.open()
-    await UKPermitPage.verifyUserIsOnUKPermitPage()
+      await UKPermitPage.open()
+      await UKPermitPage.verifyUserIsOnUKPermitPage()
 
-    await UKPermitPage.selectYesOption()
+      await UKPermitPage.selectYesOption()
 
-    await UKPermitPage.click(UKPermitPage.continueButton)
+      await UKPermitPage.click(UKPermitPage.continueButton)
 
-    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-      this.testConfig.defraIdServiceUrl
-    )
+      await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+        this.testConfig.defraIdServiceUrl
+      )
 
-    await DefraIdStubPage.loginAsAUser(this.userEmail)
+      await DefraIdStubPage.loginAsAUser(this.userEmail)
 
-    const temp = await DefraIdStubPage.getFirstOrganisationId()
-    this.organisationId = temp
-      .replace(/Organisation ID:/g, '')
-      .replace(/\| Role: Employee/g, '')
-      .trim()
-    await DefraIdStubPage.selectFirstOrganisation()
+      const temp = await DefraIdStubPage.getFirstOrganisationId()
+      this.organisationId = temp
+        .replace(/Organisation ID:/g, '')
+        .replace(/\| Role: Employee/g, '')
+        .trim()
+      await DefraIdStubPage.selectFirstOrganisation()
 
-    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-    await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
+      await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+      await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
 
-    await NextActionPage.verifyUserIsOnChooseNextActionPage()
+      await NextActionPage.verifyUserIsOnChooseNextActionPage()
+    } else {
+      // pick a default Gov UK or Govt gateway user and login with it
+      // only use this step for test if parallel open sessions of a user does not effect the test
+      await UKPermitPage.open()
+      await UKPermitPage.verifyUserIsOnUKPermitPage()
+      await UKPermitPage.selectYesOption()
+      await UKPermitPage.click(UKPermitPage.continueButton)
+      await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+        this.testConfig.defraIdServiceUrl
+      )
+
+      await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
+      await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
+      await DefraIdChooseSignInPage.clickContinueButton()
+      await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
+      await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
+      await DefraIdGovUKPage.loginWithGovUK(
+        this.testConfig.defaultGovUKLogin,
+        this.env.defraGovUKPassword
+      )
+    }
   }
 )
 

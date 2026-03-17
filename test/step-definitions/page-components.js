@@ -1,5 +1,6 @@
-import { Then, When } from '@cucumber/cucumber'
+import { Given, Then, When } from '@cucumber/cucumber'
 import TermsPage from '../page-objects/terms.page.js'
+import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 
 Then(
   'the user should see a beta banner and a feedback survey link',
@@ -33,3 +34,8 @@ Then(
     await TermsPage.verifyAccessDeclarationInTAndCs()
   }
 )
+
+Given('the user signs out of his existing session', async function () {
+  await MyAccountHomePage.clickSignOutLink()
+  await MyAccountHomePage.verifyUserIsSignedOut()
+})

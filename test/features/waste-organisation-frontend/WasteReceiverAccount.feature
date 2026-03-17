@@ -1,3 +1,4 @@
+@issue=DWT-1502,DWT-1505
 Feature: Waste receiving account page
     As a signed in user
     I want to see the organisation that I am currently acting on behalf of and the actions available to me

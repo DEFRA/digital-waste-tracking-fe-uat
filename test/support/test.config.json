@@ -29,6 +29,7 @@
     "autotest.ee2026+1203265@gmail.com",
     "autotest.ee2026+1203266@gmail.com"
   ],
+  "defaultGovUKLogin": "autotest.ee2026+1703261@gmail.com",
   "defraIdServiceUrl": "https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/oauth2/authresp",
   "govtGatewayLoginUrl": "https://www.ete.access.service.gov.uk/login/signin/creds",
   "govUKBaseUrl": "https://signin.integration.account.gov.uk",

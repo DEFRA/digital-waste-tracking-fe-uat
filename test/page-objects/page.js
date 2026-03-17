@@ -18,6 +18,10 @@ class Page {
     return $('footer')
   }
 
+  get signOutLink() {
+    return $('a[href="/sign-out"]')
+  }
+
   open(path) {
     return browser.url(path)
   }
@@ -187,6 +191,16 @@ class Page {
     const link = await this.footer.$(`=${linkText}`)
     await link.waitForClickable({ timeout: config.waitforTimeout })
     return await link.click()
+  }
+
+  async clickSignOutLink() {
+    await this.click(this.signOutLink)
+  }
+
+  async verifyUserIsSignedOut() {
+    await expect(browser).toHaveUrl(
+      /\/management\/sign-out-successful|\/signed-out/
+    )
   }
 }
 
