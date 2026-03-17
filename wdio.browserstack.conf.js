@@ -204,7 +204,8 @@ export const config = {
     require: ['./test/step-definitions/**/*.js'],
     tags: `@browserstack`,
     failAmbiguousDefinitions: true,
-    ignoreUndefinedDefinitions: false
+    ignoreUndefinedDefinitions: false,
+    retry: 1
   },
 
   reporters: [
@@ -233,11 +234,16 @@ export const config = {
         'utf8'
       )
       const testConfig = JSON.parse(testConfigData)
-      await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-      await setResourcePool(
-        'availableGovGatewayUsers',
-        testConfig.govGatewayLogin
-      )
+      // create a common user pool of gov uk and govt gateway users
+      const users = testConfig.govUKLogin
+        .concat(testConfig.govGatewayLogin)
+        .sort(() => Math.random() - 0.5)
+      await setResourcePool('availableUsers', users)
+      // await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
+      // await setResourcePool(
+      //   'availableGovGatewayUsers',
+      //   testConfig.govGatewayLogin
+      // )
     }
   },
 
