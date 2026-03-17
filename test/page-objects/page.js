@@ -14,6 +14,10 @@ class Page {
     return $('.govuk-phase-banner .govuk-link')
   }
 
+  get footer() {
+    return $('footer')
+  }
+
   open(path) {
     return browser.url(path)
   }
@@ -177,6 +181,12 @@ class Page {
     await expect(browser).toHaveUrl(
       'https://defragroup.eu.qualtrics.com/jfe/form/SV_1ALCrSKxbPNvlKC'
     )
+  }
+
+  async clickLinkInFooter(linkText) {
+    const link = await this.footer.$(`=${linkText}`)
+    await link.waitForClickable({ timeout: config.waitforTimeout })
+    return await link.click()
   }
 }
 
