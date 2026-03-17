@@ -10,6 +10,10 @@ Feature: Restrict access to the service for unauthenticated users or users with 
     When the user navigates to any page on the portal
     Then the user should be redirected to "You do not have permission to view this page" page
 
-# ToDo : implement an additional test where a logged in user is logged out 
-# and tries to access the service must also be displayed with same message as above
-#  to be picked up after signout ticket is played
+  @env_dev @env_test
+  Scenario: User with invalid token should be displayed with an appropriate message when trying to access the service
+    Given a user is logged in to the waste receiver registration portal
+    And the user signs out of his existing session
+    When the user navigates to any page on the portal
+    Then the user should be redirected to "You do not have permission to view this page" page
+ 
