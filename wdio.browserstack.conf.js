@@ -241,11 +241,6 @@ export const config = {
         .concat(testConfig.govGatewayLogin)
         .sort(() => Math.random() - 0.5)
       await setResourcePool('availableUsers', users)
-      // await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-      // await setResourcePool(
-      //   'availableGovGatewayUsers',
-      //   testConfig.govGatewayLogin
-      // )
     }
   },
 
