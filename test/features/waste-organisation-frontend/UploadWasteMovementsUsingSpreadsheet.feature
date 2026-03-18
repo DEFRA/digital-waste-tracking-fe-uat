@@ -11,6 +11,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
     Then the user should be redirected to "Upload successful" page
     And all the waste movements should be successfully created
+    And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
   @env_test @accessibility
