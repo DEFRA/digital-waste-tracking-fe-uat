@@ -50,7 +50,12 @@ class UploadSuccessfulPage extends Page {
     )
   }
 
-  async getProcessedFileUrl(apiInstance, organisationId, fileName) {
+  async getProcessedFileUrl(
+    apiInstance,
+    organisationId,
+    fileName,
+    timeoutMs = 60000
+  ) {
     let processedFileUrl = null
 
     await browser.waitUntil(
@@ -70,9 +75,9 @@ class UploadSuccessfulPage extends Page {
         return false
       },
       {
-        timeout: 60000,
+        timeout: timeoutMs,
         interval: 5000,
-        timeoutMsg: `Processed file URL was not found for "${fileName}" in organisation "${organisationId}" within the timeout`
+        timeoutMsg: `Processed file URL was not found for "${fileName}" in organisation "${organisationId}" within ${timeoutMs / 1000}s`
       }
     )
 

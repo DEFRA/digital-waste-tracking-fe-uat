@@ -92,19 +92,30 @@ Then(
   }
 )
 
+const WTID_STEP_TIMEOUT_MS = 180000
+const WTID_STEP_MARGIN_MS = 10000
+const PROCESSED_URL_POLL_TIMEOUT_MS = 60000
+
 Then(
   'the processed spreadsheet should contain valid WTIDs',
-  { timeout: 180000 },
+  { timeout: WTID_STEP_TIMEOUT_MS },
   async function () {
+    const stepStart = Date.now()
+
     const processedFileUrl = await UploadSuccessfulPage.getProcessedFileUrl(
       this.apis.wasteOrganisationBackendAPI,
       this.organisationId,
-      this.uploadedFileName
+      this.uploadedFileName,
+      PROCESSED_URL_POLL_TIMEOUT_MS
     )
+
+    const elapsed = Date.now() - stepStart
+    const downloadTimeout = WTID_STEP_TIMEOUT_MS - elapsed - WTID_STEP_MARGIN_MS
 
     const workbook = await downloadAndParseSpreadsheet(
       processedFileUrl,
-      this.env.HTTP_PROXY
+      this.env.HTTP_PROXY,
+      downloadTimeout
     )
     const wtids = extractWtidsFromWorkbook(workbook)
 

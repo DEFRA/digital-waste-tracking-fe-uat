@@ -4,7 +4,11 @@ import logger from '@wdio/logger'
 
 const log = logger('spreadsheet-parser')
 
-export async function downloadAndParseSpreadsheet(presignedUrl, httpProxy) {
+export async function downloadAndParseSpreadsheet(
+  presignedUrl,
+  httpProxy,
+  timeoutMs = 60000
+) {
   const agentOptions = {
     connections: 1,
     pipelining: 1,
@@ -22,14 +26,15 @@ export async function downloadAndParseSpreadsheet(presignedUrl, httpProxy) {
     interceptors.redirect({ maxRedirections: 5 })
   )
 
-  const maxAttempts = 24
   const intervalMs = 5000
 
   try {
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      log.info(
-        `Downloading processed spreadsheet (attempt ${attempt}/${maxAttempts})`
-      )
+    const deadline = Date.now() + timeoutMs
+    let attempt = 0
+
+    while (Date.now() < deadline) {
+      attempt++
+      log.info(`Downloading processed spreadsheet (attempt ${attempt})`)
 
       const response = await request(presignedUrl, {
         method: 'GET',
@@ -47,7 +52,7 @@ export async function downloadAndParseSpreadsheet(presignedUrl, httpProxy) {
         return workbook
       }
 
-      if (response.statusCode === 404 && attempt < maxAttempts) {
+      if (response.statusCode === 404 && Date.now() + intervalMs < deadline) {
         log.info(
           `File not yet available, waiting ${intervalMs / 1000}s before retry`
         )
@@ -61,7 +66,7 @@ export async function downloadAndParseSpreadsheet(presignedUrl, httpProxy) {
     }
 
     throw new Error(
-      `Processed spreadsheet not available after ${maxAttempts} attempts (${(maxAttempts * intervalMs) / 1000}s)`
+      `Processed spreadsheet not available within ${timeoutMs / 1000}s`
     )
   } finally {
     await baseDispatcher.close()
@@ -121,19 +126,24 @@ export function extractWtidsFromWorkbook(workbook) {
       `WTID column found at col ${wtidColumnIndex}, header row ${headerRowNum} in sheet "${worksheet.name}"`
     )
 
+    const sheetWtids = []
     const dataStartRow = headerRowNum + 2
     for (let rowNum = dataStartRow; rowNum <= worksheet.rowCount; rowNum++) {
       const cell = worksheet.getRow(rowNum).getCell(wtidColumnIndex)
       const text = getCellText(cell).trim()
       if (text.length > 0) {
-        wtids.push(text)
+        sheetWtids.push(text)
       }
     }
 
-    log.info(`Extracted ${wtids.length} WTIDs from sheet "${worksheet.name}"`)
-    if (wtids.length > 0) {
-      log.info(`Sample WTIDs: ${JSON.stringify(wtids.slice(0, 3))}`)
+    log.info(
+      `Extracted ${sheetWtids.length} WTIDs from sheet "${worksheet.name}"`
+    )
+    if (sheetWtids.length > 0) {
+      log.info(`Sample WTIDs: ${JSON.stringify(sheetWtids.slice(0, 3))}`)
     }
+
+    wtids.push(...sheetWtids)
   })
 
   return wtids
