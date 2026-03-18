@@ -52,7 +52,8 @@ class MyAccountHomePage extends Page {
 
     const cards = await this.accountCards.getElements()
     const cardsText = await cards.map(async (card) => {
-      return await card.getText()
+      const tmp = await card.getText()
+      return tmp.trim()
     })
     expect(cardsText).toContain('Report receipt of waste')
     expect(cardsText).toContain('Manage account')

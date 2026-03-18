@@ -114,22 +114,22 @@ export const config = {
         implicit: 0 // Don't use implicit waits (use explicit waits instead)
       }
     },
-    // // macOS Safari
-    // {
-    //   browserName: 'Safari',
-    //   'bstack:options': {
-    //     idleTimeout: 300,
-    //     resolution: '1920x1080',
-    //     os: 'OS X',
-    //     osVersion: 'Sonoma',
-    //     browserVersion: '17.3'
-    //   },
-    //   timeouts: {
-    //     script: 120000, // 120 seconds for async script execution
-    //     pageLoad: 120000, // 120 seconds for page load
-    //     implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    //   }
-    // },
+    // macOS Safari
+    {
+      browserName: 'Safari',
+      'bstack:options': {
+        idleTimeout: 300,
+        resolution: '1920x1080',
+        os: 'OS X',
+        osVersion: 'Sonoma',
+        browserVersion: '17.3'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
+      }
+    },
     // Android
     {
       browserName: 'chrome',
