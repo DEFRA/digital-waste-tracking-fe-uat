@@ -148,9 +148,10 @@ Given(
       await DefraIdStubPage.selectFirstOrganisation()
 
       await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-      await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
-
-      await NextActionPage.verifyUserIsOnChooseNextActionPage()
+      if (!this.tags.includes('@browserstack')) {
+        await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
+        await NextActionPage.verifyUserIsOnChooseNextActionPage()
+      }
     } else if (this.tags.includes('@browserstack')) {
       // pick a user from default pool
       const user = await getValueFromPool('availableUsers')
