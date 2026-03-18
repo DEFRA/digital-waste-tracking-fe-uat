@@ -1,6 +1,7 @@
 import { Given, Then, When } from '@cucumber/cucumber'
 import TermsPage from '../page-objects/terms.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
+import CookiesPage from '../page-objects/cookies.page.js'
 
 Then(
   'the user should see a beta banner and a feedback survey link',
@@ -39,3 +40,10 @@ Given('the user signs out of his existing session', async function () {
   await MyAccountHomePage.clickSignOutLink()
   await MyAccountHomePage.verifyUserIsSignedOut()
 })
+
+Then(
+  'the user should be able to see information about how cookies are used',
+  async function () {
+    await CookiesPage.verifyCookiesInformationIsDisplayed()
+  }
+)
