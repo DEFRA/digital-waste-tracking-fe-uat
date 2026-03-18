@@ -99,11 +99,7 @@ export function extractWtidsFromWorkbook(workbook) {
     let wtidColumnIndex = null
     let headerRowNum = null
 
-    for (
-      let rowNum = 1;
-      rowNum <= Math.min(10, worksheet.rowCount);
-      rowNum++
-    ) {
+    for (let rowNum = 1; rowNum <= Math.min(10, worksheet.rowCount); rowNum++) {
       const row = worksheet.getRow(rowNum)
       row.eachCell((cell, colNumber) => {
         const text = getCellText(cell)
