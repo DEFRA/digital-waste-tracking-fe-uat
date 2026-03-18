@@ -71,6 +71,49 @@ When('user has selected a business', async function () {
   await DefraIdStubPage.selectFirstOrganisation()
 })
 
+async function navigateToPortalAndLogin(context, accountType) {
+  await UKPermitPage.open()
+  await UKPermitPage.verifyUserIsOnUKPermitPage()
+  await UKPermitPage.selectYesOption()
+  await UKPermitPage.click(UKPermitPage.continueButton)
+  await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+    context.testConfig.defraIdServiceUrl
+  )
+
+  await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
+
+  if (accountType === 'Government Gateway') {
+    await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
+    await DefraIdChooseSignInPage.clickContinueButton()
+    await DefraIdGovtGatewayPage.setBaseUrl(
+      context.testConfig.govtGatewayLoginUrl
+    )
+    await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage()
+
+    if (context.govGatewayUser === undefined)
+      context.govGatewayUser = await getValueFromPool(
+        'availableGovGatewayUsers'
+      )
+    await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
+      context.govGatewayUser,
+      context.env.defraGovGatewayPassword
+    )
+  } else {
+    await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
+    await DefraIdChooseSignInPage.clickContinueButton()
+    await DefraIdGovUKPage.setBaseUrl(context.testConfig.govUKBaseUrl)
+    await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
+
+    if (context.govUKUser === undefined)
+      context.govUKUser = await getValueFromPool('availableGovUKUsers')
+
+    await DefraIdGovUKPage.loginWithGovUK(
+      context.govUKUser,
+      context.env.defraGovUKPassword
+    )
+  }
+}
+
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal$/,
   async function () {
@@ -105,29 +148,25 @@ Given(
       await DefraIdStubPage.selectFirstOrganisation()
 
       await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-      await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
-
-      await NextActionPage.verifyUserIsOnChooseNextActionPage()
+      if (!this.tags.includes('@browserstack')) {
+        await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
+        await NextActionPage.verifyUserIsOnChooseNextActionPage()
+      }
+    } else if (this.tags.includes('@browserstack')) {
+      // pick a user from default pool
+      const user = await getValueFromPool('availableUsers')
+      if (user.includes('@')) {
+        this.govUKUser = user
+        await navigateToPortalAndLogin(this, 'GOV.UK One Login')
+      } else {
+        this.govGatewayUser = user
+        await navigateToPortalAndLogin(this, 'Government Gateway')
+      }
     } else {
       // pick a default Gov UK or Govt gateway user and login with it
       // only use this step for test if parallel open sessions of a user does not effect the test
-      await UKPermitPage.open()
-      await UKPermitPage.verifyUserIsOnUKPermitPage()
-      await UKPermitPage.selectYesOption()
-      await UKPermitPage.click(UKPermitPage.continueButton)
-      await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-        this.testConfig.defraIdServiceUrl
-      )
-
-      await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-      await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
-      await DefraIdChooseSignInPage.clickContinueButton()
-      await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
-      await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
-      await DefraIdGovUKPage.loginWithGovUK(
-        this.testConfig.defaultGovUKLogin,
-        this.env.defraGovUKPassword
-      )
+      this.govUKUser = this.testConfig.defaultGovUKLogin
+      await navigateToPortalAndLogin(this, 'GOV.UK One Login')
     }
   }
 )
@@ -135,43 +174,7 @@ Given(
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account$/,
   async function (accountType) {
-    await UKPermitPage.open()
-    await UKPermitPage.verifyUserIsOnUKPermitPage()
-    await UKPermitPage.selectYesOption()
-    await UKPermitPage.click(UKPermitPage.continueButton)
-    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-      this.testConfig.defraIdServiceUrl
-    )
-
-    await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-
-    if (accountType === 'Government Gateway') {
-      await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
-      await DefraIdChooseSignInPage.clickContinueButton()
-      await DefraIdGovtGatewayPage.setBaseUrl(
-        this.testConfig.govtGatewayLoginUrl
-      )
-      await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage()
-
-      this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
-      await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
-        this.govGatewayUser,
-        this.env.defraGovGatewayPassword
-      )
-    } else {
-      await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
-      await DefraIdChooseSignInPage.clickContinueButton()
-      await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
-      await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
-
-      if (this.govUKUser === undefined)
-        this.govUKUser = await getValueFromPool('availableGovUKUsers')
-
-      await DefraIdGovUKPage.loginWithGovUK(
-        this.govUKUser,
-        this.env.defraGovUKPassword
-      )
-    }
+    await navigateToPortalAndLogin(this, accountType)
   }
 )
 
@@ -183,23 +186,7 @@ Given(
     )
     this.userWithMultipleBusinesses = true
 
-    await UKPermitPage.open()
-    await UKPermitPage.verifyUserIsOnUKPermitPage()
-    await UKPermitPage.selectYesOption()
-    await UKPermitPage.click(UKPermitPage.continueButton)
-    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-      this.testConfig.defraIdServiceUrl
-    )
-
-    await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-    await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
-    await DefraIdChooseSignInPage.clickContinueButton()
-    await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
-    await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
-    await DefraIdGovUKPage.loginWithGovUK(
-      this.govUKUser,
-      this.env.defraGovUKPassword
-    )
+    await navigateToPortalAndLogin(this, accountType)
 
     await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
     this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(0)

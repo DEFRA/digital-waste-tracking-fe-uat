@@ -5,6 +5,9 @@ import fs from 'node:fs'
 import { readFileSync } from 'fs'
 import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
+import AllureReporter from '@wdio/allure-reporter'
+import logger from '@wdio/logger'
+const log = logger('wdio.browserstack.conf.js')
 
 // const debug = process.env.DEBUG
 // const oneMinute = 60 * 1000
@@ -52,7 +55,7 @@ export const config = {
 
   // Tests to exclude
   exclude: [],
-  maxInstances: 1,
+  maxInstances: 5,
 
   commonCapabilities: {
     'bstack:options': {
@@ -203,7 +206,8 @@ export const config = {
     require: ['./test/step-definitions/**/*.js'],
     tags: `@browserstack`,
     failAmbiguousDefinitions: true,
-    ignoreUndefinedDefinitions: false
+    ignoreUndefinedDefinitions: false,
+    retry: 1
   },
 
   reporters: [
@@ -232,11 +236,11 @@ export const config = {
         'utf8'
       )
       const testConfig = JSON.parse(testConfigData)
-      await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-      await setResourcePool(
-        'availableGovGatewayUsers',
-        testConfig.govGatewayLogin
-      )
+      // create a common user pool of gov uk and govt gateway users
+      const users = testConfig.govUKLogin
+        .concat(testConfig.govGatewayLogin)
+        .sort(() => Math.random() - 0.5)
+      await setResourcePool('availableUsers', users)
     }
   },
 
@@ -248,23 +252,18 @@ export const config = {
     // Log BrowserStack session information
     const sessionId = browser.sessionId
     const capabilities = await browser.capabilities
-    const deviceInfo = capabilities.deviceName
-      ? `Device: ${capabilities.deviceName}`
-      : `OS: ${capabilities.os} ${capabilities.osVersion}`
+    const requestedBstackOptions =
+      browser.options.capabilities?.['bstack:options'] ?? {}
+    const browserInfo =
+      `${capabilities.browserName} ${capabilities.browserVersion || ''}`.trim()
+    const deviceInfo = requestedBstackOptions.deviceName
+      ? `Device: ${requestedBstackOptions.deviceName}`
+      : `OS: ${requestedBstackOptions.os} ${requestedBstackOptions.osVersion}`
 
-    // eslint-disable-next-line no-console
-    console.log('\n🔧 BrowserStack Session Info:')
-    // eslint-disable-next-line no-console
-    console.log(`  Session ID: ${sessionId}`)
-    // eslint-disable-next-line no-console
-    console.log(
-      `  Browser: ${capabilities.browserName} ${capabilities.browserVersion || ''}`
-    )
-    // eslint-disable-next-line no-console
-    console.log(`  ${deviceInfo}`)
-    // eslint-disable-next-line no-console
-    console.log(
-      `  View in Dashboard: https://automate.browserstack.com/dashboard/v2/search?query=${sessionId}`
+    AllureReporter.addLabel('browser', browserInfo)
+    AllureReporter.addLabel('platform', deviceInfo)
+    AllureReporter.addDescription(
+      `**Browser:** ${browserInfo}<br>**${deviceInfo}**`
     )
 
     // Initialize world object properties here
@@ -319,12 +318,18 @@ export const config = {
       console.error('Failed to take screenshot after scenario:', error.message)
     }
     if (cucumberWorld.govUKUser !== undefined) {
-      await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+      await addValueToPool('availableUsers', cucumberWorld.govUKUser)
     }
     if (cucumberWorld.govGatewayUser !== undefined) {
-      await addValueToPool(
-        'availableGovGatewayUsers',
-        cucumberWorld.govGatewayUser
+      await addValueToPool('availableUsers', cucumberWorld.govGatewayUser)
+    }
+    if (cucumberWorld.defraIdMockUserId !== undefined) {
+      // cleanup the user from the defra id mock service
+      log.info(
+        `cleaning up the user from the defra id mock service: ${cucumberWorld.defraIdMockUserId}`
+      )
+      await browser.url(
+        `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
       )
     }
   },
