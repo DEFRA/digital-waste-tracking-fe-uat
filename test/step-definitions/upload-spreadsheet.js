@@ -4,6 +4,10 @@ import UploadSuccessfulPage from '../page-objects/upload-successful.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import NextActionPage from '../page-objects/next-action.page.js'
+import {
+  downloadAndParseSpreadsheet,
+  extractWtidsFromWorkbook
+} from '../utils/spreadsheet-parser.js'
 
 const spreadsheetActions = {
   upload: {
@@ -85,7 +89,39 @@ Then(
       this.uploadedFileName,
       action
     )
-    // ToDo:to be picked up after https://eaflood.atlassian.net/browse/DWT-1304
-    // ToDo:get the list of waste records from waste-movement-backend service by using above bulkId/uploadId
+  }
+)
+
+const WTID_STEP_TIMEOUT_MS = 180000
+const WTID_STEP_MARGIN_MS = 10000
+const PROCESSED_URL_POLL_TIMEOUT_MS = 60000
+
+Then(
+  'the processed spreadsheet should contain valid WTIDs',
+  { timeout: WTID_STEP_TIMEOUT_MS },
+  async function () {
+    const stepStart = Date.now()
+
+    const processedFileUrl = await UploadSuccessfulPage.getProcessedFileUrl(
+      this.apis.wasteOrganisationBackendAPI,
+      this.organisationId,
+      this.uploadedFileName,
+      PROCESSED_URL_POLL_TIMEOUT_MS
+    )
+
+    const elapsed = Date.now() - stepStart
+    const downloadTimeout = WTID_STEP_TIMEOUT_MS - elapsed - WTID_STEP_MARGIN_MS
+
+    const workbook = await downloadAndParseSpreadsheet(
+      processedFileUrl,
+      this.env.HTTP_PROXY,
+      downloadTimeout
+    )
+    const wtids = extractWtidsFromWorkbook(workbook)
+
+    expect(wtids.length).toBeGreaterThan(0)
+    for (const wtid of wtids) {
+      expect(wtid).toMatch(/^[A-Z0-9]{8}$/)
+    }
   }
 )
