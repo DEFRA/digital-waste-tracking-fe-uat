@@ -4,6 +4,10 @@ import UploadSuccessfulPage from '../page-objects/upload-successful.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import NextActionPage from '../page-objects/next-action.page.js'
+import {
+  downloadAndParseSpreadsheet,
+  extractWtidsFromWorkbook
+} from '../utils/spreadsheet-parser.js'
 
 const spreadsheetActions = {
   upload: {
@@ -85,7 +89,28 @@ Then(
       this.uploadedFileName,
       action
     )
-    // ToDo:to be picked up after https://eaflood.atlassian.net/browse/DWT-1304
-    // ToDo:get the list of waste records from waste-movement-backend service by using above bulkId/uploadId
+  }
+)
+
+Then(
+  'the processed spreadsheet should contain valid WTIDs',
+  { timeout: 180000 },
+  async function () {
+    const processedFileUrl = await UploadSuccessfulPage.getProcessedFileUrl(
+      this.apis.wasteOrganisationBackendAPI,
+      this.organisationId,
+      this.uploadedFileName
+    )
+
+    const workbook = await downloadAndParseSpreadsheet(
+      processedFileUrl,
+      this.env.HTTP_PROXY
+    )
+    const wtids = extractWtidsFromWorkbook(workbook)
+
+    expect(wtids.length).toBeGreaterThan(0)
+    for (const wtid of wtids) {
+      expect(wtid).toMatch(/^[A-Z0-9]{8}$/)
+    }
   }
 )

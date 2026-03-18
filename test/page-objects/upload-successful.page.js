@@ -49,6 +49,35 @@ class UploadSuccessfulPage extends Page {
       }
     )
   }
+
+  async getProcessedFileUrl(apiInstance, organisationId, fileName) {
+    let processedFileUrl = null
+
+    await browser.waitUntil(
+      async () => {
+        const response = await apiInstance.getBulkUploadIdByFileName(
+          organisationId,
+          fileName
+        )
+        if (
+          response.statusCode === 200 &&
+          response.json.uploads.length > 0 &&
+          response.json.uploads[0].processedFileUrl
+        ) {
+          processedFileUrl = response.json.uploads[0].processedFileUrl
+          return true
+        }
+        return false
+      },
+      {
+        timeout: 60000,
+        interval: 5000,
+        timeoutMsg: `Processed file URL was not found for "${fileName}" in organisation "${organisationId}" within the timeout`
+      }
+    )
+
+    return processedFileUrl
+  }
 }
 
 export default new UploadSuccessfulPage()
