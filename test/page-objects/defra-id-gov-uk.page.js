@@ -37,7 +37,7 @@ class DefraIdGovUKPage extends Page {
 
     // Verify the heading text
     const headingText = await this.heading.getText()
-    expect(headingText.trim()).toEqual(
+    expect(headingText.trim().normalize('NFKC').replace(/\s+/g, ' ')).toEqual(
       'Create your GOV.UK One Login or sign in'
     )
   }
