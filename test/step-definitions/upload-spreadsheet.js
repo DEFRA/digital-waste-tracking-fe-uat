@@ -1,4 +1,5 @@
 import { When, Then, Given } from '@wdio/cucumber-framework'
+import AllureReporter from '@wdio/allure-reporter'
 import UploadSpreadsheetPage from '../page-objects/upload-spreadsheet.page.js'
 import UploadSuccessfulPage from '../page-objects/upload-successful.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
@@ -62,8 +63,21 @@ When(
     this.pageName = 'upload-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage()
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-    this.uploadedFileName =
-      await UploadSpreadsheetPage.uploadSpreadsheet(spreadsheetFile)
+    // skip this step for non-chromium browsers
+    if (
+      !this.deviceInfo.includes('Samsung Galaxy') &&
+      (this.browserInfo.includes('chrome') ||
+        this.browserInfo.includes('MicrosoftEdge'))
+    ) {
+      this.uploadedFileName =
+        await UploadSpreadsheetPage.uploadSpreadsheet(spreadsheetFile)
+    } else {
+      AllureReporter.addStep(
+        `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
+        {},
+        'skipped'
+      )
+    }
   }
 )
 
@@ -73,10 +87,22 @@ When(
     this.pageName = 'update-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage('update')
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-    this.uploadedFileName = await UploadSpreadsheetPage.uploadSpreadsheet(
-      spreadsheetFile,
-      'update'
-    )
+    if (
+      !this.deviceInfo.includes('Samsung Galaxy') &&
+      (this.browserInfo.includes('chrome') ||
+        this.browserInfo.includes('MicrosoftEdge'))
+    ) {
+      this.uploadedFileName = await UploadSpreadsheetPage.uploadSpreadsheet(
+        spreadsheetFile,
+        'update'
+      )
+    } else {
+      AllureReporter.addStep(
+        `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
+        {},
+        'skipped'
+      )
+    }
   }
 )
 

@@ -22,4 +22,17 @@ Feature: User Journeys - BrowserStack
     Then an additional API code should be created for the organisation
     And display the new API code in the API code list
     And the user signs out of his existing session
-  
+
+  Scenario: compatibility - Waste receiver should be able to upload waste movements using a spreadsheet
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
+    Then the user should be redirected to "Upload successful" page
+
+  Scenario: compatibility - Waste receiver should be able to update waste movements using a spreadsheet
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to update waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "Test1-update-spreadsheet.xlsx" to update existing waste movements
+    Then user should be redirected to "Spreadsheet update successful" page  
