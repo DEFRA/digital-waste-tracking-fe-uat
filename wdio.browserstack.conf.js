@@ -114,22 +114,22 @@ export const config = {
         implicit: 0 // Don't use implicit waits (use explicit waits instead)
       }
     },
-    // // macOS Safari
-    // {
-    //   browserName: 'Safari',
-    //   'bstack:options': {
-    //     idleTimeout: 300,
-    //     resolution: '1920x1080',
-    //     os: 'OS X',
-    //     osVersion: 'Sonoma',
-    //     browserVersion: '17.3'
-    //   },
-    //   timeouts: {
-    //     script: 120000, // 120 seconds for async script execution
-    //     pageLoad: 120000, // 120 seconds for page load
-    //     implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    //   }
-    // },
+    // macOS Safari
+    {
+      browserName: 'Safari',
+      'bstack:options': {
+        idleTimeout: 300,
+        resolution: '1920x1080',
+        os: 'OS X',
+        osVersion: 'Sonoma',
+        browserVersion: '17.3'
+      },
+      timeouts: {
+        script: 120000, // 120 seconds for async script execution
+        pageLoad: 120000, // 120 seconds for page load
+        implicit: 0 // Don't use implicit waits (use explicit waits instead)
+      }
+    },
     // Android
     {
       browserName: 'chrome',
@@ -217,7 +217,7 @@ export const config = {
       {
         outputDir: 'allure-results',
         useCucumberStepReporter: true,
-        disableWebdriverStepsReporting: false,
+        disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: false
       }
     ]
@@ -273,6 +273,8 @@ export const config = {
     cucumberWorld.axeBuilder = null
     cucumberWorld.env = process.env
     cucumberWorld.browserstackSessionId = sessionId // Make session ID accessible in steps
+    cucumberWorld.browserInfo = browserInfo // Make browser name accessible in steps
+    cucumberWorld.deviceInfo = deviceInfo // Make device name accessible in steps
 
     // Load test configuration from <env>.config.json
     const testConfigData = readFileSync(
@@ -297,16 +299,10 @@ export const config = {
   },
 
   afterStep: async function (step, scenario, result) {
-    if (result.error) {
-      try {
-        await browser.takeScreenshot()
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(
-          'Failed to take screenshot after step error:',
-          error.message
-        )
-      }
+    try {
+      await browser.takeScreenshot()
+    } catch (error) {
+      log.error('Failed to take screenshot after step error:', error.message)
     }
   },
 
@@ -314,8 +310,10 @@ export const config = {
     try {
       await browser.takeScreenshot()
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to take screenshot after scenario:', error.message)
+      log.error(
+        'Failed to take screenshot after scenario error:',
+        error.message
+      )
     }
     if (cucumberWorld.govUKUser !== undefined) {
       await addValueToPool('availableUsers', cucumberWorld.govUKUser)

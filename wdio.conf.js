@@ -178,6 +178,14 @@ export const config = {
       cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
     }
 
+    const capabilities = browser.capabilities
+    const browserInfo =
+      `${capabilities.browserName ?? ''} ${capabilities.browserVersion ?? ''}`.trim()
+    const deviceInfo =
+      capabilities.deviceName ?? `OS: ${capabilities.platformName ?? 'local'}`
+    cucumberWorld.browserInfo = browserInfo
+    cucumberWorld.deviceInfo = deviceInfo
+
     // Re-open a fresh browser session for each scenario
     // This ensures test isolation - each scenario starts with a clean browser state
     if (browser.sessionId) {

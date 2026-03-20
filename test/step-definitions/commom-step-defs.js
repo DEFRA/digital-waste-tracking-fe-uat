@@ -6,6 +6,7 @@ import UploadSuccessfulPage from '../page-objects/upload-successful.page.js'
 import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.page.js'
 import CannotUseServicePage from '../page-objects/cannot-use-service.page.js'
 import UserNotAuthenticatedPage from '../page-objects/user-not-authenticated.page.js'
+import AllureReporter from '@wdio/allure-reporter'
 
 Then(
   /^(the )?user should be redirected to "([a-zA-Z0-9\-\s,]+)" page(| of that business| of that new business)$/,
@@ -22,16 +23,40 @@ Then(
         await NextActionPage.verifyUserIsOnChooseNextActionPage()
         break
       case 'Upload successful':
-        this.pageName = 'upload-successful-page'
-        this.organisationId =
-          await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
+        if (
+          !this.deviceInfo.includes('Samsung Galaxy') &&
+          (this.browserInfo.includes('chrome') ||
+            this.browserInfo.includes('MicrosoftEdge'))
+        ) {
+          this.pageName = 'upload-successful-page'
+          this.organisationId =
+            await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
+        } else {
+          AllureReporter.addStep(
+            `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
+            {},
+            'skipped'
+          )
+        }
         break
       case 'Spreadsheet update successful':
-        this.pageName = 'spreadsheet-update-successful-page'
-        this.organisationId =
-          await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(
-            'update'
+        if (
+          !this.deviceInfo.includes('Samsung Galaxy') &&
+          (this.browserInfo.includes('chrome') ||
+            this.browserInfo.includes('MicrosoftEdge'))
+        ) {
+          this.pageName = 'spreadsheet-update-successful-page'
+          this.organisationId =
+            await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(
+              'update'
+            )
+        } else {
+          AllureReporter.addStep(
+            `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
+            {},
+            'skipped'
           )
+        }
         break
       case 'Confirm disable API code':
         this.pageName = 'confirm-disable-api-code-page'
