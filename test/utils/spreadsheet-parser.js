@@ -103,17 +103,20 @@ function isErrorsHeader(cellText) {
   return ERRORS_HEADER_PATTERNS.some((pattern) => normalised === pattern)
 }
 
-export function extractDataFromWorkbook(workbook, dataType = "Wtids") {
+export function extractDataFromWorkbook(workbook, dataType = 'Wtids') {
   const data = []
 
   workbook.eachSheet((worksheet) => {
     let columnIndex = null
     let headerRowNum = null
 
-    if ((dataType === "Wtids" && worksheet.name !== '7. Waste movement level')) {
+    if (dataType === 'Wtids' && worksheet.name !== '7. Waste movement level') {
       return
     }
-    if ((dataType === "errors" && !(/7\. Waste movement level|8\. Waste item level/i.test(worksheet.name)))) {
+    if (
+      dataType === 'errors' &&
+      !/7\. Waste movement level|8\. Waste item level/i.test(worksheet.name)
+    ) {
       return
     }
 
@@ -121,11 +124,10 @@ export function extractDataFromWorkbook(workbook, dataType = "Wtids") {
       const row = worksheet.getRow(rowNum)
       row.eachCell((cell, colNumber) => {
         const text = getCellText(cell)
-        if (dataType === "Wtids" && isWtidHeader(text)) {
+        if (dataType === 'Wtids' && isWtidHeader(text)) {
           columnIndex = colNumber
           headerRowNum = rowNum
-        }
-        else if (dataType === "errors" && isErrorsHeader(text)) {
+        } else if (dataType === 'errors' && isErrorsHeader(text)) {
           columnIndex = colNumber
           headerRowNum = rowNum
         }
