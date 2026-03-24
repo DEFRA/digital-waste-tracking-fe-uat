@@ -1,6 +1,6 @@
 export const EXPECTED_ERRORS = {
   'Test1-update-format-errors-spreadsheet.xlsx': {
-    errors_waste_movement_level: [
+    errorsWasteMovementLevel: [
       { row: 10, value: 'Waste Tracking ID is required (B10)' },
       { row: 11, value: 'Waste Tracking ID is required (B11)' },
       { row: 12, value: 'Waste Tracking ID is required (B12)' },
@@ -13,7 +13,7 @@ export const EXPECTED_ERRORS = {
           'No waste items for unique reference (C16)\nWaste Tracking ID is required (B16)'
       }
     ],
-    errors_waste_item_level: [
+    errorsWasteItemLevel: [
       {
         row: 11,
         value: 'Cannot parse disposal / recovery codes (R1 = 50 = Kg) (R11)'
@@ -21,14 +21,14 @@ export const EXPECTED_ERRORS = {
     ]
   },
   'Test1-api-errors-spreadsheet.xlsx': {
-    errors_waste_movement_level: [
+    errorsWasteMovementLevel: [
       {
         row: 9,
         value:
           'postcode must be in valid UK or Ireland format (S9)\nIf carrier.meansOfTransport is "Road" then carrier.vehicleRegistration is required (W9)'
       }
     ],
-    errors_waste_item_level: [
+    errorsWasteItemLevel: [
       {
         row: 9,
         value:
@@ -37,14 +37,14 @@ export const EXPECTED_ERRORS = {
     ]
   },
   'Test1-format-errors-spreadsheet.xlsx': {
-    errors_waste_movement_level: [
+    errorsWasteMovementLevel: [
       {
         row: 9,
         value: 'Waste Tracking ID must not be present on a create upload (B9)'
       },
       { row: 16, value: 'No waste items for unique reference (C16)' }
     ],
-    errors_waste_item_level: [
+    errorsWasteItemLevel: [
       {
         row: 11,
         value: 'Cannot parse disposal / recovery codes (R1 = 50 = Kg) (R11)'

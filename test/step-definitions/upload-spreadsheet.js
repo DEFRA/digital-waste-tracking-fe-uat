@@ -177,8 +177,11 @@ Then(
       downloadTimeout
     )
 
-    const { errorsWasteMovementLevel, errorsWasteItemLevel } =
-      extractDataFromWorkbook(workbook, 'errors')
+    const errorsData = extractDataFromWorkbook(workbook, 'errors')
+    const { errorsWasteMovementLevel, errorsWasteItemLevel } = {
+      errorsWasteMovementLevel: errorsData.errors_waste_movement_level,
+      errorsWasteItemLevel: errorsData.errors_waste_item_level
+    }
 
     const expectedErrors = EXPECTED_ERRORS[this.spreadsheetFileName]
 

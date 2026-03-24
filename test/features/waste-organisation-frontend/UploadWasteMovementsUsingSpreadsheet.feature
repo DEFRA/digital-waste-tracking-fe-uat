@@ -39,7 +39,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     Then the user should be able to successfully upload a waste movement spreadsheet for that business
     And all the waste movements should be successfully created
 
-  @env_dev @issue=DWT-1465 @local
+  @env_dev @issue=DWT-1465
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
