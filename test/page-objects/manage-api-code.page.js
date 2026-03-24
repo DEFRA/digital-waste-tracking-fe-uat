@@ -36,8 +36,8 @@ class ManageApiCodePage extends Page {
     const activeAPICodes = []
 
     for (const apiCode of apiList) {
-      const disableButton = await apiCode.$('.govuk-summary-list__actions > a')
-      if ((await disableButton.isExisting()) === true) {
+      const disableButton = await apiCode.$('a[href*="/api/disable/"]')
+      if (await disableButton.isExisting()) {
         await disableButton.scrollIntoView()
         const apiCodeText = await apiCode
           .$('.govuk-summary-list__value')
