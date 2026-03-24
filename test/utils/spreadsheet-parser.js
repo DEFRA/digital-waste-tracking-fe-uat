@@ -1,6 +1,7 @@
 import { request, Agent, ProxyAgent, interceptors } from 'undici'
 import ExcelJS from 'exceljs'
 import logger from '@wdio/logger'
+import allureReporter from '@wdio/allure-reporter'
 
 const log = logger('spreadsheet-parser')
 
@@ -49,6 +50,15 @@ export async function downloadAndParseSpreadsheet(
       if (response.statusCode === 200) {
         const workbook = new ExcelJS.Workbook()
         await workbook.xlsx.load(buffer)
+
+        const fileName = `spreadsheet-${Date.now()}.xlsx`
+
+        allureReporter.addAttachment(
+          fileName,
+          buffer,
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+
         return workbook
       }
 
@@ -104,7 +114,11 @@ function isErrorsHeader(cellText) {
 }
 
 export function extractDataFromWorkbook(workbook, dataType = 'Wtids') {
-  const data = []
+  const data = {
+    wtids: [],
+    errors_waste_movement_level: [],
+    errors_waste_item_level: []
+  }
 
   workbook.eachSheet((worksheet) => {
     let columnIndex = null
@@ -151,7 +165,7 @@ export function extractDataFromWorkbook(workbook, dataType = 'Wtids') {
       const cell = worksheet.getRow(rowNum).getCell(columnIndex)
       const text = getCellText(cell).trim()
       if (text.length > 0) {
-        sheetData.push(text)
+        sheetData.push({ value: text, row: rowNum })
       }
     }
 
@@ -162,7 +176,25 @@ export function extractDataFromWorkbook(workbook, dataType = 'Wtids') {
       log.info(`Sample ${dataType}: ${JSON.stringify(sheetData.slice(0, 3))}`)
     }
 
-    data.push(...sheetData)
+    if (dataType === 'Wtids') {
+      data.wtids = [...(data.wtids ?? []), ...sheetData]
+    }
+
+    if (worksheet.name === '7. Waste movement level' && dataType === 'errors') {
+      data.errors_waste_movement_level = [
+        ...(data.errors_waste_movement_level ?? []),
+        ...sheetData
+      ]
+    } else if (
+      worksheet.name === '8. Waste item level' &&
+      dataType === 'errors'
+    ) {
+      data.errors_waste_item_level = [
+        ...(data.errors_waste_item_level ?? []),
+        ...sheetData
+      ]
+    }
   })
+  log.info(`Extracted ${dataType} from workbook: ${JSON.stringify(data)}`)
   return data
 }

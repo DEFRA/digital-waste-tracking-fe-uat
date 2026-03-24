@@ -9,6 +9,7 @@ import {
   downloadAndParseSpreadsheet,
   extractDataFromWorkbook
 } from '../utils/spreadsheet-parser.js'
+import { EXPECTED_ERRORS } from '../data/expected-errors.js'
 
 const spreadsheetActions = {
   upload: {
@@ -60,6 +61,7 @@ Then(
 When(
   /^user selects copy of a( valid|) spreadsheet file "([^"]*)" to upload$/,
   async function (flag, spreadsheetFile) {
+    this.spreadsheetFileName = spreadsheetFile
     this.pageName = 'upload-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage()
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
@@ -84,6 +86,7 @@ When(
 When(
   /^user selects copy of a (valid |)spreadsheet file "([^"]*)" to update existing waste movements$/,
   async function (flag, spreadsheetFile) {
+    this.spreadsheetFileName = spreadsheetFile
     this.pageName = 'update-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage('update')
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
@@ -143,11 +146,11 @@ Then(
       this.env.HTTP_PROXY,
       downloadTimeout
     )
-    const wtids = extractDataFromWorkbook(workbook)
+    const wtids = extractDataFromWorkbook(workbook).wtids
 
     expect(wtids.length).toBeGreaterThan(0)
     for (const wtid of wtids) {
-      expect(wtid).toMatch(/^[A-Z0-9]{8}$/)
+      expect(wtid.value).toMatch(/^[A-Z0-9]{8}$/)
     }
   }
 )
@@ -174,18 +177,45 @@ Then(
       downloadTimeout
     )
 
-    const errors = extractDataFromWorkbook(workbook, 'errors')
+    const { errorsWasteMovementLevel, errorsWasteItemLevel } =
+      extractDataFromWorkbook(workbook, 'errors')
 
-    expect(errors.length).toBeGreaterThan(0)
-    // console.log('--------------------------------')
-    // console.log('errors', errors)
-    // console.log('--------------------------------')
-    // for (const error of errors) {
-    //   expect(error).toMatch(/^[A-Z0-9]{8}$/)
-    // }
+    const expectedErrors = EXPECTED_ERRORS[this.spreadsheetFileName]
+
+    if (expectedErrors) {
+      const actualMovementErrors = errorsWasteMovementLevel.filter(
+        (e) => typeof e.value === 'string'
+      )
+      const actualItemErrors = errorsWasteItemLevel.filter(
+        (e) => typeof e.value === 'string'
+      )
+
+      expect(actualMovementErrors).toEqual(
+        expect.arrayContaining(
+          expectedErrors.errorsWasteMovementLevel.map((e) =>
+            expect.objectContaining({ row: e.row, value: e.value })
+          )
+        )
+      )
+      expect(actualMovementErrors).toHaveLength(
+        expectedErrors.errorsWasteMovementLevel.length
+      )
+
+      expect(actualItemErrors).toEqual(
+        expect.arrayContaining(
+          expectedErrors.errorsWasteItemLevel.map((e) =>
+            expect.objectContaining({ row: e.row, value: e.value })
+          )
+        )
+      )
+      expect(actualItemErrors).toHaveLength(
+        expectedErrors.errorsWasteItemLevel.length
+      )
+    }
   }
 )
 
 Then('no waste movements should be created', () => {
-  // ToDo:
+  // ToDo: when the TeamA's api is ready to query waste movements using bulk upload id,
+  //  we can add a step to check if no waste movements are created
 })

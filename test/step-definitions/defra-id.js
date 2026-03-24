@@ -5,7 +5,6 @@ import DefraIdGovUKPage from '../page-objects/defra-id-gov-uk.page.js'
 import DefraIdStubPage from '../page-objects/defra-id-stub.page.js'
 import UKPermitPage from '../page-objects/uk-permit.page.js'
 import HomePage from '../page-objects/home.page.js'
-import NextActionPage from '../page-objects/next-action.page.js'
 import { getValueFromPool } from '@wdio/shared-store-service'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import DefraIdOrgPickerPage from '../page-objects/defra-id-org-picker.page.js'
@@ -148,10 +147,6 @@ Given(
       await DefraIdStubPage.selectFirstOrganisation()
 
       await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-      if (!this.tags.includes('@browserstack')) {
-        await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
-        await NextActionPage.verifyUserIsOnChooseNextActionPage()
-      }
     } else if (this.tags.includes('@browserstack')) {
       // pick a user from default pool
       const user = await getValueFromPool('availableUsers')

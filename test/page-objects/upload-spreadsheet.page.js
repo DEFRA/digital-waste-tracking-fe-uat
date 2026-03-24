@@ -32,13 +32,13 @@ class UploadSpreadsheetPage extends Page {
   }
 
   async uploadSpreadsheet(spreadsheetFile, mode = 'upload') {
+    fs.mkdirSync('tmp', { recursive: true })
     const filePath = `test/data/${spreadsheetFile}`
 
     // Create a timestamped copy in the same directory (e.g. template.xlsx -> template.1709567890123.xlsx)
-    const dir = path.dirname(filePath)
     const { name: baseName, ext } = path.parse(filePath)
     const fileName = `${baseName}_${Date.now()}${ext}`
-    const copyPath = path.join(dir, fileName)
+    const copyPath = path.join('tmp', fileName)
     fs.copyFileSync(filePath, copyPath)
 
     // Upload file to remote browser (needed for BrowserStack/Grid)

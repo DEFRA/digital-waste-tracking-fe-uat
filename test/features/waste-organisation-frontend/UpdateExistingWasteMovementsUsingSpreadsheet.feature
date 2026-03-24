@@ -7,6 +7,7 @@ So that I can make corrections or changes after submission.
   @env_dev @accessibility
   Scenario: Waste receiver should be able to select an option to update waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
     And user selects option to update waste movements using a spreadsheet
     When user selects copy of a valid spreadsheet file "Test1-update-spreadsheet.xlsx" to update existing waste movements
     Then user should be redirected to "Spreadsheet update successful" page
@@ -38,13 +39,23 @@ So that I can make corrections or changes after submission.
     And the user should be redirected to "Spreadsheet update successful" page
     And all the waste movements should be successfully updated
 
-  @env_test @issue=DWT-1465 @local
+  @env_test @issue=DWT-1465
   Scenario: Waste receiver update waste movements by uploading a spreadsheet that has errors
-    # Given a user is logged in to the waste receiver registration portal
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
     And user selects option to update waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "Test1-format-errors-spreadsheet.xlsx" to update existing waste movements
+    Then user should be redirected to "Spreadsheet update successful" page
+    And all the waste movements should be successfully updated
+    And no waste movements should be created
+    And the processed spreadsheet should contain error details
+
+  @env_dev @issue=DWT-1465
+  Scenario: Waste receiver update waste movements by uploading a spreadsheet that has errors
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to update waste movements using a spreadsheet
+    When user selects copy of a spreadsheet file "Test1-format-errors-update-spreadsheet.xlsx" to update existing waste movements
     Then user should be redirected to "Spreadsheet update successful" page
     And all the waste movements should be successfully updated
     And no waste movements should be created
