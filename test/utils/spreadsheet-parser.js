@@ -91,60 +91,76 @@ function getCellText(cell) {
 }
 
 const WTID_HEADER_PATTERNS = ['wtid', 'waste tracking id']
+const ERRORS_HEADER_PATTERNS = ['errors found in your waste movements']
 
 function isWtidHeader(cellText) {
   const normalised = cellText.toLowerCase().trim()
   return WTID_HEADER_PATTERNS.some((pattern) => normalised === pattern)
 }
 
-export function extractWtidsFromWorkbook(workbook) {
-  const wtids = []
+function isErrorsHeader(cellText) {
+  const normalised = cellText.toLowerCase().trim()
+  return ERRORS_HEADER_PATTERNS.some((pattern) => normalised === pattern)
+}
+
+export function extractDataFromWorkbook(workbook, dataType = "Wtids") {
+  const data = []
 
   workbook.eachSheet((worksheet) => {
-    let wtidColumnIndex = null
+    let columnIndex = null
     let headerRowNum = null
+
+    if ((dataType === "Wtids" && worksheet.name !== '7. Waste movement level')) {
+      return
+    }
+    if ((dataType === "errors" && !(/7\. Waste movement level|8\. Waste item level/i.test(worksheet.name)))) {
+      return
+    }
 
     for (let rowNum = 1; rowNum <= Math.min(10, worksheet.rowCount); rowNum++) {
       const row = worksheet.getRow(rowNum)
       row.eachCell((cell, colNumber) => {
         const text = getCellText(cell)
-        if (isWtidHeader(text)) {
-          wtidColumnIndex = colNumber
+        if (dataType === "Wtids" && isWtidHeader(text)) {
+          columnIndex = colNumber
+          headerRowNum = rowNum
+        }
+        else if (dataType === "errors" && isErrorsHeader(text)) {
+          columnIndex = colNumber
           headerRowNum = rowNum
         }
       })
-      if (wtidColumnIndex !== null) {
+      if (columnIndex !== null) {
         break
       }
     }
 
-    if (wtidColumnIndex === null) {
+    if (columnIndex === null) {
       return
     }
 
     log.info(
-      `WTID column found at col ${wtidColumnIndex}, header row ${headerRowNum} in sheet "${worksheet.name}"`
+      `WTID column found at col ${columnIndex}, header row ${headerRowNum} in sheet "${worksheet.name}"`
     )
 
-    const sheetWtids = []
+    const sheetData = []
     const dataStartRow = headerRowNum + 2
     for (let rowNum = dataStartRow; rowNum <= worksheet.rowCount; rowNum++) {
-      const cell = worksheet.getRow(rowNum).getCell(wtidColumnIndex)
+      const cell = worksheet.getRow(rowNum).getCell(columnIndex)
       const text = getCellText(cell).trim()
       if (text.length > 0) {
-        sheetWtids.push(text)
+        sheetData.push(text)
       }
     }
 
     log.info(
-      `Extracted ${sheetWtids.length} WTIDs from sheet "${worksheet.name}"`
+      `Extracted ${sheetData.length} ${dataType} from sheet "${worksheet.name}"`
     )
-    if (sheetWtids.length > 0) {
-      log.info(`Sample WTIDs: ${JSON.stringify(sheetWtids.slice(0, 3))}`)
+    if (sheetData.length > 0) {
+      log.info(`Sample ${dataType}: ${JSON.stringify(sheetData.slice(0, 3))}`)
     }
 
-    wtids.push(...sheetWtids)
+    data.push(...sheetData)
   })
-
-  return wtids
+  return data
 }

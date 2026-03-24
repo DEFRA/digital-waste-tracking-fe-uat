@@ -37,5 +37,25 @@ So that I can submit waste movement data, correctly linked to the business I hav
     When the user switches to a different business
     Then the user should be able to successfully upload a waste movement spreadsheet for that business
     And all the waste movements should be successfully created
+
+  @env_dev @accessibility @issue=DWT-1465 @local
+  Scenario: Waste receiver uploads a spreadsheet with errors
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a spreadsheet file "Test1-format-errors-spreadsheet.xlsx" to upload
+    Then the user should be redirected to "Upload successful" page
+    And no waste movements should be created
+    And the processed spreadsheet should contain error details
+
 # to implement below scenario
 # user should not be able to continue without uploading a spreadsheet
+# spreadsheet error upload scenarios
+# format errors 
+#  - missing waste items 
+#  - missing waste movement id for waste items
+#  - waste tracking ids present in upload 
+#  - invalid format for ewc codes 
+#  - invalid format for d&r codes 
+#  - invalid date time received
+# api errors

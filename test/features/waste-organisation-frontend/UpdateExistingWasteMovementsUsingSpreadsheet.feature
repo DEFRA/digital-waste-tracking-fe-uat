@@ -35,6 +35,20 @@ So that I can make corrections or changes after submission.
     And all the waste movements should be successfully updated
     When the user switches to a different business
     Then the user should be able to successfully update existing waste movements using a spreadsheet for that business
+    And the user should be redirected to "Spreadsheet update successful" page
     And all the waste movements should be successfully updated
+
+  @env_test @issue=DWT-1465 @local
+  Scenario: Waste receiver update waste movements by uploading a spreadsheet that has errors
+    # Given a user is logged in to the waste receiver registration portal
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+    And the user navigates to report receipt of waste
+    And user selects option to update waste movements using a spreadsheet
+    When user selects copy of a spreadsheet file "Test1-format-errors-spreadsheet.xlsx" to update existing waste movements
+    Then user should be redirected to "Spreadsheet update successful" page
+    And all the waste movements should be successfully updated
+    And no waste movements should be created
+    And the processed spreadsheet should contain error details
+
 # ToDo: e2e test for updating waste movements using a spreadsheet can be done only once TeamA 
 # completes the api development which can then be used to query waste movements using bulk upload id

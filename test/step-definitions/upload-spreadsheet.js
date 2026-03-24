@@ -7,7 +7,7 @@ import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import NextActionPage from '../page-objects/next-action.page.js'
 import {
   downloadAndParseSpreadsheet,
-  extractWtidsFromWorkbook
+  extractDataFromWorkbook
 } from '../utils/spreadsheet-parser.js'
 
 const spreadsheetActions = {
@@ -58,8 +58,8 @@ Then(
 )
 
 When(
-  'user selects copy of a valid spreadsheet file {string} to upload',
-  async function (spreadsheetFile) {
+  /^user selects copy of a( valid|) spreadsheet file "([^"]*)" to upload$/,
+  async function (flag,spreadsheetFile) {
     this.pageName = 'upload-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage()
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
@@ -82,8 +82,8 @@ When(
 )
 
 When(
-  'user selects copy of a valid spreadsheet file {string} to update existing waste movements',
-  async function (spreadsheetFile) {
+  /^user selects copy of a (valid |)spreadsheet file "([^"]*)" to update existing waste movements$/,
+  async function (flag,spreadsheetFile) {
     this.pageName = 'update-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage('update')
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
@@ -143,7 +143,7 @@ Then(
       this.env.HTTP_PROXY,
       downloadTimeout
     )
-    const wtids = extractWtidsFromWorkbook(workbook)
+    const wtids = extractDataFromWorkbook(workbook)
 
     expect(wtids.length).toBeGreaterThan(0)
     for (const wtid of wtids) {
@@ -151,3 +151,37 @@ Then(
     }
   }
 )
+
+Then('the processed spreadsheet should contain error details',  { timeout: WTID_STEP_TIMEOUT_MS }, async function () {
+  const stepStart = Date.now()
+
+  const processedFileUrl = await UploadSuccessfulPage.getProcessedFileUrl(
+    this.apis.wasteOrganisationBackendAPI,
+    this.organisationId,
+    this.uploadedFileName,
+    PROCESSED_URL_POLL_TIMEOUT_MS
+  )
+  
+  const elapsed = Date.now() - stepStart
+  const downloadTimeout = WTID_STEP_TIMEOUT_MS - elapsed - WTID_STEP_MARGIN_MS
+
+  const workbook = await downloadAndParseSpreadsheet(
+    processedFileUrl,
+    this.env.HTTP_PROXY,
+    downloadTimeout
+  )
+  
+  const errors = extractDataFromWorkbook(workbook, 'errors')
+
+  expect(errors.length).toBeGreaterThan(0)
+  console.log("--------------------------------")
+  console.log("errors", errors)
+  console.log("--------------------------------")
+  // for (const error of errors) {
+  //   expect(error).toMatch(/^[A-Z0-9]{8}$/)
+  // }
+})
+
+Then('no waste movements should be created', () => {
+  //ToDo: 
+})
