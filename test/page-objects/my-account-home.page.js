@@ -40,6 +40,7 @@ class MyAccountHomePage extends Page {
   }
 
   async verifyUserIsOnMyAccountHomePage(organisationName = undefined) {
+    await this.elementIsDisplayed(this.heading)
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Waste receiving account')
     await expect(browser).toHaveUrl(config.baseUrl + '/account')

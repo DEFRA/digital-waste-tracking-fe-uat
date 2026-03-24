@@ -23,6 +23,7 @@ class UploadSpreadsheetPage extends Page {
         ? /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/begin-upload/
         : /\/organisation\/[a-zA-Z0-9-]+\/update-spreadsheet\/begin-upload/
     )
+    await this.elementIsDisplayed(this.heading)
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(
       mode === 'upload'
