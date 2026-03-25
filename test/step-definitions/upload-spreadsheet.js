@@ -97,7 +97,8 @@ When(
     ) {
       this.uploadedFileName = await UploadSpreadsheetPage.uploadSpreadsheet(
         spreadsheetFile,
-        'update'
+        'update',
+        [this.wtids[0].value]
       )
     } else {
       AllureReporter.addStep(
@@ -152,6 +153,7 @@ Then(
     for (const wtid of wtids) {
       expect(wtid.value).toMatch(/^[A-Z0-9]{8}$/)
     }
+    this.wtids = wtids
   }
 )
 
