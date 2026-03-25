@@ -54,26 +54,34 @@ So that I can make corrections or changes after submission.
     And all the waste movements should be successfully updated
 
   @env_test @issue=DWT-1465
-  Scenario: Waste receiver update waste movements by uploading a spreadsheet that has errors
+  Scenario Outline: Waste receiver update waste movements by uploading a spreadsheet that has "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
     And user selects option to update waste movements using a spreadsheet
-    When user selects copy of a spreadsheet file "Test1-format-errors-spreadsheet.xlsx" to update existing waste movements
+    When user selects copy of a spreadsheet file "<spreadsheet_file>" to update existing waste movements
     Then user should be redirected to "Spreadsheet update successful" page
-    And all the waste movements should be successfully updated
     And no waste movements should be created
     And the processed spreadsheet should contain error details
 
+    Examples:
+      |error_type| spreadsheet_file                            |
+      | format   | Test1-update-format-errors-spreadsheet.xlsx |
+      | api      | Test1-update-api-errors-spreadsheet.xlsx    |
+
   @env_dev @issue=DWT-1465
-  Scenario: Waste receiver update waste movements by uploading a spreadsheet that has errors
+  Scenario Outline: Waste receiver update waste movements by uploading a spreadsheet that has "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
     And user selects option to update waste movements using a spreadsheet
-    When user selects copy of a spreadsheet file "Test1-format-errors-update-spreadsheet.xlsx" to update existing waste movements
+    When user selects copy of a spreadsheet file "<spreadsheet_file>" to update existing waste movements
     Then user should be redirected to "Spreadsheet update successful" page
-    And all the waste movements should be successfully updated
     And no waste movements should be created
     And the processed spreadsheet should contain error details
 
+    Examples:
+      |error_type| spreadsheet_file                            |
+      | format   | Test1-update-format-errors-spreadsheet.xlsx |
+      | api      | Test1-update-api-errors-spreadsheet.xlsx    |
+      
 # ToDo: e2e test for updating waste movements using a spreadsheet can be done only once TeamA 
 # completes the api development which can then be used to query waste movements using bulk upload id

@@ -98,7 +98,7 @@ When(
       this.uploadedFileName = await UploadSpreadsheetPage.uploadSpreadsheet(
         spreadsheetFile,
         'update',
-        [this.wtids[0].value]
+        this.wtids && this.wtids.length > 0 ? [this.wtids[0].value] : []
       )
     } else {
       AllureReporter.addStep(
@@ -215,6 +215,18 @@ Then(
       )
       expect(actualItemErrors).toHaveLength(
         expectedErrors.errorsWasteItemLevel.length
+      )
+    } else {
+      const actualMovementErrors = errorsWasteMovementLevel.filter(
+        (e) => typeof e.value === 'string'
+      )
+      const actualItemErrors = errorsWasteItemLevel.filter(
+        (e) => typeof e.value === 'string'
+      )
+      const totalErrors = actualMovementErrors.length + actualItemErrors.length
+      expect(totalErrors).toBe(
+        0,
+        `Expected no errors but found ${totalErrors}: ${JSON.stringify([...actualMovementErrors, ...actualItemErrors])}`
       )
     }
   }
