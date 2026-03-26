@@ -7,6 +7,7 @@ So that I can prevent that API code from being used to access the DWT service.
   @env_dev @accessibility
   Scenario: Waste receiver should be able to disable an API code for their organisation
     Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
     And user selects option to view his api code
     And user is on the View API Code page
     And user should see the "active" API Code for the selected business
@@ -19,6 +20,7 @@ So that I can prevent that API code from being used to access the DWT service.
   @env_dev
   Scenario: Waste receiver should be able to select "No" on disable API code confirmation page
     Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
     And user selects option to view his api code
     And user is on the View API Code page
     And user should see the "active" API Code for the selected business
@@ -31,6 +33,7 @@ So that I can prevent that API code from being used to access the DWT service.
   @env_dev @accessibility
   Scenario: User should be able to create a new API code when all existing API codes are disabled
     Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
     And user selects option to view his api code
     And user is on the View API Code page
     And user disables all existing API codes

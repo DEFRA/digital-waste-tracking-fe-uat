@@ -2,6 +2,7 @@ import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
 import path from 'node:path'
 import fs from 'node:fs'
+import { updateWasteMovementLevelSheet } from '../utils/excel-spreadsheet-update.js'
 
 class UploadSpreadsheetPage extends Page {
   // locators
@@ -32,15 +33,20 @@ class UploadSpreadsheetPage extends Page {
     )
   }
 
-  async uploadSpreadsheet(spreadsheetFile, mode = 'upload') {
+  async uploadSpreadsheet(spreadsheetFile, mode = 'upload', wtids = []) {
+    fs.mkdirSync('tmp', { recursive: true })
     const filePath = `test/data/${spreadsheetFile}`
 
     // Create a timestamped copy in the same directory (e.g. template.xlsx -> template.1709567890123.xlsx)
-    const dir = path.dirname(filePath)
     const { name: baseName, ext } = path.parse(filePath)
     const fileName = `${baseName}_${Date.now()}${ext}`
-    const copyPath = path.join(dir, fileName)
+    const copyPath = path.join('tmp', fileName)
     fs.copyFileSync(filePath, copyPath)
+
+    if (mode === 'update' && wtids.length > 0) {
+      // update the file with wtids in column B starting from row 9
+      await updateWasteMovementLevelSheet(copyPath, wtids)
+    }
 
     // Upload file to remote browser (needed for BrowserStack/Grid)
     const remoteFilePath = await browser.uploadFile(copyPath)

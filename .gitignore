@@ -15,5 +15,5 @@ reports/
 env.sh
 *.log
 *.err
-test/data/Test1-spreadsheet_*.xlsx
-test/data/Test1-update-spreadsheet_*.xlsx
+tmp/
+scripts/

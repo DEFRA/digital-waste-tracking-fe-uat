@@ -7,8 +7,9 @@ import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import NextActionPage from '../page-objects/next-action.page.js'
 import {
   downloadAndParseSpreadsheet,
-  extractWtidsFromWorkbook
+  extractDataFromWorkbook
 } from '../utils/spreadsheet-parser.js'
+import { EXPECTED_ERRORS } from '../data/expected-errors.js'
 
 const spreadsheetActions = {
   upload: {
@@ -58,8 +59,9 @@ Then(
 )
 
 When(
-  'user selects copy of a valid spreadsheet file {string} to upload',
-  async function (spreadsheetFile) {
+  /^user selects copy of a( valid|) spreadsheet file "([^"]*)" to upload$/,
+  async function (flag, spreadsheetFile) {
+    this.spreadsheetFileName = spreadsheetFile
     this.pageName = 'upload-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage()
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
@@ -82,8 +84,9 @@ When(
 )
 
 When(
-  'user selects copy of a valid spreadsheet file {string} to update existing waste movements',
-  async function (spreadsheetFile) {
+  /^user selects copy of a (valid |)spreadsheet file "([^"]*)" to update existing waste movements$/,
+  async function (flag, spreadsheetFile) {
+    this.spreadsheetFileName = spreadsheetFile
     this.pageName = 'update-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage('update')
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
@@ -94,7 +97,8 @@ When(
     ) {
       this.uploadedFileName = await UploadSpreadsheetPage.uploadSpreadsheet(
         spreadsheetFile,
-        'update'
+        'update',
+        this.wtids && this.wtids.length > 0 ? [this.wtids[0].value] : []
       )
     } else {
       AllureReporter.addStep(
@@ -143,11 +147,92 @@ Then(
       this.env.HTTP_PROXY,
       downloadTimeout
     )
-    const wtids = extractWtidsFromWorkbook(workbook)
+    const wtids = extractDataFromWorkbook(workbook).wtids
 
     expect(wtids.length).toBeGreaterThan(0)
     for (const wtid of wtids) {
-      expect(wtid).toMatch(/^[A-Z0-9]{8}$/)
+      expect(wtid.value).toMatch(/^[A-Z0-9]{8}$/)
+    }
+    this.wtids = wtids
+  }
+)
+
+Then(
+  'the processed spreadsheet should contain error details',
+  { timeout: WTID_STEP_TIMEOUT_MS },
+  async function () {
+    const stepStart = Date.now()
+
+    const processedFileUrl = await UploadSuccessfulPage.getProcessedFileUrl(
+      this.apis.wasteOrganisationBackendAPI,
+      this.organisationId,
+      this.uploadedFileName,
+      PROCESSED_URL_POLL_TIMEOUT_MS
+    )
+
+    const elapsed = Date.now() - stepStart
+    const downloadTimeout = WTID_STEP_TIMEOUT_MS - elapsed - WTID_STEP_MARGIN_MS
+
+    const workbook = await downloadAndParseSpreadsheet(
+      processedFileUrl,
+      this.env.HTTP_PROXY,
+      downloadTimeout
+    )
+
+    const errorsData = extractDataFromWorkbook(workbook, 'errors')
+    const { errorsWasteMovementLevel, errorsWasteItemLevel } = {
+      errorsWasteMovementLevel: errorsData.errors_waste_movement_level,
+      errorsWasteItemLevel: errorsData.errors_waste_item_level
+    }
+
+    const expectedErrors = EXPECTED_ERRORS[this.spreadsheetFileName]
+
+    if (expectedErrors) {
+      const actualMovementErrors = errorsWasteMovementLevel.filter(
+        (e) => typeof e.value === 'string'
+      )
+      const actualItemErrors = errorsWasteItemLevel.filter(
+        (e) => typeof e.value === 'string'
+      )
+
+      expect(actualMovementErrors).toEqual(
+        expect.arrayContaining(
+          expectedErrors.errorsWasteMovementLevel.map((e) =>
+            expect.objectContaining({ row: e.row, value: e.value })
+          )
+        )
+      )
+      expect(actualMovementErrors).toHaveLength(
+        expectedErrors.errorsWasteMovementLevel.length
+      )
+
+      expect(actualItemErrors).toEqual(
+        expect.arrayContaining(
+          expectedErrors.errorsWasteItemLevel.map((e) =>
+            expect.objectContaining({ row: e.row, value: e.value })
+          )
+        )
+      )
+      expect(actualItemErrors).toHaveLength(
+        expectedErrors.errorsWasteItemLevel.length
+      )
+    } else {
+      const actualMovementErrors = errorsWasteMovementLevel.filter(
+        (e) => typeof e.value === 'string'
+      )
+      const actualItemErrors = errorsWasteItemLevel.filter(
+        (e) => typeof e.value === 'string'
+      )
+      const totalErrors = actualMovementErrors.length + actualItemErrors.length
+      expect(totalErrors).toBe(
+        0,
+        `Expected no errors but found ${totalErrors}: ${JSON.stringify([...actualMovementErrors, ...actualItemErrors])}`
+      )
     }
   }
 )
+
+Then('no waste movements should be created', () => {
+  // ToDo: when the TeamA's api is ready to query waste movements using bulk upload id,
+  //  we can add a step to check if no waste movements are created
+})
