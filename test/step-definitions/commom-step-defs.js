@@ -29,8 +29,10 @@ Then(
             this.browserInfo.includes('MicrosoftEdge'))
         ) {
           this.pageName = 'upload-successful-page'
-          this.organisationId =
+          const { organisationId, referenceNumber } =
             await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
+          this.organisationId = organisationId
+          this.uploadId = referenceNumber
         } else {
           AllureReporter.addStep(
             `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
@@ -46,10 +48,12 @@ Then(
             this.browserInfo.includes('MicrosoftEdge'))
         ) {
           this.pageName = 'spreadsheet-update-successful-page'
-          this.organisationId =
+          const { organisationId, referenceNumber } =
             await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(
               'update'
             )
+          this.organisationId = organisationId
+          this.uploadId = referenceNumber
         } else {
           AllureReporter.addStep(
             `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
