@@ -32,7 +32,7 @@ Then(
           const { organisationId, referenceNumber } =
             await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
           this.organisationId = organisationId
-          this.uploadId = referenceNumber
+          this.referenceNumber = referenceNumber
         } else {
           AllureReporter.addStep(
             `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
@@ -53,7 +53,7 @@ Then(
               'update'
             )
           this.organisationId = organisationId
-          this.uploadId = referenceNumber
+          this.referenceNumber = referenceNumber
         } else {
           AllureReporter.addStep(
             `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,

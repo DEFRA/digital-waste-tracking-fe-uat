@@ -49,13 +49,23 @@ class UploadSuccessfulPage extends Page {
     fileName,
     mode = 'upload'
   ) {
+    let uploadId = null
+
     await browser.waitUntil(
       async () => {
         const response = await apiInstance.getBulkUploadIdByFileName(
           organisationId,
           fileName
         )
-        return response.statusCode === 200 && response.json.uploads.length > 0
+        if (
+          response.statusCode === 200 &&
+          response.json.uploads.length > 0 &&
+          response.json.uploads[0].uploadId
+        ) {
+          uploadId = response.json.uploads[0].uploadId
+          return true
+        }
+        return false
       },
       {
         timeout: 30000,
@@ -63,6 +73,8 @@ class UploadSuccessfulPage extends Page {
         timeoutMsg: `File "${fileName}" was not found in S3 uploads for organisation "${organisationId}" within the timeout`
       }
     )
+
+    return uploadId
   }
 
   async getProcessedFileUrl(

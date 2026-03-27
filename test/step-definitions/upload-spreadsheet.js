@@ -113,12 +113,13 @@ When(
 Then(
   /^all the waste movements should be successfully (created|updated)$/,
   async function (action) {
-    await UploadSuccessfulPage.verifyFileHasBeenUploadedSuccessfullyToTheS3(
-      this.apis.wasteOrganisationBackendAPI,
-      this.organisationId,
-      this.uploadedFileName,
-      action
-    )
+    this.uploadId =
+      await UploadSuccessfulPage.verifyFileHasBeenUploadedSuccessfullyToTheS3(
+        this.apis.wasteOrganisationBackendAPI,
+        this.organisationId,
+        this.uploadedFileName,
+        action
+      )
   }
 )
 
@@ -235,4 +236,8 @@ Then(
 Then('no waste movements should be created', () => {
   // ToDo: when the TeamA's api is ready to query waste movements using bulk upload id,
   //  we can add a step to check if no waste movements are created
+})
+
+Then('the spreadsheet must be rejected and not uploaded to S3', () => {
+  // Write code here that turns the phrase above into concrete actions
 })
