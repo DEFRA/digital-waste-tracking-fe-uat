@@ -7,11 +7,16 @@ import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.
 import CannotUseServicePage from '../page-objects/cannot-use-service.page.js'
 import UserNotAuthenticatedPage from '../page-objects/user-not-authenticated.page.js'
 import AllureReporter from '@wdio/allure-reporter'
+import PrivacyNoticePage from '../page-objects/privacy-notice.page.js'
 
 Then(
   /^(the )?user should be redirected to "([a-zA-Z0-9\-\s,]+)" page(| of that business| of that new business)$/,
   async function (x, pageString, y) {
     switch (pageString) {
+      case 'privacy-notice':
+        this.pageName = 'privacy-notice-page'
+        await PrivacyNoticePage.verifyUserIsOnPrivacyNoticePage()
+        break
       case 'account-home':
         this.pageName = 'account-home-page'
         await MyAccountHomePage.verifyUserIsOnMyAccountHomePage(
