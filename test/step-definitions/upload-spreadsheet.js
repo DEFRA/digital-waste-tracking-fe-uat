@@ -238,6 +238,12 @@ Then('no waste movements should be created', () => {
   //  we can add a step to check if no waste movements are created
 })
 
-Then('the spreadsheet must be rejected and not uploaded to S3', () => {
-  // Write code here that turns the phrase above into concrete actions
+Then('the spreadsheet must be rejected', { timeout: 30000 }, async function () {
+  const actualErrorMessage =
+    await UploadSuccessfulPage.verifyFileHasBeenRejectedAndNotUploadedToS3(
+      this.apis.wasteOrganisationBackendAPI,
+      this.organisationId,
+      this.uploadedFileName
+    )
+  expect(actualErrorMessage).toBe('The selected file must be a XLSX')
 })

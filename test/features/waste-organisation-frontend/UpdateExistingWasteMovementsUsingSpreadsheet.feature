@@ -83,5 +83,19 @@ So that I can make corrections or changes after submission.
       | format   | Test1-update-format-errors-spreadsheet.xlsx |
       | api      | Test1-update-api-errors-spreadsheet.xlsx    |
       
+  @env_dev @issue=DWT-1431,DWT-1641
+  Scenario Outline: Waste receiver update waste movements by uploading an unsupported file type "<file_type>"
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to update waste movements using a spreadsheet
+    When user selects copy of a spreadsheet file "<file_type>" to update existing waste movements
+    Then user should be redirected to "Spreadsheet update successful" page
+    And no waste movements should be created
+    And the spreadsheet must be rejected
+
+    Examples:
+      | file_type                    |
+      | Unsupported-file-type-1.png  |
+      | Unsupported-file-type-2.xlsm |
 # ToDo: e2e test for updating waste movements using a spreadsheet can be done only once TeamA 
 # completes the api development which can then be used to query waste movements using bulk upload id

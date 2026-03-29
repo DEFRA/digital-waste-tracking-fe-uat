@@ -77,6 +77,45 @@ class UploadSuccessfulPage extends Page {
     return uploadId
   }
 
+  async verifyFileHasBeenRejectedAndNotUploadedToS3(
+    apiInstance,
+    organisationId,
+    fileName,
+    expectedErrorMessage
+  ) {
+    let actualErrorMessage = null
+
+    await browser.waitUntil(
+      async () => {
+        const response = await apiInstance.getBulkUploadIdByFileName(
+          organisationId,
+          fileName
+        )
+        const upload = response.json?.uploads?.[0]
+        if (
+          response.statusCode === 200 &&
+          upload?.hasError === true &&
+          upload?.errorMessage
+        ) {
+          actualErrorMessage = upload.errorMessage
+          return true
+        }
+        return false
+      },
+      {
+        timeout: 30000,
+        interval: 3000,
+        timeoutMsg: `File "${fileName}" was not rejected with an error for organisation "${organisationId}" within the timeout`
+      }
+    )
+
+    if (expectedErrorMessage) {
+      expect(actualErrorMessage).toBe(expectedErrorMessage)
+    }
+
+    return actualErrorMessage
+  }
+
   async getProcessedFileUrl(
     apiInstance,
     organisationId,
