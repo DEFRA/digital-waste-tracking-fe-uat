@@ -24,3 +24,16 @@ Feature: Waste receiving account page
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     When the user navigates to report receipt of waste
     Then the user should be redirected to "Report receipt of waste" page
+    And the user should be able to see the list of actions to choose from
+
+  @env_test @env_dev @accessibility @issue=DWT-1982
+  Scenario: User should be able to click on report receipt of waste and displayed with list of actions to choose from
+    Given a user is logged in to the waste receiver registration portal
+    When the user navigates to report receipt of waste
+    And the user should be redirected to "Report receipt of waste" page
+    When user clicks on "Continue" button without selecting an action
+    Then user should be presented with an error message as below
+      | message                                       |
+      | There is a problem\nYou must select an option |
+    And user selects option to view his api code
+    And user is on the View API Code page

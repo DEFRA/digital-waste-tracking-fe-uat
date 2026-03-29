@@ -20,10 +20,6 @@ class UKPermitPage extends Page {
     return $('#isPermitNo')
   }
 
-  get errorMessage() {
-    return $('.govuk-error-summary')
-  }
-
   // methods
   open() {
     return super.open('/')
@@ -49,11 +45,6 @@ class UKPermitPage extends Page {
 
   async verifyUserNavigatedCorrectlyToDefraIdService(defraIdServiceUrl) {
     await expect(browser).toHaveUrl(new RegExp(defraIdServiceUrl))
-  }
-
-  async verifyErrorMessage(expectedMessage) {
-    await this.errorMessage.waitForDisplayed({ timeout: config.waitforTimeout })
-    await expect(this.errorMessage).toHaveText(new RegExp(expectedMessage))
   }
 }
 

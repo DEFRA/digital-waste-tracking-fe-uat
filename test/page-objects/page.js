@@ -22,6 +22,10 @@ class Page {
     return $('a[href="/sign-out"]')
   }
 
+  get errorMessage() {
+    return $('.govuk-error-summary')
+  }
+
   open(path) {
     return browser.url(path)
   }
@@ -195,6 +199,11 @@ class Page {
 
   async clickSignOutLink() {
     await this.click(this.signOutLink)
+  }
+
+  async verifyErrorMessage(expectedMessage) {
+    await this.errorMessage.waitForDisplayed({ timeout: config.waitforTimeout })
+    await expect(this.errorMessage).toHaveText(new RegExp(expectedMessage))
   }
 
   async verifyUserIsSignedOut() {
