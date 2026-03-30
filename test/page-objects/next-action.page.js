@@ -41,6 +41,13 @@ class NextActionPage extends Page {
     await expect(this.heading).toHaveText('Report receipt of waste')
   }
 
+  async verifyListOfActionsToChooseFrom() {
+    await expect(this.connectYourSoftwareRadio).toBeDisplayed()
+    await expect(this.uploadSpreadsheetRadio).toBeDisplayed()
+    await expect(this.downloadSpreadsheetRadio).toBeDisplayed()
+    await expect(this.updateSpreadsheetRadio).toBeDisplayed()
+  }
+
   /**
    * @param {'connectYourSoftware' | 'uploadSpreadsheet' | 'downloadSpreadsheet'} option
    */

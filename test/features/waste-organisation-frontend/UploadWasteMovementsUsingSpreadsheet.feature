@@ -54,7 +54,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | error_type     | spreadsheet_file                     |
       | format         | Test1-format-errors-spreadsheet.xlsx |
       | api validation | Test1-api-errors-spreadsheet.xlsx    |
-  
+
   @env_test @issue=DWT-1465
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
@@ -69,4 +69,22 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | error_type     | spreadsheet_file                     |
       | format         | Test1-format-errors-spreadsheet.xlsx |
       | api validation | Test1-api-errors-spreadsheet.xlsx    |
-      
+
+  @env_dev @env_test @issue=DWT-1431,DWT-1641
+  Scenario Outline: Waste receiver uploads an unsupported file type "<file_type>"
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a spreadsheet file "<file_type>" to upload
+    Then the user should be redirected to "Upload successful" page
+    And no waste movements should be created
+    And the spreadsheet must be rejected
+
+    Examples:
+      | file_type                       |
+      | Unsupported-file-type-1.png     |
+      | Unsupported-file-type-2.xlsm    |
+      | File-size-greater-than-2MB.xlsx |
+
+#  --can be picked up after teamA completes the api development which can then be used to query waste movements using bulk upload id
+# | Invalid-template.xlsx        |

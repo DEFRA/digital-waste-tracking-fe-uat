@@ -1,4 +1,4 @@
-import { Given, When, Then } from '@wdio/cucumber-framework'
+import { Given, When } from '@wdio/cucumber-framework'
 import HomePage from '../page-objects/home.page.js'
 import UKPermitPage from '../page-objects/uk-permit.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
@@ -28,17 +28,6 @@ When(
 When(/^user clicks on the "(["A-Za-z\s]+)" button$/, async function (link) {
   await UKPermitPage.click(UKPermitPage.continueButton)
 })
-
-Then(
-  'user should be presented with an error message as below',
-  async function (dataTable) {
-    this.pageName = 'uk-permit-error-page'
-    const rows = dataTable.hashes()
-    // Verify the error message is displayed on the page
-    await UKPermitPage.verifyErrorMessage(rows[0].message)
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-  }
-)
 
 Given(
   'a user has indicated that they are a permitted waste receiver',

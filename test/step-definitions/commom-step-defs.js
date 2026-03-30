@@ -1,5 +1,6 @@
 import { Then } from '@wdio/cucumber-framework'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
+import { Page } from '../page-objects/page.js'
 import NextActionPage from '../page-objects/next-action.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import UploadSuccessfulPage from '../page-objects/upload-successful.page.js'
@@ -7,11 +8,18 @@ import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.
 import CannotUseServicePage from '../page-objects/cannot-use-service.page.js'
 import UserNotAuthenticatedPage from '../page-objects/user-not-authenticated.page.js'
 import AllureReporter from '@wdio/allure-reporter'
+import PrivacyNoticePage from '../page-objects/privacy-notice.page.js'
+
+const page = new Page()
 
 Then(
   /^(the )?user should be redirected to "([a-zA-Z0-9\-\s,]+)" page(| of that business| of that new business)$/,
   async function (x, pageString, y) {
     switch (pageString) {
+      case 'privacy-notice':
+        this.pageName = 'privacy-notice-page'
+        await PrivacyNoticePage.verifyUserIsOnPrivacyNoticePage()
+        break
       case 'account-home':
         this.pageName = 'account-home-page'
         await MyAccountHomePage.verifyUserIsOnMyAccountHomePage(
@@ -29,8 +37,10 @@ Then(
             this.browserInfo.includes('MicrosoftEdge'))
         ) {
           this.pageName = 'upload-successful-page'
-          this.organisationId =
+          const { organisationId, referenceNumber } =
             await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
+          this.organisationId = organisationId
+          this.referenceNumber = referenceNumber
         } else {
           AllureReporter.addStep(
             `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
@@ -46,10 +56,12 @@ Then(
             this.browserInfo.includes('MicrosoftEdge'))
         ) {
           this.pageName = 'spreadsheet-update-successful-page'
-          this.organisationId =
+          const { organisationId, referenceNumber } =
             await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(
               'update'
             )
+          this.organisationId = organisationId
+          this.referenceNumber = referenceNumber
         } else {
           AllureReporter.addStep(
             `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
@@ -73,6 +85,15 @@ Then(
         await UserNotAuthenticatedPage.verifyUserIsOnUserNotAuthenticatedPage()
         break
     }
+    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+  }
+)
+
+Then(
+  'user should be presented with an error message as below',
+  async function (dataTable) {
+    const rows = dataTable.hashes()
+    await page.verifyErrorMessage(rows[0].message)
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }
 )
