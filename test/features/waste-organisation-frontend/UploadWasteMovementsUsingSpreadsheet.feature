@@ -70,7 +70,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | format         | Test1-format-errors-spreadsheet.xlsx |
       | api validation | Test1-api-errors-spreadsheet.xlsx    |
 
-  @env_dev @issue=DWT-1431,DWT-1641
+  @env_dev @env_test @issue=DWT-1431,DWT-1641
   Scenario Outline: Waste receiver uploads an unsupported file type "<file_type>"
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -81,9 +81,10 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the spreadsheet must be rejected
 
     Examples:
-      | file_type                    |
-      | Unsupported-file-type-1.png  |
-      | Unsupported-file-type-2.xlsm |
+      | file_type                       |
+      | Unsupported-file-type-1.png     |
+      | Unsupported-file-type-2.xlsm    |
+      | File-size-greater-than-2MB.xlsx |
 
+#  --can be picked up after teamA completes the api development which can then be used to query waste movements using bulk upload id
 # | Invalid-template.xlsx        |
-# file size > 2MB

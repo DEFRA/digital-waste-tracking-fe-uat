@@ -245,5 +245,11 @@ Then('the spreadsheet must be rejected', { timeout: 30000 }, async function () {
       this.organisationId,
       this.uploadedFileName
     )
-  expect(actualErrorMessage).toBe('The selected file must be a XLSX')
+  if (this.uploadedFileName.includes('File-size-greater-than-2MB')) {
+    expect(actualErrorMessage).toBe(
+      'The selected file must be smaller than 2 MB'
+    )
+  } else {
+    expect(actualErrorMessage).toBe('The selected file must be a XLSX')
+  }
 })
