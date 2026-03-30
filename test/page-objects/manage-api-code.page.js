@@ -30,22 +30,34 @@ class ManageApiCodePage extends Page {
   }
 
   // assertions
-  async getListOfActiveAPICodes() {
+  async #getApiCodeRowsByIndicator(indicatorSelector) {
     const apiList = await this.apiCodeList.getElements()
-
-    const activeAPICodes = []
-
-    for (const apiCode of apiList) {
-      const disableButton = await apiCode.$('a[href*="/api/disable/"]')
-      if (await disableButton.isExisting()) {
-        await disableButton.scrollIntoView()
-        const apiCodeText = await apiCode
-          .$('.govuk-summary-list__value')
-          .getText()
-        activeAPICodes.push(apiCodeText)
+    const matches = []
+    for (const row of apiList) {
+      const indicator = await row.$(indicatorSelector)
+      if (await indicator.isExisting()) {
+        await indicator.scrollIntoView()
+        const valueText = await row.$('.govuk-summary-list__value').getText()
+        const keyText = await row.$('.govuk-summary-list__key').getText()
+        // const indicatorText = await indicator.getText()
+        matches.push({ valueText, keyText })
       }
     }
-    return activeAPICodes
+    return matches
+  }
+
+  async getListOfActiveAPICodes() {
+    const rows = await this.#getApiCodeRowsByIndicator(
+      'a[href*="/api/disable/"]'
+    )
+    return rows.map((r) => r.valueText)
+  }
+
+  async getListOfDisabledAPICodes() {
+    const rows = await this.#getApiCodeRowsByIndicator(
+      'dd.govuk-summary-list__actions>strong'
+    )
+    return Object.fromEntries(rows.map((r) => [r.valueText, r.keyText]))
   }
 
   async verifyUserIsOnYourApiCodePage() {
@@ -124,6 +136,43 @@ class ManageApiCodePage extends Page {
     await browser.refresh()
     await this.createNewCodeButton.waitForDisplayed()
     await this.createNewCodeButton.click()
+  }
+
+  async findNameRowForApiCode(expectedApiCode) {
+    const apiList = await this.apiCodeList.getElements()
+    let apiCodeFound = false
+
+    for (const row of apiList) {
+      const text = await row.$('.govuk-summary-list__value').getText()
+      if (apiCodeFound) return row
+      if (expectedApiCode !== '' && text === expectedApiCode)
+        apiCodeFound = true
+    }
+
+    throw new Error(
+      `Name for API Code "${expectedApiCode}" not found in the list`
+    )
+  }
+
+  async userClicksOnChangeNameButtonForAPICode(expectedApiCode) {
+    const nameRow = await this.findNameRowForApiCode(expectedApiCode)
+    const changeNameButton = await nameRow.$('.govuk-summary-list__actions > a')
+    await expect(changeNameButton).toBeDisplayed()
+    await changeNameButton.click()
+  }
+
+  async verifyAPICodeNameIsDisplayedInTheApiCodeList(expectedApiCode, newName) {
+    const nameRow = await this.findNameRowForApiCode(expectedApiCode)
+    const value = await nameRow.$('.govuk-summary-list__value').getText()
+    expect(value).toBe(newName)
+  }
+
+  async verifyAPICodeNameIsDisplayedInTheDisabledApiCodeList(
+    expectedApiCode,
+    newName
+  ) {
+    const disabledAPICodes = await this.getListOfDisabledAPICodes()
+    expect(disabledAPICodes[expectedApiCode]).toBe(newName)
   }
 }
 

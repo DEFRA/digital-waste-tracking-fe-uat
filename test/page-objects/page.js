@@ -18,6 +18,10 @@ class Page {
     return $('footer')
   }
 
+  get backLink() {
+    return $('.govuk-back-link')
+  }
+
   get signOutLink() {
     return $('a[href="/sign-out"]')
   }
