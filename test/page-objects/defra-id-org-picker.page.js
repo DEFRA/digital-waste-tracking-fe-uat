@@ -1,5 +1,5 @@
 import { Page } from 'page-objects/page'
-import { $ } from '@wdio/globals'
+import { browser, $ } from '@wdio/globals'
 
 class DefraIdOrgPickerPage extends Page {
   get heading() {
@@ -15,11 +15,17 @@ class DefraIdOrgPickerPage extends Page {
   }
 
   async verifyUserIsOnOrgPickerPage() {
-    // Wait for heading to be displayed
-    await expect(this.heading).toBeDisplayed()
-
-    // Verify the heading text
-    await expect(this.heading).toHaveText('Who do you want to represent?')
+    await browser.waitUntil(
+      async () => {
+        const displayed = await this.heading.isDisplayed()
+        const text = displayed ? await this.heading.getText() : ''
+        return displayed && text === 'Who do you want to represent?'
+      },
+      {
+        timeoutMsg:
+          'Org picker heading "Who do you want to represent?" was not displayed'
+      }
+    )
   }
 
   async selectOrganisation(index) {
