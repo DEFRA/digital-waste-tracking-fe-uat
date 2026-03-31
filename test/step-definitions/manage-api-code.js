@@ -4,6 +4,7 @@ import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import NextActionPage from '../page-objects/next-action.page.js'
+import ChangeApiCodeNamePage from '../page-objects/change-api-code-name.page.js'
 
 async function navigateToApiCodePage(context) {
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
@@ -143,3 +144,57 @@ When('user tries to create new API code', async function () {
   await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   await ManageApiCodePage.userCreatesANewAPICode()
 })
+
+Then(
+  'the API code should display the updated name in the API code list',
+  async function () {
+    await ManageApiCodePage.verifyUserIsOnYourApiCodePage()
+    await ManageApiCodePage.verifyAPICodeIsDisplayed(
+      this.activeApiCode,
+      'active'
+    )
+    await ManageApiCodePage.verifyAPICodeNameIsDisplayedInTheApiCodeList(
+      this.activeApiCode,
+      this.newApiCodeName
+    )
+  }
+)
+
+When('the user gives the API code a meaningful name', async function () {
+  this.newApiCodeName = 'Test API Code'
+  await ManageApiCodePage.userClicksOnChangeNameButtonForAPICode(
+    this.activeApiCode
+  )
+  await ChangeApiCodeNamePage.verifyUserIsOnChangeApiCodeNamePage(
+    this.activeApiCode
+  )
+  this.pageName = 'change-api-code-name-page'
+  await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+  await ChangeApiCodeNamePage.userChangesTheApiCodeName(this.newApiCodeName)
+})
+
+When('user has disabled the active API Code', async function () {
+  await ManageApiCodePage.clickDisableButtonForAPICode(this.activeApiCode)
+  await ConfirmDisableApiCodePage.userContinuesWithDisableApiCodeAction(
+    this.activeApiCode
+  )
+  await ManageApiCodePage.verifyUserIsOnYourApiCodePage()
+  await ManageApiCodePage.verifyAPICodeIsDisplayed(
+    this.activeApiCode,
+    'disabled'
+  )
+  await ManageApiCodePage.verifyDisableApiCodeNotificationBannerIsDisplayed(
+    this.activeApiCode
+  )
+  this.disabledApiCode = this.activeApiCode
+})
+
+Then(
+  'the new name of the api code must be displayed in the disabled api code list',
+  async function () {
+    await ManageApiCodePage.verifyAPICodeNameIsDisplayedInTheDisabledApiCodeList(
+      this.disabledApiCode,
+      this.newApiCodeName
+    )
+  }
+)
