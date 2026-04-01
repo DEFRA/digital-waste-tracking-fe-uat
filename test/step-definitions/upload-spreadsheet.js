@@ -146,7 +146,11 @@ Then(
       expect(record.lastUpdatedAt).not.toBeNull()
       expect(record.traceId).not.toBeNull()
       expect(record.bulkId).not.toBeNull()
-      expect(record.revision).toBe(1)
+      if (action === 'updated') {
+        expect(record.revision).toBe(2)
+      } else {
+        expect(record.revision).toBe(1)
+      }
       expect(record.receipt.movement.receiver).toStrictEqual(exp.receiver)
       expect(record.receipt.movement.receipt).toStrictEqual(exp.receipt)
       // expect(record.receipt.movement.dateTimeReceived).toStrictEqual(exp.dateTimeReceived)

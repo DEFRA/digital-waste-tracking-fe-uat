@@ -217,8 +217,12 @@ export const config = {
     const wasteOrganisationBackendServiceUrl = process.env.xapikey
       ? `https://ephemeral-protected.api.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/waste-organisation-backend`
       : cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl
+    const wasteMovementBackendServiceUrl = process.env.xapikey
+      ? `https://ephemeral-protected.api.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/waste-movement-backend`
+      : cucumberWorld.testConfig.wasteMovementBackendServiceUrl
     cucumberWorld.apis = ApiFactory.create(
       wasteOrganisationBackendServiceUrl,
+      wasteMovementBackendServiceUrl,
       cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.env.HTTP_PROXY
