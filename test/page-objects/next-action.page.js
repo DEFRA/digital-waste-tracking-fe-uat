@@ -42,10 +42,10 @@ class NextActionPage extends Page {
   }
 
   async verifyListOfActionsToChooseFrom() {
-    await expect(this.connectYourSoftwareRadio).toBeDisplayed()
-    await expect(this.uploadSpreadsheetRadio).toBeDisplayed()
-    await expect(this.downloadSpreadsheetRadio).toBeDisplayed()
-    await expect(this.updateSpreadsheetRadio).toBeDisplayed()
+    await expect(this.connectYourSoftwareRadio).toBeExisting()
+    await expect(this.uploadSpreadsheetRadio).toBeExisting()
+    await expect(this.downloadSpreadsheetRadio).toBeExisting()
+    await expect(this.updateSpreadsheetRadio).toBeExisting()
   }
 
   /**

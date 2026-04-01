@@ -19,15 +19,15 @@ Feature: Waste receiving account page
     When the user navigates to manage account
     Then user should be redirected to the defra my account page
 
-  @env_test
+  @env_test @env_dev
   Scenario: User should be able to click on report receipt of waste and displayed with list of actions to choose from
-    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+    Given a user is logged in to the waste receiver registration portal
     When the user navigates to report receipt of waste
     Then the user should be redirected to "Report receipt of waste" page
     And the user should be able to see the list of actions to choose from
 
   @env_test @env_dev @accessibility @issue=DWT-1982
-  Scenario: User should be able to click on report receipt of waste and displayed with list of actions to choose from
+  Scenario: User should be displayed with an error message when they click on "Continue" button without selecting an action
     Given a user is logged in to the waste receiver registration portal
     When the user navigates to report receipt of waste
     And the user should be redirected to "Report receipt of waste" page

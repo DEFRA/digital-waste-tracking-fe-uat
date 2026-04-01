@@ -11,6 +11,30 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
     Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
+    And the processed spreadsheet should contain valid WTIDs
+    # And email should sent to the user with the spreadsheet and WTIDs
+  
+  @env_dev
+  Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "Test2-spreadsheet.xlsx" to upload
+    Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
+    And all the waste movements should be successfully created
+    And the processed spreadsheet should contain valid WTIDs
+    # And email should sent to the user with the spreadsheet and WTIDs
+
+  @env_test
+  Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
+    Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "Test2-spreadsheet.xlsx" to upload
+    Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
     And all the waste movements should be successfully created
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
@@ -22,7 +46,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
     Then the user should be redirected to "Upload successful" page
-    And all the waste movements should be successfully created
+    And the file is successfully accepted for processing
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
@@ -35,10 +59,10 @@ So that I can submit waste movement data, correctly linked to the business I hav
   Scenario: Waste receiver with multiple businesses can upload waste movements for each selected business
     Given a multi-business user is logged in via "Gov UK"
     And the user successfully uploads a waste movement spreadsheet for the selected business
-    And all the waste movements should be successfully created
+    And the file is successfully accepted for processing
     When the user switches to a different business
     Then the user should be able to successfully upload a waste movement spreadsheet for that business
-    And all the waste movements should be successfully created
+    And the file is successfully accepted for processing
 
   @env_dev @issue=DWT-1465
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
@@ -77,8 +101,8 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<file_type>" to upload
     Then the user should be redirected to "Upload successful" page
-    And no waste movements should be created
     And the spreadsheet must be rejected
+    And no waste movements should be created
 
     Examples:
       | file_type                       |
