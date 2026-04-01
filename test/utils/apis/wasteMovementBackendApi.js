@@ -4,7 +4,7 @@ export class WasteMovementBackendAPI extends BaseAPI {
   constructor(baseUrl, httpProxy) {
     super(baseUrl, httpProxy)
     // Create Basic Authorization header with base64 encoded credentials
-    const credentials = `waste-organisation-backend:${process.env.WASTE_MOVEMENT_BACKEND_PASSWORD}`
+    const credentials = `qa-non-prod:${process.env.WASTE_MOVEMENT_BACKEND_PASSWORD}`
     this.base64Credentials = Buffer.from(credentials).toString('base64')
   }
 
