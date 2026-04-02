@@ -79,7 +79,7 @@ class DefraIdStubPage extends Page {
     log.info(`Register with email: ${email}`)
 
     await expect(browser).toHaveUrl(
-      'https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register'
+      `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register`
     )
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('DEFRA ID Stub User Set Up')
@@ -101,7 +101,7 @@ class DefraIdStubPage extends Page {
     await this.click(this.continueButton)
 
     await expect(browser).toHaveUrl(
-      `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
+      `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
     )
 
     await this.relationshipIdInput.waitForExist({
@@ -118,7 +118,7 @@ class DefraIdStubPage extends Page {
     await this.click(this.continueButton)
 
     await expect(browser).toHaveUrl(
-      `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
+      `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
     )
 
     await this.finishLink.waitForExist({
@@ -127,7 +127,7 @@ class DefraIdStubPage extends Page {
     await this.finishLink.click()
 
     await expect(browser).toHaveUrl(
-      `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/summary`
+      `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/summary`
     )
 
     await this.loginLink.waitForExist({
@@ -137,7 +137,7 @@ class DefraIdStubPage extends Page {
 
     // assert user was created successfully
     await expect(browser).toHaveUrl(
-      `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/login`
+      `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/login`
     )
     const userList = await this.userList.getElements()
     const users = await userList.map(async (user) => await user.getText())
@@ -172,8 +172,11 @@ class DefraIdStubPage extends Page {
     await userRow.waitForClickable({ timeout: config.waitforTimeout })
     await userRow.click()
 
+    // Path may be /organisations or /organisations/; stub may append ?sessionId=...
     await expect(browser).toHaveUrl(
-      /https:\/\/cdp-defra-id-stub\.dev\.cdp-int\.defra\.cloud\/cdp-defra-id-stub\/organisations/
+      new RegExp(
+        `^https://cdp-defra-id-stub\\.${process.env.ENVIRONMENT}\\.cdp-int\\.defra\\.cloud/cdp-defra-id-stub/organisations/?(?:\\?.*)?$`
+      )
     )
   }
 

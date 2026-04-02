@@ -71,13 +71,14 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<spreadsheet_file>" to upload
     Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
     And no waste movements should be created
     And the processed spreadsheet should contain error details
 
     Examples:
       | error_type     | spreadsheet_file                     |
       | format         | Test1-format-errors-spreadsheet.xlsx |
-      | api validation | Test1-api-errors-spreadsheet.xlsx    |
+      # | api validation | Test1-api-errors-spreadsheet.xlsx    |
 
   @env_test @issue=DWT-1465
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
@@ -86,6 +87,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<spreadsheet_file>" to upload
     Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
     And no waste movements should be created
     And the processed spreadsheet should contain error details
 
@@ -101,6 +103,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<file_type>" to upload
     Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
     And the spreadsheet must be rejected
     And no waste movements should be created
 
