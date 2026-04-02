@@ -78,7 +78,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     Examples:
       | error_type     | spreadsheet_file                     |
       | format         | Test1-format-errors-spreadsheet.xlsx |
-      # | api validation | Test1-api-errors-spreadsheet.xlsx    |
+      | api validation | Test1-api-errors-spreadsheet.xlsx    |
 
   @env_test @issue=DWT-1465
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
