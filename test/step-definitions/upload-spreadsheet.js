@@ -10,6 +10,8 @@ import {
   extractDataFromWorkbook
 } from '../utils/spreadsheet-parser.js'
 import { EXPECTED_ERRORS } from '../data/expected-errors.js'
+import { EXPECTED_WASTE_MOVEMENT_RECORDS } from '../data/expected-waste-movement-records.js'
+import AsyncUploadProcessHandler from '../utils/AsyncProcessHandler.js'
 
 const spreadsheetActions = {
   upload: {
@@ -111,16 +113,62 @@ When(
   }
 )
 
+Then('the file is successfully accepted for processing', async function () {
+  this.uploadId =
+    await UploadSuccessfulPage.verifyFileHasBeenUploadedSuccessfullyToTheS3(
+      this.apis.wasteOrganisationBackendAPI,
+      this.organisationId,
+      this.uploadedFileName
+    )
+})
+
 Then(
   /^all the waste movements should be successfully (created|updated)$/,
   async function (action) {
-    this.uploadId =
-      await UploadSuccessfulPage.verifyFileHasBeenUploadedSuccessfullyToTheS3(
-        this.apis.wasteOrganisationBackendAPI,
-        this.organisationId,
-        this.uploadedFileName,
-        action
+    const wasteMovementRecords =
+      await AsyncUploadProcessHandler.waitForWasteMovementRecords(
+        this.apis.wasteMovementBackendAPI,
+        this.uploadId
       )
+
+    // assert the records are created/updated correctly
+    expect(wasteMovementRecords.length).toBeGreaterThan(0)
+    for (const record of wasteMovementRecords) {
+      const exp =
+        EXPECTED_WASTE_MOVEMENT_RECORDS[
+          record.receipt.movement.yourUniqueReference
+        ]
+      expect(record.wasteTrackingId).not.toBeNull()
+      expect(record.submittingOrganisation.defraCustomerOrganisationId).toBe(
+        this.organisationId
+      )
+      expect(record.createdAt).not.toBeNull()
+      expect(record.lastUpdatedAt).not.toBeNull()
+      expect(record.traceId).not.toBeNull()
+      expect(record.bulkId).not.toBeNull()
+      if (action === 'updated') {
+        expect(record.revision).toBe(2)
+      } else {
+        expect(record.revision).toBe(1)
+      }
+      expect(record.receipt.movement.receiver).toStrictEqual(exp.receiver)
+      expect(record.receipt.movement.receipt).toStrictEqual(exp.receipt)
+      // expect(record.receipt.movement.dateTimeReceived).toStrictEqual(exp.dateTimeReceived)
+      expect(record.receipt.movement.reasonForNoConsignmentCode).toStrictEqual(
+        exp.reasonForNoConsignmentCode
+      )
+      expect(record.receipt.movement.specialHandlingRequirements).toStrictEqual(
+        exp.specialHandlingRequirements
+      )
+      expect(record.receipt.movement.carrier).toStrictEqual(exp.carrier)
+      expect(record.receipt.movement.brokerOrDealer).toStrictEqual(
+        exp.brokerOrDealer
+      )
+      expect(record.receipt.movement.wasteItems).toStrictEqual(exp.wasteItems)
+      expect(
+        record.receipt.movement.hazardousWasteConsignmentCode
+      ).toStrictEqual(exp.hazardousWasteConsignmentCode)
+    }
   }
 )
 
@@ -234,18 +282,25 @@ Then(
   }
 )
 
-Then('no waste movements should be created', () => {
-  // ToDo: when the TeamA's api is ready to query waste movements using bulk upload id,
-  //  we can add a step to check if no waste movements are created
+Then('no waste movements should be created', async function () {
+  const response = await AsyncUploadProcessHandler.waitForWasteMovementRecords(
+    this.apis.wasteMovementBackendAPI,
+    this.uploadId
+  )
+  expect(response.statusCode).toBe(404)
+  expect(response.message).toBe(
+    `Waste inputs with values {"bulkId":"${this.uploadId}"} not found`
+  )
 })
 
 Then('the spreadsheet must be rejected', { timeout: 30000 }, async function () {
-  const actualErrorMessage =
+  const { uploadId, errorMessage: actualErrorMessage } =
     await UploadSuccessfulPage.verifyFileHasBeenRejectedAndNotUploadedToS3(
       this.apis.wasteOrganisationBackendAPI,
       this.organisationId,
       this.uploadedFileName
     )
+  this.uploadId = uploadId
   if (this.uploadedFileName.includes('File-size-greater-than-2MB')) {
     expect(actualErrorMessage).toBe(
       'The selected file must be smaller than 2 MB'

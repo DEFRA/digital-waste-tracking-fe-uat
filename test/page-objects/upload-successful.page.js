@@ -1,5 +1,6 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
+import AsyncUploadProcessHandler from '../utils/AsyncProcessHandler.js'
 
 class UploadSuccessfulPage extends Page {
   // locators
@@ -49,32 +50,11 @@ class UploadSuccessfulPage extends Page {
     fileName,
     mode = 'upload'
   ) {
-    let uploadId = null
-
-    await browser.waitUntil(
-      async () => {
-        const response = await apiInstance.getBulkUploadIdByFileName(
-          organisationId,
-          fileName
-        )
-        if (
-          response.statusCode === 200 &&
-          response.json.uploads.length > 0 &&
-          response.json.uploads[0].uploadId
-        ) {
-          uploadId = response.json.uploads[0].uploadId
-          return true
-        }
-        return false
-      },
-      {
-        timeout: 30000,
-        interval: 3000,
-        timeoutMsg: `File "${fileName}" was not found in S3 uploads for organisation "${organisationId}" within the timeout`
-      }
+    return AsyncUploadProcessHandler.waitForUploadId(
+      apiInstance,
+      organisationId,
+      fileName
     )
-
-    return uploadId
   }
 
   async verifyFileHasBeenRejectedAndNotUploadedToS3(
@@ -83,37 +63,12 @@ class UploadSuccessfulPage extends Page {
     fileName,
     expectedErrorMessage
   ) {
-    let actualErrorMessage = null
-
-    await browser.waitUntil(
-      async () => {
-        const response = await apiInstance.getBulkUploadIdByFileName(
-          organisationId,
-          fileName
-        )
-        const upload = response.json?.uploads?.[0]
-        if (
-          response.statusCode === 200 &&
-          upload?.hasError === true &&
-          upload?.errorMessage
-        ) {
-          actualErrorMessage = upload.errorMessage
-          return true
-        }
-        return false
-      },
-      {
-        timeout: 30000,
-        interval: 3000,
-        timeoutMsg: `File "${fileName}" was not rejected with an error for organisation "${organisationId}" within the timeout`
-      }
+    return AsyncUploadProcessHandler.waitForRejection(
+      apiInstance,
+      organisationId,
+      fileName,
+      expectedErrorMessage
     )
-
-    if (expectedErrorMessage) {
-      expect(actualErrorMessage).toBe(expectedErrorMessage)
-    }
-
-    return actualErrorMessage
   }
 
   async getProcessedFileUrl(
@@ -122,32 +77,12 @@ class UploadSuccessfulPage extends Page {
     fileName,
     timeoutMs = 60000
   ) {
-    let processedFileUrl = null
-
-    await browser.waitUntil(
-      async () => {
-        const response = await apiInstance.getBulkUploadIdByFileName(
-          organisationId,
-          fileName
-        )
-        if (
-          response.statusCode === 200 &&
-          response.json.uploads.length > 0 &&
-          response.json.uploads[0].processedFileUrl
-        ) {
-          processedFileUrl = response.json.uploads[0].processedFileUrl
-          return true
-        }
-        return false
-      },
-      {
-        timeout: timeoutMs,
-        interval: 5000,
-        timeoutMsg: `Processed file URL was not found for "${fileName}" in organisation "${organisationId}" within ${timeoutMs / 1000}s`
-      }
+    return AsyncUploadProcessHandler.waitForProcessedFileUrl(
+      apiInstance,
+      organisationId,
+      fileName,
+      timeoutMs
     )
-
-    return processedFileUrl
   }
 }
 

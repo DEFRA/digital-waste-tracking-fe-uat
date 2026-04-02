@@ -1,4 +1,5 @@
 import { WasteOrganisationBackendAPI } from './wasteOrganisationBackendApi.js'
+import { WasteMovementBackendAPI } from './wasteMovementBackendApi.js'
 import { WasteMovementExternalAPI } from './wasteMovementApi.js'
 import { CognitoOAuthApi } from './cognitoOAuth.js'
 
@@ -9,8 +10,18 @@ import { CognitoOAuthApi } from './cognitoOAuth.js'
  * @property {CognitoOAuthApi} cognitoOAuthApi - Cognito OAuth API instance
  */
 export class ApiFactory {
-  static create(baseUrl, externalApiBaseUrl, authBaseUrl, httpProxy) {
+  static create(
+    baseUrl,
+    movementBackendBaseUrl,
+    externalApiBaseUrl,
+    authBaseUrl,
+    httpProxy
+  ) {
     return {
+      wasteMovementBackendAPI: new WasteMovementBackendAPI(
+        movementBackendBaseUrl,
+        httpProxy
+      ),
       wasteOrganisationBackendAPI: new WasteOrganisationBackendAPI(
         baseUrl,
         httpProxy
