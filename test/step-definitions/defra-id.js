@@ -116,7 +116,10 @@ async function navigateToPortalAndLogin(context, accountType) {
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal$/,
   async function () {
-    if (this.env.ENVIRONMENT === 'dev') {
+    if (
+      this.env.ENVIRONMENT === 'dev' ||
+      this.env.ENVIRONMENT === 'perf-test'
+    ) {
       this.userEmail = `test${Date.now()}@test.com`
       await DefraIdStubPage.open(
         this.testConfig.defraIdServiceUrl + '/register'

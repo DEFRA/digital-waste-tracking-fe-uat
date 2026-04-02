@@ -94,6 +94,7 @@ So that I can make corrections or changes after submission.
     And user selects option to update waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<spreadsheet_file>" to update existing waste movements
     Then user should be redirected to "Spreadsheet update successful" page
+    And the file is successfully accepted for processing
     And no waste movements should be created
     And the processed spreadsheet should contain error details
 
@@ -109,6 +110,7 @@ So that I can make corrections or changes after submission.
     And user selects option to update waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<spreadsheet_file>" to update existing waste movements
     Then user should be redirected to "Spreadsheet update successful" page
+    And the file is successfully accepted for processing
     And no waste movements should be created
     And the processed spreadsheet should contain error details
 
@@ -124,6 +126,7 @@ So that I can make corrections or changes after submission.
     And user selects option to update waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<file_type>" to update existing waste movements
     Then user should be redirected to "Spreadsheet update successful" page
+    And the file is successfully accepted for processing
     And no waste movements should be created
     And the spreadsheet must be rejected
 

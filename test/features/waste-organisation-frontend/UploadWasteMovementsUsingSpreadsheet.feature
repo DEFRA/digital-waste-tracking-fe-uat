@@ -71,6 +71,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<spreadsheet_file>" to upload
     Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
     And no waste movements should be created
     And the processed spreadsheet should contain error details
 
@@ -86,6 +87,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<spreadsheet_file>" to upload
     Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
     And no waste movements should be created
     And the processed spreadsheet should contain error details
 
@@ -101,6 +103,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a spreadsheet file "<file_type>" to upload
     Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
     And the spreadsheet must be rejected
     And no waste movements should be created
 

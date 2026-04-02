@@ -43,7 +43,10 @@ When('user is on the View API Code page', async function () {
 Then(
   'user should see the {string} API Code for the selected business',
   async function (status) {
-    if (this.env.ENVIRONMENT === 'dev') {
+    if (
+      this.env.ENVIRONMENT === 'dev' ||
+      this.env.ENVIRONMENT === 'perf-test'
+    ) {
       const response =
         await this.apis.wasteOrganisationBackendAPI.getAllApiCodesForOrganisation(
           this.organisationId

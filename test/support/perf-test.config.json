@@ -1,0 +1,7 @@
+{
+  "defraIdServiceUrl": "https://cdp-defra-id-stub.perf-test.cdp-int.defra.cloud/cdp-defra-id-stub",
+  "wasteOrganisationBackendServiceUrl": "https://waste-organisation-backend.perf-test.cdp-int.defra.cloud",
+  "wasteMovementBackendServiceUrl": "https://waste-movement-backend.perf-test.cdp-int.defra.cloud",
+  "wasteMovementExternalApiBaseUrl": "https://waste-movement-external-api.api.perf-test.cdp-int.defra.cloud",
+  "cognitoOAuthBaseUrl": "https://waste-movement-external-api-05244.auth.eu-west-2.amazoncognito.com"
+}

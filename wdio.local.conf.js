@@ -10,6 +10,12 @@ import { browser } from '@wdio/globals'
 import logger from '@wdio/logger'
 const log = logger('wdio.local.conf.js')
 
+/** Cucumber @env_* tag: dev and perf-test scenarios use @env_dev (see wdio.conf.js) */
+const cucumberEnvTag =
+  process.env.ENVIRONMENT === 'dev' || process.env.ENVIRONMENT === 'perf-test'
+    ? 'dev'
+    : process.env.ENVIRONMENT
+
 const debug = process.env.DEBUG
 const oneMinute = 60 * 1000
 // const oneHour = 60 * 60 * 1000
@@ -156,10 +162,9 @@ export const config = {
   cucumberOpts: {
     timeout: 60000,
     require: ['./test/step-definitions/**/*.js'],
-    tags: `@env_${process.env.ENVIRONMENT}`,
+    tags: `@env_${cucumberEnvTag}`,
     failAmbiguousDefinitions: true,
     ignoreUndefinedDefinitions: false
-    // tags: `@local`
   },
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -276,7 +281,7 @@ export const config = {
         `cleaning up the user from the defra id mock service: ${cucumberWorld.defraIdMockUserId}`
       )
       await browser.url(
-        `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
+        `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
       )
     }
   },
