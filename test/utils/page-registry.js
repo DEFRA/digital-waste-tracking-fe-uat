@@ -5,6 +5,7 @@ import ConfirmDisableApiCodePage from '../page-objects/confirm-disable-api-code.
 import CannotUseServicePage from '../page-objects/cannot-use-service.page.js'
 import UserNotAuthenticatedPage from '../page-objects/user-not-authenticated.page.js'
 import PrivacyNoticePage from '../page-objects/privacy-notice.page.js'
+import CannotContinueOnThisServicePage from '../page-objects/cannot-continue-on-this-service.page.js'
 import AllureReporter from '@wdio/allure-reporter'
 
 function isChromiumDesktop(context) {
@@ -30,6 +31,15 @@ function skipNonChromium(context) {
  * To add a new page, add a new entry here — no other file needs changing.
  */
 export const PAGE_REGISTRY = new Map([
+  [
+    'You cannot continue on this service',
+    {
+      pageName: 'cannot-continue-on-this-service-page',
+      verify: async () => {
+        await CannotContinueOnThisServicePage.verifyUserIsOnCannotContinueOnThisServicePage()
+      }
+    }
+  ],
   [
     'privacy-notice',
     {
