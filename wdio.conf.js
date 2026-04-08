@@ -8,6 +8,11 @@ import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
 import { browser } from '@wdio/globals'
 import logger from '@wdio/logger'
+import { buildCucumberTagExpression } from './test/utils/cucumber-tag-expression.js'
+import {
+  addAllureIssueLinksFromPickleTags,
+  ALLURE_ISSUE_LINK_TEMPLATE
+} from './test/utils/allure-utils.js'
 const log = logger('wdio.conf.js')
 
 /** Cucumber @env_* tag: dev and perf-test scenarios use @env_dev */
@@ -99,7 +104,7 @@ export const config = {
   cucumberOpts: {
     timeout: 60000,
     require: ['./test/step-definitions/**/*.js'],
-    tags: `@env_${cucumberEnvTag}`,
+    tags: buildCucumberTagExpression(cucumberEnvTag),
     failAmbiguousDefinitions: true,
     ignoreUndefinedDefinitions: false
   },
@@ -118,7 +123,7 @@ export const config = {
       'allure',
       {
         outputDir: 'allure-results',
-        issueLinkTemplate: 'https://eaflood.atlassian.net/browse/{}',
+        issueLinkTemplate: ALLURE_ISSUE_LINK_TEMPLATE,
         useCucumberStepReporter: true,
         disableWebdriverStepsReporting: false,
         disableWebdriverScreenshotsReporting: false
@@ -154,6 +159,10 @@ export const config = {
   // Cucumber Hooks
   // =====
   beforeScenario: async function (world, cucumberWorld) {
+    await addAllureIssueLinksFromPickleTags(
+      world.pickle,
+      ALLURE_ISSUE_LINK_TEMPLATE
+    )
     // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
     // as 'this' in step definitions. We need to ensure properties are set on the world object
     // that will be accessible in step definitions.

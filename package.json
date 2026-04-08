@@ -16,7 +16,8 @@
   "scripts": {
     "clean": "rm -rf allure-results && rm -rf allure-report",
     "test": "npm run clean && npm run test:${PROFILE:-integration}",
-    "test:debug": "npm run clean && DEBUG=true wdio run wdio.conf.js --cucumberOpts.tags='@debug'",
+    "test:debug": "npm run clean && DEBUG=true CUCUMBER_EXTRA_TAGS='@debug' wdio run wdio.conf.js",
+    "test:smoke": "npm run clean && CUCUMBER_EXTRA_TAGS='@smoke' wdio run wdio.conf.js",
     "test:integration": "npm run clean && wdio run wdio.conf.js",
     "test:browserstack": "npm run clean && wdio run wdio.browserstack.conf.js",
     "test:local": ". ./env.sh && npm run clean && wdio run wdio.local.conf.js",
@@ -55,7 +56,6 @@
     "esm-module-alias": "2.2.1",
     "exceljs": "4.4.0",
     "global-agent": "3.0.0",
-    "mongodb": "^6.12.0",
     "socks": "^2.8.3",
     "undici": "7.22.0"
   },
