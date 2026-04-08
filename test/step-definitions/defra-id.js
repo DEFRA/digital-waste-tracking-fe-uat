@@ -212,3 +212,11 @@ Given(
     // Do nothing as we want to ensure user is not logged in for this step. Step definition is here to improve readability of the scenario
   }
 )
+
+When(
+  'a user is logged in to the waste receiver registration portal with a {string} account',
+  async function (s) {
+    this.govUKUser = this.testConfig.individualUserDefraAccLogin
+    await navigateToPortalAndLogin(this, 'GOV.UK One Login')
+  }
+)

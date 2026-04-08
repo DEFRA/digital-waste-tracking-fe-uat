@@ -11,7 +11,7 @@ Feature: Permitted waste receiver
     And user clicks on the "Continue" button
     Then user should be redirected to Defra Id service
 
-  @env_dev @env_test @issue=DWT-1017 @accessibility
+  @env_dev @env_test @issue=DWT-1017 @issue=DWT-1989 @accessibility
   Scenario: User indicates that they are not permitted to receive waste in the UK
     Given a user is on are you a permitted waste receiver page
     When user selects the "No" option to indicate they are not a permitted waste receiver
@@ -26,4 +26,10 @@ Feature: Permitted waste receiver
       | message                                                                           |
       | Select Yes if you operate one or more licensed or permitted waste receiving sites |
 
+  @env_test @env_dev @issue=DWT-1990
+  Scenario: Once user is logged in, he should not be asked to indicate whether they are permitted to receive waste in the UK
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    When user navigates to are you a permitted waste receiver page
+    Then user should be redirected to "account-home" page
 # Note: there will be seperate tests defined for feedback link etc. when the tickets get played

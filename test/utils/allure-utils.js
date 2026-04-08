@@ -1,4 +1,4 @@
-import allure from '@wdio/allure-reporter'
+import allure, { addLink } from '@wdio/allure-reporter'
 
 /**
  * Log API request details to Allure report
@@ -87,5 +87,34 @@ export async function logAllureResponse(
     }
   } finally {
     allure.endStep()
+  }
+}
+
+/**
+ * TEMPORARY workaround: @wdio/allure-reporter maps Cucumber `@issue=KEY` to `label("issue", KEY)`
+ * only; Allure shows Issues from **links** (`type: "issue"`). Remove this when the reporter uses
+ * `issueLinkTemplate` for Cucumber @issue tags (see webdriverio/webdriverio wdio-allure-reporter).
+ */
+
+/** Keep in sync with `reporters[allure].issueLinkTemplate` (must contain `{}` for the issue id). */
+export const ALLURE_ISSUE_LINK_TEMPLATE =
+  'https://eaflood.atlassian.net/browse/{}'
+
+/**
+ * @param {{ tags?: { name: string }[] }} pickle
+ * @param {string} [issueLinkTemplate]
+ */
+export async function addAllureIssueLinksFromPickleTags(
+  pickle,
+  issueLinkTemplate = ALLURE_ISSUE_LINK_TEMPLATE
+) {
+  if (!pickle?.tags?.length || !issueLinkTemplate.includes('{}')) return
+  for (const tag of pickle.tags) {
+    const m = String(tag.name).match(/^@?issue=(.+)$/i)
+    if (!m) continue
+    const issueId = m[1].trim()
+    if (!issueId) continue
+    const url = issueLinkTemplate.split('{}').join(issueId)
+    await addLink(url, issueId, 'issue')
   }
 }

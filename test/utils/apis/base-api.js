@@ -1,5 +1,5 @@
 import { request, Agent, ProxyAgent } from 'undici'
-import { logAllureRequest, logAllureResponse } from '../allure-api-logger.js'
+import { logAllureRequest, logAllureResponse } from '../allure-utils.js'
 
 /**
  * @typedef {Object} JsonResponse
