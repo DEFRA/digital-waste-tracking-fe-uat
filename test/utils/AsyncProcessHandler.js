@@ -22,9 +22,9 @@ export class AsyncUploadProcessHandler {
         if (
           response.statusCode === 200 &&
           response.json.uploads.length > 0 &&
-          response.json.uploads[0].uploadId
+          response.json.uploads[0].referenceNumber
         ) {
-          uploadId = response.json.uploads[0].uploadId
+          uploadId = response.json.uploads[0].referenceNumber
           return true
         }
         return false

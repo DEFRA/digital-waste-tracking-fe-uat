@@ -120,6 +120,8 @@ Then('the file is successfully accepted for processing', async function () {
       this.organisationId,
       this.uploadedFileName
     )
+  expect(this.uploadId).not.toBeNull()
+  expect(this.uploadId).toEqual(this.referenceNumber)
 })
 
 Then(
