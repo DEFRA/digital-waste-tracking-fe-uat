@@ -36,9 +36,10 @@ async function processSpreadsheetForBusiness(context, type) {
     file,
     mode
   )
-  context.organisationId = (
+  const { organisationId, referenceNumber } =
     await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(mode)
-  ).organisationId
+  context.organisationId = organisationId
+  context.referenceNumber = referenceNumber
 }
 
 Given(
