@@ -43,7 +43,7 @@ class MyAccountHomePage extends Page {
     await this.elementIsDisplayed(this.heading)
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Waste receiving account')
-    await expect(browser).toHaveUrl(config.baseUrl + '/account')
+    await expect(browser).toHaveUrl(/\/account/)
 
     if (organisationName) {
       await expect(this.organisationName).toBeDisplayed()

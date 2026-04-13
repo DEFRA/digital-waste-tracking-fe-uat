@@ -1,0 +1,6 @@
+{
+  "defaultGovUKLogin": "autotest.ee2026+1703261@gmail.com",
+  "defraIdServiceUrl": "https://dcidmpreprod.b2clogin.com/dcidmpreprod.onmicrosoft.com/oauth2/authresp",
+  "govtGatewayLoginUrl": "https://www.ete.access.service.gov.uk/login/signin/creds",
+  "govUKBaseUrl": "https://signin.integration.account.gov.uk"
+}
