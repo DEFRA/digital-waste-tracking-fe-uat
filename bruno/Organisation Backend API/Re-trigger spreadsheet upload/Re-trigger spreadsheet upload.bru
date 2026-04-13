@@ -1,0 +1,48 @@
+meta {
+  name: Re-trigger spreadsheet upload
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/spreadsheet/e852b6d3-5f5e-4b90-9932-c2e2350d1099/8afebc9a-3c10-41ff-93a5-bb7dacfb980c
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{x-api-key}}
+}
+
+body:json {
+  {
+    "spreadsheet": {
+      "checksumSha256": "D7cBxfxM3oyG0/rv3FTrKyyc1VSojM1wrXYJYPVz5So=",
+      "contentLength": 1195371,
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "detectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "encryptedEmail": [
+        "mG1j6XqYshSJiXoe",
+        "8dBvTf8oJbqe51ZjRrwartdqzU5M382muA==",
+        "DVDrZwisAuA5LU626XqpRw=="
+      ],
+      "encryptedName": [
+        "gKoYs3C+/qoTAja9",
+        "mzNYMZ+DyP5iqOg7SahJXvFSzPSLC3plfYHffHJzhZYuVDaloZssOG6x7T0fsNf66BknRQsc/HnVnwR9MUd5TDTWOROlpHd5",
+        "xWx7fDljeXzhYWi2jpkvWA=="
+      ],
+      "fileId": "8232f617-3a39-45d7-960a-6049a9ddc807",
+      "filename": "Test1-no-errors-500WM.xlsx",
+      "s3Bucket": "perf-test-dwt-spreadsheet-upload-05244",
+      "s3Key": "a5b725f0-2432-4afc-b81b-ce1fbe959584/8232f617-3a39-45d7-960a-6049a9ddc807",
+      "traceId": "f3385278d2e12509d523ae7cfc62edaa",
+      "updatedAtTimstamp": "2026-04-02T12:55:01.234Z",
+      "uploadType": "create"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

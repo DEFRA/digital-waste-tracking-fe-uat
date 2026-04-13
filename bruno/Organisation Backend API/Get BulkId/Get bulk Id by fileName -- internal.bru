@@ -1,0 +1,24 @@
+meta {
+  name: Get bulk Id by fileName -- internal
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/test/spreadsheet/{{organisationId}}/uploads?filename={{fileName}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  filename: {{fileName}}
+}
+
+headers {
+  x-api-key: {{x-api-key}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

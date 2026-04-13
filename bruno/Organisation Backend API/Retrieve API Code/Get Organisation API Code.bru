@@ -1,11 +1,11 @@
 meta {
-  name: Get Organisation by API Code
+  name: Get Organisation API Code
   type: http
-  seq: 5
+  seq: 2
 }
 
 get {
-  url: {{baseUrl}}/organisation/{{code}}
+  url: {{baseUrl}}/organisation/{{organisationId}}/apiCodes
   body: none
   auth: inherit
 }
