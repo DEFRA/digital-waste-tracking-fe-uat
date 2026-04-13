@@ -9,7 +9,7 @@ class UploadSuccessfulPage extends Page {
   }
 
   get referenceNumber() {
-    return $('.govuk-panel__body')
+    return $('.govuk-body>strong')
   }
 
   async verifyUserIsOnUploadSuccessfulPage(mode = 'upload') {
@@ -19,14 +19,10 @@ class UploadSuccessfulPage extends Page {
         : /\/organisation\/[a-zA-Z0-9-]+\/update-spreadsheet\/file-uploaded/
     )
     await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      mode === 'upload'
-        ? 'Spreadsheet upload successful'
-        : 'Spreadsheet update successful'
-    )
+    await expect(this.heading).toHaveText('Spreadsheet uploaded')
     await expect(this.referenceNumber).toBeDisplayed()
     await expect(this.referenceNumber).toHaveText(
-      /Your reference number\s+[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
+      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
     )
     const url = await browser.getUrl()
     const urlMatch = url.match(

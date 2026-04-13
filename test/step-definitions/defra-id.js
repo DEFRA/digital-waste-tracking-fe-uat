@@ -150,7 +150,10 @@ Given(
       await DefraIdStubPage.selectFirstOrganisation()
 
       await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-    } else if (this.tags.includes('@browserstack')) {
+    } else if (
+      this.tags.includes('@browserstack') &&
+      this.env.ENVIRONMENT !== 'ext-test'
+    ) {
       // pick a user from default pool
       const user = await getValueFromPool('availableUsers')
       if (user.includes('@')) {
