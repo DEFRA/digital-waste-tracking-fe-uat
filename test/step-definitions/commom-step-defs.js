@@ -1,4 +1,4 @@
-import { Then } from '@wdio/cucumber-framework'
+import { Then, When } from '@wdio/cucumber-framework'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import { Page } from '../page-objects/page.js'
 import { PAGE_REGISTRY } from '../utils/page-registry.js'
@@ -28,3 +28,7 @@ Then(
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }
 )
+
+When('the user selects the {string} banner link', async function (s) {
+  await page.click(page.reportReceiptOfWasteBanner)
+})

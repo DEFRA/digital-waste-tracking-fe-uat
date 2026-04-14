@@ -6,6 +6,10 @@ class Page {
     return $('h1')
   }
 
+  get reportReceiptOfWasteBanner() {
+    return $('.govuk-service-navigation__link')
+  }
+
   get betaBanner() {
     return $('.govuk-phase-banner')
   }
