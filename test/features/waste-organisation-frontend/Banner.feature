@@ -12,7 +12,7 @@ Feature: Report receipt of waste service banner
         When the user selects the "Report receipt of waste" banner link
         Then the user should be redirected to "account-home" page
 
-    Scenario: "Report receipt of waste" banner link should take me to the report receipt of waste page if user is not signed in
+    Scenario: "Report receipt of waste" banner link should take me to restricted access page if user is not signed in
         Given a user is not logged in to the waste receiver registration portal
         And a user is on are you a permitted waste receiver page
         When the user selects the "Report receipt of waste" banner link
