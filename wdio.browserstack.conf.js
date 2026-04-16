@@ -6,11 +6,112 @@ import { readFileSync } from 'fs'
 import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
 import AllureReporter from '@wdio/allure-reporter'
+import {
+  addAllureIssueLinksFromPickleTags,
+  ALLURE_ISSUE_LINK_TEMPLATE
+} from './test/utils/allure-utils.js'
 import logger from '@wdio/logger'
 const log = logger('wdio.browserstack.conf.js')
 
 // const debug = process.env.DEBUG
 // const oneMinute = 60 * 1000
+
+// https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices
+const allCapabilities = [
+  // windows
+  {
+    browserName: 'Chrome',
+    'bstack:options': {
+      idleTimeout: 300,
+      resolution: '1920x1080',
+      browserVersion: 'latest',
+      os: 'Windows',
+      osVersion: '11'
+    },
+    timeouts: {
+      script: 120000, // 120 seconds for async script execution
+      pageLoad: 120000, // 120 seconds for page load
+      implicit: 0 // Don't use implicit waits (use explicit waits instead)
+    }
+  },
+  {
+    browserName: 'Edge',
+    'bstack:options': {
+      idleTimeout: 300,
+      resolution: '1920x1080',
+      browserVersion: 'latest',
+      os: 'Windows',
+      osVersion: '11'
+    },
+    timeouts: {
+      script: 120000, // 120 seconds for async script execution
+      pageLoad: 120000, // 120 seconds for page load
+      implicit: 0 // Don't use implicit waits (use explicit waits instead)
+    }
+  },
+  // macOS
+  {
+    browserName: 'Chrome',
+    'bstack:options': {
+      idleTimeout: 300,
+      resolution: '1920x1080',
+      browserVersion: 'latest',
+      os: 'OS X',
+      osVersion: 'Sonoma' // Changed from 'Sequoia'
+    },
+    timeouts: {
+      script: 120000, // 120 seconds for async script execution
+      pageLoad: 120000, // 120 seconds for page load
+      implicit: 0 // Don't use implicit waits (use explicit waits instead)
+    }
+  },
+  // macOS Safari
+  {
+    browserName: 'Safari',
+    'bstack:options': {
+      idleTimeout: 300,
+      resolution: '1920x1080',
+      os: 'OS X',
+      osVersion: 'Sonoma',
+      browserVersion: '17.3'
+    },
+    timeouts: {
+      script: 120000, // 120 seconds for async script execution
+      pageLoad: 120000, // 120 seconds for page load
+      implicit: 0 // Don't use implicit waits (use explicit waits instead)
+    }
+  },
+  // Android
+  {
+    browserName: 'chrome',
+    'bstack:options': {
+      osVersion: '13.0',
+      deviceName: 'Samsung Galaxy S23 Ultra',
+      consoleLogs: 'info',
+      idleTimeout: 300
+    },
+    timeouts: {
+      script: 120000, // 120 seconds for async script execution
+      pageLoad: 120000, // 120 seconds for page load
+      implicit: 0 // Don't use implicit waits (use explicit waits instead)
+    }
+  },
+  // iOS
+  {
+    browserName: 'chromium',
+    'bstack:options': {
+      osVersion: '26',
+      deviceName: 'iPhone 15 Pro Max',
+      consoleLogs: 'info',
+      idleTimeout: 300
+    },
+    timeouts: {
+      script: 120000, // 120 seconds for async script execution
+      pageLoad: 120000, // 120 seconds for page load
+      implicit: 0 // Don't use implicit waits (use explicit waits instead)
+    }
+  }
+]
 // const oneHour = 60 * 60 * 1000
 
 /**
@@ -41,7 +142,10 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
+  baseUrl:
+    process.env.ENVIRONMENT === 'ext-test'
+      ? `https://${process.env.httpsAuth}@waste-tracking.integration.defra.gov.uk`
+      : `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
 
   // You will need to provide your own BrowserStack credentials.
   // These should be added as secrets to the test suite.
@@ -65,102 +169,10 @@ export const config = {
     }
   },
 
-  // https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices
-  capabilities: [
-    // windows
-    {
-      browserName: 'Chrome',
-      'bstack:options': {
-        idleTimeout: 300,
-        resolution: '1920x1080',
-        browserVersion: 'latest',
-        os: 'Windows',
-        osVersion: '11'
-      },
-      timeouts: {
-        script: 120000, // 120 seconds for async script execution
-        pageLoad: 120000, // 120 seconds for page load
-        implicit: 0 // Don't use implicit waits (use explicit waits instead)
-      }
-    },
-    {
-      browserName: 'Edge',
-      'bstack:options': {
-        idleTimeout: 300,
-        resolution: '1920x1080',
-        browserVersion: 'latest',
-        os: 'Windows',
-        osVersion: '11'
-      },
-      timeouts: {
-        script: 120000, // 120 seconds for async script execution
-        pageLoad: 120000, // 120 seconds for page load
-        implicit: 0 // Don't use implicit waits (use explicit waits instead)
-      }
-    },
-    // macOS
-    {
-      browserName: 'Chrome',
-      'bstack:options': {
-        idleTimeout: 300,
-        resolution: '1920x1080',
-        browserVersion: 'latest',
-        os: 'OS X',
-        osVersion: 'Sonoma' // Changed from 'Sequoia'
-      },
-      timeouts: {
-        script: 120000, // 120 seconds for async script execution
-        pageLoad: 120000, // 120 seconds for page load
-        implicit: 0 // Don't use implicit waits (use explicit waits instead)
-      }
-    },
-    // macOS Safari
-    {
-      browserName: 'Safari',
-      'bstack:options': {
-        idleTimeout: 300,
-        resolution: '1920x1080',
-        os: 'OS X',
-        osVersion: 'Sonoma',
-        browserVersion: '17.3'
-      },
-      timeouts: {
-        script: 120000, // 120 seconds for async script execution
-        pageLoad: 120000, // 120 seconds for page load
-        implicit: 0 // Don't use implicit waits (use explicit waits instead)
-      }
-    },
-    // Android
-    {
-      browserName: 'chrome',
-      'bstack:options': {
-        osVersion: '13.0',
-        deviceName: 'Samsung Galaxy S23 Ultra',
-        consoleLogs: 'info',
-        idleTimeout: 300
-      },
-      timeouts: {
-        script: 120000, // 120 seconds for async script execution
-        pageLoad: 120000, // 120 seconds for page load
-        implicit: 0 // Don't use implicit waits (use explicit waits instead)
-      }
-    },
-    // iOS
-    {
-      browserName: 'chromium',
-      'bstack:options': {
-        osVersion: '26',
-        deviceName: 'iPhone 15 Pro Max',
-        consoleLogs: 'info',
-        idleTimeout: 300
-      },
-      timeouts: {
-        script: 120000, // 120 seconds for async script execution
-        pageLoad: 120000, // 120 seconds for page load
-        implicit: 0 // Don't use implicit waits (use explicit waits instead)
-      }
-    }
-  ],
+  capabilities:
+    process.env.ENVIRONMENT === 'ext-test'
+      ? [allCapabilities[0]]
+      : allCapabilities,
 
   services: [
     'shared-store',
@@ -216,6 +228,7 @@ export const config = {
       'allure',
       {
         outputDir: 'allure-results',
+        issueLinkTemplate: ALLURE_ISSUE_LINK_TEMPLATE,
         useCucumberStepReporter: true,
         disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: false
@@ -245,6 +258,10 @@ export const config = {
   },
 
   beforeScenario: async function (world, cucumberWorld) {
+    await addAllureIssueLinksFromPickleTags(
+      world.pickle,
+      ALLURE_ISSUE_LINK_TEMPLATE
+    )
     // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
     // as 'this' in step definitions. We need to ensure properties are set on the world object
     // that will be accessible in step definitions.
@@ -327,7 +344,7 @@ export const config = {
         `cleaning up the user from the defra id mock service: ${cucumberWorld.defraIdMockUserId}`
       )
       await browser.url(
-        `https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
+        `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
       )
     }
   },
