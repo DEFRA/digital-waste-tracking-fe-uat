@@ -1,4 +1,4 @@
-@issue=DWT-2189 @env_test @env_dev @local
+@issue=DWT-2189 @env_test @env_dev
 Feature: Report receipt of waste service banner
     As a waste receiver user
     I want the Report receipt of waste banner link to take me to the correct page based on my sign-in status
