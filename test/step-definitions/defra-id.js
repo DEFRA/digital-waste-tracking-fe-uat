@@ -55,7 +55,10 @@ When('user enters their Gov.uk email address and password', async function () {
 Given('a user is registered in Defra Id mock service', async function () {
   this.userEmail = `test${Date.now()}@test.com`
   await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-  this.defraIdMockUserId = await DefraIdStubPage.registerNewUser(this.userEmail)
+  const response = await this.apis.defraIdStubAPI.registerNewUser(
+    this.userEmail
+  )
+  this.defraIdMockUserId = response.json.userId
   this.defraIdMockUser = this.userEmail
 })
 
