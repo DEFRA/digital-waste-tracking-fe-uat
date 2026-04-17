@@ -201,6 +201,14 @@ export const config = {
         disableWebdriverScreenshotsReporting: false
       }
     ]
+    // [
+    //   ('video',
+    //   {
+    //     saveAllVideos: true, // If true, also saves videos for successful test cases
+    //     videoSlowdownMultiplier: 7 // Higher to get slower videos, lower for faster videos [Value 1-100]
+    //     // recordAllActions: true
+    //   })
+    // ]
   ],
 
   // =====
@@ -243,6 +251,7 @@ export const config = {
       wasteMovementBackendServiceUrl,
       cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
+      cucumberWorld.testConfig.defraIdServiceUrl,
       cucumberWorld.env.HTTP_PROXY
     )
 

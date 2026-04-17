@@ -2,6 +2,7 @@ import { WasteOrganisationBackendAPI } from './wasteOrganisationBackendApi.js'
 import { WasteMovementBackendAPI } from './wasteMovementBackendApi.js'
 import { WasteMovementExternalAPI } from './wasteMovementApi.js'
 import { CognitoOAuthApi } from './cognitoOAuth.js'
+import { DefraIdStubAPI } from './defraIdStubApi.js'
 
 /**
  * @typedef {Object} ApiInstances
@@ -15,6 +16,7 @@ export class ApiFactory {
     movementBackendBaseUrl,
     externalApiBaseUrl,
     authBaseUrl,
+    defraIdStubBaseUrl,
     httpProxy
   ) {
     return {
@@ -30,7 +32,8 @@ export class ApiFactory {
         externalApiBaseUrl,
         httpProxy
       ),
-      cognitoOAuthApi: new CognitoOAuthApi(authBaseUrl, httpProxy)
+      cognitoOAuthApi: new CognitoOAuthApi(authBaseUrl, httpProxy),
+      defraIdStubAPI: new DefraIdStubAPI(defraIdStubBaseUrl, httpProxy)
     }
   }
 }

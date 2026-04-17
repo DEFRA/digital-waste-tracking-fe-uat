@@ -121,12 +121,10 @@ Given(
       this.env.ENVIRONMENT === 'perf-test'
     ) {
       this.userEmail = `test${Date.now()}@test.com`
-      await DefraIdStubPage.open(
-        this.testConfig.defraIdServiceUrl + '/register'
-      )
-      this.defraIdMockUserId = await DefraIdStubPage.registerNewUser(
+      const response = await this.apis.defraIdStubAPI.registerNewUser(
         this.userEmail
       )
+      this.defraIdMockUserId = response.json.userId
       this.defraIdMockUser = this.userEmail
 
       await UKPermitPage.open()

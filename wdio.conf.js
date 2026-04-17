@@ -193,6 +193,7 @@ export const config = {
       wasteMovementBackendServiceUrl,
       cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
+      cucumberWorld.testConfig.defraIdServiceUrl,
       cucumberWorld.env.HTTP_PROXY
     )
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
