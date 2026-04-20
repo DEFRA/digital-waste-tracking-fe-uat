@@ -130,10 +130,13 @@ class ManageApiCodePage extends Page {
     await expect(copyButton).toHaveAttribute('aria-label')
     await expect(copyButton).toBeDisplayed()
     await copyButton.click()
+    this.copyBtnLbl = await copyButton.getText()
   }
 
   async verifyAPICodeIsCopiedToClipboard(expectedApiCode) {
-    await expect(browser).toHaveClipboardText(expectedApiCode)
+    await expect(this.copyBtnLbl).toBe('Copied')
+    // below assertion doesn't work in wdio remote
+    // await expect(browser).toHaveClipboardText(expectedApiCode)
   }
 
   async verifyDisableApiCodeNotificationBannerIsDisplayed(apiCode) {
