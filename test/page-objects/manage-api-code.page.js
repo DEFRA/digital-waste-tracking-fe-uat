@@ -100,7 +100,40 @@ class ManageApiCodePage extends Page {
 
     const disableButton = await apiCodeRow.$('.govuk-summary-list__actions > a')
     await expect(disableButton).toBeDisplayed()
+    await expect(disableButton).toHaveAttribute('aria-label')
     await disableButton.click()
+  }
+
+  async clickCopyButtonForAPICode(expectedApiCode) {
+    const apiList = await this.apiCodeList.getElements()
+
+    let apiCodeRow = null
+
+    for (const apiCode of apiList) {
+      const apiCodeText = await apiCode
+        .$('.govuk-summary-list__value')
+        .getText()
+
+      if (expectedApiCode !== '' && apiCodeText === expectedApiCode) {
+        apiCodeRow = apiCode
+        break
+      }
+    }
+
+    if (!apiCodeRow) {
+      throw new Error(`API Code "${expectedApiCode}" not found in the list`)
+    }
+
+    const copyButton = await apiCodeRow.$(
+      '.govuk-summary-list__actions > button'
+    )
+    await expect(copyButton).toHaveAttribute('aria-label')
+    await expect(copyButton).toBeDisplayed()
+    await copyButton.click()
+  }
+
+  async verifyAPICodeIsCopiedToClipboard(expectedApiCode) {
+    await expect(browser).toHaveClipboardText(expectedApiCode)
   }
 
   async verifyDisableApiCodeNotificationBannerIsDisplayed(apiCode) {

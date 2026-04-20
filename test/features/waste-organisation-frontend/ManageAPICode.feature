@@ -57,6 +57,16 @@ Feature: View API Code
     And the API code should display the updated name in the API code list
     When user has disabled the active API Code
     Then the new name of the api code must be displayed in the disabled api code list
+  
+  @env_dev @env_test @issue=DWT-2248
+  Scenario: User must be able to copy the api code to the clipboard
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to view his api code
+    And user is on the View API Code page
+    And user should see the "active" API Code for the selected business
+    When user copies the api code to the clipboard
+    And the api code should be copied to the clipboard
 
 # back button
 # "Report of waste" link in header
