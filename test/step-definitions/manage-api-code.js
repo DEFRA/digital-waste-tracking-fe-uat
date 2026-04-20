@@ -201,3 +201,11 @@ Then(
     )
   }
 )
+
+When('user copies the api code to the clipboard', async function () {
+  await ManageApiCodePage.clickCopyButtonForAPICode(this.activeApiCode)
+})
+
+When('the api code should be copied to the clipboard', async function () {
+  await ManageApiCodePage.verifyAPICodeIsCopiedToClipboard(this.activeApiCode)
+})

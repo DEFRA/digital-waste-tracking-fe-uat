@@ -66,5 +66,136 @@ export const EXPECTED_ERRORS = {
         value: 'Cannot parse disposal / recovery codes (R1 = 50 = Kg) (R11)'
       }
     ]
+  },
+  'missing-reference-spreadsheet.xlsx': {
+    errorsWasteMovementLevel: [
+      { row: 9, value: 'Please provide a value (C9)' },
+      { row: 10, value: 'Please provide a value (C10)' },
+      { row: 11, value: 'Please provide a value (C11)' },
+      { row: 12, value: 'Please provide a value (C12)' },
+      { row: 13, value: 'Please provide a value (C13)' }
+    ],
+    errorsWasteItemLevel: [
+      {
+        row: 9,
+        value:
+          'Please provide a value (B9)\nCannot parse disposal / recovery codes (R13) (R9)'
+      },
+      {
+        row: 10,
+        value:
+          'Please provide a value (B10)\nCannot parse disposal / recovery codes (D15) (R10)'
+      },
+      {
+        row: 11,
+        value:
+          'Please provide a value (B11)\nCannot parse disposal / recovery codes (R13) (R11)'
+      },
+      {
+        row: 12,
+        value:
+          'Please provide a value (B12)\nCannot parse disposal / recovery codes (D15) (R12)'
+      },
+      {
+        row: 13,
+        value:
+          'Please provide a value (B13)\nCannot parse disposal / recovery codes (D15) (R13)'
+      },
+      {
+        row: 14,
+        value:
+          'Please provide a value (B14)\nCannot parse disposal / recovery codes (R13) (R14)'
+      },
+      {
+        row: 15,
+        value:
+          'Please provide a value (B15)\nCannot parse disposal / recovery codes (R13) (R15)'
+      },
+      {
+        row: 16,
+        value:
+          'Please provide a value (B16)\nCannot parse disposal / recovery codes (R13) (R16)'
+      },
+      {
+        row: 17,
+        value: 'No waste movements for unique reference (B17)'
+      }
+    ]
+  },
+  'missing-reference-spreadsheet-update.xlsx': {
+    errorsWasteMovementLevel: [
+      {
+        row: 9,
+        value: 'Please provide a value (C9)\nWaste Tracking ID is required (B9)'
+      },
+      {
+        row: 10,
+        value:
+          'Please provide a value (C10)\nWaste Tracking ID is required (B10)'
+      },
+      {
+        row: 11,
+        value:
+          'Please provide a value (C11)\nWaste Tracking ID is required (B11)'
+      },
+      {
+        row: 12,
+        value:
+          'Please provide a value (C12)\nWaste Tracking ID is required (B12)'
+      },
+      {
+        row: 13,
+        value:
+          'Please provide a value (C13)\nWaste Tracking ID is required (B13)'
+      },
+      { row: 14, value: 'Waste Tracking ID is required (B14)' },
+      { row: 15, value: 'Waste Tracking ID is required (B15)' }
+    ],
+    errorsWasteItemLevel: [
+      {
+        row: 9,
+        value:
+          'Please provide a value (B9)\nCannot parse disposal / recovery codes (R13) (R9)'
+      },
+      {
+        row: 10,
+        value:
+          'Please provide a value (B10)\nCannot parse disposal / recovery codes (D15) (R10)'
+      },
+      {
+        row: 11,
+        value:
+          'Please provide a value (B11)\nCannot parse disposal / recovery codes (R13) (R11)'
+      },
+      {
+        row: 12,
+        value:
+          'Please provide a value (B12)\nCannot parse disposal / recovery codes (D15) (R12)'
+      },
+      {
+        row: 13,
+        value:
+          'Please provide a value (B13)\nCannot parse disposal / recovery codes (D15) (R13)'
+      },
+      {
+        row: 14,
+        value:
+          'Please provide a value (B14)\nCannot parse disposal / recovery codes (R13) (R14)'
+      },
+      {
+        row: 15,
+        value:
+          'Please provide a value (B15)\nCannot parse disposal / recovery codes (R13) (R15)'
+      },
+      {
+        row: 16,
+        value:
+          'Please provide a value (B16)\nCannot parse disposal / recovery codes (R13) (R16)'
+      },
+      {
+        row: 17,
+        value: 'No waste movements for unique reference (B17)'
+      }
+    ]
   }
 }
