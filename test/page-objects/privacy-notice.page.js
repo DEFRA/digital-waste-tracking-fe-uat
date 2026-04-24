@@ -13,9 +13,7 @@ class PrivacyNoticePage extends Page {
 
   async verifyUserIsOnPrivacyNoticePage() {
     await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'Privacy notice'
-    )
+    await expect(this.heading).toHaveText('Privacy notice')
   }
 }
 

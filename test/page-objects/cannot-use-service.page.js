@@ -7,7 +7,9 @@ class CannotUseServicePage extends Page {
   }
 
   get findOutMoreLink() {
-    return $('a.govuk-link[href="https://www.gov.uk/guidance/report-receipt-of-waste"]')
+    return $(
+      'a.govuk-link[href="https://www.gov.uk/guidance/report-receipt-of-waste"]'
+    )
   }
 
   // assertions
