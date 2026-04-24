@@ -15,7 +15,7 @@ Given(
 )
 
 When(
-  /^user selects the "(Yes|No)" option to indicate they are(| not) a permitted waste receiver$/,
+  /^user selects the "(Yes|No)" option to indicate they are(| not) a local authority$/,
   async function (option, not) {
     if (option === 'Yes') {
       await UKPermitPage.selectYesOption()
@@ -35,7 +35,7 @@ Given(
     this.pageName = 'uk-permit-page'
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
-    await UKPermitPage.selectYesOption()
+    await UKPermitPage.selectNoOption()
     await UKPermitPage.click(UKPermitPage.continueButton)
     await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
       this.testConfig.defraIdServiceUrl

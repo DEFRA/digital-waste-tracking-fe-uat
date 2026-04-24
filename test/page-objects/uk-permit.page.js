@@ -39,7 +39,7 @@ class UKPermitPage extends Page {
   async verifyUserIsOnUKPermitPage() {
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(
-      'Do you operate one or more licensed or permitted waste receiving sites?'
+      'Are you registering as a local authority?'
     )
   }
 
