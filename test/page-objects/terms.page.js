@@ -12,7 +12,7 @@ class TermsPage extends Page {
   }
 
   get declarationIntro() {
-    return $('p.govuk-body-l')
+    return $('p.govuk-body')
   }
 
   get declarationListItems() {

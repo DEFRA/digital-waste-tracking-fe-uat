@@ -21,11 +21,11 @@ Feature: Login as a user for waste receiving organisation
     Then they should be logged in successfully
     And the user should be redirected to "account-home" page
 
-  @env_dev
+  @env_dev @issue=DWT-2283
   Scenario: User should be able to login [using defraId mock] and presented with different options to continue
     Given a user is registered in Defra Id mock service
-    And a user is on are you a permitted waste receiver page
-    And user selects the "Yes" option to indicate they are a permitted waste receiver
+    And a user is on are you a local authority page
+    And user selects the "No" option to indicate they are not a local authority
     And user clicks on the "Continue" button
     And user should be redirected to Defra Id service
     When user successfully logs in to the Defra Id mock service

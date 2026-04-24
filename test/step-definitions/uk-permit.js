@@ -3,19 +3,16 @@ import HomePage from '../page-objects/home.page.js'
 import UKPermitPage from '../page-objects/uk-permit.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 
-Given(
-  'a user is on are you a permitted waste receiver page',
-  async function () {
-    // Set the pageName on the world object
-    this.pageName = 'uk-permit-page'
-    await UKPermitPage.open()
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
-    await UKPermitPage.verifyUserIsOnUKPermitPage()
-  }
-)
+Given('a user is on are you a local authority page', async function () {
+  // Set the pageName on the world object
+  this.pageName = 'uk-permit-page'
+  await UKPermitPage.open()
+  await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+  await UKPermitPage.verifyUserIsOnUKPermitPage()
+})
 
 When(
-  /^user selects the "(Yes|No)" option to indicate they are(| not) a permitted waste receiver$/,
+  /^user selects the "(Yes|No)" option to indicate they are(| not) a local authority$/,
   async function (option, not) {
     if (option === 'Yes') {
       await UKPermitPage.selectYesOption()
@@ -35,7 +32,7 @@ Given(
     this.pageName = 'uk-permit-page'
     await UKPermitPage.open()
     await UKPermitPage.verifyUserIsOnUKPermitPage()
-    await UKPermitPage.selectYesOption()
+    await UKPermitPage.selectNoOption()
     await UKPermitPage.click(UKPermitPage.continueButton)
     await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
       this.testConfig.defraIdServiceUrl

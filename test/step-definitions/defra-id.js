@@ -133,7 +133,7 @@ Given(
       await UKPermitPage.open()
       await UKPermitPage.verifyUserIsOnUKPermitPage()
 
-      await UKPermitPage.selectYesOption()
+      await UKPermitPage.selectNoOption()
 
       await UKPermitPage.click(UKPermitPage.continueButton)
 
