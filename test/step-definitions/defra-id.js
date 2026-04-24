@@ -76,7 +76,7 @@ When('user has selected a business', async function () {
 async function navigateToPortalAndLogin(context, accountType) {
   await UKPermitPage.open()
   await UKPermitPage.verifyUserIsOnUKPermitPage()
-  await UKPermitPage.selectYesOption()
+  await UKPermitPage.selectNoOption()
   await UKPermitPage.click(UKPermitPage.continueButton)
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     context.testConfig.defraIdServiceUrl
