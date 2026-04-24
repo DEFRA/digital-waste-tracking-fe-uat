@@ -14,6 +14,6 @@ Feature: Report receipt of waste service banner
 
     Scenario: "Report receipt of waste" banner link should take me to restricted access page if user is not signed in
         Given a user is not logged in to the waste receiver registration portal
-        And a user is on are you a permitted waste receiver page
+        And a user is on are you a local authority page
         When the user selects the "Report receipt of waste" banner link
         Then the user should be redirected to "You do not have permission to view this page" page

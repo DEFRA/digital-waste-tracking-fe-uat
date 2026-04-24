@@ -14,7 +14,7 @@ class PrivacyNoticePage extends Page {
   async verifyUserIsOnPrivacyNoticePage() {
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(
-      'Waste tracking receipt of waste beta phase privacy notice'
+      'Privacy notice'
     )
   }
 }
