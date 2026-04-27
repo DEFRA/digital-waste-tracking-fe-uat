@@ -40,6 +40,9 @@ class MyAccountHomePage extends Page {
   }
 
   async verifyUserIsOnMyAccountHomePage(organisationName = undefined) {
+    await this.verifyPageTitle(
+      'Waste receiving account | Report receipt of waste'
+    )
     await this.elementIsDisplayed(this.heading)
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Waste receiving account')

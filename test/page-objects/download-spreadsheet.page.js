@@ -22,6 +22,9 @@ class DownloadSpreadsheetPage extends Page {
   }
 
   async verifyUserIsOnDownloadSpreadsheetPage() {
+    await this.verifyPageTitle(
+      'Download Receipt of waste spreadsheet | Report receipt of waste'
+    )
     await expect(browser).toHaveUrl(/\/download-spreadsheet/)
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(

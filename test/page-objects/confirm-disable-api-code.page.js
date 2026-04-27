@@ -22,6 +22,9 @@ class ConfirmDisableApiCodePage extends Page {
   // assertions
 
   async verifyUserIsOnConfirmDisableApiCodePage(apiCode) {
+    await this.verifyPageTitle(
+      'Do you want to disable this API code? | Report receipt of waste'
+    )
     await expect(browser).toHaveUrl(new RegExp(`/api/disable/${apiCode}`))
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(

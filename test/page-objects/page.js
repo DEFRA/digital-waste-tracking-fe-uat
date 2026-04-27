@@ -2,6 +2,7 @@ import { browser, $ } from '@wdio/globals'
 import { config } from '../../wdio.conf.js'
 
 class Page {
+
   get pageHeading() {
     return $('h1')
   }
@@ -210,6 +211,7 @@ class Page {
   }
 
   async verifyErrorMessage(expectedMessage) {
+    await expect(browser).toHaveTitle(/Error:/)
     await this.errorMessage.waitForDisplayed({ timeout: config.waitforTimeout })
     await expect(this.errorMessage).toHaveText(new RegExp(expectedMessage))
   }
@@ -218,6 +220,10 @@ class Page {
     await expect(browser).toHaveUrl(
       /\/management\/sign-out-successful|\/signed-out/
     )
+  }
+
+  async verifyPageTitle(expectedTitle) {
+    await expect(browser).toHaveTitle(expectedTitle)
   }
 }
 
