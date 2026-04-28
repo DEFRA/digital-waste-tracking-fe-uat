@@ -34,6 +34,10 @@ class Page {
     return $('.govuk-error-summary')
   }
 
+  get inlineErrorMessage() {
+    return $('.govuk-error-message')
+  }
+
   open(path) {
     return browser.url(path)
   }
@@ -212,7 +216,13 @@ class Page {
   async verifyErrorMessage(expectedMessage) {
     await expect(browser).toHaveTitle(/Error:/)
     await this.errorMessage.waitForDisplayed({ timeout: config.waitforTimeout })
-    await expect(this.errorMessage).toHaveText(new RegExp(expectedMessage))
+    await expect(this.errorMessage).toHaveText(
+      new RegExp('There is a problem\n' + expectedMessage)
+    )
+    await expect(this.inlineErrorMessage).toBeDisplayed()
+    await expect(this.inlineErrorMessage).toHaveText(
+      new RegExp(expectedMessage)
+    )
   }
 
   async verifyUserIsSignedOut() {

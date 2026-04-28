@@ -33,7 +33,7 @@ Feature: Waste receiving account page
     And the user should be redirected to "Report receipt of waste" page
     When user clicks on "Continue" button without selecting an action
     Then user should be presented with an error message as below
-      | message                                       |
-      | There is a problem\nYou must select an option |
+      | message                   |
+      | You must select an option |
     And user selects option to view his api code
     And user is on the View API Code page
