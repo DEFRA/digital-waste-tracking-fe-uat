@@ -13,6 +13,7 @@ class UploadSuccessfulPage extends Page {
   }
 
   async verifyUserIsOnUploadSuccessfulPage(mode = 'upload') {
+    await this.verifyPageTitle('Spreadsheet uploaded | Report receipt of waste')
     await expect(browser).toHaveUrl(
       mode === 'upload'
         ? /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/file-uploaded/

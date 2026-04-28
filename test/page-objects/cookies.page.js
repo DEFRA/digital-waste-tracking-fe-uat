@@ -36,6 +36,7 @@ class CookiesPage extends Page {
   }
 
   async verifyCookiesInformationIsDisplayed() {
+    await this.verifyPageTitle('Cookies | Report receipt of waste')
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Cookies')
     await expect(this.cookiesDescription).toBeDisplayed()

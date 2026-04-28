@@ -18,6 +18,7 @@ class ChangeApiCodeNamePage extends Page {
   // assertions
 
   async verifyUserIsOnChangeApiCodeNamePage(apiCode) {
+    await this.verifyPageTitle('Change API code name | Report receipt of waste')
     await expect(browser).toHaveUrl(new RegExp(`/api/change-name/${apiCode}`))
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Change API code name')

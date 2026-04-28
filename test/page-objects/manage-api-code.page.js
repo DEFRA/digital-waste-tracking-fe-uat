@@ -61,6 +61,7 @@ class ManageApiCodePage extends Page {
   }
 
   async verifyUserIsOnYourApiCodePage() {
+    await this.verifyPageTitle('Your API code | Report receipt of waste')
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Your API code')
   }

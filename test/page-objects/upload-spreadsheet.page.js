@@ -19,6 +19,11 @@ class UploadSpreadsheetPage extends Page {
   }
 
   async verifyUserIsOnUploadSpreadsheetPage(mode = 'upload') {
+    await this.verifyPageTitle(
+      mode === 'upload'
+        ? 'Upload a receipt of waste movement spreadsheet | Report receipt of waste'
+        : 'Update an existing spreadsheet | Report receipt of waste'
+    )
     await expect(browser).toHaveUrl(
       mode === 'upload'
         ? /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/begin-upload/
