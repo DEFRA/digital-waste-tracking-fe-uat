@@ -2,7 +2,6 @@ import { browser, $ } from '@wdio/globals'
 import { config } from '../../wdio.conf.js'
 
 class Page {
-
   get pageHeading() {
     return $('h1')
   }

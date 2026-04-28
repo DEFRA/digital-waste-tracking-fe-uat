@@ -21,6 +21,10 @@ class DownloadSpreadsheetPage extends Page {
     return $('a[data-testid="download-spreadsheet-button"]')
   }
 
+  get metaData() {
+    return $('#file-metadata')
+  }
+
   async verifyUserIsOnDownloadSpreadsheetPage() {
     await this.verifyPageTitle(
       'Download Receipt of waste spreadsheet | Report receipt of waste'
@@ -30,6 +34,8 @@ class DownloadSpreadsheetPage extends Page {
     await expect(this.heading).toHaveText(
       'Download Receipt of waste spreadsheet'
     )
+    await expect(this.metaData).toBeDisplayed()
+    await expect(this.metaData).toHaveText('XLSX, 428KB')
   }
 
   async downloadSpreadsheet() {
