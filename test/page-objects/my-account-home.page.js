@@ -18,7 +18,7 @@ class MyAccountHomePage extends Page {
     return $('p[data-testid="app-heading-organisation-name"]')
   }
 
-  get reportReceiptOfWasteButton() {
+  get reportReceiptOfWasteLink() {
     return $('a[data-testid="report-waste-link"]')
   }
 
@@ -26,8 +26,12 @@ class MyAccountHomePage extends Page {
     return $('a[data-testid="switch-organisation-button"]')
   }
 
-  get manageAccountButton() {
+  get manageAccountLink() {
     return $('a[data-testid="manage-account-link"]')
+  }
+
+  get serviceChargeLink() {
+    return $('a[data-testid="service-charge-link"]')
   }
 
   get accountCards() {
@@ -67,7 +71,7 @@ class MyAccountHomePage extends Page {
   }
 
   async navigateToReportReceiptOfWasteOptionsPage() {
-    await this.reportReceiptOfWasteButton.click()
+    await this.reportReceiptOfWasteLink.click()
   }
 
   async switchToDifferentBusiness() {
@@ -75,7 +79,11 @@ class MyAccountHomePage extends Page {
   }
 
   async navigateToManageAccountPage() {
-    await this.manageAccountButton.click()
+    await this.manageAccountLink.click()
+  }
+
+  async navigateToPayServiceChargePage() {
+    await this.serviceChargeLink.click()
   }
 
   async verifyUserIsOnDefraManageAccountPage() {
