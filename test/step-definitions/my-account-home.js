@@ -1,6 +1,7 @@
 import { When, Then } from '@wdio/cucumber-framework'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import DefraIdOrgPickerPage from '../page-objects/defra-id-org-picker.page.js'
+import PayServiceChargePage from '../page-objects/pay-service-charge.page.js'
 
 When('the user switches to a different business', async function () {
   if (!(await MyAccountHomePage.isUserOnMyAccountHomePage())) {
@@ -30,3 +31,8 @@ When(
     }
   }
 )
+
+When('the user initiates to pay the service charge', async function () {
+  await MyAccountHomePage.navigateToPayServiceChargePage()
+  await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
+})
