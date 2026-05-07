@@ -103,6 +103,7 @@ So that I can make corrections or changes after submission.
       | format                   | Test1-update-format-errors-spreadsheet.xlsx |
       | missing unique reference | missing-reference-spreadsheet-update.xlsx   |
       | api                      | Test1-update-api-errors-spreadsheet.xlsx    |
+      | no waste movements       | Test1-empty-records-spreadsheet.xlsx        |
 
   @env_dev @issue=DWT-1465 @issue=DWT-2146
   Scenario Outline: Waste receiver update waste movements by uploading a spreadsheet that has "<error_type>" errors
@@ -120,6 +121,7 @@ So that I can make corrections or changes after submission.
       | missing unique reference | missing-reference-spreadsheet-update.xlsx   |
       | format                   | Test1-update-format-errors-spreadsheet.xlsx |
       | api                      | Test1-update-api-errors-spreadsheet.xlsx    |
+      | no waste movements       | Test1-empty-records-spreadsheet.xlsx        |
 
   @env_dev @env_test @issue=DWT-1431,DWT-1641
   Scenario Outline: Waste receiver update waste movements by uploading an unsupported file type "<file_type>"
