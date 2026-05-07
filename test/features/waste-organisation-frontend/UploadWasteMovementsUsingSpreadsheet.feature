@@ -80,8 +80,9 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | format                   | Test1-format-errors-spreadsheet.xlsx |
       | missing unique reference | missing-reference-spreadsheet.xlsx   |
       | api validation           | Test1-api-errors-spreadsheet.xlsx    |
+      | no waste movements       | Test1-empty-records-spreadsheet.xlsx |
 
-  @env_test @issue=DWT-1465 @issue=DWT-2146
+  @env_test @issue=DWT-1465 @issue=DWT-2146 
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
@@ -97,6 +98,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | format                   | Test1-format-errors-spreadsheet.xlsx |
       | missing unique reference | missing-reference-spreadsheet.xlsx   |
       | api validation           | Test1-api-errors-spreadsheet.xlsx    |
+      | no waste movements       | Test1-empty-records-spreadsheet.xlsx |
 
   @env_dev @env_test @issue=DWT-1431,DWT-1641
   Scenario Outline: Waste receiver uploads an unsupported file type "<file_type>"
