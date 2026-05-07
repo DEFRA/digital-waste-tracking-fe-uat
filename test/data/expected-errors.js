@@ -197,5 +197,11 @@ export const EXPECTED_ERRORS = {
         value: 'No waste movements for unique reference (B17)'
       }
     ]
+  },
+  'Test1-empty-records-spreadsheet.xlsx': {
+    errorsWasteMovementLevel: [
+      { row: 9, value: 'No movements recognised (C9)' }
+    ],
+    errorsWasteItemLevel: []
   }
 }
