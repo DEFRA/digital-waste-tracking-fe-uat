@@ -121,6 +121,7 @@ Given(
   async function () {
     if (
       this.env.ENVIRONMENT === 'dev' ||
+      this.env.ENVIRONMENT === 'local' ||
       this.env.ENVIRONMENT === 'perf-test'
     ) {
       this.userEmail = `test${Date.now()}@test.com`

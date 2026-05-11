@@ -172,11 +172,17 @@ class DefraIdStubPage extends Page {
     await userRow.click()
 
     // Path may be /organisations or /organisations/; stub may append ?sessionId=...
-    await expect(browser).toHaveUrl(
-      new RegExp(
-        `^https://cdp-defra-id-stub\\.${process.env.ENVIRONMENT}\\.cdp-int\\.defra\\.cloud/cdp-defra-id-stub/organisations/?(?:\\?.*)?$`
+    if (process.env.ENVIRONMENT === 'local') {
+      await expect(browser).toHaveUrl(
+        /^http:\/\/cdp-defra-id-stub:3200\/cdp-defra-id-stub\/organisations\/?(?:\?.*)?$/
       )
-    )
+    } else {
+      await expect(browser).toHaveUrl(
+        new RegExp(
+          `^https://cdp-defra-id-stub\\.${process.env.ENVIRONMENT}\\.cdp-int\\.defra\\.cloud/cdp-defra-id-stub/organisations/?(?:\\?.*)?$`
+        )
+      )
+    }
   }
 
   async selectFirstOrganisation() {

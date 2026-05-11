@@ -26,7 +26,14 @@ class HomePage extends Page {
   }
 
   async verifyUserNavigatedCorrectlyToDefraIdService(defraIdServiceUrl) {
-    await expect(browser).toHaveUrl(new RegExp(defraIdServiceUrl))
+    if (process.env.ENVIRONMENT === 'local') {
+      await expect(browser).toHaveUrl(
+        /http:\/\/cdp-defra-id-stub:3200\/cdp-defra-id-stub/
+      )
+    } else {
+      await expect(browser).toHaveUrl(new RegExp(defraIdServiceUrl))
+    }
+    // await expect(browser).toHaveUrl(new RegExp(defraIdServiceUrl))
   }
 }
 
