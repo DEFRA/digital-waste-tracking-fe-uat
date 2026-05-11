@@ -1,4 +1,4 @@
-@issue=DWT-967 @env_dev @env_test
+@issue=DWT-967 @env_dev @env_test @env_local
 Feature: Get organisation by API Code endpoint validation
 
   Scenario: defraOrganisationId must be correctly returned in the response for a valid and active apiCode

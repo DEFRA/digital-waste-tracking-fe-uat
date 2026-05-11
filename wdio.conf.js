@@ -38,7 +38,9 @@ export const config = {
   baseUrl:
     process.env.ENVIRONMENT === 'ext-test'
       ? `https://${process.env.httpsAuth}@waste-tracking.integration.defra.gov.uk`
-      : `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
+      : process.env.ENVIRONMENT === 'local'
+        ? 'http://waste-organisation-frontend:3000'
+        : `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
 
   // Connection to remote chromedriver
   hostname: process.env.CHROMEDRIVER_URL || '127.0.0.1',
@@ -243,9 +245,15 @@ export const config = {
       log.info(
         `cleaning up the user from the defra id mock service: ${cucumberWorld.defraIdMockUserId}`
       )
-      await browser.url(
-        `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
-      )
+      if (process.env.ENVIRONMENT === 'local') {
+        await browser.url(
+          `http://cdp-defra-id-stub:3200/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
+        )
+      } else {
+        await browser.url(
+          `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
+        )
+      }
     }
   },
   // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
