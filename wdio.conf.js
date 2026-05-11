@@ -251,7 +251,7 @@ export const config = {
         )
       } else {
         await browser.url(
-        `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
+          `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
         )
       }
     }
