@@ -21,6 +21,19 @@ const cucumberEnvTag =
     ? 'dev'
     : process.env.ENVIRONMENT
 
+/**
+ * Browser proxy host for WebDriver capabilities.
+ * ZAP_PROXY_URL (e.g. http://zap:8080) takes priority over HTTP_PROXY so that
+ * DAST scanning traffic is always routed through ZAP when it is running.
+ * HTTP_PROXY alone continues to route browser traffic through a corporate/CI proxy.
+ * API calls (undici / global-agent) use HTTP_PROXY separately and are unaffected.
+ */
+const browserProxyHost = process.env.ZAP_PROXY_URL
+  ? new URL(process.env.ZAP_PROXY_URL).host
+  : process.env.HTTP_PROXY
+    ? new URL(process.env.HTTP_PROXY).host
+    : null
+
 // const oneMinute = 60 * 1000
 
 export const config = {
@@ -55,11 +68,11 @@ export const config = {
 
   capabilities: [
     {
-      ...(process.env.HTTP_PROXY && {
+      ...(browserProxyHost && {
         proxy: {
           proxyType: 'manual',
-          httpProxy: new URL(process.env.HTTP_PROXY).host,
-          sslProxy: new URL(process.env.HTTP_PROXY).host
+          httpProxy: browserProxyHost,
+          sslProxy: browserProxyHost
         }
       }),
       browserName: 'chrome',
@@ -196,7 +209,7 @@ export const config = {
       cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.testConfig.defraIdServiceUrl,
-      cucumberWorld.env.HTTP_PROXY
+      cucumberWorld.env.ZAP_PROXY_API_URL??cucumberWorld.env.HTTP_PROXY
     )
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
