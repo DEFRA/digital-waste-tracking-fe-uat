@@ -209,7 +209,7 @@ export const config = {
       cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.testConfig.defraIdServiceUrl,
-      cucumberWorld.env.ZAP_PROXY_API_URL??cucumberWorld.env.HTTP_PROXY
+      cucumberWorld.env.ZAP_PROXY_API_URL ?? cucumberWorld.env.HTTP_PROXY
     )
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
