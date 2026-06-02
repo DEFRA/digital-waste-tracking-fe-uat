@@ -191,8 +191,11 @@ export const config = {
     cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
     cucumberWorld.axeBuilder = null
     // Load test configuration from <env>.config.json
+    const configName = process.env.ZAP_PROXY_API_URL
+      ? `${process.env.ENVIRONMENT}.zap`
+      : process.env.ENVIRONMENT
     const testConfigData = readFileSync(
-      `./test/support/${process.env.ENVIRONMENT}.config.json`,
+      `./test/support/${configName}.config.json`,
       'utf8'
     )
     cucumberWorld.testConfig = JSON.parse(testConfigData)
