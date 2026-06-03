@@ -15,7 +15,7 @@ Feature: Waste receiving account page
 
   @env_test
   Scenario: User should be able to redirected to defra my account page when they click on the manage account button
-    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+    Given a user is logged in to the waste receiver registration portal
     When the user navigates to manage account
     Then user should be redirected to the defra my account page
 
