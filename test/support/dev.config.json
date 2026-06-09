@@ -3,5 +3,6 @@
   "wasteOrganisationBackendServiceUrl": "https://waste-organisation-backend.dev.cdp-int.defra.cloud",
   "wasteMovementBackendServiceUrl": "https://waste-movement-backend.dev.cdp-int.defra.cloud",
   "wasteMovementExternalApiBaseUrl": "https://waste-movement-external-api.api.dev.cdp-int.defra.cloud",
-  "cognitoOAuthBaseUrl": "https://waste-movement-external-api-c63f2.auth.eu-west-2.amazoncognito.com"
+  "cognitoOAuthBaseUrl": "https://waste-movement-external-api-c63f2.auth.eu-west-2.amazoncognito.com",
+  "govPayBaseUrl": "https://publicapi.payments.service.gov.uk/v1/payments"
 }

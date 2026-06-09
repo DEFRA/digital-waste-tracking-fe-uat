@@ -3,6 +3,7 @@ import { WasteMovementBackendAPI } from './wasteMovementBackendApi.js'
 import { WasteMovementExternalAPI } from './wasteMovementApi.js'
 import { CognitoOAuthApi } from './cognitoOAuth.js'
 import { DefraIdStubAPI } from './defraIdStubApi.js'
+import { GovPayAPI } from './govpayApi.js'
 
 /**
  * @typedef {Object} ApiInstances
@@ -17,6 +18,7 @@ export class ApiFactory {
     externalApiBaseUrl,
     authBaseUrl,
     defraIdStubBaseUrl,
+    govPayBaseUrl,
     httpProxy
   ) {
     return {
@@ -33,7 +35,8 @@ export class ApiFactory {
         httpProxy
       ),
       cognitoOAuthApi: new CognitoOAuthApi(authBaseUrl, httpProxy),
-      defraIdStubAPI: new DefraIdStubAPI(defraIdStubBaseUrl, httpProxy)
+      defraIdStubAPI: new DefraIdStubAPI(defraIdStubBaseUrl, httpProxy),
+      govPayAPI: new GovPayAPI(govPayBaseUrl, httpProxy)
     }
   }
 }
