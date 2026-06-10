@@ -14,7 +14,7 @@ class ReviewServiceChargePage extends Page {
   }
 
   get continueButton() {
-    return $('button[data-testid="review-payment-continue-button"]')
+    return $('a[data-testid="review-payment-continue-button"]')
   }
 
   get cancelButton() {

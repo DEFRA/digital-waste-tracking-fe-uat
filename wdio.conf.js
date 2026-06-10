@@ -212,8 +212,13 @@ export const config = {
       cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.testConfig.defraIdServiceUrl,
+      cucumberWorld.testConfig.govPayBaseUrl,
       cucumberWorld.env.ZAP_PROXY_API_URL ?? cucumberWorld.env.HTTP_PROXY
     )
+    cucumberWorld.apis.govPayAPI.setAuthorizationHeader(
+      process.env.GOV_PAY_API_KEY
+    )
+
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
       cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
     }
