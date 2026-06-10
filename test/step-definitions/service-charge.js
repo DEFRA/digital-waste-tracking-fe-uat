@@ -23,20 +23,11 @@ When('user cancels the review service charge', async function () {
   await ReviewServiceChargePage.cancelReviewServiceCharge()
 })
 
-When(
-  'user pays the service charge using below card details:',
-  async function (table) {
-    const cardNumber = table.raw()[1][0]
-    await GovPayPage.enterCardDetails(cardNumber)
-    // Write code here that turns the phrase above into concrete actions
-  }
-)
-
 When('the service charge is due', async function () {})
 
 When(
-  'user pays the service charge using {string} {string} card {string}',
-  async function (cardBrand, cardType, cardNumber) {
+  /user pays the service charge using (a valid |)"([A-Za-z]+)" "([A-Za-z]+)" card "([0-9]+)"/,
+  async function (isValid, cardBrand, cardType, cardNumber) {
     await MyAccountHomePage.navigateToPayServiceChargePage()
     await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
     await PayServiceChargePage.continueToPayServiceCharge()
@@ -46,19 +37,29 @@ When(
     const uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
     this.uniquePaymentReference = uniquePaymentReference
     await GovPayPage.submitCardDetails(cardNumber)
-    await GovPayPage.verifyUserIsOnGovPayConfirmPage(uniquePaymentReference)
-    await GovPayPage.confirmPayment()
+
+    if (isValid.trim() === 'a valid') {
+      await GovPayPage.verifyUserIsOnGovPayConfirmPage(uniquePaymentReference)
+      await GovPayPage.confirmPayment()
+    }
   }
 )
 
-Then('the payment should be successful', async function () {
-  // TODO: Verify the payment is successful, waiting for implementation to complete
-  // await GovPayPage.verifyUserIsOnGovPaySuccessPage()
+Then(
+  /^the payment should be "(successful|unsuccessful)"$/,
+  async function (status) {
+    const json = await GovPayPage.waitForPaymentStatus(
+      this.apis.govPayAPI,
+      this.uniquePaymentReference
+    )
 
-  const json = await GovPayPage.waitForPaymentStatus(
-    this.apis.govPayAPI,
-    this.uniquePaymentReference
-  )
-  expect(json.state.status).toBe('success')
-  expect(json.state.finished).toBe(true)
-})
+    if (status === 'unsuccessful') {
+      expect(json.state.status).toMatch(/^(failed|error)$/)
+    } else {
+      expect(json.state.status).toBe('success')
+      // TODO: Verify the payment is successful, waiting for implementation to complete
+      // await GovPayPage.verifyUserIsOnGovPaySuccessPage()
+    }
+    expect(json.state.finished).toBe(true)
+  }
+)

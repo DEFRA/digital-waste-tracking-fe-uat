@@ -103,7 +103,9 @@ class GovPayPage extends Page {
     const city = 'Anytown'
     const postcode = 'EC1M 5NZ'
     const country = 'United Kingdom'
-    const email = 'autotest.ee@gmail.com'
+    // const email = 'autotest.ee@gmail.com'
+
+    const email = 'simulate-delivered@notifications.service.gov.uk'
 
     await this.cardDetailsForm.waitForDisplayed()
 
