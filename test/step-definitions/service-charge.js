@@ -26,7 +26,7 @@ When('user cancels the review service charge', async function () {
 When('the service charge is due', async function () {})
 
 When(
-  /user pays the service charge using (a valid |)"([A-Za-z]+)" "([A-Za-z]+)" card "([0-9]+)"/,
+  /user pays the service charge using (a valid |)"([A-Za-z ]+)" "([A-Za-z ]+)" card "([0-9]+)"/,
   async function (isValid, cardBrand, cardType, cardNumber) {
     await MyAccountHomePage.navigateToPayServiceChargePage()
     await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
