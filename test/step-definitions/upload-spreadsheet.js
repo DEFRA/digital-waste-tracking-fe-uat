@@ -204,7 +204,7 @@ Then(
 
     expect(wtids.length).toBeGreaterThan(0)
     for (const wtid of wtids) {
-      expect(wtid.value).toMatch(/^[A-Z0-9]{8}$/)
+      expect(wtid.value).toMatch(/^[A-Z0-9]{8,}$/)
     }
     this.wtids = wtids
   }

@@ -37,13 +37,13 @@ Feature: Report receipt of waste service charge
 
     @env_dev
     Examples:
-      | card_brand       | card_type          | card_number      |
-      | Visa             | Credit             | 4444333322221111 |
-      | Visa             | Debit              | 4000056655665556 |
-      | Visa             | Debit - corporate  | 4988080000000000 |
-      | Visa             | Credit - corporate | 4111111111111111 |
-      | Mastercard       | Credit             |  222100000000000 |
-      | American Express | Credit             |  371449635398431 |
+      | card_brand       | card_type        | card_number      |
+      | Visa             | Credit           | 4444333322221111 |
+      | Visa             | Debit            | 4000056655665556 |
+      | Visa             | Debit corporate  | 4988080000000000 |
+      | Visa             | Credit corporate | 4111111111111111 |
+      | Mastercard       | Credit           |  222100000000000 |
+      | American Express | Credit           |  371449635398431 |
     # @env_test
     # Examples:
     #   | card_brand | card_type | card_number      |
