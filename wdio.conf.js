@@ -77,6 +77,9 @@ export const config = {
       }),
       browserName: 'chrome',
       'se:downloadsEnabled': true,
+      // Cap page load to 60 s so external-domain navigations (e.g. GOV.UK Pay)
+      // fail with a catchable timeout rather than hanging the session indefinitely.
+      timeouts: { pageLoad: 60000, script: 30000 },
       'goog:chromeOptions': {
         args: [
           '--no-sandbox',
@@ -123,6 +126,7 @@ export const config = {
     timeout: 60000,
     require: ['./test/step-definitions/**/*.js'],
     tags: buildCucumberTagExpression(cucumberEnvTag),
+    // tags: '@local',
     failAmbiguousDefinitions: true,
     ignoreUndefinedDefinitions: false
   },
@@ -240,12 +244,17 @@ export const config = {
 
   afterStep: async function (step, scenario, result) {
     if (result.error) {
-      await browser.takeScreenshot()
+      try {
+        await browser.takeScreenshot()
+      } catch (error) {
+        log.warn(`afterStep: screenshot failed — ${error.message}`)
+      }
     }
   },
 
   afterScenario: async function (world, result, cucumberWorld) {
-    await browser.takeScreenshot()
+    // Return credentials to the pool first so subsequent workers are never starved,
+    // even if the screenshot or cleanup below throws.
     if (cucumberWorld.govUKUser !== undefined) {
       await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
     }
@@ -261,19 +270,23 @@ export const config = {
         cucumberWorld.multipleBusinessesGovUKUser
       )
     }
+
+    try {
+      await browser.takeScreenshot()
+    } catch (error) {
+      log.warn(`afterScenario: screenshot failed — ${error.message}`)
+    }
+
     if (cucumberWorld.defraIdMockUserId !== undefined) {
-      // cleanup the user from the defra id mock service
       log.info(
         `cleaning up the user from the defra id mock service: ${cucumberWorld.defraIdMockUserId}`
       )
-      if (process.env.ENVIRONMENT === 'local') {
-        await browser.url(
-          `http://cdp-defra-id-stub:3200/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
+      try {
+        await cucumberWorld.apis.defraIdStubAPI.expireUser(
+          cucumberWorld.defraIdMockUserId
         )
-      } else {
-        await browser.url(
-          `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
-        )
+      } catch (error) {
+        log.warn(`afterScenario: defraId expireUser failed — ${error.message}`)
       }
     }
   },

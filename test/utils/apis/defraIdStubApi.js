@@ -36,4 +36,17 @@ export class DefraIdStubAPI extends BaseAPI {
       json
     }
   }
+
+  async expireUser(userId) {
+    const { statusCode, headers, json } = await this.post(
+      `/API/register/${userId}/expire`,
+      JSON.stringify({}),
+      { 'Content-Type': 'application/json' }
+    )
+    return {
+      statusCode,
+      headers,
+      json
+    }
+  }
 }
