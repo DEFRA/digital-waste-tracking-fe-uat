@@ -27,13 +27,13 @@ Feature: Report receipt of waste service charge
     When user cancels the review service charge
     And the user should be redirected to "account-home" page
 
-  @issue=DWT-2156
+  @issue=DWT-2156 @issue=DWT-2425
   Scenario Outline: Waste receiver must be able to pay service charge for an organisation with a valid card "<card_number>"
     Given a user is logged in to the waste receiver registration portal
     When the service charge is due
     And user pays the service charge using a valid "<card_brand>" "<card_type>" card "<card_number>"
+    And the user should be redirected to "payment-confirmation" page
     Then the payment should be "successful"
-    # And the user should be redirected to "account-home" page
 
     @env_dev
     Examples:
@@ -55,7 +55,7 @@ Feature: Report receipt of waste service charge
     When the service charge is due
     And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
     Then the payment should be "unsuccessful"
-    # And the user should see an error message
+    And the user should see an error message
     # And the user should be redirected to "account-home" page
 
     Examples:

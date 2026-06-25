@@ -3,6 +3,7 @@ import ReviewServiceChargePage from '../page-objects/review-service-charge.page.
 import { When, Then } from '@wdio/cucumber-framework'
 import GovPayPage from '../page-objects/gov-pay.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
+import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
 
 When('the user continues to pay the service charge', async function () {
   await PayServiceChargePage.continueToPayServiceCharge()
@@ -48,6 +49,9 @@ When(
 Then(
   /^the payment should be "(successful|unsuccessful)"$/,
   async function (status) {
+    const paymentReference =
+      await ServiceChargePaymentDetailsPage.getPaymentReference()
+
     const json = await GovPayPage.waitForPaymentStatus(
       this.apis.govPayAPI,
       this.uniquePaymentReference
@@ -57,8 +61,8 @@ Then(
       expect(json.state.status).toMatch(/^(failed|error)$/)
     } else {
       expect(json.state.status).toBe('success')
-      // TODO: Verify the payment is successful, waiting for implementation to complete
-      // await GovPayPage.verifyUserIsOnGovPaySuccessPage()
+      expect(json.reference).toBe(paymentReference)
+      expect(json.metadata.organisationId).toBe(this.organisationId)
     }
     expect(json.state.finished).toBe(true)
   }
