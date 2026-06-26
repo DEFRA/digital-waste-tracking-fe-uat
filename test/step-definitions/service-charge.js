@@ -49,9 +49,6 @@ When(
 Then(
   /^the payment should be "(successful|unsuccessful)"$/,
   async function (status) {
-    const paymentReference =
-      await ServiceChargePaymentDetailsPage.getPaymentReference()
-
     const json = await GovPayPage.waitForPaymentStatus(
       this.apis.govPayAPI,
       this.uniquePaymentReference
@@ -60,10 +57,19 @@ Then(
     if (status === 'unsuccessful') {
       expect(json.state.status).toMatch(/^(failed|error)$/)
     } else {
+      const paymentReference =
+        await ServiceChargePaymentDetailsPage.getPaymentReference()
       expect(json.state.status).toBe('success')
       expect(json.reference).toBe(paymentReference)
       expect(json.metadata.organisationId).toBe(this.organisationId)
     }
     expect(json.state.finished).toBe(true)
+  }
+)
+
+Then(
+  'the user should see an error message {string}',
+  async function (expectedErrorMessage) {
+    await GovPayPage.verifyUserIsOnGovPayErrorPage(expectedErrorMessage)
   }
 )

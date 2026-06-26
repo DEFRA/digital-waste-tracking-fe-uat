@@ -2,6 +2,7 @@ import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
 import logger from '@wdio/logger'
 
+// as gov pay is a 3rd party service, trying to use same page object for all pages
 const log = logger('gov-pay-page')
 class GovPayPage extends Page {
   // locators
@@ -67,13 +68,8 @@ class GovPayPage extends Page {
   }
 
   async verifyUserIsOnGovPayPage() {
-    // https://card.payments.service.gov.uk/card_details/ebdub6krumg4b5luhdhvpe4vn4
-    // https://card.payments.service.gov.uk/card_details/ebdub6krumg4b5luhdhvpe4vn4/confirm
     await expect(browser).toHaveUrl(/\/card_details\/.*/)
     await this.verifyPageTitle('Enter payment details')
-    // await this.heading.waitForDisplayed()
-    // await expect(this.heading).toBeDisplayed()
-    // await expect(this.heading).toHaveText('Enter card details')
     const url = await browser.getUrl()
     const regexpSize = /card_details\/(.*)/
     const match = url.match(regexpSize)
@@ -90,6 +86,15 @@ class GovPayPage extends Page {
     await this.verifyPageTitle('Confirm your payment')
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Confirm your payment')
+  }
+
+  async verifyUserIsOnGovPayErrorPage(expectedErrorMessage) {
+    await expect(browser).toHaveUrl(/\/card_details\/.*/)
+    await this.verifyPageTitle(expectedErrorMessage)
+    const url = await browser.getUrl()
+    const regexpSize = /card_details\/(.*)/
+    const match = url.match(regexpSize)
+    return match[1]
   }
 
   async submitCardDetails(cardNumber) {
