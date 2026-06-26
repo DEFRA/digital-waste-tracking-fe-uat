@@ -6,6 +6,7 @@ import CannotUseServicePage from '../page-objects/cannot-use-service.page.js'
 import UserNotAuthenticatedPage from '../page-objects/user-not-authenticated.page.js'
 import PrivacyNoticePage from '../page-objects/privacy-notice.page.js'
 import CannotContinueOnThisServicePage from '../page-objects/cannot-continue-on-this-service.page.js'
+import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
 import AllureReporter from '@wdio/allure-reporter'
 
 function isChromiumDesktop(context) {
@@ -57,6 +58,15 @@ export const PAGE_REGISTRY = new Map([
         await MyAccountHomePage.verifyUserIsOnMyAccountHomePage(
           context.selectedOrganisation
         )
+      }
+    }
+  ],
+  [
+    'payment-confirmation',
+    {
+      pageName: 'payment-confirmation-page',
+      verify: async () => {
+        await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
       }
     }
   ],

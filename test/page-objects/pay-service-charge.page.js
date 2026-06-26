@@ -23,7 +23,7 @@ class PayServiceChargePage extends Page {
 
   async verifyUserIsOnPayServiceChargePage() {
     await this.verifyPageTitle(
-      'Pay annual report receipt of waste service charge | Report receipt of waste'
+      'Pay the annual report receipt of waste service charge | Report receipt of waste'
     )
     await this.elementIsDisplayed(this.heading)
     await expect(this.heading).toBeDisplayed()

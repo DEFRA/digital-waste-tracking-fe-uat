@@ -27,13 +27,13 @@ Feature: Report receipt of waste service charge
     When user cancels the review service charge
     And the user should be redirected to "account-home" page
 
-  @issue=DWT-2156
+  @issue=DWT-2156 @issue=DWT-2425
   Scenario Outline: Waste receiver must be able to pay service charge for an organisation with a valid card "<card_number>"
     Given a user is logged in to the waste receiver registration portal
     When the service charge is due
     And user pays the service charge using a valid "<card_brand>" "<card_type>" card "<card_number>"
+    And the user should be redirected to "payment-confirmation" page
     Then the payment should be "successful"
-    # And the user should be redirected to "account-home" page
 
     @env_dev
     Examples:
@@ -50,18 +50,17 @@ Feature: Report receipt of waste service charge
     #   | Visa       | Credit    | 4444333322221111 |
 
   @env_dev @env_test @issue=DWT-2156
-  Scenario Outline: Waste receiver must be able to pay service charge for an organisation with an invalid card "<card_number>"
+  Scenario Outline: Waste receiver must be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
     Given a user is logged in to the waste receiver registration portal
     When the service charge is due
     And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
     Then the payment should be "unsuccessful"
-    # And the user should see an error message
-    # And the user should be redirected to "account-home" page
+    And the user should see an error message "<expected error message>"
 
     Examples:
-      | card_brand | card_type | card_number      | reason           |
-      | Visa       | Credit    | 4000000000000069 | Card expired     |
-      | Visa       | Debit     | 4000000000000127 | Invalid CVC code |
-      | Visa       | Credit    | 4000000000000119 | General error    |
-      | Visa       | Debit     | 4000000000000002 | Card declined    |
+      | card_brand | card_type | card_number      | reason                      | expected error message                             |
+      | Visa       | Credit    | 4000000000000069 | that is expired             | There was a problem with your payment - GOV.UK Pay |
+      | Visa       | Debit     | 4000000000000127 | with invalid CVC code       | There was a problem with your payment - GOV.UK Pay |
+      | Visa       | Credit    | 4000000000000119 | which gives a general error | We’re experiencing technical problems - GOV.UK Pay |
+      | Visa       | Debit     | 4000000000000002 | which gets payment declined | There was a problem with your payment - GOV.UK Pay |
       # | Maestro    | Debit     | 6759649826438453 | Card type not accepted | -- this returns an error on gov pay page
