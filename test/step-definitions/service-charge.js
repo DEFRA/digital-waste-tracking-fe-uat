@@ -24,7 +24,20 @@ When('user cancels the review service charge', async function () {
   await ReviewServiceChargePage.cancelReviewServiceCharge()
 })
 
-When('the service charge is due', async function () {})
+When('the service charge is due', async function () {
+  // // current date - 3 months
+  // const threeMonthsAgo = new Date(Date.now() - 3 * 30 * 24 * 60 * 60 * 1000)
+  // console.log(threeMonthsAgo.toISOString())
+  // const response =
+  //   await this.apis.wasteOrganisationBackendAPI.updateOrgnisationDetails(
+  //     this.organisationId, {
+  //       "organisation": {
+  //         "disableAfter": '2026-06-01T12:23:00.000Z'
+  //       }
+  //     }
+  //   )
+  // expect(response.statusCode).toBe(200)
+})
 
 When('the service charge has already been paid', async function (dataTable) {
   const paymentDetails = dataTable.rowsHash()
@@ -113,3 +126,18 @@ Then(
     )
   }
 )
+
+When('user attempts to re-try the payment after the error', async function () {
+  await GovPayPage.continueAfterPaymentError()
+  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargeFailedPaymentDetailsPage()
+  await ServiceChargePaymentDetailsPage.retryPayment()
+})
+
+Then('the user is redirected to intiate payment page', async function () {
+  await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
+  await PayServiceChargePage.continueToPayServiceCharge()
+  await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
+  await ReviewServiceChargePage.continueToMakePayment()
+  const uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
+  expect(uniquePaymentReference).not.toBe(this.uniquePaymentReference)
+})

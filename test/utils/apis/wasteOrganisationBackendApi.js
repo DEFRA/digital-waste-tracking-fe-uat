@@ -62,6 +62,33 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
   /**
    * @returns {Promise<import('./base-api.js').JsonResponse>}
    */
+  async updateOrgnisationDetails(organisationId, payload) {
+    const requestHeaders = {
+      Authorization: `Basic ${this.base64Credentials}`,
+      'Content-Type': 'application/json'
+    }
+    // this will ever be added only when running test from local machine
+    if (process.env.xapikey) {
+      requestHeaders['x-api-key'] = process.env.xapikey
+    }
+
+    // leaving the userId hardcoded to indicate it is from a auto test user and not a real user
+    const { statusCode, headers, json } = await this.put(
+      `/user/75cec841-8414-42f2-aff2-7e9750a5bd4c/organisation/${organisationId}`,
+      JSON.stringify(payload),
+      requestHeaders
+    )
+
+    return {
+      statusCode,
+      headers,
+      json
+    }
+  }
+
+  /**
+   * @returns {Promise<import('./base-api.js').JsonResponse>}
+   */
   async disableApiCodeForOrganisation(organisationId, apiCode) {
     const requestHeaders = {
       Authorization: `Basic ${this.base64Credentials}`,
