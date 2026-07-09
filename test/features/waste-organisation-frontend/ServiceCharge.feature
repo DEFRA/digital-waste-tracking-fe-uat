@@ -11,6 +11,16 @@ Feature: Report receipt of waste service charge
     And the user continues to pay the service charge
     And the user allowed to review the service charge details
 
+  @env_dev @issue=DWT-1967
+  Scenario: Waste receiver sees a notification when trying to pay an already paid service charge
+    Given a user is logged in to the waste receiver registration portal
+    When the service charge has already been paid
+      | card_number | 4444333322221111 |
+    And the user initiates to pay the service charge
+    Then the user should see the service charge notification banner
+      | heading | A payment has already been submitted                                                    |
+      | body    | A service charge payment for this account has already been processed. Do not try again. |
+
   @env_dev @env_test @accessibility
   Scenario: Waste receiver must be able to cancel payment process after the initiation of paying the service charge
     Given a user is logged in to the waste receiver registration portal

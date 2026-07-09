@@ -34,6 +34,28 @@ class MyAccountHomePage extends Page {
     return $('a[data-testid="service-charge-link"]')
   }
 
+  get serviceChargeNotificationBanner() {
+    return $('div[data-testid="service-charge-important-notice"]')
+  }
+
+  get serviceChargeNotificationBannerHeading() {
+    return this.serviceChargeNotificationBanner.$(
+      '.govuk-notification-banner__heading'
+    )
+  }
+
+  get serviceChargeNotificationBannerBody() {
+    return this.serviceChargeNotificationBanner.$('.govuk-body')
+  }
+
+  get serviceChargePaymentDetails() {
+    return $('div[data-testid="service-charge-next-payment-due"]')
+  }
+
+  get serviceChargePaymentStatus() {
+    return this.serviceChargePaymentDetails.$('.govuk-tag')
+  }
+
   get accountCards() {
     return $$('div[data-testid="account-cards"]>div')
   }
@@ -84,6 +106,39 @@ class MyAccountHomePage extends Page {
 
   async navigateToPayServiceChargePage() {
     await this.serviceChargeLink.click()
+  }
+
+  async getServiceChargePaymentStatus() {
+    await this.serviceChargePaymentDetails.waitForDisplayed({
+      timeout: config.waitforTimeout
+    })
+    const status = await this.serviceChargePaymentStatus.getText()
+    return status.trim().toLowerCase()
+  }
+
+  async isServiceChargePaid() {
+    return (await this.getServiceChargePaymentStatus()) === 'paid'
+  }
+
+  async isServiceChargeNotificationBannerDisplayed() {
+    try {
+      await this.serviceChargeNotificationBanner.waitForDisplayed({
+        timeout: 3000
+      })
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  async verifyServiceChargeNotificationBanner(expectedHeading, expectedBody) {
+    await expect(this.serviceChargeNotificationBanner).toBeDisplayed()
+    await expect(this.serviceChargeNotificationBannerHeading).toHaveText(
+      expectedHeading
+    )
+    await expect(this.serviceChargeNotificationBannerBody).toHaveText(
+      expectedBody
+    )
   }
 
   async verifyUserIsOnDefraManageAccountPage() {

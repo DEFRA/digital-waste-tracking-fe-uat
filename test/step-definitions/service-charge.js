@@ -26,10 +26,43 @@ When('user cancels the review service charge', async function () {
 
 When('the service charge is due', async function () {})
 
+When('the service charge has already been paid', async function (dataTable) {
+  const paymentDetails = dataTable.rowsHash()
+
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+
+  if (await MyAccountHomePage.isServiceChargePaid()) {
+    return
+  }
+
+  await PayServiceChargePage.open()
+  await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
+  await PayServiceChargePage.continueToPayServiceCharge()
+  await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
+  await ReviewServiceChargePage.continueToMakePayment()
+
+  const uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
+  this.uniquePaymentReference = uniquePaymentReference
+  await GovPayPage.submitCardDetails(paymentDetails.card_number)
+  await GovPayPage.verifyUserIsOnGovPayConfirmPage(uniquePaymentReference)
+  await GovPayPage.confirmPayment()
+
+  const json = await GovPayPage.waitForPaymentStatus(
+    this.apis.govPayAPI,
+    uniquePaymentReference
+  )
+  expect(json.state.status).toBe('success')
+  expect(json.state.finished).toBe(true)
+
+  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
+  await MyAccountHomePage.open()
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+})
+
 When(
   /user pays the service charge using (a valid |)"([A-Za-z ]+)" "([A-Za-z ]+)" card "([0-9]+)"/,
   async function (isValid, cardBrand, cardType, cardNumber) {
-    await MyAccountHomePage.navigateToPayServiceChargePage()
+    await PayServiceChargePage.open()
     await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
     await PayServiceChargePage.continueToPayServiceCharge()
     await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
@@ -71,5 +104,16 @@ Then(
   'the user should see an error message {string}',
   async function (expectedErrorMessage) {
     await GovPayPage.verifyUserIsOnGovPayErrorPage(expectedErrorMessage)
+  }
+)
+
+Then(
+  'the user should see the service charge notification banner',
+  async function (dataTable) {
+    const expectedMessages = dataTable.rowsHash()
+    await MyAccountHomePage.verifyServiceChargeNotificationBanner(
+      expectedMessages.heading,
+      expectedMessages.body
+    )
   }
 )
