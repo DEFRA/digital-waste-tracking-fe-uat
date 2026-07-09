@@ -29,6 +29,12 @@ When('the service charge is due', async function () {})
 When('the service charge has already been paid', async function (dataTable) {
   const paymentDetails = dataTable.rowsHash()
 
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+
+  if (await MyAccountHomePage.isServiceChargePaid()) {
+    return
+  }
+
   await PayServiceChargePage.open()
   await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
   await PayServiceChargePage.continueToPayServiceCharge()

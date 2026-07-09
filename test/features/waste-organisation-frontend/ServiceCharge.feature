@@ -11,7 +11,7 @@ Feature: Report receipt of waste service charge
     And the user continues to pay the service charge
     And the user allowed to review the service charge details
 
-  @env_dev @env_test @dr-49
+  @env_dev @issue=DWT-1967
   Scenario: Waste receiver sees a notification when trying to pay an already paid service charge
     Given a user is logged in to the waste receiver registration portal
     When the service charge has already been paid
