@@ -43,14 +43,16 @@ When('the service charge has already been paid', async function (dataTable) {
   await GovPayPage.verifyUserIsOnGovPayConfirmPage(uniquePaymentReference)
   await GovPayPage.confirmPayment()
 
+  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
+
   const json = await GovPayPage.waitForPaymentStatus(
     this.apis.govPayAPI,
     uniquePaymentReference
   )
+
   expect(json.state.status).toBe('success')
   expect(json.state.finished).toBe(true)
 
-  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
   await MyAccountHomePage.open()
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 })
