@@ -2,6 +2,7 @@ import PayServiceChargePage from '../page-objects/pay-service-charge.page.js'
 import ReviewServiceChargePage from '../page-objects/review-service-charge.page.js'
 import { When, Then } from '@wdio/cucumber-framework'
 import GovPayPage from '../page-objects/gov-pay.page.js'
+import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
 
 When('the user continues to pay the service charge', async function () {
