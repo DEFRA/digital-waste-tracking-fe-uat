@@ -48,14 +48,6 @@ class MyAccountHomePage extends Page {
     return this.serviceChargeNotificationBanner.$('.govuk-body')
   }
 
-  get serviceChargePaymentDetails() {
-    return $('div[data-testid="service-charge-next-payment-due"]')
-  }
-
-  get serviceChargePaymentStatus() {
-    return this.serviceChargePaymentDetails.$('.govuk-tag')
-  }
-
   get accountCards() {
     return $$('div[data-testid="account-cards"]>div')
   }
@@ -106,18 +98,6 @@ class MyAccountHomePage extends Page {
 
   async navigateToPayServiceChargePage() {
     await this.serviceChargeLink.click()
-  }
-
-  async getServiceChargePaymentStatus() {
-    await this.serviceChargePaymentDetails.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
-    const status = await this.serviceChargePaymentStatus.getText()
-    return status.trim().toLowerCase()
-  }
-
-  async isServiceChargePaid() {
-    return (await this.getServiceChargePaymentStatus()) === 'paid'
   }
 
   async isServiceChargeNotificationBannerDisplayed() {

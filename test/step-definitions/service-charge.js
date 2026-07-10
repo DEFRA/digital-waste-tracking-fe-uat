@@ -31,10 +31,6 @@ When('the service charge has already been paid', async function (dataTable) {
 
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 
-  if (await MyAccountHomePage.isServiceChargePaid()) {
-    return
-  }
-
   await PayServiceChargePage.open()
   await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
   await PayServiceChargePage.continueToPayServiceCharge()
