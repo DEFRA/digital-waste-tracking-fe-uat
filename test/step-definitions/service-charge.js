@@ -2,7 +2,6 @@ import PayServiceChargePage from '../page-objects/pay-service-charge.page.js'
 import ReviewServiceChargePage from '../page-objects/review-service-charge.page.js'
 import { When, Then } from '@wdio/cucumber-framework'
 import GovPayPage from '../page-objects/gov-pay.page.js'
-import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
 
 When('the user continues to pay the service charge', async function () {
@@ -25,14 +24,21 @@ When('user cancels the review service charge', async function () {
 })
 
 When('the service charge is due', async function () {
-  // // current date - 3 months
+  // // // current date - 3 months
   // const threeMonthsAgo = new Date(Date.now() - 3 * 30 * 24 * 60 * 60 * 1000)
   // console.log(threeMonthsAgo.toISOString())
   // const response =
   //   await this.apis.wasteOrganisationBackendAPI.updateOrgnisationDetails(
   //     this.organisationId, {
   //       "organisation": {
-  //         "disableAfter": '2026-06-01T12:23:00.000Z'
+  //         "disableAfter": '2026-06-01T00:00:00.000Z',
+  //         "paymentPeriods": [
+  //           {
+  //             "from": "2026-06-01T00:00:00.000Z",
+  //             "to": "2027-06-01T00:00:00.000Z",
+  //             "priceInPence": 2600
+  //           }
+  //         ]
   //       }
   //     }
   //   )
