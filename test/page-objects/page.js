@@ -42,6 +42,10 @@ class Page {
     return browser.url(path)
   }
 
+  refreshPage() {
+    return browser.refresh()
+  }
+
   async click(element) {
     await element.waitForDisplayed({ timeout: config.waitforTimeout })
     return await element.click()

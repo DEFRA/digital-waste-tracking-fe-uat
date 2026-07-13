@@ -67,6 +67,11 @@ class GovPayPage extends Page {
     return $('#confirm')
   }
 
+  // start again button
+  get startAgainButton() {
+    return $('#return-url')
+  }
+
   async verifyUserIsOnGovPayPage() {
     await expect(browser).toHaveUrl(/\/card_details\/.*/)
     await this.verifyPageTitle('Enter payment details')
@@ -155,6 +160,11 @@ class GovPayPage extends Page {
       )
     }
     return json
+  }
+
+  async continueAfterPaymentError() {
+    await this.startAgainButton.waitForDisplayed()
+    await this.click(this.startAgainButton)
   }
 }
 

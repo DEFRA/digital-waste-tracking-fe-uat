@@ -17,3 +17,5 @@ env.sh
 *.err
 tmp/
 scripts/
+_results_/
+perf-test-tmp/

@@ -25,6 +25,10 @@ class ServiceChargePaymentDetailsPage extends Page {
     return $('a[data-testid="review-payment-cancel-link"]')
   }
 
+  get retryPaymentLink() {
+    return $('a[data-testid="payment-return-link"]')
+  }
+
   async verifyUserIsOnServiceChargePaymentDetailsPage() {
     await this.verifyPageTitle('Payment confirmation | Report receipt of waste')
     await this.elementIsDisplayed(this.heading)
@@ -35,6 +39,21 @@ class ServiceChargePaymentDetailsPage extends Page {
 
   async getPaymentReference() {
     return this.paymentReference.getText()
+  }
+
+  async verifyUserIsOnServiceChargeFailedPaymentDetailsPage() {
+    await this.verifyPageTitle(
+      'Your payment has been declined | Report receipt of waste'
+    )
+    await this.elementIsDisplayed(this.heading)
+    await expect(this.heading).toBeDisplayed()
+    await expect(this.heading).toHaveText('Your payment has been declined')
+    await expect(browser).toHaveUrl(/\/payment-details/)
+  }
+
+  async retryPayment() {
+    await this.retryPaymentLink.waitForDisplayed()
+    await this.click(this.retryPaymentLink)
   }
 }
 
