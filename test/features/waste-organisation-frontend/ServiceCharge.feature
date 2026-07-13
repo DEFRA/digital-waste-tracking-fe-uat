@@ -1,20 +1,20 @@
-@issue=DWT-2155
+@issue=DWT-2155 @local
 Feature: Report receipt of waste service charge
   As a waste receiver using the DWT service
   I need to be able to pay the service charge for the service
   So that I can use the service.
 
-  @env_dev @env_test @accessibility
+  @env_dev @env_test @accessibility @local
   Scenario: Waste receiver initiates to pay the service charge for the service
-    Given a user is logged in to the waste receiver registration portal
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     When the service charge is due
     And the user initiates to pay the service charge
     And the user continues to pay the service charge
     And the user allowed to review the service charge details
 
-  @env_dev @issue=DWT-1967
+  @env_dev @issue=DWT-1967 @local
   Scenario: Waste receiver sees a notification when trying to pay an already paid service charge
-    Given a user is logged in to the waste receiver registration portal
+    Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     When the service charge has already been paid
       | card_number | 4444333322221111 |
     And the user initiates to pay the service charge
@@ -22,17 +22,17 @@ Feature: Report receipt of waste service charge
       | heading | A payment has already been submitted                                                    |
       | body    | A service charge payment for this account has already been processed. Do not try again. |
 
-  @env_dev @env_test @accessibility
+  @env_dev @env_test @accessibility @local
   Scenario: Waste receiver must be able to cancel payment process after the initiation of paying the service charge
-    Given a user is logged in to the waste receiver registration portal
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
     And the user initiates to pay the service charge
     When user cancels the pay service charge
     And the user should be redirected to "account-home" page
 
-  @env_dev @env_test @accessibility
+  @env_dev @env_test @accessibility @local
   Scenario: Waste receiver must be able to cancel payment process after reviewing the service charge details
-    Given a user is logged in to the waste receiver registration portal
+    Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the service charge is due
     When the user initiates to pay the service charge
     And the user continues to pay the service charge
@@ -40,9 +40,9 @@ Feature: Report receipt of waste service charge
     When user cancels the review service charge
     And the user should be redirected to "account-home" page
 
-  @issue=DWT-2156 @issue=DWT-2425
+  @issue=DWT-2156 @issue=DWT-2425 @local
   Scenario Outline: Waste receiver must be able to pay service charge for an organisation with a valid card "<card_number>"
-    Given a user is logged in to the waste receiver registration portal
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     When the service charge is due
     And user pays the service charge using a valid "<card_brand>" "<card_type>" card "<card_number>"
     And the user should be redirected to "payment-confirmation" page
@@ -62,9 +62,9 @@ Feature: Report receipt of waste service charge
     #   | card_brand | card_type | card_number      |
     #   | Visa       | Credit    | 4444333322221111 |
 
-  @issue=DWT-2156
+  @issue=DWT-2156 @local
   Scenario Outline: Waste receiver must not be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
-    Given a user is logged in to the waste receiver registration portal
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     When the service charge is due
     And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
     Then the payment should be "unsuccessful"
@@ -84,9 +84,9 @@ Feature: Report receipt of waste service charge
     | card_brand | card_type | card_number      | reason                      | expected error message                             |
     | Visa       | Credit    | 4000000000000069 | that is expired             | There was a problem with your payment - GOV.UK Pay |
  
-  @env_dev @issue=DWT-2425
+  @env_dev @issue=DWT-2425 @local
   Scenario: User must be able to continue after a payment error and retry the payment
-    Given a user is logged in to the waste receiver registration portal
+    Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the service charge is due
     And user pays the service charge using "Visa" "Debit" card "4000000000000002"
     And the payment should be "unsuccessful"

@@ -73,6 +73,35 @@ When('user has selected a business', async function () {
   await DefraIdStubPage.selectFirstOrganisation()
 })
 
+async function registerAndLoginViaStub(context) {
+  context.userEmail = `test${Date.now()}@test.com`
+  const response = await context.apis.defraIdStubAPI.registerNewUser(
+    context.userEmail
+  )
+  context.defraIdMockUserId = response.json.userId
+  context.defraIdMockUser = context.userEmail
+
+  await UKPermitPage.open()
+  await UKPermitPage.verifyUserIsOnUKPermitPage()
+  await UKPermitPage.selectNoOption()
+  await UKPermitPage.click(UKPermitPage.continueButton)
+
+  await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+    context.testConfig.defraIdServiceUrl
+  )
+
+  await DefraIdStubPage.loginAsAUser(context.userEmail)
+
+  const temp = await DefraIdStubPage.getFirstOrganisationId()
+  context.organisationId = temp
+    .replace(/Organisation ID:/g, '')
+    .replace(/\| Role: Employee/g, '')
+    .trim()
+  await DefraIdStubPage.selectFirstOrganisation()
+
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+}
+
 async function navigateToPortalAndLogin(context, accountType) {
   await UKPermitPage.open()
   await UKPermitPage.verifyUserIsOnUKPermitPage()
@@ -124,34 +153,7 @@ Given(
       this.env.ENVIRONMENT === 'local' ||
       this.env.ENVIRONMENT === 'perf-test'
     ) {
-      this.userEmail = `test${Date.now()}@test.com`
-      const response = await this.apis.defraIdStubAPI.registerNewUser(
-        this.userEmail
-      )
-      this.defraIdMockUserId = response.json.userId
-      this.defraIdMockUser = this.userEmail
-
-      await UKPermitPage.open()
-      await UKPermitPage.verifyUserIsOnUKPermitPage()
-
-      await UKPermitPage.selectNoOption()
-
-      await UKPermitPage.click(UKPermitPage.continueButton)
-
-      await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-        this.testConfig.defraIdServiceUrl
-      )
-
-      await DefraIdStubPage.loginAsAUser(this.userEmail)
-
-      const temp = await DefraIdStubPage.getFirstOrganisationId()
-      this.organisationId = temp
-        .replace(/Organisation ID:/g, '')
-        .replace(/\| Role: Employee/g, '')
-        .trim()
-      await DefraIdStubPage.selectFirstOrganisation()
-
-      await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+      await registerAndLoginViaStub(this)
     } else if (
       this.tags.includes('@browserstack') &&
       this.env.ENVIRONMENT !== 'ext-test'
@@ -177,7 +179,15 @@ Given(
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account$/,
   async function (accountType) {
-    await navigateToPortalAndLogin(this, accountType)
+    if (
+      this.env.ENVIRONMENT === 'dev' ||
+      this.env.ENVIRONMENT === 'local' ||
+      this.env.ENVIRONMENT === 'perf-test'
+    ) {
+      await registerAndLoginViaStub(this)
+    } else {
+      await navigateToPortalAndLogin(this, accountType)
+    }
   }
 )
 

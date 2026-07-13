@@ -78,7 +78,7 @@ When('the service charge has already been paid', async function (dataTable) {
 When(
   /user pays the service charge using (a valid |)"([A-Za-z ]+)" "([A-Za-z ]+)" card "([0-9]+)"/,
   async function (isValid, cardBrand, cardType, cardNumber) {
-    await PayServiceChargePage.open()
+    await MyAccountHomePage.navigateToPayServiceChargePage()
     await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
     await PayServiceChargePage.continueToPayServiceCharge()
     await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
