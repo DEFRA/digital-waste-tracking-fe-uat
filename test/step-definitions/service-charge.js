@@ -148,3 +148,8 @@ Then('the user is redirected to intiate payment page', async function () {
   const uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
   expect(uniquePaymentReference).not.toBe(this.uniquePaymentReference)
 })
+
+When('the user re-attempts to pay service charge', async function () {
+  await PayServiceChargePage.open()
+  await MyAccountHomePage.isServiceChargeNotificationBannerDisplayed()
+})

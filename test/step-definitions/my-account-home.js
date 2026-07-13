@@ -35,7 +35,4 @@ When(
 When('the user initiates to pay the service charge', async function () {
   await MyAccountHomePage.navigateToPayServiceChargePage()
   await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
-  if (!(await MyAccountHomePage.isServiceChargeNotificationBannerDisplayed())) {
-    await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
-  }
 })
