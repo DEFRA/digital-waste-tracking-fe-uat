@@ -1,4 +1,4 @@
-@feature=WasteOrganisationsByDateRange @issue=DWTA-238,DWTA-275 @env_dev @env_test
+@feature=WasteOrganisationsByDateRange @issue=DWTA-238 @issue=DWTA-275 @env_dev @env_test
 Feature: Get organisations by date range endpoint validation
   As a consumer of the waste organisation backend API
   I need to retrieve organisations registered within a start and end date
