@@ -191,7 +191,7 @@ export const VALIDATION_ERROR_FIXTURES = {
     expectedError: {
       statusCode: 400,
       error: 'Bad Request',
-      message: '"endDate" must be greater than "ref:startDate"',
+      message: '"endDate" must be greater than or equal to "ref:startDate"',
       validation: {
         source: 'query',
         keys: ['endDate']
@@ -251,8 +251,12 @@ export const FRONTEND_VALIDATION_FIXTURES = {
       month: '7',
       year: '2024'
     },
-    expectedError: 'From date must be a valid date',
-    errorField: 'date-from'
+    expectedErrors: [
+      {
+        message: 'From date must be a valid date',
+        errorField: 'date-from'
+      }
+    ]
   },
   invalid_to_date: {
     fromDate: {
@@ -265,8 +269,84 @@ export const FRONTEND_VALIDATION_FIXTURES = {
       month: '44',
       year: '2025'
     },
-    expectedError: 'To date must be a valid date',
-    errorField: 'date-to'
+    expectedErrors: [
+      {
+        message: 'To date must be a valid date',
+        errorField: 'date-to'
+      }
+    ]
+  },
+  invalid_to_date_non_numeric: {
+    fromDate: {
+      day: '01',
+      month: '1',
+      year: '2024'
+    },
+    toDate: {
+      day: 'abc',
+      month: '1',
+      year: '2025'
+    },
+    expectedErrors: [
+      {
+        message: 'To date must be a valid date',
+        errorField: 'date-to'
+      }
+    ]
+  },
+  invalid_calendar_from_date: {
+    fromDate: {
+      day: '31',
+      month: '2',
+      year: '2024'
+    },
+    toDate: {
+      day: '31',
+      month: '7',
+      year: '2024'
+    },
+    expectedErrors: [
+      {
+        message: 'From date must be a valid date',
+        errorField: 'date-from'
+      }
+    ]
+  },
+  from_date_after_to_date: {
+    fromDate: {
+      day: '01',
+      month: '12',
+      year: '2024'
+    },
+    toDate: {
+      day: '01',
+      month: '1',
+      year: '2024'
+    },
+    expectedErrors: [
+      {
+        message: 'To date must be later than From date',
+        errorField: 'date-to'
+      }
+    ]
+  },
+  both_dates_invalid: {
+    fromDate: {
+      day: '01',
+      month: '44',
+      year: '2024'
+    },
+    toDate: {
+      day: '01',
+      month: '55',
+      year: '2024'
+    },
+    expectedErrors: [
+      {
+        message: 'From date must be a valid date',
+        errorField: 'date-from'
+      }
+    ]
   }
 }
 
