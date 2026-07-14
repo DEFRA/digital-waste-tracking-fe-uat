@@ -169,10 +169,19 @@ export const config = {
     }
   },
 
-  capabilities:
-    process.env.ENVIRONMENT === 'ext-test'
-      ? [allCapabilities[0]]
-      : allCapabilities,
+  capabilities: (() => {
+    if (process.env.ENVIRONMENT === 'ext-test') {
+      return [allCapabilities[0]]
+    }
+
+    if (process.env.BROWSERSTACK_DESKTOP_ONLY === 'true') {
+      return allCapabilities.filter(
+        (capability) => !capability?.['bstack:options']?.deviceName
+      )
+    }
+
+    return allCapabilities
+  })(),
 
   services: [
     'shared-store',

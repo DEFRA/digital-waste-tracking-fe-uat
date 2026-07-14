@@ -141,6 +141,38 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
     }
   }
 
+  /**
+   * @param {{ startDate?: string, endDate?: string }} params
+   * @returns {Promise<import('./base-api.js').JsonResponse>}
+   */
+  async getOrganisationsByDateRange({ startDate, endDate } = {}) {
+    const requestHeaders = {
+      Authorization: `Basic ${this.base64Credentials}`,
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'identity'
+    }
+    if (process.env.xapikey) {
+      requestHeaders['x-api-key'] = process.env.xapikey
+    }
+
+    const params = new URLSearchParams()
+    if (startDate !== undefined) params.set('startDate', startDate)
+    if (endDate !== undefined) params.set('endDate', endDate)
+    const query = params.toString()
+    const endpoint = query ? `/organisations?${query}` : '/organisations'
+
+    const { statusCode, headers, json } = await this.get(
+      endpoint,
+      requestHeaders
+    )
+
+    return {
+      statusCode,
+      headers,
+      json
+    }
+  }
+
   async getBulkUploadIdByFileName(organisationId, fileName) {
     const requestHeaders = {
       Authorization: `Basic ${this.base64Credentials}`,

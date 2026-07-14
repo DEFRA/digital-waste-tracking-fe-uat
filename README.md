@@ -92,6 +92,12 @@ Two wdio configuration files are provided to help run the tests using BrowserSta
 They can be run from npm using the `npm run test:browserstack` (for running via portal) and `npm run test:github:browserstack` (from GitHib runner).
 See the CDP Documentation for more details.
 
+## DWT Admin tool UI
+
+- **Backend** (`GetOrganisationsByDateRange.feature`): tests the new Organisation Backend API that returns organisations registered between a start and end date.
+- **Admin tool UI** (`WasteOrganisationsReport.feature`): tests the new DWT Admin Portal report that uses that API to list organisations (and download CSV) for a date range.
+- **BrowserStack**: run the admin-tool UI suite with `npm run test:browserstack:admin-tool` (`@browserstack-admin-tool`, desktop browsers only). Default `npm run test:browserstack` is unchanged.
+
 ## Licence
 
 THIS INFORMATION IS LICENSED UNDER THE CONDITIONS OF THE OPEN GOVERNMENT LICENCE found at:
