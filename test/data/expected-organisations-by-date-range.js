@@ -325,7 +325,7 @@ export const FRONTEND_VALIDATION_FIXTURES = {
     },
     expectedErrors: [
       {
-        message: 'To date must be later than From date',
+        message: 'To date cannot be before the From date',
         errorField: 'date-to'
       }
     ]
