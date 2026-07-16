@@ -2,14 +2,14 @@ digital-waste-tracking-fe-uat
 
 The template to create a service that runs WDIO tests against an environment.
 
-- [Local](#local)
+- [Local Development](#local-development)
   - [Requirements](#requirements)
     - [Node.js](#nodejs)
   - [Setup](#setup)
   - [Running local tests](#running-local-tests)
   - [Debugging local tests](#debugging-local-tests)
 - [Production](#production)
-  - [Debugging tests](#debugging-tests)
+  - [Running the tests](#running-the-tests)
 - [Licence](#licence)
   - [About the licence](#about-the-licence)
 
@@ -19,7 +19,7 @@ The template to create a service that runs WDIO tests against an environment.
 
 #### Node.js
 
-Please install [Node.js](http://nodejs.org/) `>= v20` and [npm](https://nodejs.org/) `>= v9`. You will find it
+Please install [Node.js](http://nodejs.org/) `>= v22.13.1` and [npm](https://nodejs.org/) `>= v9`. You will find it
 easier to use the Node Version Manager [nvm](https://github.com/creationix/nvm)
 
 To use the correct version of Node.js for this application, via nvm:
@@ -30,10 +30,31 @@ nvm use
 
 ### Setup
 
+Clone the repository and change into this project directory:
+
+```bash
+git clone <repository-url>
+cd digital-waste-tracking-fe-uat
+```
+
 Install application dependencies:
 
 ```bash
 npm install
+```
+
+Create a local environment file from the template:
+
+```bash
+cp env.sh.template env.sh
+```
+
+Update `env.sh` with the values for the environment you want to test against. Use `env.sh.template` as the source of required variable names. Do not commit `env.sh`; it is ignored by git because it contains secrets.
+
+When running from a local machine against protected CDP backend APIs, also set:
+
+```bash
+export xapikey=<cdp-api-key>
 ```
 
 ### Running local tests
@@ -67,12 +88,12 @@ The results of the test run are made available in the portal.
 
 2. The Dockerfile's entrypoint script should return exit code of 0 if the test suite passes or 1/>0 if it fails
 
-3. Test reports should be published to S3 using the script in `./bin/publish-tests.sh`
+3. Test reports should be published to S3 using `npm run report:publish`, which runs `./bin/publish-tests.sh`
 
 ## Running on GitHub
 
 Alternatively you can run the test suite as a GitHub workflow.
-Test runs on GitHub are not able to connect to the CDP Test environments. Instead, they run the tests agains a version of the services running in docker.
+Test runs on GitHub are not able to connect to the CDP Test environments. Instead, they run the tests against a version of the services running in docker.
 A docker compose `compose.yml` is included as a starting point, which includes the databases (mongodb, redis) and infrastructure (localstack) pre-setup.
 
 Steps:
