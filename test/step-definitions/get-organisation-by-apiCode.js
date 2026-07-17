@@ -3,11 +3,12 @@ import { Given, When, Then } from '@wdio/cucumber-framework'
 Given('a waste receiving organisation is registered', async function () {
   this.organisationId = crypto.randomUUID()
   const response =
-    await this.apis.wasteOrganisationBackendAPI.createApiCodeForOrganisation(
+    await this.apis.wasteOrganisationBackendAPI.createOrganisation(
       this.organisationId
     )
   expect(response.statusCode).toBe(200)
   this.apiCode = response.json.code
+  this.disableAfter = response.json.organisation.disableAfter
 })
 
 When(
