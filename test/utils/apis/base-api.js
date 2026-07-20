@@ -113,7 +113,11 @@ export class BaseAPI {
       dispatcher: this.agent
     })
 
-    const json = await response.body.json()
+    const responseText = await response.body.text()
+    const contentType = response.headers['content-type'] ?? ''
+    const responseBody = contentType.includes('application/json')
+      ? JSON.parse(responseText)
+      : responseText
 
     // Log response to Allure
     await logAllureResponse(
@@ -121,13 +125,13 @@ export class BaseAPI {
       endpoint,
       response.statusCode,
       response.headers,
-      json
+      responseBody
     )
 
     return {
       statusCode: response.statusCode,
       headers: response.headers,
-      json
+      responseBody
     }
   }
 
