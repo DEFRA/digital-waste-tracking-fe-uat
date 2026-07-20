@@ -253,6 +253,7 @@ export const config = {
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.testConfig.defraIdServiceUrl,
       cucumberWorld.testConfig.govPayBaseUrl,
+      cucumberWorld.testConfig.wasteOrganisationFrontendBaseUrl,
       cucumberWorld.env.HTTP_PROXY
     )
 
