@@ -16,7 +16,9 @@ When('user cancels the pay service charge', async function () {
 When(
   'the user allowed to review the service charge details',
   async function () {
-    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
+    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+      process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+    )
   }
 )
 
@@ -29,7 +31,7 @@ When('the service charge is due', async function () {
   // const threeMonthsAgo = new Date(Date.now() - 3 * 30 * 24 * 60 * 60 * 1000)
   // console.log(threeMonthsAgo.toISOString())
   // const response =
-  //   await this.apis.wasteOrganisationBackendAPI.updateOrgnisationDetails(
+  //   await this.apis.wasteOrganisationBackendAPI.updateOrganisationDetails(
   //     this.organisationId, {
   //       "organisation": {
   //         "disableAfter": '2026-06-01T00:00:00.000Z',
