@@ -4,12 +4,14 @@ import { WasteMovementExternalAPI } from './wasteMovementApi.js'
 import { CognitoOAuthApi } from './cognitoOAuth.js'
 import { DefraIdStubAPI } from './defraIdStubApi.js'
 import { GovPayAPI } from './govpayApi.js'
+import { WasteOrganisationFrontendAPI } from './wasteOrganisationFrontendApi.js'
 
 /**
  * @typedef {Object} ApiInstances
- * @property {WasteOrganisationBackendAPI} wasteOrganisationBackendAPI - Waste Organisation Backend API instance
- * @property {WasteMovementExternalAPI} wasteMovementExternalAPI - Waste Movement External API instance
- * @property {CognitoOAuthApi} cognitoOAuthApi - Cognito OAuth API instance
+ * @property {WasteOrganisationBackendAPI} wasteOrganisationBackendAPI
+ * @property {WasteMovementExternalAPI} wasteMovementExternalAPI
+ * @property {CognitoOAuthApi} cognitoOAuthApi
+ * @property {WasteOrganisationFrontendAPI} wasteOrganisationFrontendAPI
  */
 export class ApiFactory {
   static create(
@@ -19,6 +21,7 @@ export class ApiFactory {
     authBaseUrl,
     defraIdStubBaseUrl,
     govPayBaseUrl,
+    frontendBaseUrl,
     httpProxy
   ) {
     return {
@@ -36,7 +39,11 @@ export class ApiFactory {
       ),
       cognitoOAuthApi: new CognitoOAuthApi(authBaseUrl, httpProxy),
       defraIdStubAPI: new DefraIdStubAPI(defraIdStubBaseUrl, httpProxy),
-      govPayAPI: new GovPayAPI(govPayBaseUrl, httpProxy)
+      govPayAPI: new GovPayAPI(govPayBaseUrl, httpProxy),
+      wasteOrganisationFrontendAPI: new WasteOrganisationFrontendAPI(
+        frontendBaseUrl,
+        httpProxy
+      )
     }
   }
 }
