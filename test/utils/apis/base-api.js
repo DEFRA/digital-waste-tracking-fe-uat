@@ -112,18 +112,9 @@ export class BaseAPI {
       body: data,
       dispatcher: this.agent
     })
-    // const json = await response.body.json()
-
     const json = response.headers['content-type'].includes('application/json')
       ? await response.body.json()
       : await response.body.text()
-
-    // console.log('--------------------------------')
-    // console.log(response.headers)
-    // console.log(response.headers['content-type'])
-    // console.log(response.headers['content-type'].includes('application/json'))
-    // console.log(json)
-    // console.log('--------------------------------')
 
     // Log response to Allure
     await logAllureResponse(
