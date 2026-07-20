@@ -217,6 +217,7 @@ export const config = {
       cucumberWorld.testConfig.cognitoOAuthBaseUrl,
       cucumberWorld.testConfig.defraIdServiceUrl,
       cucumberWorld.testConfig.govPayBaseUrl,
+      cucumberWorld.testConfig.wasteOrganisationFrontendBaseUrl,
       cucumberWorld.env.ZAP_PROXY_API_URL ?? cucumberWorld.env.HTTP_PROXY
     )
     cucumberWorld.apis.govPayAPI.setAuthorizationHeader(
