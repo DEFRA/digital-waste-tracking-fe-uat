@@ -36,3 +36,14 @@ When('the user initiates to pay the service charge', async function () {
   await MyAccountHomePage.navigateToPayServiceChargePage()
   await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
 })
+
+Then(
+  'the account page should reflect that the service charge has been paid',
+  async function () {
+    await MyAccountHomePage.open()
+    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+    await MyAccountHomePage.verifyServiceChargeStatus(
+      `Service Charge\nPaid\nNext payment due ${this.nextPaymentDueDate}.`
+    )
+  }
+)

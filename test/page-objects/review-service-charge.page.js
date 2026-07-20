@@ -65,7 +65,7 @@ function formatGovPayDate(date) {
   const minutes = date.getMinutes().toString().padStart(2, '0')
   const ampm = date.getHours() < 12 ? 'am' : 'pm'
 
-  return `${hours}:${minutes}${ampm} on ${weekday} ${day} ${month} ${year}.`
+  return `${hours}:${minutes}${ampm} on ${weekday} ${day} ${month} ${year}`
 }
 
 export default new ReviewServiceChargePage()

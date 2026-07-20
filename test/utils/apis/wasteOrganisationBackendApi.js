@@ -106,7 +106,10 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
   /**
    * @returns {Promise<import('./base-api.js').JsonResponse>}
    */
-  async getOrganisationDetails(organisationId) {
+  async getOrganisationDetails(
+    organisationId,
+    userId = '75cec841-8414-42f2-aff2-7e9750a5bd4c'
+  ) {
     const requestHeaders = {
       Authorization: `Basic ${this.base64Credentials}`,
       'Content-Type': 'application/json'
@@ -118,7 +121,7 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
 
     // leaving the userId hardcoded to indicate it is from a auto test user and not a real user
     const { statusCode, headers, json } = await this.get(
-      `/user/75cec841-8414-42f2-aff2-7e9750a5bd4c/organisation/${organisationId}`,
+      `/user/${userId}/organisation/${organisationId}`,
       requestHeaders
     )
 

@@ -56,7 +56,9 @@ When('the service charge has already been paid', async function (dataTable) {
   await PayServiceChargePage.open()
   await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
   await PayServiceChargePage.continueToPayServiceCharge()
-  await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
+  await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+    process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+  )
   await ReviewServiceChargePage.continueToMakePayment()
 
   const uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
@@ -83,7 +85,9 @@ When(
     await MyAccountHomePage.navigateToPayServiceChargePage()
     await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
     await PayServiceChargePage.continueToPayServiceCharge()
-    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
+    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+      process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+    )
     await ReviewServiceChargePage.continueToMakePayment()
 
     const uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
@@ -115,6 +119,21 @@ Then(
       expect(json.metadata.organisationId).toBe(this.organisationId)
     }
     expect(json.state.finished).toBe(true)
+
+    // disableAfter flag on the organisation must reflect the future date
+    const organisationDetails =
+      await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+        this.organisationId,
+        this.defraIdMockUserId
+      )
+    const endDate = new Date(process.env.GOVPAY_SERVICE_FREE_PERIOD_END)
+    endDate.setFullYear(endDate.getFullYear() + 1)
+    expect(organisationDetails.json.organisation.disableAfter).toBe(
+      endDate.toISOString()
+    )
+    const month = endDate.toLocaleDateString('en-GB', { month: 'long' })
+    const year = endDate.getFullYear()
+    this.nextPaymentDueDate = `${month} ${year}`
   }
 )
 
@@ -145,7 +164,9 @@ When('user attempts to re-try the payment after the error', async function () {
 Then('the user is redirected to intiate payment page', async function () {
   await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
   await PayServiceChargePage.continueToPayServiceCharge()
-  await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
+  await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+    process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+  )
   await ReviewServiceChargePage.continueToMakePayment()
   const uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
   expect(uniquePaymentReference).not.toBe(this.uniquePaymentReference)
