@@ -100,6 +100,20 @@ async function registerAndLoginViaStub(context) {
   await DefraIdStubPage.selectFirstOrganisation()
 
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+  // ToDo: when the free period ends beyond september 30th 2026
+  // below code needs to be uncommented
+  // if (!context.tags.includes('@serviceCharge')) {
+  //   const response1 =
+  //     await context.apis.wasteOrganisationBackendAPI.updateOrganisationDetails(
+  //       context.organisationId, {
+  //         "organisation": {
+  //           "disableAfter": '2027-09-30T00:00:00.000Z',
+  //         }
+  //       }
+  //     )
+  //   expect(response1.statusCode).toBe(200)
+  //   await MyAccountHomePage.refreshPage()
+  // }
 }
 
 async function navigateToPortalAndLogin(context, accountType) {

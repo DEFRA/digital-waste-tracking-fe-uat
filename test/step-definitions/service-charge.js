@@ -26,27 +26,7 @@ When('user cancels the review service charge', async function () {
   await ReviewServiceChargePage.cancelReviewServiceCharge()
 })
 
-When('the service charge is due', async function () {
-  // // // current date - 3 months
-  // const threeMonthsAgo = new Date(Date.now() - 3 * 30 * 24 * 60 * 60 * 1000)
-  // console.log(threeMonthsAgo.toISOString())
-  // const response =
-  //   await this.apis.wasteOrganisationBackendAPI.updateOrganisationDetails(
-  //     this.organisationId, {
-  //       "organisation": {
-  //         "disableAfter": '2026-06-01T00:00:00.000Z',
-  //         "paymentPeriods": [
-  //           {
-  //             "from": "2026-06-01T00:00:00.000Z",
-  //             "to": "2027-06-01T00:00:00.000Z",
-  //             "priceInPence": 2600
-  //           }
-  //         ]
-  //       }
-  //     }
-  //   )
-  // expect(response.statusCode).toBe(200)
-})
+When('the service charge is due', async function () {})
 
 When('the service charge has already been paid', async function (dataTable) {
   const paymentDetails = dataTable.rowsHash()
@@ -117,23 +97,22 @@ Then(
       expect(json.state.status).toBe('success')
       expect(json.reference).toBe(paymentReference)
       expect(json.metadata.organisationId).toBe(this.organisationId)
+      // disableAfter flag on the organisation must reflect the future date
+      const organisationDetails =
+        await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+          this.organisationId,
+          this.defraIdMockUserId
+        )
+      const endDate = new Date(process.env.GOVPAY_SERVICE_FREE_PERIOD_END)
+      endDate.setFullYear(endDate.getFullYear() + 1)
+      expect(organisationDetails.json.organisation.disableAfter).toBe(
+        endDate.toISOString()
+      )
+      const month = endDate.toLocaleDateString('en-GB', { month: 'long' })
+      const year = endDate.getFullYear()
+      this.nextPaymentDueDate = `${month} ${year}`
     }
     expect(json.state.finished).toBe(true)
-
-    // disableAfter flag on the organisation must reflect the future date
-    const organisationDetails =
-      await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
-        this.organisationId,
-        this.defraIdMockUserId
-      )
-    const endDate = new Date(process.env.GOVPAY_SERVICE_FREE_PERIOD_END)
-    endDate.setFullYear(endDate.getFullYear() + 1)
-    expect(organisationDetails.json.organisation.disableAfter).toBe(
-      endDate.toISOString()
-    )
-    const month = endDate.toLocaleDateString('en-GB', { month: 'long' })
-    const year = endDate.getFullYear()
-    this.nextPaymentDueDate = `${month} ${year}`
   }
 )
 

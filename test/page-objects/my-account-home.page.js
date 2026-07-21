@@ -134,9 +134,7 @@ class MyAccountHomePage extends Page {
       const tmp = await card.getText()
       return tmp.trim()
     })
-    expect(cardsText).toEqual(
-      expect.arrayContaining([expect.stringContaining(status)])
-    )
+    expect(cardsText[2]).toEqual(status)
   }
 }
 

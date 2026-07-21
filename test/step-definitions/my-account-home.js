@@ -43,7 +43,7 @@ Then(
     await MyAccountHomePage.open()
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
     await MyAccountHomePage.verifyServiceChargeStatus(
-      `Service Charge\nPaid\nNext payment due ${this.nextPaymentDueDate}.`
+      `Service charge\nPaid\nNext payment due ${this.nextPaymentDueDate}.`
     )
   }
 )
