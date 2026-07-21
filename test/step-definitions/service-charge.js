@@ -111,6 +111,8 @@ Then(
       expect(json.state.status).toBe('success')
       expect(json.reference).toBe(paymentReference)
       expect(json.metadata.organisationId).toBe(this.organisationId)
+      this.paymentId = json.payment_id
+      this.paymentServicePeriodStart = json.metadata.servicePeriodStart
     }
     expect(json.state.finished).toBe(true)
   }
@@ -153,3 +155,54 @@ When('the user re-attempts to pay service charge', async function () {
   await PayServiceChargePage.open()
   await MyAccountHomePage.isServiceChargeNotificationBannerDisplayed()
 })
+
+When('user requests for refund for the payment', async function () {
+  const response = await this.apis.govPayAPI.issueARefund(
+    this.uniquePaymentReference
+  )
+
+  this.refundResponse = response
+  this.refundId = response.json?.refund_id
+})
+
+Then(/^the refund should be "(successful)"$/, async function (status) {
+  expect(status).toBe('successful')
+  expect(this.refundResponse.statusCode).toBe(202)
+  expect(this.refundId).toBeDefined()
+
+  this.refundWebhookResponse =
+    await this.apis.wasteOrganisationFrontendAPI.invokeWebhookForRefund(
+      this.uniquePaymentReference,
+      this.organisationId,
+      this.paymentId,
+      this.env.GOVPAY_WEBHOOK_SIGNING_SECRET
+    )
+
+  expect([200, 204]).toContain(this.refundWebhookResponse.statusCode)
+})
+
+Then(
+  'organisation disableAfter moves back to payment.servicePeriodStart',
+  async function () {
+    const apiCodeResponse =
+      await this.apis.wasteOrganisationBackendAPI.getAllApiCodesForOrganisation(
+        this.organisationId
+      )
+    expect(apiCodeResponse.statusCode).toBe(200)
+
+    const activeApiCode = apiCodeResponse.json.apiCodes.find(
+      (apiCode) => !apiCode.isDisabled
+    )
+    expect(activeApiCode).toBeDefined()
+
+    const response =
+      await this.apis.wasteOrganisationBackendAPI.getOrganisationByApiCode(
+        activeApiCode.code
+      )
+    expect(response.statusCode).toBe(200)
+
+    this.disableAfter = response.json.metaData?.disableAfter
+    expect(this.disableAfter).toBeDefined()
+    expect(this.disableAfter).toBe(this.paymentServicePeriodStart)
+  }
+)
