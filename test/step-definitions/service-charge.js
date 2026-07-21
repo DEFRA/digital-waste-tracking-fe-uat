@@ -51,7 +51,12 @@ When('the service charge has already been paid', async function (dataTable) {
 
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 
-  await PayServiceChargePage.open()
+  if (!(await MyAccountHomePage.isServiceChargeLinkDisplayed())) {
+    await PayServiceChargePage.open()
+    return
+  }
+
+  await MyAccountHomePage.navigateToPayServiceChargePage()
   await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
   await PayServiceChargePage.continueToPayServiceCharge()
   await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage()
@@ -62,6 +67,7 @@ When('the service charge has already been paid', async function (dataTable) {
   await GovPayPage.submitCardDetails(paymentDetails.card_number)
   await GovPayPage.verifyUserIsOnGovPayConfirmPage(uniquePaymentReference)
   await GovPayPage.confirmPayment()
+  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
 
   const json = await GovPayPage.waitForPaymentStatus(
     this.apis.govPayAPI,
@@ -70,7 +76,6 @@ When('the service charge has already been paid', async function (dataTable) {
   expect(json.state.status).toBe('success')
   expect(json.state.finished).toBe(true)
 
-  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
   await MyAccountHomePage.open()
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 })

@@ -100,6 +100,10 @@ class MyAccountHomePage extends Page {
     await this.serviceChargeLink.click()
   }
 
+  async isServiceChargeLinkDisplayed() {
+    return await this.serviceChargeLink.isExisting()
+  }
+
   async isServiceChargeNotificationBannerDisplayed() {
     try {
       await this.serviceChargeNotificationBanner.waitForDisplayed({
