@@ -1,4 +1,4 @@
-@issue=DWT-2155 
+@issue=DWT-2155 @serviceCharge
 Feature: Report receipt of waste service charge
   As a waste receiver using the DWT service
   I need to be able to pay the service charge for the service
@@ -63,13 +63,14 @@ Feature: Report receipt of waste service charge
     #   | card_brand | card_type | card_number      |
     #   | Visa       | Credit    | 4444333322221111 |
 
-  @issue=DWT-2156 
+  @issue=DWT-2156
   Scenario Outline: Waste receiver must not be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     When the service charge is due
     And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
     Then the payment should be "unsuccessful"
     And the user should see an error message "<expected error message>"
+    And the account page should reflect that the service charge is pending
 
     @env_dev
     Examples:

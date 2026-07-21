@@ -47,3 +47,23 @@ Then(
     )
   }
 )
+
+Then(
+  'the account page should reflect that the service charge is pending',
+  async function () {
+    await MyAccountHomePage.open()
+    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+    const endDate = new Date(process.env.GOVPAY_SERVICE_FREE_PERIOD_END)
+    if (new Date() < endDate) {
+      const month = endDate.toLocaleDateString('en-GB', { month: 'long' })
+      const year = endDate.getFullYear()
+      await MyAccountHomePage.verifyServiceChargeStatus(
+        `Service charge\nPaid\nNext payment due ${month} ${year}. Pay Now.`
+      )
+    } else {
+      await MyAccountHomePage.verifyServiceChargeStatus(
+        `Service charge\nPayment due`
+      )
+    }
+  }
+)
