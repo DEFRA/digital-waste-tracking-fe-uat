@@ -44,7 +44,7 @@ export class WasteOrganisationFrontendAPI extends BaseAPI {
           servicePeriodStart: '2026-10-01T00:00:00.000Z'
         },
         reference: paymentReference,
-        payment_id: paymentReference,
+        payment_id: paymentId,
         return_url: `${this.baseUrl}/payment-details`,
         description: 'Annual report receipt of waste service charge',
         card_details: {
