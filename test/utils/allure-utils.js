@@ -1,4 +1,4 @@
-import allure, { addLink } from '@wdio/allure-reporter'
+import allure, { addLink, addTag } from '@wdio/allure-reporter'
 
 /**
  * Log API request details to Allure report
@@ -116,5 +116,6 @@ export async function addAllureIssueLinksFromPickleTags(
     if (!issueId) continue
     const url = issueLinkTemplate.split('{}').join(issueId)
     await addLink(url, issueId, 'issue')
+    await addTag(issueId)
   }
 }

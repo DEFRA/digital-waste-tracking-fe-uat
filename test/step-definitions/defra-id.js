@@ -1,4 +1,5 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
+import allure from '@wdio/allure-reporter'
 import DefraIdChooseSignInPage from '../page-objects/defra-id-choose-sign-in.page.js'
 import DefraIdGovtGatewayPage from '../page-objects/defra-id-govt-gateway.page.js'
 import DefraIdGovUKPage from '../page-objects/defra-id-gov-uk.page.js'
@@ -139,6 +140,7 @@ async function navigateToPortalAndLogin(context, accountType) {
       context.govGatewayUser = await getValueFromPool(
         'availableGovGatewayUsers'
       )
+    allure.addArgument('Test User Email', context.govGatewayUser)
     await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
       context.govGatewayUser,
       context.env.defraGovGatewayPassword
@@ -152,6 +154,7 @@ async function navigateToPortalAndLogin(context, accountType) {
     if (context.govUKUser === undefined)
       context.govUKUser = await getValueFromPool('availableGovUKUsers')
 
+    allure.addArgument('Test User Email', context.govUKUser)
     await DefraIdGovUKPage.loginWithGovUK(
       context.govUKUser,
       context.env.defraGovUKPassword
