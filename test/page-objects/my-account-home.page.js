@@ -127,6 +127,15 @@ class MyAccountHomePage extends Page {
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Your Defra account')
   }
+
+  async verifyServiceChargeStatus(status) {
+    const cards = await this.accountCards.getElements()
+    const cardsText = await cards.map(async (card) => {
+      const tmp = await card.getText()
+      return tmp.trim()
+    })
+    expect(cardsText[2]).toEqual(status)
+  }
 }
 
 export default new MyAccountHomePage()
