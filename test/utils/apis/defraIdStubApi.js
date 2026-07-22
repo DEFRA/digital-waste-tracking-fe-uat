@@ -1,11 +1,13 @@
 import { BaseAPI } from './base-api.js'
 import { v4 as uuidv4 } from 'uuid'
+import allure from '@wdio/allure-reporter'
 
 export class DefraIdStubAPI extends BaseAPI {
   /**
    * @returns {Promise<import('./base-api.js').JsonResponse>}
    */
   async registerNewUser(email) {
+    allure.addArgument('Test User Email', email)
     const userData = {
       userId: uuidv4(),
       email,
