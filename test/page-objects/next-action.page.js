@@ -51,6 +51,13 @@ class NextActionPage extends Page {
     await expect(this.updateSpreadsheetRadio).toBeExisting()
   }
 
+  async verifyOnlyDownloadSpreadsheetOptionIsAvailable() {
+    await expect(this.connectYourSoftwareRadio).not.toBeExisting()
+    await expect(this.uploadSpreadsheetRadio).not.toBeExisting()
+    await expect(this.downloadSpreadsheetRadio).toBeExisting()
+    await expect(this.updateSpreadsheetRadio).not.toBeExisting()
+  }
+
   /**
    * @param {'connectYourSoftware' | 'uploadSpreadsheet' | 'downloadSpreadsheet'} option
    */
