@@ -39,3 +39,10 @@ When(
     await NextActionPage.click(NextActionPage.continueButton)
   }
 )
+
+Then(
+  'user should only have option to Download spreadsheet template',
+  async function () {
+    await NextActionPage.verifyOnlyDownloadSpreadsheetOptionIsAvailable()
+  }
+)
