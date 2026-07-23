@@ -12,7 +12,7 @@ Feature: Report receipt of waste service charge
     And the user continues to pay the service charge
     And the user allowed to review the service charge details
 
-  @env_dev @issue=DWT-1967 @test1
+  @env_dev @issue=DWT-1967 
   Scenario: Waste receiver sees a notification when trying to pay an already paid service charge
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the next payment due is available to pay now
@@ -54,11 +54,11 @@ Feature: Report receipt of waste service charge
     Examples:
       | card_brand       | card_type        | card_number      |
       | Visa             | Credit           | 4444333322221111 |
-      #| Visa             | Debit            | 4000056655665556 |
-      #| Visa             | Debit corporate  | 4988080000000000 |
-      #| Visa             | Credit corporate | 4111111111111111 |
-      #| Mastercard       | Credit           |  222100000000000 |
-      #| American Express | Credit           |  371449635398431 |
+      | Visa             | Debit            | 4000056655665556 |
+      | Visa             | Debit corporate  | 4988080000000000 |
+      | Visa             | Credit corporate | 4111111111111111 |
+      | Mastercard       | Credit           |  222100000000000 |
+      | American Express | Credit           |  371449635398431 |
     # @env_test
     # Examples:
     #   | card_brand | card_type | card_number      |

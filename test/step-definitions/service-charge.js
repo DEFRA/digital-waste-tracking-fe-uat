@@ -30,7 +30,7 @@ When('user cancels the review service charge', async function () {
 
 When('the next payment due is available to pay now', async function () {
   const disableAfter = new Date()
-  disableAfter.setUTCMonth(disableAfter.getUTCMonth() + 1, 1)
+  disableAfter.setUTCMonth(disableAfter.getUTCMonth() - 1, 1)
   disableAfter.setUTCHours(0, 0, 0, 0)
   this.serviceChargeDueDate = disableAfter.toISOString()
 
