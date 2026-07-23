@@ -45,6 +45,19 @@ When('the next payment due is available to pay now', async function () {
     )
   expect(response.statusCode).toBe(200)
 
+  const organisationDetails =
+    await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+      this.organisationId,
+      this.defraIdMockUserId
+    )
+  expect(organisationDetails.statusCode).toBe(200)
+
+  const paymentPeriods =
+    organisationDetails.json.organisation.paymentPeriods ?? []
+  if (paymentPeriods.length === 0) {
+    throw new Error('Payment periods were not available for the organisation')
+  }
+
   await MyAccountHomePage.open()
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 })
