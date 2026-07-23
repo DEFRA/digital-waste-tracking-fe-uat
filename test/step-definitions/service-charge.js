@@ -30,13 +30,14 @@ When('the service charge is due', async function () {
   const disableAfter = new Date()
   disableAfter.setUTCMonth(disableAfter.getUTCMonth() + 1, 1)
   disableAfter.setUTCHours(0, 0, 0, 0)
+  this.serviceChargeDueDate = disableAfter.toISOString()
 
   const response =
     await this.apis.wasteOrganisationBackendAPI.updateOrganisationDetails(
       this.organisationId,
       {
         organisation: {
-          disableAfter: disableAfter.toISOString()
+          disableAfter: this.serviceChargeDueDate
         }
       }
     )
