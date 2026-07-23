@@ -1,6 +1,7 @@
 import PayServiceChargePage from '../page-objects/pay-service-charge.page.js'
 import ReviewServiceChargePage from '../page-objects/review-service-charge.page.js'
 import { When, Then } from '@wdio/cucumber-framework'
+import AllureReporter from '@wdio/allure-reporter'
 import GovPayPage from '../page-objects/gov-pay.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
@@ -26,7 +27,7 @@ When('user cancels the review service charge', async function () {
   await ReviewServiceChargePage.cancelReviewServiceCharge()
 })
 
-When('the service charge is due', async function () {
+When('the next payment due is available to pay now', async function () {
   const disableAfter = new Date()
   disableAfter.setUTCMonth(disableAfter.getUTCMonth() + 1, 1)
   disableAfter.setUTCHours(0, 0, 0, 0)
@@ -107,6 +108,7 @@ Then(
       this.apis.govPayAPI,
       this.uniquePaymentReference
     )
+    this.paymentStatus = json
 
     if (status === 'unsuccessful') {
       expect(json.state.status).toMatch(/^(failed|error)$/)
@@ -180,9 +182,22 @@ When('the user re-attempts to pay service charge', async function () {
   await MyAccountHomePage.isServiceChargeNotificationBannerDisplayed()
 })
 
+Then('refund summary status should be {string}', async function (status) {
+  expect(this.paymentStatus).toBeDefined()
+  this.refundSummary = this.paymentStatus.refund_summary
+  expect(this.refundSummary?.status).toBe(status)
+  expect(this.refundSummary.amount_available).toBeDefined()
+  AllureReporter.addAttachment(
+    'Refund summary',
+    JSON.stringify(this.refundSummary, null, 2),
+    'application/json'
+  )
+})
+
 When('user requests for refund for the payment', async function () {
   const response = await this.apis.govPayAPI.issueARefund(
-    this.uniquePaymentReference
+    this.uniquePaymentReference,
+    this.refundSummary.amount_available
   )
 
   this.refundResponse = response
