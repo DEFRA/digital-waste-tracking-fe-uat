@@ -26,7 +26,25 @@ When('user cancels the review service charge', async function () {
   await ReviewServiceChargePage.cancelReviewServiceCharge()
 })
 
-When('the service charge is due', async function () {})
+When('the service charge is due', async function () {
+  const disableAfter = new Date()
+  disableAfter.setUTCMonth(disableAfter.getUTCMonth() + 1, 1)
+  disableAfter.setUTCHours(0, 0, 0, 0)
+
+  const response =
+    await this.apis.wasteOrganisationBackendAPI.updateOrganisationDetails(
+      this.organisationId,
+      {
+        organisation: {
+          disableAfter: disableAfter.toISOString()
+        }
+      }
+    )
+  expect(response.statusCode).toBe(200)
+
+  await MyAccountHomePage.open()
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+})
 
 When('the service charge has already been paid', async function (dataTable) {
   const paymentDetails = dataTable.rowsHash()
