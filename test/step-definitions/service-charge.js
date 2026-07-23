@@ -97,6 +97,11 @@ Then(
       expect(json.state.status).toBe('success')
       expect(json.reference).toBe(paymentReference)
       expect(json.metadata.organisationId).toBe(this.organisationId)
+      this.paymentId = json.payment_id
+      this.paymentReference = json.reference
+      this.paymentOrganisationId = json.metadata.organisationId
+      this.paymentServicePeriodStart = json.metadata.servicePeriodStart
+      this.paymentServicePeriodEnd = json.metadata.servicePeriodEnd
       // disableAfter flag on the organisation must reflect the future date
       const organisationDetails =
         await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
@@ -172,7 +177,7 @@ Then(/^the refund should be "(successful)"$/, async function (status) {
 
   this.refundWebhookResponse =
     await this.apis.wasteOrganisationFrontendAPI.invokeWebhookForRefund(
-      this.uniquePaymentReference,
+      this.paymentReference,
       this.organisationId,
       this.paymentId,
       this.env.GOVPAY_WEBHOOK_SIGNING_SECRET
@@ -182,27 +187,23 @@ Then(/^the refund should be "(successful)"$/, async function (status) {
 })
 
 Then(
-  'organisation disableAfter moves back to payment.servicePeriodStart',
-  async function () {
-    const apiCodeResponse =
-      await this.apis.wasteOrganisationBackendAPI.getAllApiCodesForOrganisation(
-        this.organisationId
+  /^organisation disableAfter (?:updates to|moves back to) payment\.(servicePeriodStart|servicePeriodEnd)$/,
+  async function (servicePeriod) {
+    const expectedDisableAfter =
+      servicePeriod === 'servicePeriodStart'
+        ? this.paymentServicePeriodStart
+        : this.paymentServicePeriodEnd
+
+    const organisationDetails =
+      await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+        this.paymentOrganisationId,
+        this.defraIdMockUserId
       )
-    expect(apiCodeResponse.statusCode).toBe(200)
+    expect(organisationDetails.statusCode).toBe(200)
 
-    const activeApiCode = apiCodeResponse.json.apiCodes.find(
-      (apiCode) => !apiCode.isDisabled
-    )
-    expect(activeApiCode).toBeDefined()
-
-    const response =
-      await this.apis.wasteOrganisationBackendAPI.getOrganisationByApiCode(
-        activeApiCode.code
-      )
-    expect(response.statusCode).toBe(200)
-
-    this.disableAfter = response.json.metaData?.disableAfter
+    this.disableAfter = organisationDetails.json.organisation.disableAfter
     expect(this.disableAfter).toBeDefined()
-    expect(this.disableAfter).toBe(this.paymentServicePeriodStart)
+    expect(expectedDisableAfter).toBeDefined()
+    expect(this.disableAfter).toBe(expectedDisableAfter)
   }
 )

@@ -5,18 +5,17 @@ export class GovPayAPI extends BaseAPI {
     this.defaultHeaders.Authorization = `Bearer ${apiKey}`
   }
 
-  async getPaymentStatus(paymentReference) {
-    const { statusCode, headers, json } = await this.get(
-      `/${paymentReference}`,
-      { 'Content-Type': 'application/json' }
-    )
+  async getPaymentStatus(paymentId) {
+    const { statusCode, headers, json } = await this.get(`/${paymentId}`, {
+      'Content-Type': 'application/json'
+    })
 
     return { statusCode, headers, json }
   }
 
-  async issueARefund(paymentReference, refundAmount = 26) {
+  async issueARefund(paymentId, refundAmount = 26) {
     const { statusCode, headers, json } = await this.post(
-      `/${paymentReference}/refunds`,
+      `/${paymentId}/refunds`,
       JSON.stringify({
         amount: refundAmount,
         refund_amount_available: 2600
