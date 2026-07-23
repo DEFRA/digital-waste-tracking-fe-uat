@@ -98,14 +98,10 @@ Then(
       expect(json.reference).toBe(paymentReference)
       expect(json.metadata.organisationId).toBe(this.organisationId)
       this.paymentId = json.payment_id
-<<<<<<< HEAD
-      this.paymentServicePeriodStart = json.metadata.servicePeriodStart
-=======
       this.paymentReference = json.reference
       this.paymentOrganisationId = json.metadata.organisationId
       this.paymentServicePeriodStart = json.metadata.servicePeriodStart
       this.paymentServicePeriodEnd = json.metadata.servicePeriodEnd
->>>>>>> 51f5fea (Add service charge refund validation)
       // disableAfter flag on the organisation must reflect the future date
       const organisationDetails =
         await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
