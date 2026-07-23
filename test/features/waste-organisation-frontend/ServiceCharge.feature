@@ -105,7 +105,7 @@ Feature: Report receipt of waste service charge
 #  webhook verified manually only in ext-test 
 #  background process verified manually only in dev and test
 
-  @env_dev @issue=DWT-1967 @test1
+  @env_dev @issue=DWT-1967 
   Scenario Outline: Waste receiver can request a refund for a service charge payment using a valid payment reference
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
