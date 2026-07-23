@@ -188,6 +188,7 @@ Given(
       // pick a default Gov UK or Govt gateway user and login with it
       // only use this step for test if parallel open sessions of a user does not effect the test
       this.govUKUser = this.testConfig.defaultGovUKLogin
+      this.doNotAddUserToPool = true
       await navigateToPortalAndLogin(this, 'GOV.UK One Login')
     }
   }
@@ -249,6 +250,7 @@ When(
   'a user is logged in to the waste receiver registration portal with a {string} account',
   async function (s) {
     this.govUKUser = this.testConfig.individualUserDefraAccLogin
+    this.doNotAddUserToPool = true
     await navigateToPortalAndLogin(this, 'GOV.UK One Login')
   }
 )

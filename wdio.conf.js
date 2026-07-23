@@ -13,6 +13,8 @@ import {
   addAllureIssueLinksFromPickleTags,
   ALLURE_ISSUE_LINK_TEMPLATE
 } from './test/utils/allure-utils.js'
+import { addStep } from '@wdio/allure-reporter'
+
 const log = logger('wdio.conf.js')
 
 /** Cucumber @env_* tag: dev and perf-test scenarios use @env_dev */
@@ -257,18 +259,28 @@ export const config = {
     // Return credentials to the pool first so subsequent workers are never starved,
     // even if the screenshot or cleanup below throws.
     if (cucumberWorld.govUKUser !== undefined) {
-      await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+      if (cucumberWorld.userWithMultipleBusinesses === true) {
+        addStep(
+          `adding multiple businesses gov uk user ${cucumberWorld.govUKUser} to the pool`
+        )
+        await addValueToPool(
+          'availableMultipleBusinessesGovUKUsers',
+          cucumberWorld.govUKUser
+        )
+      } else if (cucumberWorld.doNotAddUserToPool === true) {
+        // do nothing
+      } else {
+        addStep(`adding gov uk user ${cucumberWorld.govUKUser} to the pool`)
+        await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
+      }
     }
     if (cucumberWorld.govGatewayUser !== undefined) {
+      addStep(
+        `adding gov gateway user ${cucumberWorld.govGatewayUser} to the pool`
+      )
       await addValueToPool(
         'availableGovGatewayUsers',
         cucumberWorld.govGatewayUser
-      )
-    }
-    if (cucumberWorld.multipleBusinessesGovUKUser !== undefined) {
-      await addValueToPool(
-        'availableMultipleBusinessesGovUKUsers',
-        cucumberWorld.multipleBusinessesGovUKUser
       )
     }
 
