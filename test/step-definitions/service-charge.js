@@ -68,14 +68,28 @@ When('the service charge has already been paid', async function (dataTable) {
   await GovPayPage.verifyUserIsOnGovPayConfirmPage(uniquePaymentReference)
   await GovPayPage.confirmPayment()
 
-  const json = await GovPayPage.waitForPaymentStatus(
-    this.apis.govPayAPI,
-    uniquePaymentReference
+  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
+
+  let json
+  await browser.waitUntil(
+    async () => {
+      const response = await this.apis.govPayAPI.getPaymentStatus(
+        uniquePaymentReference
+      )
+      json = response.json
+
+      return json?.state?.status === 'success' && json.state.finished === true
+    },
+    {
+      timeout: 30000,
+      interval: 3000,
+      timeoutMsg: `Payment "${uniquePaymentReference}" was not successful within 30s`
+    }
   )
+
   expect(json.state.status).toBe('success')
   expect(json.state.finished).toBe(true)
 
-  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
   await MyAccountHomePage.open()
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 })
