@@ -53,7 +53,9 @@ Then(
   async function () {
     await MyAccountHomePage.open()
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-    const endDate = new Date(process.env.GOVPAY_SERVICE_FREE_PERIOD_END)
+    const endDate = new Date(
+      this.serviceChargeDueDate ?? process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+    )
     if (new Date() < endDate) {
       const month = endDate.toLocaleDateString('en-GB', { month: 'long' })
       const year = endDate.getFullYear()
