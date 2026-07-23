@@ -17,7 +17,7 @@ export class GovPayAPI extends BaseAPI {
     const { statusCode, headers, json } = await this.post(
       `/${paymentId}/refunds`,
       JSON.stringify({
-        amount: 26,
+        amount: refundAmountAvailable,
         refund_amount_available: refundAmountAvailable
       }),
       { 'Content-Type': 'application/json' }

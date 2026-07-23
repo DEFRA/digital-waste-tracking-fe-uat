@@ -1,6 +1,7 @@
 import PayServiceChargePage from '../page-objects/pay-service-charge.page.js'
 import ReviewServiceChargePage from '../page-objects/review-service-charge.page.js'
 import { When, Then } from '@wdio/cucumber-framework'
+import { browser } from '@wdio/globals'
 import AllureReporter from '@wdio/allure-reporter'
 import GovPayPage from '../page-objects/gov-pay.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
@@ -214,6 +215,8 @@ Then(/^the refund should be "(successful)"$/, async function (status) {
       this.paymentReference,
       this.organisationId,
       this.paymentId,
+      this.paymentServicePeriodStart,
+      this.paymentServicePeriodEnd,
       this.env.GOVPAY_WEBHOOK_SIGNING_SECRET
     )
 
@@ -228,14 +231,27 @@ Then(
         ? this.paymentServicePeriodStart
         : this.paymentServicePeriodEnd
 
-    const organisationDetails =
-      await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
-        this.paymentOrganisationId,
-        this.defraIdMockUserId
-      )
-    expect(organisationDetails.statusCode).toBe(200)
+    let organisationDetails
 
-    this.disableAfter = organisationDetails.json.organisation.disableAfter
+    await browser.waitUntil(
+      async () => {
+        organisationDetails =
+          await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+            this.paymentOrganisationId,
+            this.defraIdMockUserId
+          )
+        expect(organisationDetails.statusCode).toBe(200)
+        this.disableAfter = organisationDetails.json.organisation.disableAfter
+
+        return this.disableAfter === expectedDisableAfter
+      },
+      {
+        timeout: 30000,
+        interval: 3000,
+        timeoutMsg: `Organisation disableAfter was not updated to ${expectedDisableAfter} within 30s`
+      }
+    )
+
     expect(this.disableAfter).toBeDefined()
     expect(expectedDisableAfter).toBeDefined()
     expect(this.disableAfter).toBe(expectedDisableAfter)
