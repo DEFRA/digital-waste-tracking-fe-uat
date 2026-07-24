@@ -55,6 +55,40 @@ class ServiceChargePaymentDetailsPage extends Page {
     await this.retryPaymentLink.waitForDisplayed()
     await this.click(this.retryPaymentLink)
   }
+
+  async verifyOrganisationDisableAfter(
+    wasteOrganisationBackendAPI,
+    organisationId,
+    userId,
+    expectedDisableAfter
+  ) {
+    let disableAfter
+
+    await browser.waitUntil(
+      async () => {
+        const organisationDetails =
+          await wasteOrganisationBackendAPI.getOrganisationDetails(
+            organisationId,
+            userId
+          )
+        expect(organisationDetails.statusCode).toBe(200)
+        disableAfter = organisationDetails.json.organisation.disableAfter
+
+        return disableAfter === expectedDisableAfter
+      },
+      {
+        timeout: 30000,
+        interval: 3000,
+        timeoutMsg: `Organisation disableAfter was not updated to ${expectedDisableAfter} within 30s`
+      }
+    )
+
+    expect(disableAfter).toBeDefined()
+    expect(expectedDisableAfter).toBeDefined()
+    expect(disableAfter).toBe(expectedDisableAfter)
+
+    return disableAfter
+  }
 }
 
 export default new ServiceChargePaymentDetailsPage()

@@ -1,8 +1,6 @@
 import PayServiceChargePage from '../page-objects/pay-service-charge.page.js'
 import ReviewServiceChargePage from '../page-objects/review-service-charge.page.js'
 import { When, Then } from '@wdio/cucumber-framework'
-import { browser } from '@wdio/globals'
-import AllureReporter from '@wdio/allure-reporter'
 import GovPayPage from '../page-objects/gov-pay.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
@@ -83,25 +81,10 @@ When('the service charge has already been paid', async function (dataTable) {
 
   await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
 
-  let json
-  await browser.waitUntil(
-    async () => {
-      const response = await this.apis.govPayAPI.getPaymentStatus(
-        uniquePaymentReference
-      )
-      json = response.json
-
-      return json?.state?.status === 'success' && json.state.finished === true
-    },
-    {
-      timeout: 30000,
-      interval: 3000,
-      timeoutMsg: `Payment "${uniquePaymentReference}" was not successful within 30s`
-    }
+  await GovPayPage.waitForSuccessfulPaymentStatus(
+    this.apis.govPayAPI,
+    uniquePaymentReference
   )
-
-  expect(json.state.status).toBe('success')
-  expect(json.state.finished).toBe(true)
 
   await MyAccountHomePage.open()
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
@@ -215,11 +198,6 @@ Then('refund summary status should be {string}', async function (status) {
   this.refundSummary = this.paymentStatus.refund_summary
   expect(this.refundSummary?.status).toBe(status)
   expect(this.refundSummary.amount_available).toBeDefined()
-  AllureReporter.addAttachment(
-    'Refund summary',
-    JSON.stringify(this.refundSummary, null, 2),
-    'application/json'
-  )
 })
 
 When('user requests for refund for the payment', async function () {
@@ -258,29 +236,12 @@ Then(
         ? this.paymentServicePeriodStart
         : this.paymentServicePeriodEnd
 
-    let organisationDetails
-
-    await browser.waitUntil(
-      async () => {
-        organisationDetails =
-          await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
-            this.paymentOrganisationId,
-            this.defraIdMockUserId
-          )
-        expect(organisationDetails.statusCode).toBe(200)
-        this.disableAfter = organisationDetails.json.organisation.disableAfter
-
-        return this.disableAfter === expectedDisableAfter
-      },
-      {
-        timeout: 30000,
-        interval: 3000,
-        timeoutMsg: `Organisation disableAfter was not updated to ${expectedDisableAfter} within 30s`
-      }
-    )
-
-    expect(this.disableAfter).toBeDefined()
-    expect(expectedDisableAfter).toBeDefined()
-    expect(this.disableAfter).toBe(expectedDisableAfter)
+    this.disableAfter =
+      await ServiceChargePaymentDetailsPage.verifyOrganisationDisableAfter(
+        this.apis.wasteOrganisationBackendAPI,
+        this.paymentOrganisationId,
+        this.defraIdMockUserId,
+        expectedDisableAfter
+      )
   }
 )
