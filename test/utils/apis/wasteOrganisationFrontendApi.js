@@ -1,4 +1,4 @@
-import { createHmac } from 'crypto'
+import { createHmac, randomUUID } from 'crypto'
 import { BaseAPI } from './base-api.js'
 
 export class WasteOrganisationFrontendAPI extends BaseAPI {
@@ -13,6 +13,8 @@ export class WasteOrganisationFrontendAPI extends BaseAPI {
     paymentReference,
     organisationId,
     paymentId,
+    servicePeriodStart,
+    servicePeriodEnd,
     webhookSigningSecret
   ) {
     if (!webhookSigningSecret) {
@@ -22,7 +24,7 @@ export class WasteOrganisationFrontendAPI extends BaseAPI {
     }
 
     const webhookMessageBody = {
-      webhook_message_id: 'bfh6j3fb5r4sjpmvhg7ffvdda0',
+      webhook_message_id: randomUUID(),
       created_date: '2026-07-15T10:37:56.771Z',
       resource_id: paymentId,
       api_version: 1,
@@ -40,11 +42,11 @@ export class WasteOrganisationFrontendAPI extends BaseAPI {
         metadata: {
           organisationId,
           organisationName: 'test org',
-          servicePeriodEnd: '2027-10-01T00:00:00.000Z',
-          servicePeriodStart: '2026-10-01T00:00:00.000Z'
+          servicePeriodEnd,
+          servicePeriodStart
         },
         reference: paymentReference,
-        payment_id: paymentReference,
+        payment_id: paymentId,
         return_url: `${this.baseUrl}/payment-details`,
         description: 'Annual report receipt of waste service charge',
         card_details: {

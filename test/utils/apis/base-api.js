@@ -112,7 +112,8 @@ export class BaseAPI {
       body: data,
       dispatcher: this.agent
     })
-    const json = response.headers['content-type'].includes('application/json')
+    const contentType = response.headers['content-type'] ?? ''
+    const json = contentType.includes('application/json')
       ? await response.body.json()
       : await response.body.text()
 

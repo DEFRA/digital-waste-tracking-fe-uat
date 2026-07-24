@@ -15,6 +15,7 @@ Feature: Report receipt of waste service charge
   @env_dev @issue=DWT-1967 
   Scenario: Waste receiver sees a notification when trying to pay an already paid service charge
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
+    And the service charge is due
     When the service charge has already been paid
       | card_number | 4444333322221111 |
     And the user re-attempts to pay service charge
@@ -104,3 +105,20 @@ Feature: Report receipt of waste service charge
 
 #  webhook verified manually only in ext-test 
 #  background process verified manually only in dev and test
+
+  @env_dev @issue=DWT-1967 
+  Scenario Outline: Waste receiver can request a refund for a service charge payment using a valid payment reference
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+    And the service charge is due
+    And user pays the service charge using a valid "<card_brand>" "<card_type>" card "<card_number>"
+    And the user should be redirected to "payment-confirmation" page
+    And the payment should be "successful"
+    And refund summary status should be "available"
+    And organisation disableAfter updates to payment.servicePeriodEnd
+    When user requests for refund for the payment
+    Then the refund should be "successful"
+    And organisation disableAfter moves back to payment.servicePeriodStart
+
+    Examples:
+      | card_brand | card_type | card_number      |
+      | Visa       | Credit    | 4444333322221111 |
