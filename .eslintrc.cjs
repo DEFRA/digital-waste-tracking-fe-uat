@@ -14,7 +14,15 @@ module.exports = {
     'eslint:recommended',
     'plugin:wdio/recommended'
   ],
-  overrides: [],
+  overrides: [
+    {
+      files: ['test/utils/test-data-organisations.js'],
+      globals: {
+        db: 'readonly',
+        ISODate: 'readonly'
+      }
+    }
+  ],
   parserOptions: {
     ecmaVersion: 'latest'
   },
