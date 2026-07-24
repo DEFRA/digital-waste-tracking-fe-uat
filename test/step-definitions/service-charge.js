@@ -49,7 +49,7 @@ When('the service charge has already been paid', async function (dataTable) {
 
   await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargePaymentDetailsPage()
 
-  await GovPayPage.waitForSuccessfulPaymentStatus(
+  await GovPayPage.waitForPaymentStatus(
     this.apis.govPayAPI,
     uniquePaymentReference
   )

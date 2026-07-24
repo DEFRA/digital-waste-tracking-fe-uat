@@ -162,29 +162,6 @@ class GovPayPage extends Page {
     return json
   }
 
-  async waitForSuccessfulPaymentStatus(
-    govPayAPI,
-    paymentId,
-    timeoutMs = 30000
-  ) {
-    let json = null
-    await browser.waitUntil(
-      async () => {
-        const response = await govPayAPI.getPaymentStatus(paymentId)
-        json = response.json
-
-        return json?.state?.status === 'success' && json.state.finished === true
-      },
-      {
-        timeout: timeoutMs,
-        interval: 3000,
-        timeoutMsg: `Payment "${paymentId}" was not successful within ${timeoutMs / 1000}s`
-      }
-    )
-
-    return json
-  }
-
   async continueAfterPaymentError() {
     await this.startAgainButton.waitForDisplayed()
     await this.click(this.startAgainButton)
