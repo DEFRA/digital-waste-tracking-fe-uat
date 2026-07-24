@@ -26,39 +26,7 @@ When('user cancels the review service charge', async function () {
   await ReviewServiceChargePage.cancelReviewServiceCharge()
 })
 
-When('the next payment due is available to pay now', async function () {
-  const disableAfter = new Date()
-  disableAfter.setUTCMonth(disableAfter.getUTCMonth() - 1, 1)
-  disableAfter.setUTCHours(0, 0, 0, 0)
-  this.serviceChargeDueDate = disableAfter.toISOString()
-
-  const response =
-    await this.apis.wasteOrganisationBackendAPI.updateOrganisationDetails(
-      this.organisationId,
-      {
-        organisation: {
-          disableAfter: this.serviceChargeDueDate
-        }
-      }
-    )
-  expect(response.statusCode).toBe(200)
-
-  const organisationDetails =
-    await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
-      this.organisationId,
-      this.defraIdMockUserId
-    )
-  expect(organisationDetails.statusCode).toBe(200)
-
-  const paymentPeriods =
-    organisationDetails.json.organisation.paymentPeriods ?? []
-  if (paymentPeriods.length === 0) {
-    throw new Error('Payment periods were not available for the organisation')
-  }
-
-  await MyAccountHomePage.open()
-  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-})
+When('the service charge is due', async function () {})
 
 When('the service charge has already been paid', async function (dataTable) {
   const paymentDetails = dataTable.rowsHash()

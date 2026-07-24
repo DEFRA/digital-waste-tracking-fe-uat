@@ -7,7 +7,7 @@ Feature: Report receipt of waste service charge
   @env_dev @env_test @accessibility @issue=DR-66
   Scenario: Waste receiver initiates to pay the service charge for the service
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
-    When the next payment due is available to pay now
+    When the service charge is due
     And the user initiates to pay the service charge
     And the user continues to pay the service charge
     And the user allowed to review the service charge details
@@ -15,7 +15,7 @@ Feature: Report receipt of waste service charge
   @env_dev @issue=DWT-1967 
   Scenario: Waste receiver sees a notification when trying to pay an already paid service charge
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
-    And the next payment due is available to pay now
+    And the service charge is due
     When the service charge has already been paid
       | card_number | 4444333322221111 |
     And the user re-attempts to pay service charge
@@ -26,7 +26,7 @@ Feature: Report receipt of waste service charge
   @env_dev @env_test @accessibility 
   Scenario: Waste receiver must be able to cancel payment process after the initiation of paying the service charge
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
-    And the next payment due is available to pay now
+    And the service charge is due
     And the user initiates to pay the service charge
     When user cancels the pay service charge
     And the user should be redirected to "account-home" page
@@ -34,7 +34,7 @@ Feature: Report receipt of waste service charge
   @env_dev @env_test @accessibility 
   Scenario: Waste receiver must be able to cancel payment process after reviewing the service charge details
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
-    And the next payment due is available to pay now
+    And the service charge is due
     When the user initiates to pay the service charge
     And the user continues to pay the service charge
     And the user allowed to review the service charge details
@@ -44,7 +44,7 @@ Feature: Report receipt of waste service charge
   @issue=DWT-2156 @issue=DWT-2425 @issue=DR-66
   Scenario Outline: Waste receiver must be able to pay service charge for an organisation with a valid card "<card_number>"
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
-    When the next payment due is available to pay now
+    When the service charge is due
     And user pays the service charge using a valid "<card_brand>" "<card_type>" card "<card_number>"
     And the user should be redirected to "payment-confirmation" page
     Then the payment should be "successful"
@@ -67,7 +67,7 @@ Feature: Report receipt of waste service charge
   @issue=DWT-2156
   Scenario Outline: Waste receiver must not be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
-    When the next payment due is available to pay now
+    When the service charge is due
     And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
     Then the payment should be "unsuccessful"
     And the user should see an error message "<expected error message>"
@@ -90,7 +90,7 @@ Feature: Report receipt of waste service charge
   @env_dev @issue=DWT-2425 
   Scenario: User must be able to continue after a payment error and retry the payment
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
-    And the next payment due is available to pay now
+    And the service charge is due
     And user pays the service charge using "Visa" "Debit" card "4000000000000002"
     And the payment should be "unsuccessful"
     And the user should see an error message "There was a problem with your payment - GOV.UK Pay"
@@ -109,7 +109,7 @@ Feature: Report receipt of waste service charge
   @env_dev @issue=DWT-1967 
   Scenario Outline: Waste receiver can request a refund for a service charge payment using a valid payment reference
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
-    And the next payment due is available to pay now
+    And the service charge is due
     And user pays the service charge using a valid "<card_brand>" "<card_type>" card "<card_number>"
     And the user should be redirected to "payment-confirmation" page
     And the payment should be "successful"
