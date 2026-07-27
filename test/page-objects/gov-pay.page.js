@@ -162,6 +162,17 @@ class GovPayPage extends Page {
     return json
   }
 
+  async verifyRefundSummaryStatus(govPayAPI, paymentId, expectedStatus) {
+    const paymentStatus = await this.waitForPaymentStatus(govPayAPI, paymentId)
+    expect(paymentStatus).toBeDefined()
+
+    const refundSummary = paymentStatus.refund_summary
+    expect(refundSummary?.status).toBe(expectedStatus)
+    expect(refundSummary.amount_available).toBeDefined()
+
+    return { paymentStatus, refundSummary }
+  }
+
   async continueAfterPaymentError() {
     await this.startAgainButton.waitForDisplayed()
     await this.click(this.startAgainButton)

@@ -13,11 +13,15 @@ export class GovPayAPI extends BaseAPI {
     return { statusCode, headers, json }
   }
 
-  async issueARefund(paymentId, refundAmountAvailable = 2600) {
+  async issueARefund(
+    paymentId,
+    refundAmount = 2600,
+    refundAmountAvailable = refundAmount
+  ) {
     const { statusCode, headers, json } = await this.post(
       `/${paymentId}/refunds`,
       JSON.stringify({
-        amount: refundAmountAvailable,
+        amount: refundAmount,
         refund_amount_available: refundAmountAvailable
       }),
       { 'Content-Type': 'application/json' }

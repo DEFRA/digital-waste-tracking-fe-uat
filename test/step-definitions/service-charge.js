@@ -102,6 +102,9 @@ Then(
       this.paymentOrganisationId = json.metadata.organisationId
       this.paymentServicePeriodStart = json.metadata.servicePeriodStart
       this.paymentServicePeriodEnd = json.metadata.servicePeriodEnd
+      this.refundSummary = json.refund_summary
+      expect(this.refundSummary?.status).toBe('available')
+      expect(this.refundSummary.amount_available).toBeDefined()
       // disableAfter flag on the organisation must reflect the future date
       const organisationDetails =
         await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
@@ -162,54 +165,56 @@ When('the user re-attempts to pay service charge', async function () {
 })
 
 Then('refund summary status should be {string}', async function (status) {
-  expect(this.paymentStatus).toBeDefined()
-  this.refundSummary = this.paymentStatus.refund_summary
-  expect(this.refundSummary?.status).toBe(status)
-  expect(this.refundSummary.amount_available).toBeDefined()
-})
-
-When('user requests for refund for the payment', async function () {
-  const response = await this.apis.govPayAPI.issueARefund(
+  const { refundSummary } = await GovPayPage.verifyRefundSummaryStatus(
+    this.apis.govPayAPI,
     this.uniquePaymentReference,
-    this.refundSummary.amount_available
+    status
   )
-
-  this.refundResponse = response
-  this.refundId = response.json?.refund_id
+  this.refundSummary = refundSummary
 })
+
+When(
+  /^the user requests a (full|partial) refund(?: of ([0-9]+))? for the payment$/,
+  async function (refundType, refundAmount) {
+    const amount =
+      refundType === 'full'
+        ? this.refundSummary.amount_available
+        : Number(refundAmount)
+
+    expect(amount).toBeDefined()
+
+    const response = await this.apis.govPayAPI.issueARefund(
+      this.uniquePaymentReference,
+      amount,
+      this.refundSummary.amount_available
+    )
+
+    this.refundResponse = response
+    this.refundId = response.json?.refund_id
+
+    this.refundWebhookResponse =
+      await this.apis.wasteOrganisationFrontendAPI.invokeWebhookForRefund(
+        this.paymentReference,
+        this.organisationId,
+        this.paymentId,
+        this.paymentServicePeriodStart,
+        this.paymentServicePeriodEnd,
+        this.env.GOVPAY_WEBHOOK_SIGNING_SECRET
+      )
+  }
+)
 
 Then(/^the refund should be "(successful)"$/, async function (status) {
   expect(status).toBe('successful')
   expect(this.refundResponse.statusCode).toBe(202)
   expect(this.refundId).toBeDefined()
-
-  this.refundWebhookResponse =
-    await this.apis.wasteOrganisationFrontendAPI.invokeWebhookForRefund(
-      this.paymentReference,
-      this.organisationId,
-      this.paymentId,
-      this.paymentServicePeriodStart,
-      this.paymentServicePeriodEnd,
-      this.env.GOVPAY_WEBHOOK_SIGNING_SECRET
-    )
-
   expect([200, 204]).toContain(this.refundWebhookResponse.statusCode)
+
+  this.disableAfter =
+    await ServiceChargePaymentDetailsPage.verifyOrganisationDisableAfter(
+      this.apis.wasteOrganisationBackendAPI,
+      this.paymentOrganisationId,
+      this.defraIdMockUserId,
+      this.paymentServicePeriodStart
+    )
 })
-
-Then(
-  /^organisation disableAfter (?:updates to|moves back to) payment\.(servicePeriodStart|servicePeriodEnd)$/,
-  async function (servicePeriod) {
-    const expectedDisableAfter =
-      servicePeriod === 'servicePeriodStart'
-        ? this.paymentServicePeriodStart
-        : this.paymentServicePeriodEnd
-
-    this.disableAfter =
-      await ServiceChargePaymentDetailsPage.verifyOrganisationDisableAfter(
-        this.apis.wasteOrganisationBackendAPI,
-        this.paymentOrganisationId,
-        this.defraIdMockUserId,
-        expectedDisableAfter
-      )
-  }
-)
