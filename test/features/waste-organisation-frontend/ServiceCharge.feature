@@ -97,11 +97,40 @@ Feature: Report receipt of waste service charge
     When user attempts to re-try the payment after the error
     Then the user is redirected to intiate payment page
 
-  # @manual@issue=DR-49
-  # Scenario: User must be prevented to initiate a new payment for an organisation when one is already in progress
+  @env_dev @issue=DR-49 @test1
+  Scenario: User must be prevented from initiating a new payment when a service charge payment is already in progress
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+    And the user initiates to pay the service charge
+    And the user continues to pay the service charge
+    And the user allowed to review the service charge details
+    And the user continues to GOV.UK Pay
+    And a payment session is created for the organisation
+    When user closes the browser before completing the payment
+    And the same user logs back in to the waste receiver registration portal
+    And the user initiates to pay the service charge
+    And the user continues to pay the service charge
+    And the user allowed to review the service charge details
+    And the user continues to GOV.UK Pay
+    Then the user should see the service charge notification banner
+      | heading | A payment is already in progress                                                    |
+      | body    | A service charge payment for this account is already in progress. Do not try again. |
 
-  # @manual @issue=DR-50
-  # Scenario: A different user of the same organisation must be prevented to initiate a new payment for an organisation when one is already in progress
+  @env_dev @issue=DR-50 @test2
+  Scenario: A different user of the same organisation is prevented from starting a new payment when one is already in progress
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+    And the user initiates to pay the service charge
+    And the user continues to pay the service charge
+    And the user allowed to review the service charge details
+    And the user continues to GOV.UK Pay
+    And a payment session is created for the organisation
+    And a different user of the same organisation logs in to the waste receiver registration portal
+    And the user initiates to pay the service charge
+    And the user continues to pay the service charge
+    And the user allowed to review the service charge details
+    And the user continues to GOV.UK Pay
+    Then the user should see the service charge notification banner
+      | heading | A payment is already in progress                                                    |
+      | body    | A service charge payment for this account is already in progress. Do not try again. |
 
 #  webhook verified manually only in ext-test 
 #  background process verified manually only in dev and test

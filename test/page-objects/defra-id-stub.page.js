@@ -193,6 +193,10 @@ class DefraIdStubPage extends Page {
   async getFirstOrganisationId() {
     return await this.getFirstOrganisationIdInput.getText()
   }
+
+  async getFirstRelationshipId() {
+    return await this.selectFirstOrganisationRadioButton.getValue()
+  }
 }
 
 export default new DefraIdStubPage()
