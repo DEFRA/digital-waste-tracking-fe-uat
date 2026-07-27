@@ -1,5 +1,6 @@
 {
   "adminUiBaseUrl": "https://digital-waste-tracking-admin-ui.dev.cdp-int.defra.cloud",
+  "adminUiUsername": "dwt-uat-test-acount-01",
   "defraIdServiceUrl": "https://cdp-defra-id-stub.dev.cdp-int.defra.cloud/cdp-defra-id-stub",
   "wasteOrganisationBackendServiceUrl": "https://waste-organisation-backend.dev.cdp-int.defra.cloud",
   "wasteMovementBackendServiceUrl": "https://waste-movement-backend.dev.cdp-int.defra.cloud",

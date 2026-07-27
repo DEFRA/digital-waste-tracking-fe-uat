@@ -1,5 +1,6 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
 import WasteOrganisationsReportPage from '../page-objects/waste-organisation-admin-tool/waste-organisations-report.page.js'
+import AdminToolLoginPage from '../page-objects/waste-organisation-admin-tool/login.page.js'
 import {
   DATE_RANGE_FIXTURES,
   FRONTEND_VALIDATION_FIXTURES,
@@ -14,6 +15,9 @@ import {
   assertWasteOrganisationsCsvMatches,
   parseWasteOrganisationsCsv
 } from '../utils/csv-parser.js'
+import { getAdminUiCredentials } from '../utils/admin-tool-credentials.js'
+
+const WASTE_ORGANISATIONS_REPORT_PATH = '/reporting/waste-organisations'
 
 function getDateRangeFixture(fixtureKey) {
   const fixture = DATE_RANGE_FIXTURES[fixtureKey]
@@ -42,10 +46,19 @@ function mapExpectedRows(expectedOrganisations) {
 Given(
   'the user navigates to the waste organisations report page',
   async function () {
-    await WasteOrganisationsReportPage.open(this.testConfig.adminUiBaseUrl)
-    await WasteOrganisationsReportPage.verifyPageIsDisplayed(
-      this.testConfig.adminUiBaseUrl
+    const baseUrl = this.testConfig.adminUiBaseUrl
+    const { username, password } = getAdminUiCredentials(
+      this.testConfig,
+      this.env
     )
+
+    await WasteOrganisationsReportPage.open(baseUrl)
+    await AdminToolLoginPage.verifyLoginPageIsDisplayed(
+      baseUrl,
+      WASTE_ORGANISATIONS_REPORT_PATH
+    )
+    await AdminToolLoginPage.login(username, password)
+    await WasteOrganisationsReportPage.verifyPageIsDisplayed(baseUrl)
   }
 )
 

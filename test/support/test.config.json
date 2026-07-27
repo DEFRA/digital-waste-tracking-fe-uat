@@ -1,5 +1,6 @@
 {
   "adminUiBaseUrl": "https://digital-waste-tracking-admin-ui.test.cdp-int.defra.cloud",
+  "adminUiUsername": "dwt-uat-test-acount-01",
   "govUKLogin": [
     "autotest.ee2026+1102261@gmail.com",
     "autotest.ee2026+1102262@gmail.com",

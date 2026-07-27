@@ -116,9 +116,9 @@ See the CDP Documentation for more details.
 ## DWT Admin tool UI
 
 - **Backend** (`GetOrganisationsByDateRange.feature`): tests the new Organisation Backend API that returns organisations registered between a start and end date.
-- **Admin tool UI** (`WasteOrganisationsReport.feature`): tests the new DWT Admin Portal report that uses that API to list organisations (and download CSV) for a date range.
-  - The MongoDB seed script (`test/utils/test-data-organisations.js`) must be run before these tests. In shared environments (dev, test) this only needs to be done once; for local runs, insert the data into MongoDB before running the tests.
-- **BrowserStack**: run the admin-tool UI suite with `npm run test:browserstack:admin-tool` (`@browserstack-admin-tool`, desktop browsers only). Default `npm run test:browserstack` is unchanged.
+- **Admin tool UI**: `Login.feature` (admin portal sign-in) and `WasteOrganisationsReport.feature` (report that uses the organisations API to list organisations and download CSV for a date range).
+  - The MongoDB seed script (`test/utils/test-data-organisations.js`) must be run before the report tests. In shared environments (dev, test) this only needs to be done once; for local runs, insert the data into MongoDB before running the tests.
+- **BrowserStack**: run all admin-tool UI features tagged `@browserstack-admin-tool` with `npm run test:browserstack:admin-tool` (desktop browsers only). Default `npm run test:browserstack` is unchanged.
 
 ## Licence
 

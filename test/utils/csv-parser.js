@@ -2,13 +2,13 @@ import { parse } from 'csv-parse/sync'
 
 export const WASTE_ORGANISATIONS_CSV_HEADERS = [
   'Organisation ID',
-  'Registered',
+  'Registered (UTC)',
   'Active API Codes'
 ]
 
 const COLUMN_ALIASES = {
   organisationId: ['Organisation ID'],
-  registered: ['Registered'],
+  registered: ['Registered (UTC)'],
   activeApiCodeCount: ['Active API codes', 'Active API Codes']
 }
 
