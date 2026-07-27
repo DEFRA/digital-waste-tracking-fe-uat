@@ -1,5 +1,7 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
+import { browser } from '@wdio/globals'
 import allure from '@wdio/allure-reporter'
+import logger from '@wdio/logger'
 import DefraIdChooseSignInPage from '../page-objects/defra-id-choose-sign-in.page.js'
 import DefraIdGovtGatewayPage from '../page-objects/defra-id-govt-gateway.page.js'
 import DefraIdGovUKPage from '../page-objects/defra-id-gov-uk.page.js'
@@ -9,6 +11,8 @@ import HomePage from '../page-objects/home.page.js'
 import { getValueFromPool } from '@wdio/shared-store-service'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import DefraIdOrgPickerPage from '../page-objects/defra-id-org-picker.page.js'
+
+const log = logger('defra-id')
 
 Given(
   'user proceeds to login using a Government Gateway account',
@@ -98,6 +102,13 @@ async function registerAndLoginViaStub(context) {
     .replace(/Organisation ID:/g, '')
     .replace(/\| Role: Employee/g, '')
     .trim()
+  context.relationshipId = await DefraIdStubPage.getFirstRelationshipId()
+  context.organisationName = 'Some Receiver Org'
+  log.info(`First user organisation ID: ${context.organisationId}`)
+  log.info(`First user relationship ID: ${context.relationshipId}`)
+  allure.addArgument('First User Organisation ID', context.organisationId)
+  allure.addArgument('First User Relationship ID', context.relationshipId)
+  allure.addArgument('First User Organisation Name', context.organisationName)
   await DefraIdStubPage.selectFirstOrganisation()
 
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
@@ -206,6 +217,62 @@ Given(
     } else {
       await navigateToPortalAndLogin(this, accountType)
     }
+  }
+)
+
+Given(
+  'the same user logs back in to the waste receiver registration portal',
+  async function () {
+    await UKPermitPage.open()
+    await UKPermitPage.verifyUserIsOnUKPermitPage()
+    await UKPermitPage.selectNoOption()
+    await UKPermitPage.click(UKPermitPage.continueButton)
+    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+      this.testConfig.defraIdServiceUrl
+    )
+
+    await DefraIdStubPage.loginAsAUser(this.defraIdMockUser)
+    await DefraIdStubPage.selectFirstOrganisation()
+    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+  }
+)
+
+When(
+  'a different user of the same organisation logs in to the waste receiver registration portal',
+  async function () {
+    expect(this.organisationId).toBeDefined()
+    expect(this.organisationName).toBeDefined()
+
+    this.differentUserEmail = `test${Date.now()}@test.com`
+    const response = await this.apis.defraIdStubAPI.registerNewUser(
+      this.differentUserEmail,
+      {
+        organisationId: this.organisationId,
+        organisationName: this.organisationName
+      }
+    )
+    expect([200, 201]).toContain(response.statusCode)
+    this.differentDefraIdMockUserId = response.json.userId
+    log.info(`Different user organisation ID: ${this.organisationId}`)
+    log.info(`Different user relationship ID: ${this.relationshipId}`)
+    allure.addArgument('Different User Organisation ID', this.organisationId)
+    allure.addArgument('Different User Relationship ID', this.relationshipId)
+    allure.addArgument(
+      'Different User Organisation Name',
+      this.organisationName
+    )
+    await browser.reloadSession()
+    await UKPermitPage.open()
+    await UKPermitPage.verifyUserIsOnUKPermitPage()
+    await UKPermitPage.selectNoOption()
+    await UKPermitPage.click(UKPermitPage.continueButton)
+    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+      this.testConfig.defraIdServiceUrl
+    )
+
+    await DefraIdStubPage.loginAsAUser(this.differentUserEmail)
+    await DefraIdStubPage.selectFirstOrganisation()
+    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
   }
 )
 

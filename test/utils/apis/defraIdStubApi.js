@@ -6,8 +6,12 @@ export class DefraIdStubAPI extends BaseAPI {
   /**
    * @returns {Promise<import('./base-api.js').JsonResponse>}
    */
-  async registerNewUser(email) {
+  async registerNewUser(email, relationshipDetails = {}) {
     allure.addArgument('Test User Email', email)
+    const relationship =
+      typeof relationshipDetails === 'string'
+        ? { organisationId: relationshipDetails }
+        : relationshipDetails
     const userData = {
       userId: uuidv4(),
       email,
@@ -19,7 +23,10 @@ export class DefraIdStubAPI extends BaseAPI {
       enrolmentRequestCount: 1,
       relationships: [
         {
-          organisationName: 'Some Receiver Org',
+          organisationName:
+            relationship.organisationName ?? 'Some Receiver Org',
+          organisationId: relationship.organisationId,
+          relationshipId: relationship.relationshipId,
           relationshipRole: 'Employee',
           roleName: 'Some Receiver role',
           roleStatus: '1'
