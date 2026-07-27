@@ -162,15 +162,52 @@ class GovPayPage extends Page {
     return json
   }
 
-  async verifyRefundSummaryStatus(govPayAPI, paymentId, expectedStatus) {
+  async verifyRefundSummaryStatus(
+    govPayAPI,
+    paymentId,
+    expectedStatus,
+    expectedAmountAvailable
+  ) {
     const paymentStatus = await this.waitForPaymentStatus(govPayAPI, paymentId)
     expect(paymentStatus).toBeDefined()
 
     const refundSummary = paymentStatus.refund_summary
     expect(refundSummary?.status).toBe(expectedStatus)
     expect(refundSummary.amount_available).toBeDefined()
+    if (expectedAmountAvailable !== undefined) {
+      expect(refundSummary.amount_available).toBe(
+        Number(expectedAmountAvailable)
+      )
+    }
 
     return { paymentStatus, refundSummary }
+  }
+
+  async issueRefund(
+    govPayAPI,
+    paymentId,
+    refundSummary,
+    refundType,
+    refundAmount
+  ) {
+    const amount =
+      refundType === 'full'
+        ? refundSummary.amount_available
+        : Number(refundAmount)
+
+    expect(amount).toBeDefined()
+
+    const refundResponse = await govPayAPI.issueARefund(
+      paymentId,
+      amount,
+      refundSummary.amount_available
+    )
+
+    return {
+      expectedRefundAmountAvailable: refundSummary.amount_available - amount,
+      refundResponse,
+      refundId: refundResponse.json?.refund_id
+    }
   }
 
   async continueAfterPaymentError() {

@@ -115,7 +115,7 @@ Feature: Report receipt of waste service charge
     And the payment should be "successful"
     When the user requests a full refund for the payment
     Then the refund should be "successful"
-    And refund summary status should be "full"
+    And refund summary status should be "full" with remaining amount available
 
     Examples:
       | card_brand | card_type | card_number      |
@@ -130,7 +130,7 @@ Feature: Report receipt of waste service charge
     And the payment should be "successful"
     When the user requests a partial refund of <refund_amount> for the payment
     Then the refund should be "successful"
-    And refund summary status should be "available"
+    And refund summary status should be "available" with remaining amount available
 
     Examples:
       | card_brand | card_type | card_number      | refund_amount |

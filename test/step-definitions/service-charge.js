@@ -164,33 +164,36 @@ When('the user re-attempts to pay service charge', async function () {
   await MyAccountHomePage.isServiceChargeNotificationBannerDisplayed()
 })
 
-Then('refund summary status should be {string}', async function (status) {
-  const { refundSummary } = await GovPayPage.verifyRefundSummaryStatus(
-    this.apis.govPayAPI,
-    this.uniquePaymentReference,
-    status
-  )
-  this.refundSummary = refundSummary
-})
+Then(
+  /^refund summary status should be "([^"]+)" with remaining amount available$/,
+  async function (status) {
+    expect(this.expectedRefundAmountAvailable).toBeDefined()
+
+    const { refundSummary } = await GovPayPage.verifyRefundSummaryStatus(
+      this.apis.govPayAPI,
+      this.uniquePaymentReference,
+      status,
+      this.expectedRefundAmountAvailable
+    )
+    this.refundSummary = refundSummary
+  }
+)
 
 When(
   /^the user requests a (full|partial) refund(?: of ([0-9]+))? for the payment$/,
   async function (refundType, refundAmount) {
-    const amount =
-      refundType === 'full'
-        ? this.refundSummary.amount_available
-        : Number(refundAmount)
+    const { expectedRefundAmountAvailable, refundResponse, refundId } =
+      await GovPayPage.issueRefund(
+        this.apis.govPayAPI,
+        this.uniquePaymentReference,
+        this.refundSummary,
+        refundType,
+        refundAmount
+      )
 
-    expect(amount).toBeDefined()
-
-    const response = await this.apis.govPayAPI.issueARefund(
-      this.uniquePaymentReference,
-      amount,
-      this.refundSummary.amount_available
-    )
-
-    this.refundResponse = response
-    this.refundId = response.json?.refund_id
+    this.expectedRefundAmountAvailable = expectedRefundAmountAvailable
+    this.refundResponse = refundResponse
+    this.refundId = refundId
 
     this.refundWebhookResponse =
       await this.apis.wasteOrganisationFrontendAPI.invokeWebhookForRefund(
