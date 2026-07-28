@@ -1,7 +1,6 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
 import { browser } from '@wdio/globals'
 import allure from '@wdio/allure-reporter'
-import logger from '@wdio/logger'
 import DefraIdChooseSignInPage from '../page-objects/defra-id-choose-sign-in.page.js'
 import DefraIdGovtGatewayPage from '../page-objects/defra-id-govt-gateway.page.js'
 import DefraIdGovUKPage from '../page-objects/defra-id-gov-uk.page.js'
@@ -11,8 +10,6 @@ import HomePage from '../page-objects/home.page.js'
 import { getValueFromPool } from '@wdio/shared-store-service'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import DefraIdOrgPickerPage from '../page-objects/defra-id-org-picker.page.js'
-
-const log = logger('defra-id')
 
 Given(
   'user proceeds to login using a Government Gateway account',
@@ -97,18 +94,11 @@ async function registerAndLoginViaStub(context) {
 
   await DefraIdStubPage.loginAsAUser(context.userEmail)
 
-  const temp = await DefraIdStubPage.getFirstOrganisationId()
-  context.organisationId = temp
-    .replace(/Organisation ID:/g, '')
-    .replace(/\| Role: Employee/g, '')
-    .trim()
-  context.relationshipId = await DefraIdStubPage.getFirstRelationshipId()
+  const organisationDetails =
+    await DefraIdStubPage.getFirstOrganisationDetails()
+  context.organisationId = organisationDetails.organisationId
+  context.relationshipId = organisationDetails.relationshipId
   context.organisationName = 'Some Receiver Org'
-  log.info(`First user organisation ID: ${context.organisationId}`)
-  log.info(`First user relationship ID: ${context.relationshipId}`)
-  allure.addArgument('First User Organisation ID', context.organisationId)
-  allure.addArgument('First User Relationship ID', context.relationshipId)
-  allure.addArgument('First User Organisation Name', context.organisationName)
   await DefraIdStubPage.selectFirstOrganisation()
 
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
@@ -126,6 +116,25 @@ async function registerAndLoginViaStub(context) {
   //   expect(response1.statusCode).toBe(200)
   //   await MyAccountHomePage.refreshPage()
   // }
+}
+
+async function loginToPortalViaStub(context, email) {
+  await browser.reloadSession()
+  await UKPermitPage.open()
+  await UKPermitPage.verifyUserIsOnUKPermitPage()
+  await UKPermitPage.selectNoOption()
+  await UKPermitPage.click(UKPermitPage.continueButton)
+  await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
+    context.testConfig.defraIdServiceUrl
+  )
+
+  await DefraIdStubPage.loginAsAUser(email)
+}
+
+async function loginOriginalUserToPortal(context) {
+  await loginToPortalViaStub(context, context.defraIdMockUser)
+  await DefraIdStubPage.selectFirstOrganisation()
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 }
 
 async function navigateToPortalAndLogin(context, accountType) {
@@ -223,25 +232,39 @@ Given(
 Given(
   'the same user logs back in to the waste receiver registration portal',
   async function () {
-    await UKPermitPage.open()
-    await UKPermitPage.verifyUserIsOnUKPermitPage()
-    await UKPermitPage.selectNoOption()
-    await UKPermitPage.click(UKPermitPage.continueButton)
-    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-      this.testConfig.defraIdServiceUrl
-    )
+    await loginOriginalUserToPortal(this)
+  }
+)
 
-    await DefraIdStubPage.loginAsAUser(this.defraIdMockUser)
-    await DefraIdStubPage.selectFirstOrganisation()
-    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+Given(
+  'the original user logs back in to the waste receiver registration portal',
+  async function () {
+    await loginOriginalUserToPortal(this)
+  }
+)
+
+Given(
+  'another user is registered under the same organisation using the Defra ID mock service',
+  async function () {
+    expect(this.organisationId).toBeDefined()
+    expect(this.organisationName).toBeDefined()
+
+    this.differentUserEmail = `test${Date.now()}@test.com`
+    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
+    this.differentDefraIdMockUserId = await DefraIdStubPage.registerNewUser(
+      this.differentUserEmail,
+      this.organisationId,
+      this.organisationName
+    )
   }
 )
 
 When(
-  'a different user of the same organisation logs in to the waste receiver registration portal',
+  'another user is registered under the same organisation',
   async function () {
     expect(this.organisationId).toBeDefined()
     expect(this.organisationName).toBeDefined()
+    expect(this.relationshipId).toBeDefined()
 
     this.differentUserEmail = `test${Date.now()}@test.com`
     const response = await this.apis.defraIdStubAPI.registerNewUser(
@@ -253,24 +276,18 @@ When(
     )
     expect([200, 201]).toContain(response.statusCode)
     this.differentDefraIdMockUserId = response.json.userId
-    log.info(`Different user organisation ID: ${this.organisationId}`)
-    log.info(`Different user relationship ID: ${this.relationshipId}`)
-    allure.addArgument('Different User Organisation ID', this.organisationId)
-    allure.addArgument('Different User Relationship ID', this.relationshipId)
-    allure.addArgument(
-      'Different User Organisation Name',
-      this.organisationName
-    )
-    await browser.reloadSession()
-    await UKPermitPage.open()
-    await UKPermitPage.verifyUserIsOnUKPermitPage()
-    await UKPermitPage.selectNoOption()
-    await UKPermitPage.click(UKPermitPage.continueButton)
-    await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
-      this.testConfig.defraIdServiceUrl
-    )
+  }
+)
 
-    await DefraIdStubPage.loginAsAUser(this.differentUserEmail)
+When(
+  'another user of the same organisation logs in to the waste receiver registration portal',
+  async function () {
+    expect(this.differentUserEmail).toBeDefined()
+
+    await loginToPortalViaStub(this, this.differentUserEmail)
+    const organisationDetails =
+      await DefraIdStubPage.getFirstOrganisationDetails()
+    expect(organisationDetails.organisationId).toBe(this.organisationId)
     await DefraIdStubPage.selectFirstOrganisation()
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
   }

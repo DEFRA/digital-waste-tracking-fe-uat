@@ -12,6 +12,9 @@ export class DefraIdStubAPI extends BaseAPI {
       typeof relationshipDetails === 'string'
         ? { organisationId: relationshipDetails }
         : relationshipDetails
+    const relationshipId =
+      relationship.relationshipId ??
+      (relationship.organisationId ? uuidv4() : undefined)
     const userData = {
       userId: uuidv4(),
       email,
@@ -26,7 +29,7 @@ export class DefraIdStubAPI extends BaseAPI {
           organisationName:
             relationship.organisationName ?? 'Some Receiver Org',
           organisationId: relationship.organisationId,
-          relationshipId: relationship.relationshipId,
+          relationshipId,
           relationshipRole: 'Employee',
           roleName: 'Some Receiver role',
           roleStatus: '1'

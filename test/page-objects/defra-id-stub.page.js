@@ -2,6 +2,7 @@ import { Page } from 'page-objects/page'
 import { config } from '../../wdio.conf.js'
 import { $, browser } from '@wdio/globals'
 import logger from '@wdio/logger'
+import { v4 as uuidv4 } from 'uuid'
 
 const log = logger('defra-id-stub-page')
 class DefraIdStubPage extends Page {
@@ -74,75 +75,67 @@ class DefraIdStubPage extends Page {
     return $('#relationshipId-item-hint')
   }
 
-  // async registerNewUser(email) {
-  //   log.info(`Register with email: ${email}`)
+  async registerNewUser(email, organisationId, organisationName) {
+    log.info(`Register with email: ${email}`)
 
-  //   await expect(browser).toHaveUrl(
-  //     `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register`
-  //   )
-  //   await expect(this.heading).toBeDisplayed()
-  //   await expect(this.heading).toHaveText('DEFRA ID Stub User Set Up')
+    await expect(browser).toHaveUrl(
+      /\/cdp-defra-id-stub\/register\/?(?:\?.*)?$/
+    )
+    await expect(this.heading).toBeDisplayed()
+    await expect(this.heading).toHaveText('DEFRA ID Stub User Set Up')
 
-  //   await this.emailInput.waitForExist({
-  //     timeout: config.waitforTimeout
-  //   })
+    await this.emailInput.waitForExist({
+      timeout: config.waitforTimeout
+    })
 
-  //   const userId = await this.userIdInput.getValue()
+    const userId = await this.userIdInput.getValue()
 
-  //   await this.enterText(this.emailInput, email)
-  //   await this.enterText(this.firstNameInput, 'PTest')
-  //   await this.enterText(this.lastNameInput, 'PLast')
-  //   await this.enterText(this.enrolmentNumberInput, '1')
-  //   await this.enterText(this.enrolmentRequestCountInput, '1')
-  //   await this.continueButton.waitForClickable({
-  //     timeout: config.waitforTimeout
-  //   })
-  //   await this.click(this.continueButton)
+    await this.enterText(this.emailInput, email)
+    await this.enterText(this.firstNameInput, 'PTest')
+    await this.enterText(this.lastNameInput, 'DWT')
+    await this.enterText(this.enrolmentNumberInput, '1')
+    await this.enterText(this.enrolmentRequestCountInput, '1')
+    await this.continueButton.waitForClickable({
+      timeout: config.waitforTimeout
+    })
+    await this.click(this.continueButton)
 
-  //   await expect(browser).toHaveUrl(
-  //     `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
-  //   )
+    await expect(browser).toHaveUrl(
+      new RegExp(
+        `/cdp-defra-id-stub/register/${userId}/relationship/?(?:\\?.*)?$`
+      )
+    )
 
-  //   await this.relationshipIdInput.waitForExist({
-  //     timeout: config.waitforTimeout
-  //   })
+    await this.relationshipIdInput.waitForExist({
+      timeout: config.waitforTimeout
+    })
 
-  //   await this.enterText(this.relationshipIdInput, uuidv4())
-  //   await this.enterText(this.organisationNameInput, 'POrganisation')
-  //   await this.enterText(this.organisationIdInput, uuidv4())
+    await this.enterText(this.relationshipIdInput, uuidv4())
+    await this.enterText(this.organisationNameInput, organisationName)
+    await this.enterText(this.organisationIdInput, organisationId)
 
-  //   await this.continueButton.waitForClickable({
-  //     timeout: config.waitforTimeout
-  //   })
-  //   await this.click(this.continueButton)
+    await this.continueButton.waitForClickable({
+      timeout: config.waitforTimeout
+    })
+    await this.click(this.continueButton)
 
-  //   await expect(browser).toHaveUrl(
-  //     `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
-  //   )
+    await expect(browser).toHaveUrl(
+      new RegExp(
+        `/cdp-defra-id-stub/register/${userId}/relationship/?(?:\\?.*)?$`
+      )
+    )
 
-  //   await this.finishLink.waitForExist({
-  //     timeout: config.waitforTimeout
-  //   })
-  //   await this.finishLink.click()
+    await this.finishLink.waitForExist({
+      timeout: config.waitforTimeout
+    })
+    await this.finishLink.click()
 
-  //   await expect(browser).toHaveUrl(
-  //     `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/summary`
-  //   )
+    await expect(browser).toHaveUrl(
+      new RegExp(`/cdp-defra-id-stub/register/${userId}/summary/?(?:\\?.*)?$`)
+    )
 
-  //   await this.loginLink.waitForExist({
-  //     timeout: config.waitforTimeout
-  //   })
-  //   await this.loginLink.click()
-
-  //   // assert user was created successfully
-  //   await expect(browser).toHaveUrl(
-  //     `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/login`
-  //   )
-  //   const userList = await this.userList.getElements()
-  //   const users = await userList.map(async (user) => await user.getText())
-  //   expect(users).toContain(email)
-  //   return userId
-  // }
+    return userId
+  }
 
   async loginAsAUser(email) {
     log.info(
@@ -190,12 +183,16 @@ class DefraIdStubPage extends Page {
     await this.continueButton.click()
   }
 
-  async getFirstOrganisationId() {
-    return await this.getFirstOrganisationIdInput.getText()
-  }
+  async getFirstOrganisationDetails() {
+    const organisationHint = await this.getFirstOrganisationIdInput.getText()
 
-  async getFirstRelationshipId() {
-    return await this.selectFirstOrganisationRadioButton.getValue()
+    return {
+      organisationId: organisationHint
+        .replace(/Organisation ID:/g, '')
+        .replace(/\| Role: Employee/g, '')
+        .trim(),
+      relationshipId: await this.selectFirstOrganisationRadioButton.getValue()
+    }
   }
 }
 
