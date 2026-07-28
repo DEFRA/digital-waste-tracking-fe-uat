@@ -97,7 +97,7 @@ Feature: Report receipt of waste service charge
     When user attempts to re-try the payment after the error
     Then the user is redirected to intiate payment page
 
-  @env_dev @issue=DR-49 @test4
+  @env_dev @issue=DR-56 
   Scenario: User must be prevented from initiating a new payment when a service charge payment is already in progress
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user initiates to pay the service charge
@@ -114,7 +114,7 @@ Feature: Report receipt of waste service charge
       | heading | A payment is already in progress                                                    |
       | body    | A service charge payment for this account is already in progress. Do not try again. |
 
-  @env_dev @issue=DR-50 @test4
+  @env_dev @issue=DR-56 
   Scenario: Another user of the same organisation is prevented from starting a new payment when one is already in progress
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And another user is registered under the same organisation using the Defra ID mock service
@@ -164,4 +164,4 @@ Feature: Report receipt of waste service charge
 
     Examples:
       | card_brand | card_type | card_number      | refund_amount |
-      | Visa       | Credit    | 4444333322221111 |            26 |
+      | Visa       | Credit    | 4444333322221111 |           1400|
