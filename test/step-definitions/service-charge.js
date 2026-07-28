@@ -1,13 +1,9 @@
 import PayServiceChargePage from '../page-objects/pay-service-charge.page.js'
 import ReviewServiceChargePage from '../page-objects/review-service-charge.page.js'
 import { When, Then } from '@wdio/cucumber-framework'
-import { browser } from '@wdio/globals'
-import logger from '@wdio/logger'
 import GovPayPage from '../page-objects/gov-pay.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
-
-const log = logger('service-charge')
 
 When('the user continues to pay the service charge', async function () {
   await PayServiceChargePage.continueToPayServiceCharge()
@@ -38,20 +34,6 @@ When('a payment session is created for the organisation', async function () {
   this.uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
   expect(this.uniquePaymentReference).toBeDefined()
 })
-
-When(
-  'user closes the browser before completing the payment',
-  async function () {
-    const oldSessionId = browser.sessionId
-    log.info(`Closing browser session: ${oldSessionId}`)
-
-    await browser.reloadSession()
-
-    log.info(`Started new browser session: ${browser.sessionId}`)
-    expect(browser.sessionId).toBeDefined()
-    expect(browser.sessionId).not.toBe(oldSessionId)
-  }
-)
 
 When('the service charge is due', async function () {})
 
