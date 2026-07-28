@@ -17,6 +17,10 @@ class ServiceChargePaymentDetailsPage extends Page {
     return $('strong[data-testid="payment-reference"]')
   }
 
+  get paymentErrorBody() {
+    return $('p[data-testid="payment-pending-summaryContent"]')
+  }
+
   get continueButton() {
     return $('a[data-testid="review-payment-continue-button"]')
   }
@@ -43,12 +47,16 @@ class ServiceChargePaymentDetailsPage extends Page {
 
   async verifyUserIsOnServiceChargeFailedPaymentDetailsPage() {
     await this.verifyPageTitle(
-      'Your payment has been declined | Report receipt of waste'
+      'Your payment has been unsuccessful | Report receipt of waste'
     )
     await this.elementIsDisplayed(this.heading)
     await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Your payment has been declined')
+    await expect(this.heading).toHaveText('Your payment has been unsuccessful')
     await expect(browser).toHaveUrl(/\/payment-details/)
+    await expect(this.paymentErrorBody).toBeDisplayed()
+    await expect(this.paymentErrorBody).toHaveText(
+      'Contact your bank for more details or try again.'
+    )
   }
 
   async retryPayment() {

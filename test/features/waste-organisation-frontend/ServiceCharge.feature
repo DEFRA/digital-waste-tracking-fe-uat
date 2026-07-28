@@ -87,7 +87,7 @@ Feature: Report receipt of waste service charge
     | card_brand | card_type | card_number      | reason                      | expected error message                             |
     | Visa       | Credit    | 4000000000000069 | that is expired             | There was a problem with your payment - GOV.UK Pay |
  
-  @env_dev @issue=DWT-2425 
+  @env_dev @issue=DWT-2425
   Scenario: User must be able to continue after a payment error and retry the payment
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the service charge is due
@@ -106,7 +106,7 @@ Feature: Report receipt of waste service charge
 #  webhook verified manually only in ext-test 
 #  background process verified manually only in dev and test
 
-  @env_dev @issue=DWT-1967 
+  @env_dev @issue=DR-54 
   Scenario Outline: Waste receiver can request a full refund for a service charge payment using a valid payment reference
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
@@ -121,7 +121,7 @@ Feature: Report receipt of waste service charge
       | card_brand | card_type | card_number      |
       | Visa       | Credit    | 4444333322221111 |
 
-  @env_dev @issue=DWT-1967
+  @env_dev @issue=DR-54
   Scenario Outline: Waste receiver can request a partial refund for a service charge payment using a valid payment reference
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
