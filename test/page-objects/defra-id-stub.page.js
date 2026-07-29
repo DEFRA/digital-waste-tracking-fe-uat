@@ -76,8 +76,6 @@ class DefraIdStubPage extends Page {
   }
 
   async registerNewUser(email, organisationId, organisationName) {
-    log.info(`Register with email: ${email}`)
-
     await expect(browser).toHaveUrl(
       /\/cdp-defra-id-stub\/register\/?(?:\?.*)?$/
     )
@@ -110,7 +108,8 @@ class DefraIdStubPage extends Page {
       timeout: config.waitforTimeout
     })
 
-    await this.enterText(this.relationshipIdInput, uuidv4())
+    const relationshipId = uuidv4()
+    await this.enterText(this.relationshipIdInput, relationshipId)
     await this.enterText(this.organisationNameInput, organisationName)
     await this.enterText(this.organisationIdInput, organisationId)
 
@@ -134,7 +133,7 @@ class DefraIdStubPage extends Page {
       new RegExp(`/cdp-defra-id-stub/register/${userId}/summary/?(?:\\?.*)?$`)
     )
 
-    return userId
+    return { userId, relationshipId }
   }
 
   async loginAsAUser(email) {

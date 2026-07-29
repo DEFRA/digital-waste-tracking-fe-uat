@@ -15,6 +15,20 @@ export class DefraIdStubAPI extends BaseAPI {
     const relationshipId =
       relationship.relationshipId ??
       (relationship.organisationId ? uuidv4() : undefined)
+    const userRelationship = {
+      organisationName: relationship.organisationName ?? 'Some Receiver Org',
+      relationshipRole: 'Employee',
+      roleName: 'Some Receiver role',
+      roleStatus: '1'
+    }
+
+    if (relationship.organisationId) {
+      userRelationship.organisationId = relationship.organisationId
+    }
+    if (relationshipId) {
+      userRelationship.relationshipId = relationshipId
+    }
+
     const userData = {
       userId: uuidv4(),
       email,
@@ -24,17 +38,7 @@ export class DefraIdStubAPI extends BaseAPI {
       aal: '1',
       enrolmentCount: 1,
       enrolmentRequestCount: 1,
-      relationships: [
-        {
-          organisationName:
-            relationship.organisationName ?? 'Some Receiver Org',
-          organisationId: relationship.organisationId,
-          relationshipId,
-          relationshipRole: 'Employee',
-          roleName: 'Some Receiver role',
-          roleStatus: '1'
-        }
-      ]
+      relationships: [userRelationship]
     }
     const { statusCode, headers, json } = await this.post(
       '/API/register',

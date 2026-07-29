@@ -62,6 +62,7 @@ Given('a user is registered in Defra Id mock service', async function () {
   )
   this.defraIdMockUserId = response.json.userId
   this.defraIdMockUser = this.userEmail
+  this.originalUserEmail = this.userEmail
 })
 
 When(
@@ -82,6 +83,7 @@ async function registerAndLoginViaStub(context) {
   )
   context.defraIdMockUserId = response.json.userId
   context.defraIdMockUser = context.userEmail
+  context.originalUserEmail = context.userEmail
 
   await UKPermitPage.open()
   await UKPermitPage.verifyUserIsOnUKPermitPage()
@@ -132,7 +134,8 @@ async function loginToPortalViaStub(context, email) {
 }
 
 async function loginOriginalUserToPortal(context) {
-  await loginToPortalViaStub(context, context.defraIdMockUser)
+  expect(context.originalUserEmail).toBeDefined()
+  await loginToPortalViaStub(context, context.originalUserEmail)
   await DefraIdStubPage.selectFirstOrganisation()
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 }
@@ -230,14 +233,7 @@ Given(
 )
 
 Given(
-  'the same user logs back in to the waste receiver registration portal',
-  async function () {
-    await loginOriginalUserToPortal(this)
-  }
-)
-
-Given(
-  'the original user logs back in to the waste receiver registration portal',
+  /^the (?:same|original) user logs back in to the waste receiver registration portal$/,
   async function () {
     await loginOriginalUserToPortal(this)
   }
@@ -251,11 +247,13 @@ Given(
 
     this.differentUserEmail = `test${Date.now()}@test.com`
     await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-    this.differentDefraIdMockUserId = await DefraIdStubPage.registerNewUser(
+    const differentUser = await DefraIdStubPage.registerNewUser(
       this.differentUserEmail,
       this.organisationId,
       this.organisationName
     )
+    this.differentDefraIdMockUserId = differentUser.userId
+    this.differentUserRelationshipId = differentUser.relationshipId
   }
 )
 
@@ -264,7 +262,6 @@ When(
   async function () {
     expect(this.organisationId).toBeDefined()
     expect(this.organisationName).toBeDefined()
-    expect(this.relationshipId).toBeDefined()
 
     this.differentUserEmail = `test${Date.now()}@test.com`
     const response = await this.apis.defraIdStubAPI.registerNewUser(
@@ -288,6 +285,11 @@ When(
     const organisationDetails =
       await DefraIdStubPage.getFirstOrganisationDetails()
     expect(organisationDetails.organisationId).toBe(this.organisationId)
+    if (this.differentUserRelationshipId) {
+      expect(organisationDetails.relationshipId).toBe(
+        this.differentUserRelationshipId
+      )
+    }
     await DefraIdStubPage.selectFirstOrganisation()
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
   }

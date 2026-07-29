@@ -97,38 +97,35 @@ Feature: Report receipt of waste service charge
     When user attempts to re-try the payment after the error
     Then the user is redirected to intiate payment page
 
-  @env_dev @issue=DR-56 
-  Scenario: User must be prevented from initiating a new payment when a service charge payment is already in progress
+  @env_dev @issue=DR-56
+  Scenario: Waste receiver must be prevented from initiating a new payment when a service charge payment is already in progress
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
-    And the user initiates to pay the service charge
-    And the user continues to pay the service charge
-    And the user allowed to review the service charge details
-    And the user continues to GOV.UK Pay
-    And a payment session is created for the organisation
-    When the same user logs back in to the waste receiver registration portal
-    And the user initiates to pay the service charge
-    And the user continues to pay the service charge
-    And the user allowed to review the service charge details
-    And the user continues to GOV.UK Pay
+    And the service charge is due
+    And a service charge payment is already in progress for the organisation
+    And the same user logs back in to the waste receiver registration portal
+    When the user re-attempts to pay service charge through GOV.UK Pay
     Then the user should see the service charge notification banner
       | heading | A payment is already in progress                                                    |
       | body    | A service charge payment for this account is already in progress. Do not try again. |
 
-  @env_dev @issue=DR-56 
-  Scenario: Another user of the same organisation is prevented from starting a new payment when one is already in progress
+  
+  @env_dev @issue=DR-56
+  Scenario: Waste receiver resumes the existing payment window when a service charge payment is already in progress
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+    And the service charge is due
+    And a service charge payment is already in progress for the organisation
+    When user opens a new tab and navigates to pay service charge
+    Then same payment session should be resumed and user should be redirected to GOV.UK Pay
+
+  @env_dev @issue=DR-56
+  Scenario: Another user of the same organisation must be prevented from starting a new payment when one is already in progress
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And another user is registered under the same organisation using the Defra ID mock service
     And the original user logs back in to the waste receiver registration portal
-    And the user initiates to pay the service charge
-    And the user continues to pay the service charge
-    And the user allowed to review the service charge details
-    And the user continues to GOV.UK Pay
-    And a payment session is created for the organisation
+    And the service charge is due
+    And a service charge payment is already in progress for the organisation
     When another user of the same organisation logs in to the waste receiver registration portal
-    And the user initiates to pay the service charge
-    And the user continues to pay the service charge
-    And the user allowed to review the service charge details
-    And the user continues to GOV.UK Pay
+    And the user re-attempts to pay service charge through GOV.UK Pay
     Then the user should see the service charge notification banner
       | heading | A payment is already in progress                                                    |
       | body    | A service charge payment for this account is already in progress. Do not try again. |

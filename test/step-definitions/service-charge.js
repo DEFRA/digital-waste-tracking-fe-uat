@@ -4,6 +4,15 @@ import { When, Then } from '@wdio/cucumber-framework'
 import GovPayPage from '../page-objects/gov-pay.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
+import { config } from '../../wdio.conf.js'
+import { browser } from '@wdio/globals'
+
+When(
+  'the user returns to the portal with a new browser session',
+  async function () {
+    await browser.reloadSession()
+  }
+)
 
 When('the user continues to pay the service charge', async function () {
   await PayServiceChargePage.continueToPayServiceCharge()
@@ -26,14 +35,56 @@ When('user cancels the review service charge', async function () {
   await ReviewServiceChargePage.cancelReviewServiceCharge()
 })
 
-When('the user continues to GOV.UK Pay', async function () {
-  await ReviewServiceChargePage.continueToMakePayment()
-})
+When(
+  'a service charge payment is already in progress for the organisation',
+  async function () {
+    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+    await PayServiceChargePage.open()
+    await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
+    await PayServiceChargePage.continueToPayServiceCharge()
+    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+      process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+    )
+    await ReviewServiceChargePage.continueToMakePayment()
 
-When('a payment session is created for the organisation', async function () {
-  this.uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
-  expect(this.uniquePaymentReference).toBeDefined()
-})
+    this.uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
+    expect(this.uniquePaymentReference).toBeDefined()
+  }
+)
+
+When(
+  'the user re-attempts to pay service charge through GOV.UK Pay',
+  async function () {
+    await PayServiceChargePage.open()
+    await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
+    await PayServiceChargePage.continueToPayServiceCharge()
+    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+      process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+    )
+    await ReviewServiceChargePage.continueToMakePayment()
+  }
+)
+
+When(
+  'user opens a new tab and navigates to pay service charge',
+  async function () {
+    await browser.newWindow(`${config.baseUrl}/service-charge`, { type: 'tab' })
+    await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
+    await PayServiceChargePage.continueToPayServiceCharge()
+    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+      process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+    )
+    await ReviewServiceChargePage.continueToMakePayment()
+  }
+)
+
+Then(
+  'same payment session should be resumed and user should be redirected to GOV.UK Pay',
+  async function () {
+    const uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
+    expect(uniquePaymentReference).toBe(this.uniquePaymentReference)
+  }
+)
 
 When('the service charge is due', async function () {})
 
