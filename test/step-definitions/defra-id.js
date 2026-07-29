@@ -156,6 +156,7 @@ async function registerAndLoginAnotherUserViaDefraIdStub(context) {
 }
 
 async function loginToPortalViaStub(context, email) {
+  // Start a clean browser session so relogin and user switching do not reuse existing auth cookies.
   await browser.reloadSession()
   await UKPermitPage.open()
   await UKPermitPage.verifyUserIsOnUKPermitPage()
