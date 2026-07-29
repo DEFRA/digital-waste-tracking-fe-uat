@@ -120,6 +120,41 @@ async function registerAndLoginViaStub(context) {
   // }
 }
 
+async function registerAnotherUserViaDefraIdStub(context) {
+  expect(context.organisationId).toBeDefined()
+  expect(context.organisationName).toBeDefined()
+
+  context.differentUserEmail = `test${Date.now()}@test.com`
+  await DefraIdStubPage.open(context.testConfig.defraIdServiceUrl + '/register')
+  const differentUser = await DefraIdStubPage.registerNewUser(
+    context.differentUserEmail,
+    context.organisationId,
+    context.organisationName
+  )
+  context.differentDefraIdMockUserId = differentUser.userId
+  context.differentUserRelationshipId = differentUser.relationshipId
+}
+
+async function loginAnotherUserOfSameOrganisation(context) {
+  expect(context.differentUserEmail).toBeDefined()
+  expect(context.differentUserRelationshipId).toBeDefined()
+
+  await loginToPortalViaStub(context, context.differentUserEmail)
+  const organisationDetails =
+    await DefraIdStubPage.getFirstOrganisationDetails()
+  expect(organisationDetails.organisationId).toBe(context.organisationId)
+  expect(organisationDetails.relationshipId).toBe(
+    context.differentUserRelationshipId
+  )
+  await DefraIdStubPage.selectFirstOrganisation()
+  await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+}
+
+async function registerAndLoginAnotherUserViaDefraIdStub(context) {
+  await registerAnotherUserViaDefraIdStub(context)
+  await loginAnotherUserOfSameOrganisation(context)
+}
+
 async function loginToPortalViaStub(context, email) {
   await browser.reloadSession()
   await UKPermitPage.open()
@@ -239,59 +274,10 @@ Given(
   }
 )
 
-Given(
-  'another user is registered under the same organisation using the Defra ID mock service',
-  async function () {
-    expect(this.organisationId).toBeDefined()
-    expect(this.organisationName).toBeDefined()
-
-    this.differentUserEmail = `test${Date.now()}@test.com`
-    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-    const differentUser = await DefraIdStubPage.registerNewUser(
-      this.differentUserEmail,
-      this.organisationId,
-      this.organisationName
-    )
-    this.differentDefraIdMockUserId = differentUser.userId
-    this.differentUserRelationshipId = differentUser.relationshipId
-  }
-)
-
 When(
-  'another user is registered under the same organisation',
+  'another user of the same organisation is registered and logged in to the waste receiver registration portal using the Defra ID mock service',
   async function () {
-    expect(this.organisationId).toBeDefined()
-    expect(this.organisationName).toBeDefined()
-
-    this.differentUserEmail = `test${Date.now()}@test.com`
-    const response = await this.apis.defraIdStubAPI.registerNewUser(
-      this.differentUserEmail,
-      {
-        organisationId: this.organisationId,
-        organisationName: this.organisationName
-      }
-    )
-    expect([200, 201]).toContain(response.statusCode)
-    this.differentDefraIdMockUserId = response.json.userId
-  }
-)
-
-When(
-  'another user of the same organisation logs in to the waste receiver registration portal',
-  async function () {
-    expect(this.differentUserEmail).toBeDefined()
-
-    await loginToPortalViaStub(this, this.differentUserEmail)
-    const organisationDetails =
-      await DefraIdStubPage.getFirstOrganisationDetails()
-    expect(organisationDetails.organisationId).toBe(this.organisationId)
-    if (this.differentUserRelationshipId) {
-      expect(organisationDetails.relationshipId).toBe(
-        this.differentUserRelationshipId
-      )
-    }
-    await DefraIdStubPage.selectFirstOrganisation()
-    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+    await registerAndLoginAnotherUserViaDefraIdStub(this)
   }
 )
 

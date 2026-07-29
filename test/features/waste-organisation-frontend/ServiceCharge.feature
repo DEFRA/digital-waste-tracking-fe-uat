@@ -120,11 +120,9 @@ Feature: Report receipt of waste service charge
   @env_dev @issue=DR-56
   Scenario: Another user of the same organisation must be prevented from starting a new payment when one is already in progress
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
-    And another user is registered under the same organisation using the Defra ID mock service
-    And the original user logs back in to the waste receiver registration portal
     And the service charge is due
     And a service charge payment is already in progress for the organisation
-    When another user of the same organisation logs in to the waste receiver registration portal
+    When another user of the same organisation is registered and logged in to the waste receiver registration portal using the Defra ID mock service
     And the user re-attempts to pay service charge through GOV.UK Pay
     Then the user should see the service charge notification banner
       | heading | A payment is already in progress                                                    |
