@@ -1,6 +1,7 @@
 import { Page } from 'page-objects/page'
 import { $ } from '@wdio/globals'
 import { browser } from '~/node_modules/@wdio/globals/build/index'
+import ReviewServiceChargePage from './review-service-charge.page.js'
 
 class PayServiceChargePage extends Page {
   // methods
@@ -39,6 +40,15 @@ class PayServiceChargePage extends Page {
 
   async cancelPayServiceCharge() {
     await this.cancelButton.click()
+  }
+
+  async continueToGovPay(freePeriodEndDate) {
+    await this.verifyUserIsOnPayServiceChargePage()
+    await this.continueToPayServiceCharge()
+    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+      freePeriodEndDate
+    )
+    await ReviewServiceChargePage.continueToMakePayment()
   }
 }
 

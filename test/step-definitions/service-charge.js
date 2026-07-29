@@ -40,12 +40,9 @@ When(
   async function () {
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
     await PayServiceChargePage.open()
-    await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
-    await PayServiceChargePage.continueToPayServiceCharge()
-    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+    await PayServiceChargePage.continueToGovPay(
       process.env.GOVPAY_SERVICE_FREE_PERIOD_END
     )
-    await ReviewServiceChargePage.continueToMakePayment()
 
     this.uniquePaymentReference = await GovPayPage.verifyUserIsOnGovPayPage()
     expect(this.uniquePaymentReference).toBeDefined()
@@ -56,12 +53,9 @@ When(
   'the user re-attempts to pay service charge through GOV.UK Pay',
   async function () {
     await PayServiceChargePage.open()
-    await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
-    await PayServiceChargePage.continueToPayServiceCharge()
-    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+    await PayServiceChargePage.continueToGovPay(
       process.env.GOVPAY_SERVICE_FREE_PERIOD_END
     )
-    await ReviewServiceChargePage.continueToMakePayment()
   }
 )
 
@@ -69,12 +63,9 @@ When(
   'user opens a new tab and navigates to pay service charge',
   async function () {
     await browser.newWindow(`${config.baseUrl}/service-charge`, { type: 'tab' })
-    await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
-    await PayServiceChargePage.continueToPayServiceCharge()
-    await ReviewServiceChargePage.verifyUserIsOnReviewServiceChargePage(
+    await PayServiceChargePage.continueToGovPay(
       process.env.GOVPAY_SERVICE_FREE_PERIOD_END
     )
-    await ReviewServiceChargePage.continueToMakePayment()
   }
 )
 
