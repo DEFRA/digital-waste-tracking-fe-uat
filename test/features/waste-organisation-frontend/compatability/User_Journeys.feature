@@ -49,3 +49,15 @@ Feature: User Journeys
     Examples:
       | card_brand | card_type | card_number      | reason                      | expected error message                             |
       | Visa       | Credit    | 4000000000000069 | that is expired             | There was a problem with your payment - GOV.UK Pay |
+
+  Scenario Outline: Waste receiver must not be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
+    Given a user is logged in to the waste receiver registration portal
+    When the service charge is due
+    And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
+    Then the user should see an error message "<expected error message>"
+    And the payment should be "unsuccessful"
+    And the account page should reflect that the service charge is pending
+
+    Examples:
+      | card_brand | card_type | card_number      | reason                      | expected error message                             |
+      | Visa       | Credit    | 4000000000000069 | that is expired             | There was a problem with your payment - GOV.UK Pay |
