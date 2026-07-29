@@ -7,13 +7,6 @@ import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-paym
 import { config } from '../../wdio.conf.js'
 import { browser } from '@wdio/globals'
 
-When(
-  'the user returns to the portal with a new browser session',
-  async function () {
-    await browser.reloadSession()
-  }
-)
-
 When('the user continues to pay the service charge', async function () {
   await PayServiceChargePage.continueToPayServiceCharge()
 })
