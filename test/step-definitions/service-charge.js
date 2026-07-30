@@ -4,8 +4,6 @@ import { When, Then } from '@wdio/cucumber-framework'
 import GovPayPage from '../page-objects/gov-pay.page.js'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
-import { config } from '../../wdio.conf.js'
-import { browser } from '@wdio/globals'
 
 When('the user continues to pay the service charge', async function () {
   await PayServiceChargePage.continueToPayServiceCharge()
@@ -55,7 +53,7 @@ When(
 When(
   'user opens a new tab and navigates to pay service charge',
   async function () {
-    await browser.newWindow(`${config.baseUrl}/service-charge`, { type: 'tab' })
+    await PayServiceChargePage.openInNewTab()
     await PayServiceChargePage.continueToGovPay(
       process.env.GOVPAY_SERVICE_FREE_PERIOD_END
     )

@@ -303,13 +303,17 @@ export const config = {
         cucumberWorld.multipleBusinessesGovUKUser
       )
     }
-    if (cucumberWorld.defraIdMockUserId !== undefined) {
+    const defraIdMockUserIds = [
+      cucumberWorld.defraIdMockUserId,
+      cucumberWorld.differentDefraIdMockUserId
+    ].filter(Boolean)
+    for (const defraIdMockUserId of defraIdMockUserIds) {
       // cleanup the user from the defra id mock service
       log.info(
-        `cleaning up the user from the defra id mock service: ${cucumberWorld.defraIdMockUserId}`
+        `cleaning up the user from the defra id mock service: ${defraIdMockUserId}`
       )
       await browser.url(
-        `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${cucumberWorld.defraIdMockUserId}/expire`
+        `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${defraIdMockUserId}/expire`
       )
     }
   },

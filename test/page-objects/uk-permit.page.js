@@ -49,6 +49,10 @@ class UKPermitPage extends Page {
   async verifyUserNavigatedCorrectlyToDefraIdService(defraIdServiceUrl) {
     await expect(browser).toHaveUrl(new RegExp(defraIdServiceUrl))
   }
+
+  async browserReloadSession() {
+    await browser.reloadSession()
+  }
 }
 
 export default new UKPermitPage()

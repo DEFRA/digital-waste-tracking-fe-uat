@@ -2,11 +2,18 @@ import { Page } from 'page-objects/page'
 import { $ } from '@wdio/globals'
 import { browser } from '~/node_modules/@wdio/globals/build/index'
 import ReviewServiceChargePage from './review-service-charge.page.js'
+import { config } from '../../wdio.conf.js'
 
 class PayServiceChargePage extends Page {
   // methods
   open() {
     return super.open('/service-charge')
+  }
+
+  async openInNewTab() {
+    await browser.newWindow(`${config.baseUrl}/service-charge`, {
+      type: 'tab'
+    })
   }
 
   // locators

@@ -1,5 +1,4 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
-import { browser } from '@wdio/globals'
 import allure from '@wdio/allure-reporter'
 import DefraIdChooseSignInPage from '../page-objects/defra-id-choose-sign-in.page.js'
 import DefraIdGovtGatewayPage from '../page-objects/defra-id-govt-gateway.page.js'
@@ -156,7 +155,7 @@ async function registerAndLoginAnotherUserViaDefraIdStub(context) {
 
 async function loginToPortalViaStub(context, email) {
   // Start a clean browser session so relogin and user switching do not reuse existing auth cookies.
-  await browser.reloadSession()
+  await UKPermitPage.browserReloadSession()
   await UKPermitPage.open()
   await UKPermitPage.verifyUserIsOnUKPermitPage()
   await UKPermitPage.selectNoOption()

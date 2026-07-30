@@ -290,14 +290,16 @@ export const config = {
       log.warn(`afterScenario: screenshot failed — ${error.message}`)
     }
 
-    if (cucumberWorld.defraIdMockUserId !== undefined) {
+    const defraIdMockUserIds = [
+      cucumberWorld.defraIdMockUserId,
+      cucumberWorld.differentDefraIdMockUserId
+    ].filter(Boolean)
+    for (const defraIdMockUserId of defraIdMockUserIds) {
       log.info(
-        `cleaning up the user from the defra id mock service: ${cucumberWorld.defraIdMockUserId}`
+        `cleaning up the user from the defra id mock service: ${defraIdMockUserId}`
       )
       try {
-        await cucumberWorld.apis.defraIdStubAPI.expireUser(
-          cucumberWorld.defraIdMockUserId
-        )
+        await cucumberWorld.apis.defraIdStubAPI.expireUser(defraIdMockUserId)
       } catch (error) {
         log.warn(`afterScenario: defraId expireUser failed — ${error.message}`)
       }
