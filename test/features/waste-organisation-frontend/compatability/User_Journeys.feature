@@ -1,4 +1,4 @@
-@issue=DWT-1027 @env_ext-test @smoke @browserstack
+@issue=DWT-1027 @env_ext-test @browserstack @env_test @smoke
 Feature: User Journeys
   As a waste receiver using the DWT service
   I need to be able to log in to the DWT service and view my API code
@@ -45,8 +45,8 @@ Feature: User Journeys
     Given a user is logged in to the waste receiver registration portal
     When the service charge is due
     And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
-    Then the payment should be "unsuccessful"
-    And the user should see an error message "<expected error message>"
+    Then the user should see an error message "<expected error message>"
+    And the payment should be "unsuccessful"
     And the account page should reflect that the service charge is pending
 
     Examples:
