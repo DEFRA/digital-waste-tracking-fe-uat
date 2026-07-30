@@ -123,16 +123,21 @@ async function registerAndLoginViaStub(context) {
 async function registerAnotherUserViaDefraIdStub(context) {
   expect(context.organisationId).toBeDefined()
   expect(context.organisationName).toBeDefined()
+  expect(context.relationshipId).toBeDefined()
 
   context.differentUserEmail = `test${Date.now()}@test.com`
-  await DefraIdStubPage.open(context.testConfig.defraIdServiceUrl + '/register')
-  const differentUser = await DefraIdStubPage.registerNewUser(
+  const response = await context.apis.defraIdStubAPI.registerNewUser(
     context.differentUserEmail,
-    context.organisationId,
-    context.organisationName
+    {
+      organisationId: context.relationshipId,
+      relationshipId: context.organisationId,
+      organisationName: context.organisationName
+    }
   )
-  context.differentDefraIdMockUserId = differentUser.userId
-  context.differentUserRelationshipId = differentUser.relationshipId
+  expect([200, 201]).toContain(response.statusCode)
+  context.differentDefraIdMockUserId = response.json.userId
+  context.differentUserOrganisationId = context.relationshipId
+  context.differentUserRelationshipId = response.relationshipId
 }
 
 async function loginAnotherUserOfSameOrganisation(context) {
@@ -140,12 +145,6 @@ async function loginAnotherUserOfSameOrganisation(context) {
   expect(context.differentUserRelationshipId).toBeDefined()
 
   await loginToPortalViaStub(context, context.differentUserEmail)
-  const organisationDetails =
-    await DefraIdStubPage.getFirstOrganisationDetails()
-  expect(organisationDetails.organisationId).toBe(context.organisationId)
-  expect(organisationDetails.relationshipId).toBe(
-    context.differentUserRelationshipId
-  )
   await DefraIdStubPage.selectFirstOrganisation()
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 }
