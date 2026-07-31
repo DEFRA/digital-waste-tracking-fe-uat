@@ -7,6 +7,7 @@ import UserNotAuthenticatedPage from '../page-objects/user-not-authenticated.pag
 import PrivacyNoticePage from '../page-objects/privacy-notice.page.js'
 import CannotContinueOnThisServicePage from '../page-objects/cannot-continue-on-this-service.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
+import LocalAuthorityGuidencePage from '../page-objects/local-authority-guidence.page.js'
 import AllureReporter from '@wdio/allure-reporter'
 
 function isChromiumDesktop(context) {
@@ -38,6 +39,15 @@ export const PAGE_REGISTRY = new Map([
       pageName: 'cannot-continue-on-this-service-page',
       verify: async () => {
         await CannotContinueOnThisServicePage.verifyUserIsOnCannotContinueOnThisServicePage()
+      }
+    }
+  ],
+  [
+    'local-authority-guidence',
+    {
+      pageName: 'local-authority-guidence-page',
+      verify: async () => {
+        await LocalAuthorityGuidencePage.verifyUserIsOnLocalAuthorityGuidencePage()
       }
     }
   ],

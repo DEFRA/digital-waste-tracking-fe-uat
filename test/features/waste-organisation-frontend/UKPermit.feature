@@ -11,12 +11,15 @@ Feature: Permitted waste receiver and not LA
     And user clicks on the "Continue" button
     Then user should be redirected to Defra Id service
 
-  # @env_dev @env_test @accessibility
-  # Scenario: User indicates that they are a local authority
-  #   Given a user is on are you a local authority page
-  #   When user selects the "Yes" option to indicate they are a local authority
-  #   And user clicks on the "Continue" button
-  #   Then user should be redirected to "Sorry, you cannot use the service" page
+   @env_dev @env_test @accessibility @test1
+  Scenario: User indicates that they are a local authority
+     Given a user is on are you a local authority page
+     When user selects the "Yes" option to indicate they are a local authority
+     And user clicks on the "Continue" button
+     Then user should be redirected to "local-authority-guidence" page
+     And user should be able to see the guidance for local authorities on the page
+     And user clicks on the "Continue" button
+     And user should be redirected to Defra Id service
 
   @env_dev @env_test @issue=DWT-1366 @accessibility
   Scenario: User does not indicate whether they are a local authority and clicks on continue

@@ -1,6 +1,7 @@
-import { Given, When } from '@wdio/cucumber-framework'
+import { Given, When, Then } from '@wdio/cucumber-framework'
 import HomePage from '../page-objects/home.page.js'
 import UKPermitPage from '../page-objects/uk-permit.page.js'
+import LocalAuthorityGuidencePage from '../page-objects/local-authority-guidence.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 
 Given('a user is on are you a local authority page', async function () {
@@ -23,8 +24,21 @@ When(
 )
 
 When(/^user clicks on the "(["A-Za-z\s]+)" button$/, async function (link) {
+  if (this.pageName === 'local-authority-guidence-page') {
+    await LocalAuthorityGuidencePage.click(
+      LocalAuthorityGuidencePage.continueButton
+    )
+    return
+  }
   await UKPermitPage.click(UKPermitPage.continueButton)
 })
+
+Then(
+  'user should be able to see the guidance for local authorities on the page',
+  async function () {
+    await LocalAuthorityGuidencePage.verifyLocalAuthorityGuidanceIsDisplayed()
+  }
+)
 
 Given(
   'a user has indicated that they are a permitted waste receiver',
