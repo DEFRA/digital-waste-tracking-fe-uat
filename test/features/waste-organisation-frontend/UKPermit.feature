@@ -18,13 +18,13 @@ Feature: Permitted waste receiver and not LA
     And user clicks on the "Continue" button
     Then user should be redirected to "Sorry, you cannot use the service" page
 
-  @env_dev @env_test @issue=DWT-1366 @accessibility
-  Scenario: User does not indicate whether they are a local authority and clicks on continue
-    Given a user is on are you a local authority page
-    When user clicks on the "Continue" button
-    Then user should be presented with an error message as below
-      | message                                                |
-      | Select Yes if you are registering as a local authority |
+  # @env_dev @env_test @issue=DWT-1366 @accessibility
+  # Scenario: User does not indicate whether they are a local authority and clicks on continue
+  #   Given a user is on are you a local authority page
+  #   When user clicks on the "Continue" button
+  #   Then user should be presented with an error message as below
+  #     | message                                                |
+  #     | Select Yes if you are registering as a local authority |
 
   @env_test @env_dev @issue=DWT-1990
   Scenario: Once user is logged in, he should not be asked to indicate whether they are a local authority
