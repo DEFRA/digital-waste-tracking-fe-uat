@@ -11,7 +11,14 @@ import {
   ALLURE_ISSUE_LINK_TEMPLATE
 } from './test/utils/allure-utils.js'
 import logger from '@wdio/logger'
+import { buildCucumberTagExpression } from './test/utils/cucumber-tag-expression.js'
 const log = logger('wdio.browserstack.conf.js')
+
+/** Cucumber @env_* tag: dev and perf-test scenarios use @env_dev */
+const cucumberEnvTag =
+  process.env.ENVIRONMENT === 'dev' || process.env.ENVIRONMENT === 'perf-test'
+    ? 'dev'
+    : process.env.ENVIRONMENT
 
 // const debug = process.env.DEBUG
 // const oneMinute = 60 * 1000
@@ -153,9 +160,7 @@ export const config = {
   key: process.env.BROWSERSTACK_KEY,
 
   // Tests to run
-  specs: [
-    './test/features/waste-organisation-frontend/compatability/*.feature'
-  ],
+  specs: ['./test/features/waste-organisation-frontend/**/*.feature'],
 
   // Tests to exclude
   exclude: [],
@@ -170,7 +175,10 @@ export const config = {
   },
 
   capabilities: (() => {
-    if (process.env.ENVIRONMENT === 'ext-test') {
+    if (
+      process.env.ENVIRONMENT === 'ext-test' ||
+      process.env.CUCUMBER_EXTRA_TAGS !== '@smoke'
+    ) {
       return [allCapabilities[0]]
     }
 
@@ -225,10 +233,10 @@ export const config = {
   cucumberOpts: {
     timeout: 180000, // Increased from 120000 (120s) to 180000 (180s) for BrowserStack network latency
     require: ['./test/step-definitions/**/*.js'],
-    tags: `@browserstack`,
+    tags: buildCucumberTagExpression(cucumberEnvTag),
     failAmbiguousDefinitions: true,
     ignoreUndefinedDefinitions: false,
-    retry: 1
+    retry: 0
   },
 
   reporters: [
@@ -308,9 +316,25 @@ export const config = {
       'utf8'
     )
     cucumberWorld.testConfig = JSON.parse(testConfigData)
+    cucumberWorld.env = process.env
+    const wasteOrganisationBackendServiceUrl = process.env.xapikey
+      ? `https://ephemeral-protected.api.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/waste-organisation-backend`
+      : cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl
+    const wasteMovementBackendServiceUrl = process.env.xapikey
+      ? `https://ephemeral-protected.api.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/waste-movement-backend`
+      : cucumberWorld.testConfig.wasteMovementBackendServiceUrl
     cucumberWorld.apis = ApiFactory.create(
-      cucumberWorld.testConfig.wasteOrganisationBackendServiceUrl,
-      cucumberWorld.env.HTTP_PROXY
+      wasteOrganisationBackendServiceUrl,
+      wasteMovementBackendServiceUrl,
+      cucumberWorld.testConfig.wasteMovementExternalApiBaseUrl,
+      cucumberWorld.testConfig.cognitoOAuthBaseUrl,
+      cucumberWorld.testConfig.defraIdServiceUrl,
+      cucumberWorld.testConfig.govPayBaseUrl,
+      cucumberWorld.testConfig.wasteOrganisationFrontendBaseUrl,
+      cucumberWorld.env.ZAP_PROXY_API_URL ?? cucumberWorld.env.HTTP_PROXY
+    )
+    cucumberWorld.apis.govPayAPI.setAuthorizationHeader(
+      process.env.GOV_PAY_API_KEY
     )
 
     if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
@@ -357,9 +381,6 @@ export const config = {
         `cleaning up the user from the defra id mock service: ${defraIdMockUserId}`
       )
       await cucumberWorld.apis.defraIdStubAPI.expireUser(defraIdMockUserId)
-      // await browser.url(
-      //   `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${defraIdMockUserId}/expire`
-      // )
     }
   },
   /**

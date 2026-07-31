@@ -1,9 +1,10 @@
-@issue=DWT-1027 @browserstack @env_ext-test @env_local
+@issue=DWT-1027 @env_ext-test @browserstack @env_test @smoke
 Feature: User Journeys
   As a waste receiver using the DWT service
   I need to be able to log in to the DWT service and view my API code
   So that I can use it to connect my software to the DWT service and submit waste movements.
 
+  @env_local
   Scenario: Waste receiver with a pre-existing active API Code logs in and gets the same active API Code
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -12,6 +13,7 @@ Feature: User Journeys
     Then user should see the "active" API Code for the selected business
     And the user signs out of his existing session
 
+  @env_local
   Scenario: Waste recevier should be able to create an additional API code
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -23,6 +25,7 @@ Feature: User Journeys
     And display the new API code in the API code list
     And the user signs out of his existing session
 
+  @env_local
   Scenario: Waste receiver should be able to upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -30,6 +33,7 @@ Feature: User Journeys
     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
     Then the user should be redirected to "Upload successful" page
 
+  @env_local
   Scenario: Waste receiver should be able to update waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -37,7 +41,7 @@ Feature: User Journeys
     When user selects copy of a valid spreadsheet file "Test1-update-spreadsheet.xlsx" to update existing waste movements
     Then user should be redirected to "Spreadsheet update successful" page  
 
-  Scenario Outline: Waste receiver must not be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
+   Scenario Outline: Waste receiver must not be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
     Given a user is logged in to the waste receiver registration portal
     When the service charge is due
     And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
