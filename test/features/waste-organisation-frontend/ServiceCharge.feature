@@ -69,8 +69,8 @@ Feature: Report receipt of waste service charge
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     When the service charge is due
     And user pays the service charge using "<card_brand>" "<card_type>" card "<card_number>"
-    Then the payment should be "unsuccessful"
-    And the user should see an error message "<expected error message>"
+    Then the user should see an error message "<expected error message>"
+    And the payment should be "unsuccessful"
     And the account page should reflect that the service charge is pending
 
     @env_dev
@@ -92,8 +92,8 @@ Feature: Report receipt of waste service charge
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the service charge is due
     And user pays the service charge using "Visa" "Debit" card "4000000000000002"
-    And the payment should be "unsuccessful"
     And the user should see an error message "There was a problem with your payment - GOV.UK Pay"
+    And the payment should be "unsuccessful"
     When user attempts to re-try the payment after the error
     Then the user is redirected to intiate payment page
 
