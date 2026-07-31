@@ -79,42 +79,42 @@ export const EXPECTED_ERRORS = {
       {
         row: 9,
         value:
-          'Please provide a value (B9)\nCannot parse disposal / recovery codes (R13) (R9)'
+          'Please provide a value (B9)\nCannot parse disposal / recovery codes (R13 = 30) (R9)'
       },
       {
         row: 10,
         value:
-          'Please provide a value (B10)\nCannot parse disposal / recovery codes (D15) (R10)'
+          'Please provide a value (B10)\nCannot parse disposal / recovery codes (D15 = 10) (R10)'
       },
       {
         row: 11,
         value:
-          'Please provide a value (B11)\nCannot parse disposal / recovery codes (R13) (R11)'
+          'Please provide a value (B11)\nCannot parse disposal / recovery codes (R13 = 30) (R11)'
       },
       {
         row: 12,
         value:
-          'Please provide a value (B12)\nCannot parse disposal / recovery codes (D15) (R12)'
+          'Please provide a value (B12)\nCannot parse disposal / recovery codes (D15 = 2) (R12)'
       },
       {
         row: 13,
         value:
-          'Please provide a value (B13)\nCannot parse disposal / recovery codes (D15) (R13)'
+          'Please provide a value (B13)\nCannot parse disposal / recovery codes (D15 = 3) (R13)'
       },
       {
         row: 14,
         value:
-          'Please provide a value (B14)\nCannot parse disposal / recovery codes (R13) (R14)'
+          'Please provide a value (B14)\nCannot parse disposal / recovery codes (R13 = 9) (R14)'
       },
       {
         row: 15,
         value:
-          'Please provide a value (B15)\nCannot parse disposal / recovery codes (R13) (R15)'
+          'Please provide a value (B15)\nCannot parse disposal / recovery codes (R13 = 12) (R15)'
       },
       {
         row: 16,
         value:
-          'Please provide a value (B16)\nCannot parse disposal / recovery codes (R13) (R16)'
+          'Please provide a value (B16)\nCannot parse disposal / recovery codes (R13 = 8) (R16)'
       },
       {
         row: 17,
@@ -155,42 +155,42 @@ export const EXPECTED_ERRORS = {
       {
         row: 9,
         value:
-          'Please provide a value (B9)\nCannot parse disposal / recovery codes (R13) (R9)'
+          'Please provide a value (B9)\nCannot parse disposal / recovery codes (R13 = 30) (R9)'
       },
       {
         row: 10,
         value:
-          'Please provide a value (B10)\nCannot parse disposal / recovery codes (D15) (R10)'
+          'Please provide a value (B10)\nCannot parse disposal / recovery codes (D15 = 10) (R10)'
       },
       {
         row: 11,
         value:
-          'Please provide a value (B11)\nCannot parse disposal / recovery codes (R13) (R11)'
+          'Please provide a value (B11)\nCannot parse disposal / recovery codes (R13 = 30) (R11)'
       },
       {
         row: 12,
         value:
-          'Please provide a value (B12)\nCannot parse disposal / recovery codes (D15) (R12)'
+          'Please provide a value (B12)\nCannot parse disposal / recovery codes (D15 = 2) (R12)'
       },
       {
         row: 13,
         value:
-          'Please provide a value (B13)\nCannot parse disposal / recovery codes (D15) (R13)'
+          'Please provide a value (B13)\nCannot parse disposal / recovery codes (D15 = 3) (R13)'
       },
       {
         row: 14,
         value:
-          'Please provide a value (B14)\nCannot parse disposal / recovery codes (R13) (R14)'
+          'Please provide a value (B14)\nCannot parse disposal / recovery codes (R13 = 9) (R14)'
       },
       {
         row: 15,
         value:
-          'Please provide a value (B15)\nCannot parse disposal / recovery codes (R13) (R15)'
+          'Please provide a value (B15)\nCannot parse disposal / recovery codes (R13 = 12) (R15)'
       },
       {
         row: 16,
         value:
-          'Please provide a value (B16)\nCannot parse disposal / recovery codes (R13) (R16)'
+          'Please provide a value (B16)\nCannot parse disposal / recovery codes (R13 = 8) (R16)'
       },
       {
         row: 17,
