@@ -49,6 +49,11 @@ export const EXPECTED_ERRORS = {
         row: 9,
         value:
           'ewc codes must be a valid 6-digit numeric code (C9)\ncode must be one of [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15] (R9)'
+      },
+      {
+        row: 11,
+        value:
+          'ewc codes must be a valid 6-digit numeric code (C11)\ncode must be one of [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15] (R11)'
       }
     ]
   },
