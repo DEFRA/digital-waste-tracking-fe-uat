@@ -289,23 +289,19 @@ Given(
   }
 )
 
-async function loginUsingAccountType(context, accountType) {
-  if (
-    context.env.ENVIRONMENT === 'dev' ||
-    context.env.ENVIRONMENT === 'local' ||
-    context.env.ENVIRONMENT === 'perf-test'
-  ) {
-    await registerAndLoginViaStub(context)
-  } else {
-    await navigateToPortalAndLogin(context, accountType)
-  }
-}
-
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account( as a local authority)?$/,
   async function (accountType, asLocalAuthority) {
     this.isLocalAuthority = asLocalAuthority === ' as a local authority'
-    await loginUsingAccountType(this, accountType)
+    if (
+      this.env.ENVIRONMENT === 'dev' ||
+      this.env.ENVIRONMENT === 'local' ||
+      this.env.ENVIRONMENT === 'perf-test'
+    ) {
+      await registerAndLoginViaStub(this)
+    } else {
+      await navigateToPortalAndLogin(this, accountType)
+    }
   }
 )
 
