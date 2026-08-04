@@ -17,6 +17,19 @@ So that I can prevent that API code from being used to access the DWT service.
     Then the API code should be disabled
     And user should not be able to submit movements using disabled API Code
 
+  @env_dev @issue=DR-60
+  Scenario: Local authority should be able to disable an API code for their organisation
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
+    And the user navigates to report receipt of waste
+    And user selects option to view his api code
+    And user is on the View API Code page
+    And user should see the "active" API Code for the selected business
+    When user tries to disable an active API Code
+    And user should be redirected to "Confirm disable API code" page
+    And user selects the "Yes" option to disabling the API Code
+    Then the API code should be disabled
+    And user should not be able to submit movements using disabled API Code
+
   @env_dev
   Scenario: Waste receiver should be able to select "No" on disable API code confirmation page
     Given a user is logged in to the waste receiver registration portal

@@ -21,6 +21,22 @@ So that I can make corrections or changes after submission.
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
+  @env_dev @issue=DR-60
+  Scenario: Local authority should be able to update waste movements using a spreadsheet with Waste tracking IDs
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    And user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
+    And the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
+    And the processed spreadsheet should contain valid WTIDs
+    And the user navigates directly to report receipt of waste page on the portal
+    And user selects option to update waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "Test1-update-spreadsheet.xlsx" to update existing waste movements
+    Then user should be redirected to "Spreadsheet update successful" page
+    And the file is successfully accepted for processing
+    And the processed spreadsheet should contain valid WTIDs
+
   @env_dev
   Scenario: Waste receiver uploads a valid spreadsheet to update existing waste movements then the changes should be successfully persisted
     Given a user is logged in to the waste receiver registration portal

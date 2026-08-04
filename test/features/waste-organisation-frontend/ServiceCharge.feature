@@ -64,6 +64,15 @@ Feature: Report receipt of waste service charge
     #   | card_brand | card_type | card_number      |
     #   | Visa       | Credit    | 4444333322221111 |
 
+  @env_dev @issue=DR-60
+  Scenario: Local authority must be able to pay service charge for an organisation
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
+    When the service charge is due
+    And user pays the service charge using a valid "Visa" "Credit" card "4444333322221111"
+    And the user should be redirected to "payment-confirmation" page
+    Then the payment should be "successful"
+    And the account page should reflect that the service charge has been paid
+
   @issue=DWT-2156
   Scenario Outline: Waste receiver must not be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account

@@ -13,6 +13,15 @@ Feature: View API Code
     Then user should see the "active" API Code for the selected business
     And user should be able to use the new API code to submit waste movements
 
+  @env_dev @env_test @issue=DR-60
+  Scenario: Local authority should be able to manage their API code
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
+    And the user navigates to report receipt of waste
+    And user selects option to view his api code
+    When user is on the View API Code page
+    Then user should see the "active" API Code for the selected business
+    And user should be able to use the new API code to submit waste movements
+
   @env_test @accessibility
   Scenario Outline: Waste receiver with a pre-existing active API Code logs in via "<account_type>" and gets the same active API Code
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
