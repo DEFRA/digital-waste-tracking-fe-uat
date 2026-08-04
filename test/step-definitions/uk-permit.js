@@ -23,7 +23,7 @@ When(
   }
 )
 
-When(/^user clicks on the "(["A-Za-z\s]+)" button$/, async function () {
+When(/^user clicks on the "[A-Za-z\s]+" button$/, async function () {
   if (this.pageName === 'local-authority-guidance-page') {
     await LocalAuthorityGuidancePage.click(
       LocalAuthorityGuidancePage.continueButton
