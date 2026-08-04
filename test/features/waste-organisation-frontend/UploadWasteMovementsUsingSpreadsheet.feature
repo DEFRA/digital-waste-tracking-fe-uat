@@ -15,7 +15,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
-  @env_dev
+  @env_dev @issue=DR-2
   Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -27,7 +27,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
-  @env_test
+  @env_test @issue=DR-2
   Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the user navigates to report receipt of waste
@@ -64,7 +64,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     Then the user should be able to successfully upload a waste movement spreadsheet for that business
     And the file is successfully accepted for processing
 
-  @env_dev @issue=DWT-1465 @issue=DWT-2146
+  @env_dev @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -82,7 +82,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | api validation           | Test1-api-errors-spreadsheet.xlsx    |
       | no waste movements       | Test1-empty-records-spreadsheet.xlsx |
 
-  @env_test @issue=DWT-1465 @issue=DWT-2146 
+  @env_test @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
