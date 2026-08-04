@@ -307,10 +307,7 @@ async function loginUsingAccountType(context, accountType) {
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account( as a local authority)?$/,
   async function (accountType, asLocalAuthority) {
-    // Default is No; "as a local authority" selects Yes
-    if (asLocalAuthority !== undefined) {
-      this.isLocalAuthority = true
-    }
+    this.isLocalAuthority = Boolean(asLocalAuthority)
     await loginUsingAccountType(this, accountType)
   }
 )
