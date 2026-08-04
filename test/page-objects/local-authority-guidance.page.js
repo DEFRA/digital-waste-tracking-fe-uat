@@ -1,7 +1,7 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
 
-class LocalAuthorityGuidencePage extends Page {
+class LocalAuthorityGuidancePage extends Page {
   // locators
   get heading() {
     return $('[data-testid="app-heading-title"]')
@@ -25,15 +25,15 @@ class LocalAuthorityGuidencePage extends Page {
 
   // methods
   open() {
-    return super.open('/local-authority-guidence')
+    return super.open('/local-authority-guidance')
   }
 
   // assertions
-  async verifyUserIsOnLocalAuthorityGuidencePage() {
+  async verifyUserIsOnLocalAuthorityGuidancePage() {
     await this.verifyPageTitle(
       'Are you registering as a local authority? | Report receipt of waste'
     )
-    await expect(browser).toHaveUrl(/\/local-authority-guidence/)
+    await expect(browser).toHaveUrl(/\/local-authority-guidance/)
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText(
       'Are you registering as a local authority?'
@@ -66,4 +66,4 @@ class LocalAuthorityGuidencePage extends Page {
   }
 }
 
-export default new LocalAuthorityGuidencePage()
+export default new LocalAuthorityGuidancePage()

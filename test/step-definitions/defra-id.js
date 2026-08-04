@@ -5,6 +5,7 @@ import DefraIdGovtGatewayPage from '../page-objects/defra-id-govt-gateway.page.j
 import DefraIdGovUKPage from '../page-objects/defra-id-gov-uk.page.js'
 import DefraIdStubPage from '../page-objects/defra-id-stub.page.js'
 import UKPermitPage from '../page-objects/uk-permit.page.js'
+import LocalAuthorityGuidancePage from '../page-objects/local-authority-guidance.page.js'
 import HomePage from '../page-objects/home.page.js'
 import { getValueFromPool } from '@wdio/shared-store-service'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
@@ -75,6 +76,52 @@ When('user has selected a business', async function () {
   await DefraIdStubPage.selectFirstOrganisation()
 })
 
+async function continueFromLocalAuthorityPage(isLocalAuthority) {
+  await UKPermitPage.verifyUserIsOnUKPermitPage()
+  if (isLocalAuthority) {
+    await UKPermitPage.selectYesOption()
+    await UKPermitPage.click(UKPermitPage.continueButton)
+    await LocalAuthorityGuidancePage.verifyUserIsOnLocalAuthorityGuidancePage()
+    await LocalAuthorityGuidancePage.click(
+      LocalAuthorityGuidancePage.continueButton
+    )
+  } else {
+    await UKPermitPage.selectNoOption()
+    await UKPermitPage.click(UKPermitPage.continueButton)
+  }
+}
+
+Then(
+  'the organisation details should be available with local authority set to true',
+  async function () {
+    const organisationDetails =
+      await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+        this.organisationId,
+        this.defraIdMockUserId
+      )
+    expect(organisationDetails.statusCode).toBe(200)
+    expect(organisationDetails.json.organisation.isLocalAuthority).toBe(true)
+  }
+)
+
+Then(
+  'my organisation record should not be updated with my response',
+  async function () {
+    const organisationDetails =
+      await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+        this.organisationId,
+        this.defraIdMockUserId
+      )
+    expect(organisationDetails.statusCode).toBe(200)
+    expect(
+      Object.prototype.hasOwnProperty.call(
+        organisationDetails.json.organisation,
+        'isLocalAuthority'
+      )
+    ).toBe(false)
+  }
+)
+
 async function registerAndLoginViaStub(context) {
   context.userEmail = `test${Date.now()}@test.com`
   const response = await context.apis.defraIdStubAPI.registerNewUser(
@@ -85,9 +132,7 @@ async function registerAndLoginViaStub(context) {
   context.originalUserEmail = context.userEmail
 
   await UKPermitPage.open()
-  await UKPermitPage.verifyUserIsOnUKPermitPage()
-  await UKPermitPage.selectNoOption()
-  await UKPermitPage.click(UKPermitPage.continueButton)
+  await continueFromLocalAuthorityPage(context.isLocalAuthority)
 
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     context.testConfig.defraIdServiceUrl
@@ -157,9 +202,7 @@ async function loginToPortalViaStub(context, email) {
   // Start a clean browser session so relogin and user switching do not reuse existing auth cookies.
   await UKPermitPage.browserReloadSession()
   await UKPermitPage.open()
-  await UKPermitPage.verifyUserIsOnUKPermitPage()
-  await UKPermitPage.selectNoOption()
-  await UKPermitPage.click(UKPermitPage.continueButton)
+  await continueFromLocalAuthorityPage(context.isLocalAuthority)
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     context.testConfig.defraIdServiceUrl
   )
@@ -176,9 +219,7 @@ async function loginOriginalUserToPortal(context) {
 
 async function navigateToPortalAndLogin(context, accountType) {
   await UKPermitPage.open()
-  await UKPermitPage.verifyUserIsOnUKPermitPage()
-  await UKPermitPage.selectNoOption()
-  await UKPermitPage.click(UKPermitPage.continueButton)
+  await continueFromLocalAuthorityPage(context.isLocalAuthority)
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     context.testConfig.defraIdServiceUrl
   )
@@ -251,18 +292,26 @@ Given(
   }
 )
 
+async function loginUsingAccountType(context, accountType) {
+  if (
+    context.env.ENVIRONMENT === 'dev' ||
+    context.env.ENVIRONMENT === 'local' ||
+    context.env.ENVIRONMENT === 'perf-test'
+  ) {
+    await registerAndLoginViaStub(context)
+  } else {
+    await navigateToPortalAndLogin(context, accountType)
+  }
+}
+
 Given(
-  /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account$/,
-  async function (accountType) {
-    if (
-      this.env.ENVIRONMENT === 'dev' ||
-      this.env.ENVIRONMENT === 'local' ||
-      this.env.ENVIRONMENT === 'perf-test'
-    ) {
-      await registerAndLoginViaStub(this)
-    } else {
-      await navigateToPortalAndLogin(this, accountType)
+  /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account( as a local authority)?$/,
+  async function (accountType, asLocalAuthority) {
+    // Default is No; "as a local authority" selects Yes
+    if (asLocalAuthority !== undefined) {
+      this.isLocalAuthority = true
     }
+    await loginUsingAccountType(this, accountType)
   }
 )
 
