@@ -113,12 +113,9 @@ Then(
         this.defraIdMockUserId
       )
     expect(organisationDetails.statusCode).toBe(200)
-    expect(
-      Object.prototype.hasOwnProperty.call(
-        organisationDetails.json.organisation,
-        'isLocalAuthority'
-      )
-    ).toBe(false)
+    expect(organisationDetails.json.organisation).not.toHaveProperty(
+      'isLocalAuthority'
+    )
   }
 )
 
@@ -307,7 +304,7 @@ async function loginUsingAccountType(context, accountType) {
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account( as a local authority)?$/,
   async function (accountType, asLocalAuthority) {
-    this.isLocalAuthority = Boolean(asLocalAuthority)
+    this.isLocalAuthority = asLocalAuthority === ' as a local authority'
     await loginUsingAccountType(this, accountType)
   }
 )
