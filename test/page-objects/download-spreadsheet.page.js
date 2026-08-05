@@ -1,16 +1,18 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
-// import { fileURLToPath } from 'node:url'
-// import path from 'node:path'
 import logger from '@wdio/logger'
+import {
+  downloadLinkViaBrowserFetch,
+  downloadViaSelenium,
+  supportsSeleniumFileDownloads,
+  waitForSeleniumDownloadedFile
+} from '../utils/browser-file-download.js'
 
-// const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const log = logger('download-spreadsheet-page')
 
 class DownloadSpreadsheetPage extends Page {
   expectedFileName = 'receipt-of-waste-template.xlsx'
-  // /** Directory on the machine running the test where downloadFile() saves the file */
-  // downloadsDir = path.resolve(__dirname, '../../test/data')
+  downloadButtonSelector = 'a[data-testid="download-spreadsheet-button"]'
 
   // locators
   get heading() {
@@ -18,7 +20,7 @@ class DownloadSpreadsheetPage extends Page {
   }
 
   get downloadButton() {
-    return $('a[data-testid="download-spreadsheet-button"]')
+    return $(this.downloadButtonSelector)
   }
 
   get metaData() {
@@ -39,28 +41,44 @@ class DownloadSpreadsheetPage extends Page {
   }
 
   async downloadSpreadsheet() {
-    // delete the file if it exists
-    await browser.deleteDownloadableFiles()
-
     log.info(`downloading spreadsheet: ${this.expectedFileName}`)
-    await this.click(this.downloadButton)
+    await expect(this.downloadButton).toBeDisplayed()
+
+    if (supportsSeleniumFileDownloads()) {
+      await downloadViaSelenium({
+        clickDownload: () => this.click(this.downloadButton),
+        fileName: this.expectedFileName
+      })
+      return
+    }
+
+    // BrowserStack: Selenium managed downloads are unavailable.
+    // Capture the file via in-browser fetch (same approach as admin CSV).
+    this.browserFetchDownload = await downloadLinkViaBrowserFetch({
+      selector: this.downloadButtonSelector,
+      responseType: 'base64'
+    })
   }
 
   async verifySpreadsheetIsDownloaded() {
-    await browser.waitUntil(
-      async () => {
-        const { names } = await browser.getDownloadableFiles()
-        return names.includes(this.expectedFileName)
-      },
-      {
-        timeout: 15000,
-        timeoutMsg: `Spreadsheet "${this.expectedFileName}" did not appear in downloadable files in time`
-      }
-    )
-    const { names } = await browser.getDownloadableFiles()
-    await expect(names).toContain(this.expectedFileName)
-    // Todo: to be used in future
-    // await browser.downloadFile(this.expectedFileName, this.downloadsDir)
+    if (supportsSeleniumFileDownloads()) {
+      const fileName = await waitForSeleniumDownloadedFile({
+        fileName: this.expectedFileName
+      })
+      await expect(fileName).toBe(this.expectedFileName)
+      return
+    }
+
+    const result =
+      this.browserFetchDownload ??
+      (await downloadLinkViaBrowserFetch({
+        selector: this.downloadButtonSelector,
+        responseType: 'base64'
+      }))
+
+    const downloadedName = result.fileName ?? this.expectedFileName
+    await expect(downloadedName).toBe(this.expectedFileName)
+    await expect(result.content.length).toBeGreaterThan(0)
   }
 }
 

@@ -1,4 +1,4 @@
-@feature=AdminToolOrganisationReporting @issue=DWTA-241 @issue=DWTA-242 @issue=DWTA-248 @browserstack-admin-tool
+@feature=AdminToolOrganisationReporting @issue=DWTA-241 @issue=DWTA-242 @issue=DWTA-248 @browserstack-admin-tool @env_dev @env_test
 Feature: Waste organisations report
   As an internal user of the DWT Admin Portal
   I want to search waste organisations by registration date

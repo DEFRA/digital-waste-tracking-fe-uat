@@ -1,6 +1,5 @@
-import fs from 'node:fs'
-import os from 'node:os'
 import path from 'node:path'
+import os from 'node:os'
 import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
 import { config } from '../../../wdio.conf.js'
@@ -8,6 +7,11 @@ import {
   buildExpectedCsvFilenameRegex,
   formatSearchDateAsYymmdd
 } from '../../data/expected-organisations-by-date-range.js'
+import {
+  downloadLinkViaBrowserFetch,
+  downloadViaSelenium,
+  supportsSeleniumFileDownloads
+} from '../../utils/browser-file-download.js'
 
 class WasteOrganisationsReportPage extends Page {
   get heading() {
@@ -168,34 +172,6 @@ class WasteOrganisationsReportPage extends Page {
     await expect(this.downloadCsvButton).not.toBeExisting()
   }
 
-  isBrowserStackSession() {
-    const capabilities = browser.capabilities ?? {}
-    const requestedCapabilities = browser.options?.capabilities ?? {}
-    return Boolean(
-      capabilities['bstack:options'] ||
-        requestedCapabilities['bstack:options'] ||
-        capabilities.browserstack
-    )
-  }
-
-  supportsSeleniumFileDownloads() {
-    if (this.isBrowserStackSession()) return false
-    return typeof browser.deleteDownloadableFiles === 'function'
-  }
-
-  parseContentDispositionFilename(contentDisposition) {
-    if (!contentDisposition) return undefined
-
-    const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i)
-    if (utf8Match) return decodeURIComponent(utf8Match[1])
-
-    const quotedMatch = contentDisposition.match(/filename="([^"]+)"/i)
-    if (quotedMatch) return quotedMatch[1]
-
-    const plainMatch = contentDisposition.match(/filename=([^;]+)/i)
-    return plainMatch?.[1]?.trim()
-  }
-
   buildFallbackCsvFilename(startDate, endDate) {
     const stamp = new Date().toISOString().replace(/\D/g, '').slice(0, 12)
     const start = formatSearchDateAsYymmdd(startDate)
@@ -203,83 +179,31 @@ class WasteOrganisationsReportPage extends Page {
     return `${stamp}-orgs-${start}-${end}.csv`
   }
 
-  async downloadCsvViaBrowserFetch({ startDate, endDate, filenamePattern }) {
+  async downloadCsvReport({ startDate, endDate }) {
+    const filenamePattern = buildExpectedCsvFilenameRegex(startDate, endDate)
     await expect(this.downloadCsvButton).toBeDisplayed()
 
-    const result = await browser.execute(async () => {
-      const link = document.querySelector('[data-testid="download-csv-button"]')
-      if (!link) {
-        throw new Error('Download CSV button not found')
-      }
+    if (supportsSeleniumFileDownloads()) {
+      return downloadViaSelenium({
+        clickDownload: () => this.click(this.downloadCsvButton),
+        filenamePattern,
+        readContent: true,
+        targetDir: path.join(os.tmpdir(), 'waste-organisations-csv')
+      })
+    }
 
-      const url = link.href
-      if (!url.includes('download=csv')) {
-        throw new Error(
-          `Download CSV href does not include download=csv: ${url}`
-        )
-      }
-
-      const response = await fetch(url)
-      if (!response.ok) {
-        throw new Error(`CSV download failed: HTTP ${response.status}`)
-      }
-
-      const content = await response.text()
-      const contentDisposition = response.headers.get('content-disposition')
-
-      return { content, contentDisposition }
+    const result = await downloadLinkViaBrowserFetch({
+      selector: '[data-testid="download-csv-button"]',
+      responseType: 'text',
+      hrefIncludes: 'download=csv'
     })
 
-    const fileNameFromHeader = this.parseContentDispositionFilename(
-      result.contentDisposition
-    )
     const fileName =
-      fileNameFromHeader && filenamePattern.test(fileNameFromHeader)
-        ? fileNameFromHeader
+      result.fileName && filenamePattern.test(result.fileName)
+        ? result.fileName
         : this.buildFallbackCsvFilename(startDate, endDate)
 
     return { fileName, content: result.content }
-  }
-
-  async downloadCsvViaSelenium(filenamePattern) {
-    await browser.deleteDownloadableFiles()
-    await this.click(this.downloadCsvButton)
-
-    let fileName
-    await browser.waitUntil(
-      async () => {
-        const { names } = await browser.getDownloadableFiles()
-        fileName = names.find((name) => filenamePattern.test(name))
-        return fileName !== undefined
-      },
-      {
-        timeout: 15000,
-        timeoutMsg: `CSV file matching ${filenamePattern} did not appear in downloadable files in time`
-      }
-    )
-
-    const targetDir = path.join(os.tmpdir(), 'waste-organisations-csv')
-    fs.mkdirSync(targetDir, { recursive: true })
-    await browser.downloadFile(fileName, targetDir)
-
-    const filePath = path.join(targetDir, fileName)
-    const content = fs.readFileSync(filePath, 'utf8')
-
-    return { fileName, content }
-  }
-
-  async downloadCsvReport({ startDate, endDate }) {
-    const filenamePattern = buildExpectedCsvFilenameRegex(startDate, endDate)
-
-    if (this.supportsSeleniumFileDownloads()) {
-      return this.downloadCsvViaSelenium(filenamePattern)
-    }
-
-    return this.downloadCsvViaBrowserFetch({
-      startDate,
-      endDate,
-      filenamePattern
-    })
   }
 
   async verifyNoResultsDisplayed() {
