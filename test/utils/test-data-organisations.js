@@ -33,7 +33,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 1',
     users: ['ef6d8740-9447-47d6-9d4d-4e8d6b804b33'],
     createdAt: ISODate('2024-01-18T09:14:26.000Z'),
-    updatedAt: ISODate('2024-01-18T09:14:26.000Z')
+    updatedAt: ISODate('2024-01-18T09:14:26.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 2 - 3 inactive API codes
   {
@@ -59,7 +60,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 2',
     users: ['c2afed58-c84f-4cf0-865f-685a84fd80d8'],
     createdAt: ISODate('2024-02-11T13:27:41.000Z'),
-    updatedAt: ISODate('2024-02-11T13:27:41.000Z')
+    updatedAt: ISODate('2024-02-11T13:27:41.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 3 - 11 active API codes
   {
@@ -125,7 +127,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 3',
     users: ['fbc972b0-7581-43f6-bc0d-f76d8cb9b8af'],
     createdAt: ISODate('2024-03-10T16:45:12.000Z'),
-    updatedAt: ISODate('2024-03-10T16:45:12.000Z')
+    updatedAt: ISODate('2024-03-10T16:45:12.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 4 - 4 API codes (3 inactive, 1 active)
   {
@@ -156,7 +159,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 4',
     users: ['4a7d3023-420d-4f35-b923-513b6d3cf59d'],
     createdAt: ISODate('2024-03-18T08:30:55.000Z'),
-    updatedAt: ISODate('2024-03-18T08:30:55.000Z')
+    updatedAt: ISODate('2024-03-18T08:30:55.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 5 - 2 API codes with null isDisabled
   {
@@ -177,7 +181,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 5',
     users: ['b0d47eb8-d62c-4db9-bd37-cc94c83dce9f'],
     createdAt: ISODate('2024-03-24T21:15:09.000Z'),
-    updatedAt: ISODate('2024-03-24T21:15:09.000Z')
+    updatedAt: ISODate('2024-03-24T21:15:09.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 6 - 25 March 2024 midnight, 1 active API code
   {
@@ -193,7 +198,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 6',
     users: ['f3d2f7ce-9436-4c84-a3d0-4bb3d9a8fd72'],
     createdAt: ISODate('2024-03-25T00:00:00.000Z'),
-    updatedAt: ISODate('2024-03-25T00:00:00.000Z')
+    updatedAt: ISODate('2024-03-25T00:00:00.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 7 - 15 September 2024 14:59:59
   {
@@ -209,7 +215,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 7',
     users: ['6fae5087-ef8d-495d-a508-2fbfcbcbfd43'],
     createdAt: ISODate('2024-09-15T14:59:59.000Z'),
-    updatedAt: ISODate('2024-09-15T14:59:59.000Z')
+    updatedAt: ISODate('2024-09-15T14:59:59.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 8 - Same createdAt as document 6, 4 active API codes
   {
@@ -240,7 +247,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 8',
     users: ['f54a09d3-8183-4547-b879-f856f12d75a0'],
     createdAt: ISODate('2024-03-25T00:00:00.000Z'),
-    updatedAt: ISODate('2024-03-25T00:00:00.000Z')
+    updatedAt: ISODate('2024-03-25T00:00:00.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 9 - Same createdAt as document 6, 9 active API codes
   {
@@ -296,7 +304,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 9',
     users: ['fa7e3b89-80d2-47b7-8ff4-d0fd0fd9bc4f'],
     createdAt: ISODate('2024-03-25T00:00:00.000Z'),
-    updatedAt: ISODate('2024-03-25T00:00:00.000Z')
+    updatedAt: ISODate('2024-03-25T00:00:00.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 10 - Same createdAt as document 6, 1 active API code
   {
@@ -312,7 +321,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 10',
     users: ['84e88f03-c084-4cb0-a69f-3b63c7f1af2d'],
     createdAt: ISODate('2024-03-25T00:00:00.000Z'),
-    updatedAt: ISODate('2024-03-25T00:00:00.000Z')
+    updatedAt: ISODate('2024-03-25T00:00:00.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 11 - 22 December 2024 morning, 4 API codes (2 active, 1 inactive, 1 null)
   {
@@ -343,7 +353,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 11',
     users: ['b1c2d3e4-1111-4111-8111-111111110011'],
     createdAt: ISODate('2024-12-22T09:30:00.000Z'),
-    updatedAt: ISODate('2024-12-22T09:30:00.000Z')
+    updatedAt: ISODate('2024-12-22T09:30:00.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 12 - 22 December 2024 evening, 1 inactive API code
   {
@@ -359,7 +370,8 @@ db.organisations.insertMany([
     name: 'DWT admin test - 12',
     users: ['c2d3e4f5-1212-4121-8121-121212120012'],
     createdAt: ISODate('2024-12-22T19:20:15.000Z'),
-    updatedAt: ISODate('2024-12-22T19:20:15.000Z')
+    updatedAt: ISODate('2024-12-22T19:20:15.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
   // Document 13 - 22 December 2024 night, empty API codes array
   {
@@ -369,6 +381,7 @@ db.organisations.insertMany([
     name: 'DWT admin test - 13',
     users: ['d3e4f5a6-1313-4131-8131-131313130013'],
     createdAt: ISODate('2024-12-22T23:45:00.000Z'),
-    updatedAt: ISODate('2024-12-22T23:45:00.000Z')
+    updatedAt: ISODate('2024-12-22T23:45:00.000Z'),
+    disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   }
 ])
