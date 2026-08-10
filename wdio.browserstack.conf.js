@@ -175,17 +175,15 @@ export const config = {
   },
 
   capabilities: (() => {
-    if (
-      process.env.ENVIRONMENT === 'ext-test' ||
-      process.env.CUCUMBER_EXTRA_TAGS !== '@smoke'
-    ) {
-      return [allCapabilities[0]]
-    }
-
     if (process.env.BROWSERSTACK_DESKTOP_ONLY === 'true') {
       return allCapabilities.filter(
         (capability) => !capability?.['bstack:options']?.deviceName
       )
+    } else if (
+      process.env.ENVIRONMENT === 'ext-test' ||
+      process.env.CUCUMBER_EXTRA_TAGS !== '@smoke'
+    ) {
+      return [allCapabilities[0]]
     }
 
     return allCapabilities
