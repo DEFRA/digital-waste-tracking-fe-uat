@@ -22,14 +22,14 @@ Feature: Permitted waste receiver and not LA
     And user clicks on the "Continue" button
     And user should be redirected to Defra Id service
 
-  @env_dev @issue=DR-60 @test1
+  @env_dev @issue=DR-60 
   Scenario: Local authority answer is recorded against the organisation
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
     Then the organisation details should be available with local authority set to true
     When the same user logs back in to the waste receiver registration portal selecting "No" for local authority
     Then the organisation details should be available with local authority set to true
 
-  @env_dev @issue=DR-60 @test1
+  @env_dev @issue=DR-60 
   Scenario: Non local authority answer is not recorded against the organisation
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     Then my organisation record should not be updated with my response
