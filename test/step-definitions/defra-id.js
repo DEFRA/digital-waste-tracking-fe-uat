@@ -306,8 +306,11 @@ Given(
 )
 
 Given(
-  /^the (?:same|original) user logs back in to the waste receiver registration portal$/,
-  async function () {
+  /^the (?:same|original) user logs back in to the waste receiver registration portal(?: selecting "(Yes|No)" for local authority)?$/,
+  async function (localAuthorityOption) {
+    if (localAuthorityOption === 'Yes' || localAuthorityOption === 'No') {
+      this.isLocalAuthority = localAuthorityOption === 'Yes'
+    }
     await loginOriginalUserToPortal(this)
   }
 )
