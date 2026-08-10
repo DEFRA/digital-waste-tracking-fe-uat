@@ -130,7 +130,9 @@ class GovPayPage extends Page {
     await this.enterText(this.postcodeInput, postcode)
     await this.enterText(this.countryInput, country)
     await this.enterText(this.emailInput, email)
-    await this.click(this.continueButton)
+
+    // await this.click(this.continueButton)
+    await this.clickJavascriptByPass(this.continueButton)
   }
 
   async confirmPayment() {

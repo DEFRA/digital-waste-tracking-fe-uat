@@ -170,6 +170,8 @@ Then(
   'the user should see an error message {string}',
   async function (expectedErrorMessage) {
     await GovPayPage.verifyUserIsOnGovPayErrorPage(expectedErrorMessage)
+    await GovPayPage.continueAfterPaymentError()
+    await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargeFailedPaymentDetailsPage()
   }
 )
 
@@ -185,8 +187,8 @@ Then(
 )
 
 When('user attempts to re-try the payment after the error', async function () {
-  await GovPayPage.continueAfterPaymentError()
-  await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargeFailedPaymentDetailsPage()
+  // await GovPayPage.continueAfterPaymentError()
+  // await ServiceChargePaymentDetailsPage.verifyUserIsOnServiceChargeFailedPaymentDetailsPage()
   await ServiceChargePaymentDetailsPage.retryPayment()
 })
 
