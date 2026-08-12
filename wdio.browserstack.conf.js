@@ -3,13 +3,9 @@ import { bootstrap } from 'global-agent'
 import { initialiseAccessibilityChecking } from './test/utils/accessibility-checking.js'
 import fs from 'node:fs'
 import { readFileSync } from 'fs'
-import {
-  setResourcePool,
-  addValueToPool,
-  addStep
-} from '@wdio/shared-store-service'
+import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
+import AllureReporter, { addStep } from '@wdio/allure-reporter'
 import { ApiFactory } from './test/utils/apis/api-factory.js'
-import AllureReporter from '@wdio/allure-reporter'
 import {
   addAllureIssueLinksFromPickleTags,
   ALLURE_ISSUE_LINK_TEMPLATE
@@ -169,7 +165,7 @@ export const config = {
 
   // Tests to exclude
   exclude: [],
-  maxInstances: 5,
+  maxInstances: 1,
 
   commonCapabilities: {
     'bstack:options': {
@@ -237,6 +233,7 @@ export const config = {
     timeout: 180000, // Increased from 120000 (120s) to 180000 (180s) for BrowserStack network latency
     require: ['./test/step-definitions/**/*.js'],
     tags: buildCucumberTagExpression(cucumberEnvTag),
+    // tags: '@local',
     failAmbiguousDefinitions: true,
     ignoreUndefinedDefinitions: false,
     retry: 1
