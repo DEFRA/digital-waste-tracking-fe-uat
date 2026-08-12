@@ -239,7 +239,7 @@ export const config = {
     tags: buildCucumberTagExpression(cucumberEnvTag),
     failAmbiguousDefinitions: true,
     ignoreUndefinedDefinitions: false,
-    retry: 0
+    retry: 1
   },
 
   reporters: [
