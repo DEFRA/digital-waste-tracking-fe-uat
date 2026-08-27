@@ -337,6 +337,17 @@ export const config = {
           `ZAP newSession failed with status ${sessionResponse.statusCode} and result ${sessionResponse.json?.Result}`
         )
       }
+
+      const zapConfigData = readFileSync(
+        './test/support/local.zap.config.json',
+        'utf8'
+      )
+      const zapConfig = JSON.parse(zapConfigData)
+      const excludeRegexes = zapConfig.zapProxyExcludeRegexes ?? []
+      const registered = await apis.zapAPI.excludeUrlsFromProxy(excludeRegexes)
+      log.info(
+        `ZAP proxy excludes applied (${excludeRegexes.length}). Registered: ${registered.join(', ')}`
+      )
     }
   },
   /**

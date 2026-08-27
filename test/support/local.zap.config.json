@@ -1,4 +1,13 @@
 {
   "defraIdServiceUrl": "http://cdp-defra-id-stub:3200/cdp-defra-id-stub",
-  "wasteOrganisationBackendServiceUrl": "http://waste-organisation-backend:3001"
+  "wasteOrganisationBackendServiceUrl": "http://waste-organisation-backend:3001",
+  "zapProxyExcludeRegexes": [
+    "https://.*\\.payments\\.service\\.gov\\.uk.*",
+    "https://.*\\.b2clogin\\.com.*",
+    "https://signin\\.integration\\.account\\.gov\\.uk.*",
+    "https://.*\\.access\\.service\\.gov\\.uk.*",
+    "https://.*\\.amazoncognito\\.com.*",
+    "http://cdp-defra-id-stub:3200.*",
+    "http://cdp-uploader:7337.*"
+  ]
 }
