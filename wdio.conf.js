@@ -19,7 +19,7 @@ import {
   ZAP_HTML_REPORT_PATH,
   ZAP_ALERTS_SUMMARY_PATH
 } from './test/utils/zap-report-paths.js'
-import { writeTextToFile, readZapReport } from './test/utils/write-text-file.js'
+import { writeTextToFile } from './test/utils/write-text-file.js'
 
 const log = logger('wdio.conf.js')
 
@@ -473,7 +473,11 @@ export const config = {
   onComplete: async function (exitCode, config, capabilities, results) {
     generateAccessibilityReportIndex()
 
-    if (process.env.ENVIRONMENT === 'local' && process.env.ZAP_PROXY_URL) {
+    if (
+      process.env.ENVIRONMENT === 'local' &&
+      process.env.ZAP_PROXY_URL &&
+      !process.env.CUCUMBER_EXTRA_TAGS.includes('@zap')
+    ) {
       const apis = ApiFactory.create({}, process.env)
       const jsonReport = await apis.zapAPI.jsonReport()
       await writeTextToFile(ZAP_JSON_REPORT_PATH, jsonReport.body)
@@ -485,31 +489,6 @@ export const config = {
         JSON.stringify(alertsSummary.json, null, 2)
       )
       await apis.close()
-
-      await readZapReport(
-        ZAP_JSON_REPORT_PATH,
-        'ZAP JSON report',
-        'application/json'
-      )
-      await readZapReport(ZAP_HTML_REPORT_PATH, 'ZAP HTML report', 'text/html')
-      const alertsSummaryRaw = await readZapReport(
-        ZAP_ALERTS_SUMMARY_PATH,
-        'ZAP alerts summary',
-        'application/json'
-      )
-
-      const alertsSummaryParsed = JSON.parse(alertsSummaryRaw).alertsSummary
-      if (
-        alertsSummaryParsed.High > 0 ||
-        (results?.failed && results.failed > 0)
-      ) {
-        const failureMessage =
-          alertsSummaryParsed.High > 0
-            ? 'High alerts found in ZAP report'
-            : JSON.stringify(results)
-        fs.writeFileSync('FAILED', failureMessage)
-        throw new Error(failureMessage)
-      }
     }
 
     // !Do Not Remove! Required for test status to show correctly in portal.
