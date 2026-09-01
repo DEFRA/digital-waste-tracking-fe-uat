@@ -15,8 +15,7 @@ Then(
       'application/json'
     )
     const alertsSummaryParsed = JSON.parse(alertsSummaryRaw).alertsSummary
-    const exitCode = alertsSummaryParsed.High > 0 ? 1 : 0
-    expect(exitCode).toBe(0)
+    expect(alertsSummaryParsed.High).toBe(0)
   }
 )
 
