@@ -14,12 +14,6 @@ import {
   ALLURE_ISSUE_LINK_TEMPLATE
 } from './test/utils/allure-utils.js'
 import { addStep } from '@wdio/allure-reporter'
-import {
-  ZAP_JSON_REPORT_PATH,
-  ZAP_HTML_REPORT_PATH,
-  ZAP_ALERTS_SUMMARY_PATH
-} from './test/utils/zap-report-paths.js'
-import { writeTextToFile } from './test/utils/write-text-file.js'
 
 const log = logger('wdio.conf.js')
 
@@ -326,7 +320,11 @@ export const config = {
         testConfig.multipleBusinessesGovUKLogin
       )
     }
-    if (process.env.ENVIRONMENT === 'local' && process.env.ZAP_PROXY_URL) {
+    if (
+      process.env.ENVIRONMENT === 'local' &&
+      process.env.ZAP_PROXY_URL &&
+      !process.env.CUCUMBER_EXTRA_TAGS.includes('@zap')
+    ) {
       const apis = ApiFactory.create({}, process.env)
       const sessionResponse = await apis.zapAPI.newSession()
       if (
@@ -472,24 +470,6 @@ export const config = {
    */
   onComplete: async function (exitCode, config, capabilities, results) {
     generateAccessibilityReportIndex()
-
-    if (
-      process.env.ENVIRONMENT === 'local' &&
-      process.env.ZAP_PROXY_URL &&
-      !process.env.CUCUMBER_EXTRA_TAGS.includes('@zap')
-    ) {
-      const apis = ApiFactory.create({}, process.env)
-      const jsonReport = await apis.zapAPI.jsonReport()
-      await writeTextToFile(ZAP_JSON_REPORT_PATH, jsonReport.body)
-      const htmlReport = await apis.zapAPI.htmlReport()
-      await writeTextToFile(ZAP_HTML_REPORT_PATH, htmlReport.body)
-      const alertsSummary = await apis.zapAPI.alertsSummary()
-      await writeTextToFile(
-        ZAP_ALERTS_SUMMARY_PATH,
-        JSON.stringify(alertsSummary.json, null, 2)
-      )
-      await apis.close()
-    }
 
     // !Do Not Remove! Required for test status to show correctly in portal.
     if (results?.failed && results.failed > 0) {
