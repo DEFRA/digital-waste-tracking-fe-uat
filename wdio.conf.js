@@ -508,7 +508,7 @@ export const config = {
             ? 'High alerts found in ZAP report'
             : JSON.stringify(results)
         fs.writeFileSync('FAILED', failureMessage)
-        return
+        throw new Error(failureMessage)
       }
     }
 
