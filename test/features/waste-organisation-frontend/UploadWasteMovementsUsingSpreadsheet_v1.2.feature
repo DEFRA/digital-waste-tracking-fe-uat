@@ -1,0 +1,130 @@
+@issue=DR-82
+Feature: Upload Waste Movements Using Spreadsheet v1.2
+As a waste receiver
+I want to upload a spreadsheet containing waste movement data for my selected organisation
+So that I can submit waste movement data, correctly linked to the business I have selected 
+
+  @env_dev @accessibility
+  Scenario: Waste receiver should be able to upload waste movements using a spreadsheet
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "Test1-spreadsheet_v1.2.xlsx" to upload
+    Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
+    And the processed spreadsheet should contain valid WTIDs
+    # And email should sent to the user with the spreadsheet and WTIDs
+
+#   @env_dev @env_test @issue=DR-60
+#   Scenario: Local authority should be able to upload waste movements using a spreadsheet
+#     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
+#     And the user navigates to report receipt of waste
+#     And user selects option to upload waste movements using a spreadsheet
+#     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
+#     Then the user should be redirected to "Upload successful" page
+#     And the file is successfully accepted for processing
+#     And the processed spreadsheet should contain valid WTIDs
+
+  @env_dev
+  Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
+    Given a user is logged in to the waste receiver registration portal
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "Test2-spreadsheet_v1.2.xlsx" to upload
+    Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
+    And all the waste movements should be successfully created
+    And the processed spreadsheet should contain valid WTIDs
+    # And email should sent to the user with the spreadsheet and WTIDs
+
+#   @env_test @issue=DR-2
+#   Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
+#     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
+#     And the user navigates to report receipt of waste
+#     And user selects option to upload waste movements using a spreadsheet
+#     When user selects copy of a valid spreadsheet file "Test2-spreadsheet.xlsx" to upload
+#     Then the user should be redirected to "Upload successful" page
+#     And the file is successfully accepted for processing
+#     And all the waste movements should be successfully created
+#     And the processed spreadsheet should contain valid WTIDs
+#     # And email should sent to the user with the spreadsheet and WTIDs
+
+#   @env_test @accessibility
+#   Scenario Outline: Waste receiver should be able to login via "<account_type>" and upload waste movements using a spreadsheet
+#     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
+#     And the user navigates to report receipt of waste
+#     And user selects option to upload waste movements using a spreadsheet
+#     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
+#     Then the user should be redirected to "Upload successful" page
+#     And the file is successfully accepted for processing
+#     And the processed spreadsheet should contain valid WTIDs
+#     # And email should sent to the user with the spreadsheet and WTIDs
+
+#     Examples:
+#       | account_type       |
+#       | Gov UK             |
+#       | Government Gateway |
+
+#   @env_test
+#   Scenario: Waste receiver with multiple businesses can upload waste movements for each selected business
+#     Given a multi-business user is logged in via "Gov UK"
+#     And the user successfully uploads a waste movement spreadsheet for the selected business
+#     And the file is successfully accepted for processing
+#     When the user switches to a different business
+#     Then the user should be able to successfully upload a waste movement spreadsheet for that business
+#     And the file is successfully accepted for processing
+
+#   @env_dev @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2
+#   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
+#     Given a user is logged in to the waste receiver registration portal
+#     And the user navigates to report receipt of waste
+#     And user selects option to upload waste movements using a spreadsheet
+#     When user selects copy of a spreadsheet file "<spreadsheet_file>" to upload
+#     Then the user should be redirected to "Upload successful" page
+#     And the file is successfully accepted for processing
+#     And no waste movements should be created
+#     And the processed spreadsheet should contain error details
+
+#     Examples:
+#       | error_type               | spreadsheet_file                     |
+#       | format                   | Test1-format-errors-spreadsheet.xlsx |
+#       | missing unique reference | missing-reference-spreadsheet.xlsx   |
+#       | api validation           | Test1-api-errors-spreadsheet.xlsx    |
+#       | no waste movements       | Test1-empty-records-spreadsheet.xlsx |
+
+#   @env_test @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2
+#   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
+#     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+#     And the user navigates to report receipt of waste
+#     And user selects option to upload waste movements using a spreadsheet
+#     When user selects copy of a spreadsheet file "<spreadsheet_file>" to upload
+#     Then the user should be redirected to "Upload successful" page
+#     And the file is successfully accepted for processing
+#     And no waste movements should be created
+#     And the processed spreadsheet should contain error details
+
+#     Examples:
+#       | error_type               | spreadsheet_file                     |
+#       | format                   | Test1-format-errors-spreadsheet.xlsx |
+#       | missing unique reference | missing-reference-spreadsheet.xlsx   |
+#       | api validation           | Test1-api-errors-spreadsheet.xlsx    |
+#       | no waste movements       | Test1-empty-records-spreadsheet.xlsx |
+
+#   @env_dev @env_test @issue=DWT-1431,DWT-1641
+#   Scenario Outline: Waste receiver uploads an unsupported file type "<file_type>"
+#     Given a user is logged in to the waste receiver registration portal
+#     And the user navigates to report receipt of waste
+#     And user selects option to upload waste movements using a spreadsheet
+#     When user selects copy of a spreadsheet file "<file_type>" to upload
+#     Then the user should be redirected to "Upload successful" page
+#     And the file is successfully accepted for processing
+#     And the spreadsheet must be rejected
+#     And no waste movements should be created
+
+#     Examples:
+#       | file_type                       |
+#       | Unsupported-file-type-1.png     |
+#       | Unsupported-file-type-2.xlsm    |
+#       | File-size-greater-than-2MB.xlsx |
+# #  --can be picked up after teamA completes the api development which can then be used to query waste movements using bulk upload id
+# # | Invalid-template.xlsx        |

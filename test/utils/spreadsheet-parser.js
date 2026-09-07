@@ -105,7 +105,10 @@ const ERRORS_HEADER_PATTERNS = ['errors found in your waste movements']
 
 function isWtidHeader(cellText) {
   const normalised = cellText.toLowerCase().trim()
-  return WTID_HEADER_PATTERNS.some((pattern) => normalised === pattern)
+  return WTID_HEADER_PATTERNS.some((pattern) => {
+    const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp(`^${escaped}`).test(normalised)
+  })
 }
 
 function isErrorsHeader(cellText) {
@@ -120,11 +123,30 @@ export function extractDataFromWorkbook(workbook, dataType = 'Wtids') {
     errors_waste_item_level: []
   }
 
+  let initialRowOffset = 2
+
+  const coverSheet = workbook.getWorksheet('1. Coversheet and guidance')
+  let spreadsheetVersion = 'v1.1'
+  try {
+    spreadsheetVersion = coverSheet.getCell(1, 1).value
+  } catch (error) {
+    log.info(
+      `Error getting spreadsheet version, using default version: ${error}`
+    )
+  }
+  if (spreadsheetVersion.includes('v1.2')) {
+    initialRowOffset = 1
+  }
+
   workbook.eachSheet((worksheet) => {
     let columnIndex = null
     let headerRowNum = null
 
-    if (dataType === 'Wtids' && worksheet.name !== '7. Waste movement level') {
+    if (
+      dataType === 'Wtids' &&
+      worksheet.name !== '7. Waste movement level' &&
+      worksheet.name !== '2. Waste movement details'
+    ) {
       return
     }
     if (
@@ -160,7 +182,7 @@ export function extractDataFromWorkbook(workbook, dataType = 'Wtids') {
     )
 
     const sheetData = []
-    const dataStartRow = headerRowNum + 2
+    const dataStartRow = headerRowNum + initialRowOffset
     for (let rowNum = dataStartRow; rowNum <= worksheet.rowCount; rowNum++) {
       const cell = worksheet.getRow(rowNum).getCell(columnIndex)
       const text = getCellText(cell).trim()
