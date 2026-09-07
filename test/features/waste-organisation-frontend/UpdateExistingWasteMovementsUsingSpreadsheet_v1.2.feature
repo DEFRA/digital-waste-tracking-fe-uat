@@ -1,4 +1,4 @@
-@issue=DR-82 @local
+@issue=DR-82
 Feature: Update existing waste movements by uploading a spreadsheet v1.2 containing their WTIDs
 As a waste receiver
 I want to update previously submitted waste movements by re-uploading a spreadsheet containing their WTIDs

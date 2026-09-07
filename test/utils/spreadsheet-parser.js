@@ -126,8 +126,15 @@ export function extractDataFromWorkbook(workbook, dataType = 'Wtids') {
   let initialRowOffset = 2
 
   const coverSheet = workbook.getWorksheet('1. Coversheet and guidance')
-  const spreadsheetVersion = coverSheet.getCell(1, 1)
-  if (spreadsheetVersion.value.includes('v1.2')) {
+  let spreadsheetVersion = 'v1.1'
+  try {
+    spreadsheetVersion = coverSheet.getCell(1, 1).value
+  } catch (error) {
+    log.info(
+      `Error getting spreadsheet version, using default version: ${error}`
+    )
+  }
+  if (spreadsheetVersion.includes('v1.2')) {
     initialRowOffset = 1
   }
 

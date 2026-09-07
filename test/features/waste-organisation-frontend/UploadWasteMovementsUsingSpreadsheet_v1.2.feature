@@ -1,4 +1,4 @@
-@issue=DR-82 @local
+@issue=DR-82
 Feature: Upload Waste Movements Using Spreadsheet v1.2
 As a waste receiver
 I want to upload a spreadsheet containing waste movement data for my selected organisation

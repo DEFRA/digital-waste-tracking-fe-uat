@@ -22,8 +22,15 @@ export async function updateWasteMovementLevelSheet(filePath, values) {
   await workbook.xlsx.readFile(filePath)
 
   const coverSheet = workbook.getWorksheet('1. Coversheet and guidance')
-  const spreadsheetVersion = coverSheet.getCell(1, 1)
-  if (spreadsheetVersion.value.includes('v1.2')) {
+  let spreadsheetVersion = 'v1.1'
+  try {
+    spreadsheetVersion = coverSheet.getCell(1, 1).value
+  } catch (error) {
+    log.info(
+      `Error getting spreadsheet version, using default version: ${error}`
+    )
+  }
+  if (spreadsheetVersion.includes('v1.2')) {
     WASTE_MOVEMENT_LEVEL_SHEET = '2. Waste movement details'
     START_ROW = 3
     COLUMN_B = 2
