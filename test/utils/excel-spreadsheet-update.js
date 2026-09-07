@@ -3,10 +3,6 @@ import logger from '@wdio/logger'
 
 const log = logger('excel-spreadsheet-update')
 
-const WASTE_MOVEMENT_LEVEL_SHEET = '7. Waste movement level'
-const START_ROW = 9
-const COLUMN_B = 2
-
 /**
  * Modifies an Excel spreadsheet: writes values into the "waste movement level" sheet
  * in column B only, starting at row 9. Each list item is one cell (B9, B10, B11, …).
@@ -17,12 +13,25 @@ const COLUMN_B = 2
  *  usage:await updateWasteMovementLevelSheet('./test/data/Test1-spreadsheet-1772658620348.xlsx', ['123', '456'])
  */
 export async function updateWasteMovementLevelSheet(filePath, values) {
-  log.info(
-    `Updating "${WASTE_MOVEMENT_LEVEL_SHEET}" in ${filePath}, column B from row ${START_ROW}`
-  )
+  // this now needs to be set based on the spreadsheet version being used
+  let WASTE_MOVEMENT_LEVEL_SHEET = '7. Waste movement level'
+  let START_ROW = 9
+  let COLUMN_B = 2
 
   const workbook = new ExcelJS.Workbook()
   await workbook.xlsx.readFile(filePath)
+
+  const coverSheet = workbook.getWorksheet('1. Coversheet and guidance')
+  const spreadsheetVersion = coverSheet.getCell(1, 1)
+  if (spreadsheetVersion.value.includes('v1.2')) {
+    WASTE_MOVEMENT_LEVEL_SHEET = '2. Waste movement details'
+    START_ROW = 3
+    COLUMN_B = 2
+  }
+
+  log.info(
+    `Updating "${WASTE_MOVEMENT_LEVEL_SHEET}" in ${filePath}, column B from row ${START_ROW}`
+  )
 
   const sheet = workbook.getWorksheet(WASTE_MOVEMENT_LEVEL_SHEET)
 
