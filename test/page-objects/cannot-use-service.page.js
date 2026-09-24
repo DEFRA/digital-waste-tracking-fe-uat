@@ -14,11 +14,8 @@ class CannotUseServicePage extends Page {
 
   // assertions
   async verifyUserIsOnCannotUseServicePage() {
-    await this.verifyPageTitle(
-      'Sorry, you cannot use the service | Report receipt of waste'
-    )
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Sorry, you cannot use the service')
+    await this.verifyPageTitle()
+    await this.verifyPageHeading()
     await expect(this.findOutMoreLink).toBeExisting()
     await expect(this.findOutMoreLink).toHaveText(
       'Find out more about Digital waste tracking'

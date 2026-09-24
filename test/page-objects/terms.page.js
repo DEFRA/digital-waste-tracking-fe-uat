@@ -20,9 +20,8 @@ class TermsPage extends Page {
   }
 
   async verifyAccessDeclarationInTAndCs() {
-    await this.verifyPageTitle('Terms | Report receipt of waste')
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Terms')
+    await this.verifyPageTitle()
+    await this.verifyPageHeading()
     await expect(this.declarationIntro).toBeDisplayed()
     await expect(this.declarationIntro).toHaveText(
       'By using this service you confirm:'

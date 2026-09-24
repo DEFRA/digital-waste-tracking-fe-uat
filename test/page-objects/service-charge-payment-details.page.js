@@ -34,10 +34,9 @@ class ServiceChargePaymentDetailsPage extends Page {
   }
 
   async verifyUserIsOnServiceChargePaymentDetailsPage() {
-    await this.verifyPageTitle('Payment confirmation | Report receipt of waste')
+    await this.verifyPageTitle()
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Payment confirmation')
+    await this.verifyPageHeading()
     await expect(browser).toHaveUrl(/\/payment-details/)
   }
 
@@ -46,12 +45,9 @@ class ServiceChargePaymentDetailsPage extends Page {
   }
 
   async verifyUserIsOnServiceChargeFailedPaymentDetailsPage() {
-    await this.verifyPageTitle(
-      'Your payment has been unsuccessful | Report receipt of waste'
-    )
+    await this.verifyPageTitle('serviceChargePaymentUnsuccessful')
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Your payment has been unsuccessful')
+    await this.verifyPageHeading('serviceChargePaymentUnsuccessful')
     await expect(browser).toHaveUrl(/\/payment-details/)
     await expect(this.paymentErrorBody).toBeDisplayed()
     await expect(this.paymentErrorBody).toHaveText(

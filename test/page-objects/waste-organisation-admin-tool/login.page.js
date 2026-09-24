@@ -49,8 +49,8 @@ class AdminToolLoginPage extends Page {
         )
       )
     }
-    await this.verifyPageTitle('User Login | DWT Admin Portal')
-    await expect(this.heading).toHaveText('User Login')
+    await this.verifyPageTitle()
+    await this.verifyPageHeading()
     await expect(this.usernameInput).toBeDisplayed()
     await expect(this.passwordInput).toBeDisplayed()
     await expect(this.signInButton).toHaveText('Sign in')

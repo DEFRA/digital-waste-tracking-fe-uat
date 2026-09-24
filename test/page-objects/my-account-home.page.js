@@ -58,12 +58,9 @@ class MyAccountHomePage extends Page {
   }
 
   async verifyUserIsOnMyAccountHomePage(organisationName = undefined) {
-    await this.verifyPageTitle(
-      'Waste receiving account | Report receipt of waste'
-    )
+    await this.verifyPageTitle()
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Waste receiving account')
+    await this.verifyPageHeading()
     await expect(browser).toHaveUrl(/\/account/)
 
     if (organisationName) {
@@ -124,8 +121,7 @@ class MyAccountHomePage extends Page {
   async verifyUserIsOnDefraManageAccountPage() {
     // Note : this is not our page, it is the defra id service page
     await expect(browser).toHaveUrl(/\/management\/account-management\/me/i)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Your Defra account')
+    await this.verifyPageHeading('yourDefraAccount')
   }
 
   async verifyServiceChargeStatus(status) {

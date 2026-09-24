@@ -69,10 +69,7 @@ class DefraIdChooseSignInPage extends Page {
     })
 
     // Wait for heading to be displayed
-    await expect(this.heading).toBeDisplayed()
-
-    // Verify the heading text
-    await expect(this.heading).toHaveText('How do you want to sign in?')
+    await this.verifyPageHeading()
   }
 
   // Choose Sign In Page -- end

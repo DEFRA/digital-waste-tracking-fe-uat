@@ -29,14 +29,9 @@ class ReviewServiceChargePage extends Page {
     const endDate = new Date(freePeriodEndDate)
     endDate.setFullYear(endDate.getFullYear() + 1)
     const formattedDate = formatGovPayDate(endDate)
-    await this.verifyPageTitle(
-      'Annual Report receipt of waste charge | Report receipt of waste'
-    )
+    await this.verifyPageTitle()
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'Annual Report receipt of waste charge'
-    )
+    await this.verifyPageHeading()
     await expect(browser).toHaveUrl(/\/review-payment/)
     await expect(this.validUntilDate).toHaveText(formattedDate)
   }

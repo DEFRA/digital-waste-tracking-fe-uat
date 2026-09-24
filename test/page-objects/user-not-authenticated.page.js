@@ -12,13 +12,8 @@ class UserNotAuthenticatedPage extends Page {
 
   // assertions
   async verifyUserIsOnUserNotAuthenticatedPage() {
-    await this.verifyPageTitle(
-      'You do not have permission to view this page | Report receipt of waste'
-    )
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'You do not have permission to view this page'
-    )
+    await this.verifyPageTitle()
+    await this.verifyPageHeading()
     await expect(this.signInButton).toBeDisplayed()
     await expect(this.signInButton).toHaveProperty('href', '/signin-oidc')
   }

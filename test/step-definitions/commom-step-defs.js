@@ -1,7 +1,9 @@
-import { Then, When } from '@wdio/cucumber-framework'
+import { Given, Then, When } from '@wdio/cucumber-framework'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import { Page } from '../page-objects/page.js'
 import { PAGE_REGISTRY } from '../utils/page-registry.js'
+import MyAccountHomePage from '../page-objects/my-account-home.page.js'
+import UKPermitPage from '../page-objects/uk-permit.page.js'
 
 const page = new Page()
 
@@ -32,3 +34,41 @@ Then(
 When('the user selects the {string} banner link', async function (s) {
   await page.click(page.reportReceiptOfWasteBanner)
 })
+
+When('user switches to {string} language', async function (lang) {
+  await page.switchLanguage(lang)
+})
+
+Then(
+  'user should see his preference changed to {string}',
+  async function (lang) {
+    await page.verifyLanguageCookieIsSet(lang)
+  }
+)
+
+Given('user launches report receipt of waste service', async function () {
+  await UKPermitPage.open()
+})
+
+Given('browsers language cookie is set to {string}', async function (s) {
+  await page.setLanguageCookie(s)
+})
+
+Given(
+  'user should see the content in {string} on {string} page',
+  async function (lang, pageString) {
+    const targetLang = lang === 'Welsh' ? 'cy' : 'en'
+    switch (pageString) {
+      case 'account-home':
+        await MyAccountHomePage.verifyPageTitle(null, targetLang)
+        await MyAccountHomePage.verifyPageHeading(null, targetLang)
+        break
+      case 'uk-permit':
+        await UKPermitPage.verifyPageTitle(null, targetLang)
+        await UKPermitPage.verifyPageHeading(null, targetLang)
+        break
+      default:
+        throw new Error(`Unsupported page: ${pageString}`)
+    }
+  }
+)

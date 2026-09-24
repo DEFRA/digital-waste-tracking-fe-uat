@@ -36,9 +36,8 @@ class CookiesPage extends Page {
   }
 
   async verifyCookiesInformationIsDisplayed() {
-    await this.verifyPageTitle('Cookies | Report receipt of waste')
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Cookies')
+    await this.verifyPageTitle()
+    await this.verifyPageHeading()
     await expect(this.cookiesDescription).toBeDisplayed()
     await expect(this.cookiesDescription).toHaveText(
       'This service puts small files (known as cookies) onto your computer. These cookies are used to make the service work and cannot be turned off.'

@@ -35,13 +35,10 @@ class NextActionPage extends Page {
 
   // assertions
   async verifyUserIsOnChooseNextActionPage() {
-    await this.verifyPageTitle(
-      'Report receipt of waste | Report receipt of waste'
-    )
+    await this.verifyPageTitle()
     await expect(browser).toHaveUrl(config.baseUrl + '/next-action')
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Report receipt of waste')
+    await this.verifyPageHeading()
   }
 
   async verifyListOfActionsToChooseFrom() {

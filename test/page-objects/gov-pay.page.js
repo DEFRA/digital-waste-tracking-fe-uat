@@ -74,7 +74,7 @@ class GovPayPage extends Page {
 
   async verifyUserIsOnGovPayPage() {
     await expect(browser).toHaveUrl(/\/card_details\/.*/)
-    await this.verifyPageTitle('Enter payment details')
+    await this.verifyPageTitle('govPayEnterPaymentDetails')
     const url = await browser.getUrl()
     const regexpSize = /card_details\/(.*)/
     const match = url.match(regexpSize)
@@ -88,14 +88,13 @@ class GovPayPage extends Page {
       `/card_details/${uniquePaymentReference}/confirm`
     )
 
-    await this.verifyPageTitle('Confirm your payment')
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Confirm your payment')
+    await this.verifyPageTitle()
+    await this.verifyPageHeading()
   }
 
   async verifyUserIsOnGovPayErrorPage(expectedErrorMessage) {
     await expect(browser).toHaveUrl(/\/card_details\/.*/)
-    await this.verifyPageTitle(expectedErrorMessage)
+    await expect(browser).toHaveTitle(expectedErrorMessage)
     const url = await browser.getUrl()
     const regexpSize = /card_details\/(.*)/
     const match = url.match(regexpSize)

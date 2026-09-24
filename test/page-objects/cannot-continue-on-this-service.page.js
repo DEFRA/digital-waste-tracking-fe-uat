@@ -12,12 +12,9 @@ class CannotContinueOnThisServicePage extends Page {
 
   // assertions
   async verifyUserIsOnCannotContinueOnThisServicePage() {
-    await this.verifyPageTitle(
-      'You cannot continue on this service | Report receipt of waste'
-    )
+    await this.verifyPageTitle()
     await expect(browser).toHaveUrl(/\/account/)
-    await expect(this.heading).toBeExisting()
-    await expect(this.heading).toHaveText('You cannot continue on this service')
+    await this.verifyPageHeading()
     await expect(this.signOutLink).toBeExisting()
   }
 }

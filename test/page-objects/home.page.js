@@ -21,8 +21,7 @@ class HomePage extends Page {
 
   // assertions
   async verifyUserIsOnHomePage() {
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Report receipt of waste')
+    await this.verifyPageHeading()
   }
 
   async verifyUserNavigatedCorrectlyToDefraIdService(defraIdServiceUrl) {
