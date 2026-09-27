@@ -54,7 +54,7 @@ class ReviewServiceChargePage extends Page {
  * @returns {string}
  */
 function formatGovPayDate(date, lang = 'en') {
-  const locale = lang === 'en' ? 'en-GB' : 'cy-GB'
+  const locale = lang === 'cy' ? 'cy-GB' : 'en-GB'
   const weekday = date.toLocaleDateString(locale, { weekday: 'long' })
   const day = date.getDate()
   const month = date.toLocaleDateString(locale, { month: 'long' })
@@ -64,7 +64,7 @@ function formatGovPayDate(date, lang = 'en') {
   const minutes = date.getMinutes().toString().padStart(2, '0')
   const ampm = date.getHours() < 12 ? 'am' : 'pm'
 
-  return `${hours}:${minutes}${ampm} ${lang === 'en' ? 'on' : 'ar'} ${weekday} ${day} ${month} ${year}`
+  return `${hours}:${minutes}${ampm} ${lang === 'cy' ? 'ar' : 'on'} ${weekday} ${day} ${month} ${year}`
 }
 
 export default new ReviewServiceChargePage()
