@@ -74,11 +74,26 @@ class MyAccountHomePage extends Page {
       const tmp = await card.getText()
       return tmp.trim()
     })
-    expect(cardsText).toContain('Report receipt of waste')
-    expect(cardsText).toContain('Manage account')
-    expect(cardsText).toEqual(
-      expect.arrayContaining([expect.stringContaining('Service charge')])
-    )
+    // console.log('--------------------------------')
+    // console.log('my acc home usersLanguagePreference', this.usersLanguagePreference)
+    // console.log('cardsText', cardsText)
+    // console.log('--------------------------------')
+    if (
+      this.usersLanguagePreference === null ||
+      this.usersLanguagePreference === 'en'
+    ) {
+      expect(cardsText).toContain('Report receipt of waste')
+      expect(cardsText).toContain('Manage account')
+      expect(cardsText).toEqual(
+        expect.arrayContaining([expect.stringContaining('Service charge')])
+      )
+    } else {
+      expect(cardsText).toContain('Rhoi gwybod am dderbyn gwastraff')
+      expect(cardsText).toContain("Rheoli'r cyfrif")
+      expect(cardsText).toEqual(
+        expect.arrayContaining([expect.stringContaining('Tâl gwasanaeth')])
+      )
+    }
   }
 
   async navigateToReportReceiptOfWasteOptionsPage() {

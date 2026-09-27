@@ -86,13 +86,16 @@ export const HEADINGS = {
   },
   govPay: {
     en: 'Confirm your payment',
+    cy: 'Cadarnhau eich taliad',
     title: {
-      en: 'Confirm your payment'
+      en: 'Confirm your payment',
+      cy: 'Cadarnhau eich taliad'
     }
   },
   govPayEnterPaymentDetails: {
     title: {
-      en: 'Enter payment details'
+      en: 'Enter payment details',
+      cy: 'Rhowch fanylion taliad'
     }
   },
   manageApiCode: {

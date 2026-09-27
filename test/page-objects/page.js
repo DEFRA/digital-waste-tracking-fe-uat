@@ -2,7 +2,22 @@ import { browser, $ } from '@wdio/globals'
 import { config } from '../../wdio.conf.js'
 import { HEADINGS } from '../data/headings.js'
 
+// Shared across all Page subclasses (each page object is its own singleton)
+let sharedUsersLanguagePreference = null
+
 class Page {
+  resetUsersLanguagePreference(lang = null) {
+    sharedUsersLanguagePreference = lang
+  }
+
+  set usersLanguagePreference(lang) {
+    sharedUsersLanguagePreference = lang === 'Welsh' ? 'cy' : 'en'
+  }
+
+  get usersLanguagePreference() {
+    return sharedUsersLanguagePreference
+  }
+
   get pageHeading() {
     return $('h1')
   }
@@ -257,18 +272,24 @@ class Page {
 
   async verifyPageTitle(pageKey = null, lang = 'en') {
     const key = this.getPageKey(pageKey)
+    const targetLang = this.usersLanguagePreference
+      ? this.usersLanguagePreference
+      : lang
     // console.log('--------------------------------')
-    // console.log('key', key)
-    // console.log('pageKey', pageKey)
-    // console.log('HEADINGS[key].title[lang]', HEADINGS[key].title[lang])
+    // console.log('usersLanguagePreference', this.usersLanguagePreference)
+    // console.log('lang', lang)
+    // console.log('targetLang', targetLang)
     // console.log('--------------------------------')
-    await expect(browser).toHaveTitle(HEADINGS[key].title[lang])
+    await expect(browser).toHaveTitle(HEADINGS[key].title[targetLang])
   }
 
   async verifyPageHeading(pageKey, lang = 'en') {
     const key = this.getPageKey(pageKey)
+    const targetLang = this.usersLanguagePreference
+      ? this.usersLanguagePreference
+      : lang
     await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(HEADINGS[key][lang])
+    await expect(this.heading).toHaveText(HEADINGS[key][targetLang])
   }
 
   async switchLanguage(lang) {

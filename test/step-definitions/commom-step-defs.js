@@ -43,6 +43,7 @@ Then(
   'user should see his preference changed to {string}',
   async function (lang) {
     await page.verifyLanguageCookieIsSet(lang)
+    page.usersLanguagePreference = lang
   }
 )
 
@@ -58,6 +59,7 @@ Given(
   'user should see the content in {string} on {string} page',
   async function (lang, pageString) {
     const targetLang = lang === 'Welsh' ? 'cy' : 'en'
+    // page.usersLanguagePreference = targetLang
     switch (pageString) {
       case 'account-home':
         await MyAccountHomePage.verifyPageTitle(null, targetLang)

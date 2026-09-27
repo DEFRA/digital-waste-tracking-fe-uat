@@ -22,6 +22,7 @@ class UKPermitPage extends Page {
 
   // methods
   open() {
+    this.resetUsersLanguagePreference()
     return super.open('/')
   }
 
