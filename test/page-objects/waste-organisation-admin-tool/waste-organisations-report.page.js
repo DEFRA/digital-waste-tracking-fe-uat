@@ -84,9 +84,9 @@ class WasteOrganisationsReportPage extends Page {
 
   async verifyPageIsDisplayed(baseUrl) {
     await this.waitForPageToLoad()
-    await this.verifyPageTitle()
+    await this.verifyPageTitle('Waste Organisations Report | DWT Admin Portal')
     await expect(browser).toHaveUrl(`${baseUrl}/reporting/waste-organisations`)
-    await this.verifyPageHeading()
+    await expect(this.heading).toHaveText('Waste Organisations')
     await expect(this.pageBody).toHaveText(
       expect.stringContaining(
         'Search waste organisations by DefraID registration date.'
