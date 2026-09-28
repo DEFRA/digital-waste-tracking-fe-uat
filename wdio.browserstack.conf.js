@@ -171,7 +171,10 @@ export const config = {
     'bstack:options': {
       // its preferable to run tests always on "test" or "ext-test" environment as they have real defraId integrations
       // rather than mock defraId integrations
-      buildName: process.env.CUCUMBER_EXTRA_TAGS === '@smoke' ? `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}-smoke` : `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}-regression`
+      buildName:
+        process.env.CUCUMBER_EXTRA_TAGS === '@smoke'
+          ? `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}-smoke`
+          : `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}-regression`
     }
   },
 
