@@ -199,5 +199,15 @@ export const HEADINGS = {
   },
   defraIdGovUkPassword: {
     en: 'Enter your password'
+  },
+  adminToolLogin: {
+    title: {
+      en: 'User Login | DWT Admin Portal'
+    }
+  },
+  wasteOrganisationsReport: {
+    title: {
+      en: 'Waste Organisations Report | DWT Admin Portal'
+    }
   }
 }
