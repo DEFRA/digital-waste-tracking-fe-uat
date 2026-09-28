@@ -1,7 +1,23 @@
 import { browser, $ } from '@wdio/globals'
 import { config } from '../../wdio.conf.js'
+import { HEADINGS } from '../data/headings.js'
+
+// Shared across all Page subclasses (each page object is its own singleton)
+let sharedUsersLanguagePreference = null
 
 class Page {
+  resetUsersLanguagePreference(lang = null) {
+    sharedUsersLanguagePreference = lang
+  }
+
+  set usersLanguagePreference(lang) {
+    sharedUsersLanguagePreference = lang === 'Welsh' ? 'cy' : 'en'
+  }
+
+  get usersLanguagePreference() {
+    return sharedUsersLanguagePreference
+  }
+
   get pageHeading() {
     return $('h1')
   }
@@ -36,6 +52,10 @@ class Page {
 
   get inlineErrorMessage() {
     return $('.govuk-error-message')
+  }
+
+  get languageSwitchLink() {
+    return $('.app-language-toggle__list-item>a')
   }
 
   open(path) {
@@ -235,8 +255,62 @@ class Page {
     )
   }
 
-  async verifyPageTitle(expectedTitle) {
-    await expect(browser).toHaveTitle(expectedTitle)
+  getPageKey(pageKey = null) {
+    if (pageKey && pageKey !== '') {
+      return pageKey
+    }
+    const pageName = this.constructor.name.replace(/Page$/, '')
+    // Normalise acronyms so UKPermit -> UkPermit, DefraIdGovUK -> DefraIdGovUk
+    const normalised = pageName
+      .replace(
+        /([A-Z]+)([A-Z][a-z]|[0-9])/g,
+        (_, a, b) => a.charAt(0) + a.slice(1).toLowerCase() + b
+      )
+      .replace(/([A-Z]{2,})$/g, (m) => m.charAt(0) + m.slice(1).toLowerCase())
+    return normalised.charAt(0).toLowerCase() + normalised.slice(1)
+  }
+
+  async verifyPageTitle(pageKey = null, lang = 'en') {
+    const key = this.getPageKey(pageKey)
+    const targetLang = this.usersLanguagePreference
+      ? this.usersLanguagePreference
+      : lang
+    // console.log('--------------------------------')
+    // console.log('usersLanguagePreference', this.usersLanguagePreference)
+    // console.log('lang', lang)
+    // console.log('targetLang', targetLang)
+    // console.log('--------------------------------')
+    await expect(browser).toHaveTitle(HEADINGS[key].title[targetLang])
+  }
+
+  async verifyPageHeading(pageKey, lang = 'en') {
+    const key = this.getPageKey(pageKey)
+    const targetLang = this.usersLanguagePreference
+      ? this.usersLanguagePreference
+      : lang
+    await expect(this.heading).toBeDisplayed()
+    await expect(this.heading).toHaveText(HEADINGS[key][targetLang])
+  }
+
+  async switchLanguage(lang) {
+    const linkText = await this.languageSwitchLink.getText()
+    const targetLang = lang === 'Welsh' ? 'Cymraeg' : 'English'
+    if (linkText.includes(targetLang)) {
+      await this.click(this.languageSwitchLink)
+    }
+  }
+
+  async verifyLanguageCookieIsSet(lang) {
+    const targetCookie = lang === 'Welsh' ? 'cy' : 'en'
+    const cookie = await browser.getCookies(['lang'])
+    expect(cookie[0].value).toBe(targetCookie)
+  }
+
+  async setLanguageCookie(lang) {
+    const targetCookie = lang === 'Welsh' ? 'cy' : 'en'
+    // WebDriver only allows cookies for the current page's domain
+    await browser.url('/')
+    await browser.setCookies([{ name: 'lang', value: targetCookie }])
   }
 }
 

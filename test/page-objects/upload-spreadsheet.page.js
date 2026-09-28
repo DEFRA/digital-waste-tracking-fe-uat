@@ -20,9 +20,7 @@ class UploadSpreadsheetPage extends Page {
 
   async verifyUserIsOnUploadSpreadsheetPage(mode = 'upload') {
     await this.verifyPageTitle(
-      mode === 'upload'
-        ? 'Upload a receipt of waste movement spreadsheet | Report receipt of waste'
-        : 'Update an existing spreadsheet | Report receipt of waste'
+      mode === 'upload' ? 'uploadSpreadsheet' : 'updateSpreadsheet'
     )
     await expect(browser).toHaveUrl(
       mode === 'upload'
@@ -30,11 +28,8 @@ class UploadSpreadsheetPage extends Page {
         : /\/organisation\/[a-zA-Z0-9-]+\/update-spreadsheet\/begin-upload/
     )
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      mode === 'upload'
-        ? 'Upload a receipt of waste movement spreadsheet'
-        : 'Update an existing spreadsheet'
+    await this.verifyPageHeading(
+      mode === 'upload' ? 'uploadSpreadsheet' : 'updateSpreadsheet'
     )
   }
 

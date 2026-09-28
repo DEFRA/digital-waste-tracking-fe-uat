@@ -158,7 +158,11 @@ Then(
       expect(organisationDetails.json.organisation.disableAfter).toBe(
         endDate.toISOString()
       )
-      const month = endDate.toLocaleDateString('en-GB', { month: 'long' })
+      const locale =
+        ServiceChargePaymentDetailsPage.usersLanguagePreference === 'cy'
+          ? 'cy-GB'
+          : 'en-GB'
+      const month = endDate.toLocaleDateString(locale, { month: 'long' })
       const year = endDate.getFullYear()
       this.nextPaymentDueDate = `${month} ${year}`
     }

@@ -22,6 +22,7 @@ class UKPermitPage extends Page {
 
   // methods
   open() {
+    this.resetUsersLanguagePreference()
     return super.open('/')
   }
 
@@ -37,13 +38,8 @@ class UKPermitPage extends Page {
 
   // assertions
   async verifyUserIsOnUKPermitPage() {
-    await this.verifyPageTitle(
-      'Are you registering as a local authority? | Report receipt of waste'
-    )
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'Are you registering as a local authority?'
-    )
+    await this.verifyPageTitle()
+    await this.verifyPageHeading()
   }
 
   async browserReloadSession() {

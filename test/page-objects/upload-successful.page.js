@@ -13,14 +13,13 @@ class UploadSuccessfulPage extends Page {
   }
 
   async verifyUserIsOnUploadSuccessfulPage(mode = 'upload') {
-    await this.verifyPageTitle('Spreadsheet uploaded | Report receipt of waste')
+    await this.verifyPageTitle()
     await expect(browser).toHaveUrl(
       mode === 'upload'
         ? /\/organisation\/[a-zA-Z0-9-]+\/spreadsheet\/file-uploaded/
         : /\/organisation\/[a-zA-Z0-9-]+\/update-spreadsheet\/file-uploaded/
     )
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Spreadsheet uploaded')
+    await this.verifyPageHeading()
     await expect(this.referenceNumber).toBeDisplayed()
     await expect(this.referenceNumber).toHaveText(
       /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i

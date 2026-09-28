@@ -42,9 +42,11 @@ Then(
   async function () {
     await MyAccountHomePage.open()
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
-    await MyAccountHomePage.verifyServiceChargeStatus(
-      `Service charge\nPaid\nNext payment due ${this.nextPaymentDueDate}.`
-    )
+    const serviceChargeStatus =
+      MyAccountHomePage.usersLanguagePreference === 'cy'
+        ? `Tâl gwasanaeth\nWedi talu\nTaliad nesaf yn ddyledus ym mis ${this.nextPaymentDueDate}.`
+        : `Service charge\nPaid\nNext payment due ${this.nextPaymentDueDate}.`
+    await MyAccountHomePage.verifyServiceChargeStatus(serviceChargeStatus)
   }
 )
 

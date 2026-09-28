@@ -30,14 +30,9 @@ class PayServiceChargePage extends Page {
   }
 
   async verifyUserIsOnPayServiceChargePage() {
-    await this.verifyPageTitle(
-      'Pay the annual report receipt of waste service charge | Report receipt of waste'
-    )
+    await this.verifyPageTitle()
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'Pay the annual report receipt of waste service charge'
-    )
+    await this.verifyPageHeading()
     await expect(browser).toHaveUrl(/\/service-charge/)
   }
 

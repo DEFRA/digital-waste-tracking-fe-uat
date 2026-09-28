@@ -58,12 +58,9 @@ class MyAccountHomePage extends Page {
   }
 
   async verifyUserIsOnMyAccountHomePage(organisationName = undefined) {
-    await this.verifyPageTitle(
-      'Waste receiving account | Report receipt of waste'
-    )
+    await this.verifyPageTitle()
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Waste receiving account')
+    await this.verifyPageHeading()
     await expect(browser).toHaveUrl(/\/account/)
 
     if (organisationName) {
@@ -77,11 +74,26 @@ class MyAccountHomePage extends Page {
       const tmp = await card.getText()
       return tmp.trim()
     })
-    expect(cardsText).toContain('Report receipt of waste')
-    expect(cardsText).toContain('Manage account')
-    expect(cardsText).toEqual(
-      expect.arrayContaining([expect.stringContaining('Service charge')])
-    )
+    // console.log('--------------------------------')
+    // console.log('my acc home usersLanguagePreference', this.usersLanguagePreference)
+    // console.log('cardsText', cardsText)
+    // console.log('--------------------------------')
+    if (
+      this.usersLanguagePreference === null ||
+      this.usersLanguagePreference === 'en'
+    ) {
+      expect(cardsText).toContain('Report receipt of waste')
+      expect(cardsText).toContain('Manage account')
+      expect(cardsText).toEqual(
+        expect.arrayContaining([expect.stringContaining('Service charge')])
+      )
+    } else {
+      expect(cardsText).toContain('Rhoi gwybod am dderbyn gwastraff')
+      expect(cardsText).toContain("Rheoli'r cyfrif")
+      expect(cardsText).toEqual(
+        expect.arrayContaining([expect.stringContaining('Tâl gwasanaeth')])
+      )
+    }
   }
 
   async navigateToReportReceiptOfWasteOptionsPage() {
@@ -124,8 +136,7 @@ class MyAccountHomePage extends Page {
   async verifyUserIsOnDefraManageAccountPage() {
     // Note : this is not our page, it is the defra id service page
     await expect(browser).toHaveUrl(/\/management\/account-management\/me/i)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText('Your Defra account')
+    await this.verifyPageHeading('yourDefraAccount')
   }
 
   async verifyServiceChargeStatus(status) {

@@ -30,14 +30,9 @@ class LocalAuthorityGuidancePage extends Page {
 
   // assertions
   async verifyUserIsOnLocalAuthorityGuidancePage() {
-    await this.verifyPageTitle(
-      'Are you registering as a local authority? | Report receipt of waste'
-    )
+    await this.verifyPageTitle()
     await expect(browser).toHaveUrl(/\/local-authority-guidance/)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'Are you registering as a local authority?'
-    )
+    await this.verifyPageHeading()
     await expect(this.continueButton).toBeDisplayed()
   }
 

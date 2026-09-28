@@ -28,14 +28,9 @@ class DownloadSpreadsheetPage extends Page {
   }
 
   async verifyUserIsOnDownloadSpreadsheetPage() {
-    await this.verifyPageTitle(
-      'Download Receipt of waste spreadsheet | Report receipt of waste'
-    )
+    await this.verifyPageTitle()
     await expect(browser).toHaveUrl(/\/download-spreadsheet/)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'Download Receipt of waste spreadsheet'
-    )
+    await this.verifyPageHeading()
     await expect(this.metaData).toBeDisplayed()
     await expect(this.metaData).toHaveText('XLSX, 428KB')
   }

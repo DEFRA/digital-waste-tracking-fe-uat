@@ -28,15 +28,13 @@ class ReviewServiceChargePage extends Page {
   async verifyUserIsOnReviewServiceChargePage(freePeriodEndDate) {
     const endDate = new Date(freePeriodEndDate)
     endDate.setFullYear(endDate.getFullYear() + 1)
-    const formattedDate = formatGovPayDate(endDate)
-    await this.verifyPageTitle(
-      'Annual Report receipt of waste charge | Report receipt of waste'
+    const formattedDate = formatGovPayDate(
+      endDate,
+      this.usersLanguagePreference
     )
+    await this.verifyPageTitle()
     await this.elementIsDisplayed(this.heading)
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(
-      'Annual Report receipt of waste charge'
-    )
+    await this.verifyPageHeading()
     await expect(browser).toHaveUrl(/\/review-payment/)
     await expect(this.validUntilDate).toHaveText(formattedDate)
   }
@@ -55,17 +53,18 @@ class ReviewServiceChargePage extends Page {
  * @param {Date} date
  * @returns {string}
  */
-function formatGovPayDate(date) {
-  const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' })
+function formatGovPayDate(date, lang = 'en') {
+  const locale = lang === 'cy' ? 'cy-GB' : 'en-GB'
+  const weekday = date.toLocaleDateString(locale, { weekday: 'long' })
   const day = date.getDate()
-  const month = date.toLocaleDateString('en-GB', { month: 'long' })
+  const month = date.toLocaleDateString(locale, { month: 'long' })
   const year = date.getFullYear()
 
   const hours = date.getHours() % 12 || 12
   const minutes = date.getMinutes().toString().padStart(2, '0')
   const ampm = date.getHours() < 12 ? 'am' : 'pm'
 
-  return `${hours}:${minutes}${ampm} on ${weekday} ${day} ${month} ${year}`
+  return `${hours}:${minutes}${ampm} ${lang === 'cy' ? 'ar' : 'on'} ${weekday} ${day} ${month} ${year}`
 }
 
 export default new ReviewServiceChargePage()
