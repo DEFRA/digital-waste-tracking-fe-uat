@@ -208,5 +208,11 @@ export const EXPECTED_ERRORS = {
       { row: 9, value: 'No movements recognised (C9)' }
     ],
     errorsWasteItemLevel: []
+  },
+  'Test3-haz-components-errors-spreadsheet.xlsx': {
+    errorsWasteMovementLevel: [],
+    errorsWasteItemLevel: [
+      { row: 14, value: 'concentration operator must be [>] (P14)' }
+    ]
   }
 }
