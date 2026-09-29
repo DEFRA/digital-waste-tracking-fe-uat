@@ -92,7 +92,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | api validation           | Test1-api-errors-spreadsheet.xlsx    |
       | no waste movements       | Test1-empty-records-spreadsheet.xlsx |
 
-  @env_test @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2 @issue=DR-170 @local
+  @env_test @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2 @issue=DR-170
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
@@ -130,7 +130,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
 #  --can be picked up after teamA completes the api development which can then be used to query waste movements using bulk upload id
 # | Invalid-template.xlsx        |
 
-  @env_dev @env_test @issue=DR-170 @local
+  @env_dev @env_test @issue=DR-170
   Scenario: Waste receiver uploads hazardous items with relative concentration values indicated using > only
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the user navigates to report receipt of waste
