@@ -205,6 +205,11 @@ export const config = {
       'utf8'
     )
     cucumberWorld.testConfig = JSON.parse(testConfigData)
+    // Lets CI reach the admin UI by its compose service name, as the browser
+    // runs in a container there
+    if (process.env.ADMIN_UI_BASE_URL) {
+      cucumberWorld.testConfig.adminUiBaseUrl = process.env.ADMIN_UI_BASE_URL
+    }
     cucumberWorld.env = process.env
     cucumberWorld.apis = ApiFactory.create(
       cucumberWorld.testConfig,
