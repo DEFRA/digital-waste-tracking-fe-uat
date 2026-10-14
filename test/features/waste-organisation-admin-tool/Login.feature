@@ -1,4 +1,4 @@
-@feature=AdminToolLogin @issue=DWTA-250 @browserstack-admin-tool
+@feature=AdminToolLogin @issue=DWTA-250 @browserstack-admin-tool @env_local
 Feature: Login to the DWT Admin Portal
   As an internal user of the DWT Admin Portal
   I want to sign in with my username and password

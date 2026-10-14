@@ -64,6 +64,9 @@ Start application you are testing on the url specified in `baseUrl` [wdio.local.
 npm run test:local
 ```
 
+By default, in the local environment, only the tests marked with the `@env_local` tag will run.
+You can run other tests by overriding the tags with --cucumberOpts.tags.
+
 ### Debugging local tests
 
 ```bash
