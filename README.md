@@ -28,6 +28,11 @@ To use the correct version of Node.js for this application, via nvm:
 nvm use
 ```
 
+#### Java
+
+In order to use the Allure test report, you need a Java runtime installed.
+See [OpenJDK](https://openjdk.org/install/)
+
 ### Setup
 
 Clone the repository and change into this project directory:
