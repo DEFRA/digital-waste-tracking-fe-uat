@@ -51,11 +51,6 @@ cp env.sh.template env.sh
 
 Update `env.sh` with the values for the environment you want to test against. Use `env.sh.template` as the source of required variable names. Do not commit `env.sh`; it is ignored by git because it contains secrets.
 
-When running from a local machine against protected CDP backend APIs, also set:
-
-```bash
-export xapikey=<cdp-api-key>
-```
 
 ### Running local tests
 
@@ -69,6 +64,40 @@ npm run test:local
 
 ```bash
 npm run test:local:debug
+```
+
+### Running local tests against remote dev backend
+
+When running from a local machine against protected CDP backend APIs, in `env.sh` set:
+
+```bash
+export xapikey=<cdp-api-key>
+```
+
+### Running local tests with digital-waste-tracking-admin-ui
+
+To locally run tests against a locally hosted copy of `digital-waste-tracking-admin-ui`, ensure credentials match between environments.
+
+If the `digital-waste-tracking-admin-ui` is running on `http://localhost:3000`, and the password and login are both `local`:
+
+In the `digital-waste-tracking-admin-ui` `.env` file we should have `USER_BASIC_AUTH_LOCAL=bG9jYWw9bG9jYWw=`, which is the base64 encoding of `local=local`
+
+In the `digital-waste-tracking-fe-uat` repo, in `env.sh`,
+
+```bash
+export ENVIRONMENT=local
+export adminUiPassword=local
+```
+
+And in [test/support/local.config.json] set:
+```json
+  "adminUiBaseUrl": "http://localhost:3000",
+  "adminUiUsername": "local"
+```
+
+There is a convenience script to run local tests only against `digital-waste-tracking-admin-ui`:
+```bash
+npm run test:local-admin-ui
 ```
 
 ## Production
