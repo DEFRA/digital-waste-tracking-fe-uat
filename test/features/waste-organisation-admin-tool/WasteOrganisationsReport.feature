@@ -4,9 +4,10 @@ Feature: Waste organisations report
   I want to search waste organisations by registration date
   So that I can view organisations and their active API code counts in a given period.
 
+  @accessibility
   Scenario: waste organisations report page passes accessibility tests
     Given the user navigates to the waste organisations report page
-    Then the page should pass accessibility tests
+    Then the waste organisations report page should pass accessibility tests
 
   Scenario: organisations are displayed for a wide date range
     Given the user navigates to the waste organisations report page

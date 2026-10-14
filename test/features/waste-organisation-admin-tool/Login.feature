@@ -9,9 +9,10 @@ Feature: Login to the DWT Admin Portal
     When the user signs in with valid admin credentials
     Then the user should be logged in to the admin tool successfully
 
+  @accessibility
   Scenario: login page passes accessibility tests
     Given the user navigates to the admin tool login page
-    Then the page should pass accessibility tests
+    Then the waste organisation admin login page should pass accessibility tests
 
   Scenario: user can show and hide the password
     Given the user navigates to the admin tool login page
