@@ -1,4 +1,6 @@
 {
   "defraIdServiceUrl": "http://localhost:3200/cdp-defra-id-stub",
-  "wasteOrganisationBackendServiceUrl": "http://localhost:3001"
+  "wasteOrganisationBackendServiceUrl": "http://localhost:3001",
+  "adminUiBaseUrl": "http://localhost:3000",
+  "adminUiUsername": "local"
 }
