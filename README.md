@@ -51,7 +51,6 @@ cp env.sh.template env.sh
 
 Update `env.sh` with the values for the environment you want to test against. Use `env.sh.template` as the source of required variable names. Do not commit `env.sh`; it is ignored by git because it contains secrets.
 
-
 ### Running local tests
 
 Start application you are testing on the url specified in `baseUrl` [wdio.local.conf.js](wdio.local.conf.js)
@@ -90,12 +89,14 @@ export adminUiPassword=local
 ```
 
 And in [test/support/local.config.json] set:
+
 ```json
   "adminUiBaseUrl": "http://localhost:3000",
   "adminUiUsername": "local"
 ```
 
 There is a convenience script to run local tests only against `digital-waste-tracking-admin-ui`:
+
 ```bash
 npm run test:local-admin-ui
 ```
