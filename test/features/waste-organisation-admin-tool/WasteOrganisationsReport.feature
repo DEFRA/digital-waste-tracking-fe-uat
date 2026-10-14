@@ -1,12 +1,13 @@
-@feature=AdminToolOrganisationReporting @issue=DWTA-241 @issue=DWTA-242 @issue=DWTA-248 @browserstack-admin-tool
+@feature=AdminToolOrganisationReporting @issue=DWTA-241 @issue=DWTA-242 @issue=DWTA-248 @browserstack-admin-tool @env_local
 Feature: Waste organisations report
   As an internal user of the DWT Admin Portal
   I want to search waste organisations by registration date
   So that I can view organisations and their active API code counts in a given period.
 
-  Scenario: the waste organisations report page loads with the search form
+  @accessibility
+  Scenario: waste organisations report page passes accessibility tests
     Given the user navigates to the waste organisations report page
-    Then the waste organisations report search form should be displayed
+    Then the waste organisations report page should pass accessibility tests
 
   Scenario: organisations are displayed for a wide date range
     Given the user navigates to the waste organisations report page

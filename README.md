@@ -28,6 +28,11 @@ To use the correct version of Node.js for this application, via nvm:
 nvm use
 ```
 
+#### Java
+
+In order to use the Allure test report, you need a Java runtime installed.
+See [OpenJDK](https://openjdk.org/install/)
+
 ### Setup
 
 Clone the repository and change into this project directory:
@@ -51,12 +56,6 @@ cp env.sh.template env.sh
 
 Update `env.sh` with the values for the environment you want to test against. Use `env.sh.template` as the source of required variable names. Do not commit `env.sh`; it is ignored by git because it contains secrets.
 
-When running from a local machine against protected CDP backend APIs, also set:
-
-```bash
-export xapikey=<cdp-api-key>
-```
-
 ### Running local tests
 
 Start application you are testing on the url specified in `baseUrl` [wdio.local.conf.js](wdio.local.conf.js)
@@ -65,10 +64,49 @@ Start application you are testing on the url specified in `baseUrl` [wdio.local.
 npm run test:local
 ```
 
+By default, in the local environment, only the tests marked with the `@env_local` tag will run.
+You can run other tests by overriding the tags with --cucumberOpts.tags.
+
 ### Debugging local tests
 
 ```bash
 npm run test:local:debug
+```
+
+### Running local tests against remote dev backend
+
+When running from a local machine against protected CDP backend APIs, in `env.sh` set:
+
+```bash
+export xapikey=<cdp-api-key>
+```
+
+### Running local tests with digital-waste-tracking-admin-ui
+
+To locally run tests against a locally hosted copy of `digital-waste-tracking-admin-ui`, ensure credentials match between environments.
+
+If the `digital-waste-tracking-admin-ui` is running on `http://localhost:3000`, and the password and login are both `local`:
+
+In the `digital-waste-tracking-admin-ui` `.env` file we should have `USER_BASIC_AUTH_LOCAL=bG9jYWw9bG9jYWw=`, which is the base64 encoding of `local=local`
+
+In the `digital-waste-tracking-fe-uat` repo, in `env.sh`,
+
+```bash
+export ENVIRONMENT=local
+export adminUiPassword=local
+```
+
+And in [test/support/local.config.json] set:
+
+```json
+  "adminUiBaseUrl": "http://localhost:3000",
+  "adminUiUsername": "local"
+```
+
+There is a convenience script to run local tests only against `digital-waste-tracking-admin-ui`:
+
+```bash
+npm run test:local-admin-ui
 ```
 
 ## Production

@@ -1,6 +1,7 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
 import AdminToolLoginPage from '../page-objects/waste-organisation-admin-tool/login.page.js'
 import { LOGIN_VALIDATION_FIXTURES } from '../data/admin-tool-login-fixtures.js'
+import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import { getAdminUiCredentials } from '../utils/admin-tool-credentials.js'
 
 const EXAMPLE_PASSWORD = 'example-password'
@@ -37,6 +38,7 @@ Given('the user navigates to the admin tool login page', async function () {
   await AdminToolLoginPage.verifyLoginPageIsDisplayed(
     this.testConfig.adminUiBaseUrl
   )
+  this.pageName = 'admin-tool-login-page'
 })
 
 Given(
@@ -96,6 +98,13 @@ Then(
       expectInlineErrors: fixture.expectInlineErrors,
       expectedInlineError: fixture.expectedInlineError
     })
+  }
+)
+
+Then(
+  'the waste organisation admin login page should pass accessibility tests',
+  async function () {
+    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }
 )
 

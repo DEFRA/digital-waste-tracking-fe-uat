@@ -1,4 +1,4 @@
-@feature=AdminToolLogin @issue=DWTA-250 @browserstack-admin-tool
+@feature=AdminToolLogin @issue=DWTA-250 @browserstack-admin-tool @env_local
 Feature: Login to the DWT Admin Portal
   As an internal user of the DWT Admin Portal
   I want to sign in with my username and password
@@ -8,6 +8,11 @@ Feature: Login to the DWT Admin Portal
     Given the user navigates to the admin tool login page
     When the user signs in with valid admin credentials
     Then the user should be logged in to the admin tool successfully
+
+  @accessibility
+  Scenario: login page passes accessibility tests
+    Given the user navigates to the admin tool login page
+    Then the waste organisation admin login page should pass accessibility tests
 
   Scenario: user can show and hide the password
     Given the user navigates to the admin tool login page
