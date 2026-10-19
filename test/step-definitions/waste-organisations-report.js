@@ -167,7 +167,7 @@ Then(
 )
 
 Then(
-  'the waste organisations report page should pass accessibility tests',
+  'the waste organisations report page should generate accessibility tests',
   async function () {
     await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }

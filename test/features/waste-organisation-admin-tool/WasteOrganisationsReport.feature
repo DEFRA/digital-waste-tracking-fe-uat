@@ -5,9 +5,10 @@ Feature: Waste organisations report
   So that I can view organisations and their active API code counts in a given period.
 
   @accessibility
-  Scenario: waste organisations report page passes accessibility tests
+  Scenario: waste organisations report page generates accessibility tests
     Given the user navigates to the waste organisations report page
-    Then the waste organisations report page should pass accessibility tests
+    Then the waste organisations report search form should be displayed
+    Then the waste organisations report page should generate accessibility tests
 
   Scenario: organisations are displayed for a wide date range
     Given the user navigates to the waste organisations report page
