@@ -109,6 +109,10 @@ There is a convenience script to run local tests only against `digital-waste-tra
 npm run test:local-admin-ui
 ```
 
+The admin UI's CI runs the same tests with `npm run test:admin-tool`, against its compose stack with Chrome
+in a container (see the admin UI's README). There, `ADMIN_UI_BASE_URL` points the tests at the admin UI's
+compose service name instead of `localhost`.
+
 ## Production
 
 ### Running the tests
