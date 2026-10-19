@@ -1,6 +1,7 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
 import WasteOrganisationsReportPage from '../page-objects/waste-organisation-admin-tool/waste-organisations-report.page.js'
 import AdminToolLoginPage from '../page-objects/waste-organisation-admin-tool/login.page.js'
+import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import {
   DATE_RANGE_FIXTURES,
   FRONTEND_VALIDATION_FIXTURES,
@@ -57,6 +58,7 @@ Given(
       baseUrl,
       WASTE_ORGANISATIONS_REPORT_PATH
     )
+    this.pageName = 'waste-organisations-report-page'
     await AdminToolLoginPage.login(username, password)
     await WasteOrganisationsReportPage.verifyPageIsDisplayed(baseUrl)
   }
@@ -161,5 +163,12 @@ Then(
     await WasteOrganisationsReportPage.verifyValidationErrors(
       fixture.expectedErrors
     )
+  }
+)
+
+Then(
+  'the waste organisations report page should generate accessibility tests',
+  async function () {
+    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
   }
 )
