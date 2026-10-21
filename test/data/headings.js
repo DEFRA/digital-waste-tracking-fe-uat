@@ -202,12 +202,12 @@ export const HEADINGS = {
   },
   adminToolLogin: {
     title: {
-      en: 'User Login | DWT Admin Portal'
+      en: 'User login - DWT admin portal'
     }
   },
   wasteOrganisationsReport: {
     title: {
-      en: 'Waste Organisations Report | DWT Admin Portal'
+      en: 'Waste Organisations Report - DWT admin portal'
     }
   }
 }
