@@ -151,3 +151,52 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the file is successfully accepted for processing
     And all the waste movements should be successfully created
     And the processed spreadsheet should contain valid WTIDs
+
+  @env_test @issue=DR-200
+  Scenario Outline: More error scenarios for waste receiver uploads a spreadsheet - <error_type>
+    Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a spreadsheet file "<spreadsheet_file>" to upload
+    Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
+    And no waste movements should be created
+    And the processed spreadsheet should contain error details
+
+    Examples:
+      | error_type                                                                             | spreadsheet_file                   |
+      | hazardousWasteConsignmentCode and reason missing, when hazardous ewc codes are present | Test2-spreadsheet-api-error-1.xlsx |
+      | no carrier details provided, when carrier details are provided                         | Test2-spreadsheet-api-error-2.xlsx |
+
+  @env_test @issue=DR-205 @issue=DR-217
+  Scenario Outline: Waste receiver uploads a spreadsheet <test_name> then all the waste movements should be successfully persisted
+    Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "<spreadsheet_file>" to upload
+    Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
+    And the processed spreadsheet should contain valid WTIDs
+
+    Examples:
+      | test_name                                                    | spreadsheet_file                           |
+      | with blank spaces for 'carrier address and unique reference' | Test5-spreadsheet-spaces-in-fields.xlsx    |
+      | with 0 containers for a waste item                           | Test5-zero-containers.xlsx                 |
+      | with date received in text format                            | Test6-spreadsheet-date-in-text-format.xlsx |
+
+  @env_test @issue=DR-205 @issue=DR-217
+  Scenario Outline: Waste receiver uploads a spreadsheet <test_name> then upload must fail with errors returned in spreadsheet
+    Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
+    And the user navigates to report receipt of waste
+    And user selects option to upload waste movements using a spreadsheet
+    When user selects copy of a valid spreadsheet file "<spreadsheet_file>" to upload
+    Then the user should be redirected to "Upload successful" page
+    And the file is successfully accepted for processing
+    And no waste movements should be created
+    And the processed spreadsheet should contain error details
+
+    Examples:
+      | test_name                                         | spreadsheet_file                            |
+      | with blank spaces for vehicle registration number | Test5-spreadsheet-space-in-vehicle-reg.xlsx |
+      # | with date received in invalid format              | Test7-spreadsheet-invalid-date-format.xlsx  | -- currently waste movement backend is returning different results in test and dev
+      # re-enable when the error is uniform
