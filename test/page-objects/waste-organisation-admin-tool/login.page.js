@@ -50,7 +50,7 @@ class AdminToolLoginPage extends Page {
       )
     }
     await this.verifyPageTitle()
-    await expect(this.heading).toHaveText('User Login')
+    await expect(this.heading).toHaveText('User login')
     await expect(this.usernameInput).toBeDisplayed()
     await expect(this.passwordInput).toBeDisplayed()
     await expect(this.signInButton).toHaveText('Sign in')
@@ -129,7 +129,7 @@ class AdminToolLoginPage extends Page {
   async verifyStillOnLoginPage(baseUrl) {
     await this.waitForPageToLoad()
     await expect(browser).toHaveUrl(expect.stringContaining(`${baseUrl}/login`))
-    await expect(this.heading).toHaveText('User Login')
+    await expect(this.heading).toHaveText('User login')
   }
 
   async verifyLoginErrors({
