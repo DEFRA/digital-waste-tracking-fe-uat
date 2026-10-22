@@ -214,5 +214,29 @@ export const EXPECTED_ERRORS = {
     errorsWasteItemLevel: [
       { row: 14, value: 'concentration operator must be [>] (P14)' }
     ]
+  },
+  'Test2-spreadsheet-api-error-1.xlsx': {
+    errorsWasteMovementLevel: [
+      {
+        row: 9,
+        value:
+          'reason for no consignment code is required when wasteItems[*].ewcCodes contains a hazardous code and hazardousWasteConsignmentCode is not provided (M9)'
+      }
+    ],
+    errorsWasteItemLevel: []
+  },
+  'Test2-spreadsheet-api-error-2.xlsx': {
+    errorsWasteMovementLevel: [{ row: 9, value: 'carrier is required (O9)' }],
+    errorsWasteItemLevel: []
+  },
+  'Test5-spreadsheet-space-in-vehicle-reg.xlsx': {
+    errorsWasteMovementLevel: [
+      {
+        row: 9,
+        value:
+          'If carrier.meansOfTransport is "Road" then carrier.vehicleRegistration is required (W9)'
+      }
+    ],
+    errorsWasteItemLevel: []
   }
 }
