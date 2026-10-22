@@ -207,7 +207,7 @@ export const HEADINGS = {
   },
   wasteOrganisationsReport: {
     title: {
-      en: 'Waste Organisations Report - DWT admin portal'
+      en: 'Waste organisations report - DWT admin portal'
     }
   }
 }
