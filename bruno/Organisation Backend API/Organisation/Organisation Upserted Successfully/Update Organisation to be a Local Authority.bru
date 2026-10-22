@@ -1,0 +1,37 @@
+meta {
+  name: Update Organisation to be a Local Authority
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/user/{{userId}}/organisation/{{organisationId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  content-type: application/json
+  x-api-key: {{x-api-key}}
+}
+
+body:json {
+  {
+    "organisation": {
+      "name": "{{organisationName}}",
+      "users": [
+        "{{userId}}"
+      ],
+      "isLocalAuthority": true
+    }
+  }
+}
+
+vars:post-response {
+  organisationId: res.body.organisation.organisationId
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

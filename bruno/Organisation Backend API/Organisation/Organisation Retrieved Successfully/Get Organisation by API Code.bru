@@ -1,0 +1,24 @@
+meta {
+  name: Get Organisation by API Code
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/organisation/{{code}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{x-api-key}}
+}
+
+vars:post-response {
+  organisationId: res.body.defraCustomerOrganisationId
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

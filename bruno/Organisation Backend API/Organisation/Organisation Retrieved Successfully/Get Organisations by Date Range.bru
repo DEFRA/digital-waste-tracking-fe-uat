@@ -1,0 +1,26 @@
+meta {
+  name: Get Organisations by Date Range
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/organisations?startDate=2026-04-15&endDate=2026-07-01
+  body: none
+  auth: inherit
+}
+
+params:query {
+  startDate: 2026-04-15
+  endDate: 2026-07-01
+}
+
+headers {
+  x-api-key: {{x-api-key}}
+  Accept-Encoding: identity
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,43 @@
+meta {
+  name: Create New Organisation
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/user/{{userId}}/organisation/{{organisationId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  content-type: application/json
+  x-api-key: {{x-api-key}}
+}
+
+body:json {
+  {
+    "organisation": {
+      "name": "Bruno Testing Org {{$timestamp}}",
+      "users": [
+        "{{userId}}"
+      ],
+      "isLocalAuthority": true
+    }
+  }
+}
+
+vars:pre-request {
+  userId: {{$randomUUID}}
+  organisationId: {{$randomUUID}}
+  organisationName: Bruno Testing Org {{$timestamp}}
+}
+
+vars:post-response {
+  organisationId: res.body.organisation.organisationId
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
