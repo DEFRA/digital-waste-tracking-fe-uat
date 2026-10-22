@@ -155,5 +155,5 @@ So that I can make corrections or changes after submission.
       | Unsupported-file-type-1.png     |
       | Unsupported-file-type-2.xlsm    |
       | File-size-greater-than-2MB.xlsx |
-# ToDo: e2e test for updating waste movements using a spreadsheet can be done only once TeamA 
-# completes the api development which can then be used to query waste movements using bulk upload id
+
+
