@@ -123,7 +123,7 @@ class AdminToolLoginPage extends Page {
     const currentUrl = (await browser.getUrl()).replace(/\/$/, '')
     const expectedUrl = baseUrl.replace(/\/$/, '')
     expect(currentUrl).toBe(expectedUrl)
-    await expect(browser).not.toHaveTitle('User Login | DWT Admin Portal')
+    await expect(browser).not.toHaveTitle('User login - DWT admin portal')
   }
 
   async verifyStillOnLoginPage(baseUrl) {
