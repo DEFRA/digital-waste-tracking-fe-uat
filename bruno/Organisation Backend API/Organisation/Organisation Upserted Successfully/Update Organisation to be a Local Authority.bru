@@ -18,17 +18,9 @@ headers {
 body:json {
   {
     "organisation": {
-      "name": "{{organisationName}}",
-      "users": [
-        "{{userId}}"
-      ],
       "isLocalAuthority": true
     }
   }
-}
-
-vars:post-response {
-  organisationId: res.body.organisation.organisationId
 }
 
 settings {

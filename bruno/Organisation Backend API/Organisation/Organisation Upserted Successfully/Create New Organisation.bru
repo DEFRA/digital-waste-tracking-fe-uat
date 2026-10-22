@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: {{baseUrl}}/user/{{userId}}/organisation/{{organisationId}}
+  url: {{baseUrl}}/user/{{newUserId}}/organisation/{{newOrganisationId}}
   body: json
   auth: inherit
 }
@@ -18,23 +18,24 @@ headers {
 body:json {
   {
     "organisation": {
-      "name": "Bruno Testing Org {{$timestamp}}",
+      "name": "{{newOrganisationName}}",
       "users": [
-        "{{userId}}"
-      ],
-      "isLocalAuthority": true
+        "{{newUserId}}"
+      ]
     }
   }
 }
 
 vars:pre-request {
-  userId: {{$randomUUID}}
-  organisationId: {{$randomUUID}}
-  organisationName: Bruno Testing Org {{$timestamp}}
+  newUserId: {{$randomUUID}}
+  newOrganisationId: {{$randomUUID}}
+  newOrganisationName: Bruno Testing Org {{$timestamp}}
 }
 
 vars:post-response {
-  organisationId: res.body.organisation.organisationId
+  userId: res.status === 200 ? res.body.organisation.users[0] : undefined
+  organisationId: res.status === 200 ? res.body.organisation.organisationId : undefined
+  organisationName: res.status === 200 ? res.body.organisation.name : undefined
 }
 
 settings {
