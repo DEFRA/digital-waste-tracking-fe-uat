@@ -50,7 +50,9 @@ Given(
     expect(response.statusCode).toBe(200)
     expect(response.json.name).toBe(this.organisationName)
     expect(response.json.isLocalAuthority).toBe(true)
-    expect(response.json.defraCustomerOrganisationId).toEqual(expect.any(String))
+    expect(response.json.defraCustomerOrganisationId).toEqual(
+      expect.any(String)
+    )
     expect(response.json.defraCustomerOrganisationId).toBe(this.organisationId)
   }
 )
