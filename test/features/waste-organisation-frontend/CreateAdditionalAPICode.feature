@@ -23,6 +23,7 @@ So that I can connect more than one system to the Receipt of Waste service.
     And user selects option to view his api code
     And user is on the View API Code page
     And user should see the "active" API Code for the selected business
+    And the organisation is returned as a local authority for that API code
     When user tries to create an additional API code
     Then an additional API code should be created for the organisation
     And display the new API code in the API code list

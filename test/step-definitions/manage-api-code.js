@@ -40,6 +40,21 @@ When('user is on the View API Code page', async function () {
   await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
 })
 
+Given(
+  'the organisation is returned as a local authority for that API code',
+  async function () {
+    const response =
+      await this.apis.wasteOrganisationBackendAPI.getOrganisationByApiCode(
+        this.activeApiCode
+      )
+    expect(response.statusCode).toBe(200)
+    expect(response.json.name).toBe(this.organisationName)
+    expect(response.json.isLocalAuthority).toBe(true)
+    expect(response.json.defraCustomerOrganisationId).toEqual(expect.any(String))
+    expect(response.json.defraCustomerOrganisationId).toBe(this.organisationId)
+  }
+)
+
 Then(
   'user should see the {string} API Code for the selected business',
   async function (status) {
