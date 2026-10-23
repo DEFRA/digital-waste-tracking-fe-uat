@@ -1,0 +1,32 @@
+meta {
+  name: Create API Code For An Organisation
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/organisation/{{organisationId}}/apiCodes
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{x-api-key}}
+}
+
+body:json {
+  {
+    "apiCode": {
+      "name": "API Code Made In Bruno {{$timestamp}}"
+    }
+  }
+}
+
+vars:post-response {
+  apiCode: res.body.code
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

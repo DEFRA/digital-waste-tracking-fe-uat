@@ -1,7 +1,7 @@
 meta {
-  name: Get bulk Id by fileName -- internal
+  name: Get Bulk Id by Filename
   type: http
-  seq: 2
+  seq: 1
 }
 
 get {
@@ -16,6 +16,10 @@ params:query {
 
 headers {
   x-api-key: {{x-api-key}}
+}
+
+vars:post-response {
+  uploadId: res.body.uploads[0].uploadId
 }
 
 settings {
