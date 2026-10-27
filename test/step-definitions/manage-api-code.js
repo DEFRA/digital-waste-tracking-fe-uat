@@ -48,8 +48,8 @@ Given(
         this.activeApiCode
       )
     expect(response.statusCode).toBe(200)
-    // Commented out for now as this.organisationName is not set but
-    // the tests in the test env
+    // ToDo: Commented out for now as this.organisationName is not set by the
+    // tests in the test env, but we could add it if we can get it in the setup
     // expect(response.json.name).toBe(this.organisationName)
     expect(response.json.isLocalAuthority).toBe(true)
     expect(response.json.defraCustomerOrganisationId).toEqual(
