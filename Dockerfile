@@ -8,7 +8,9 @@ RUN apt-get update -qq \
     && apt-get install -qqy \
     curl \
     zip \
-    openjdk-17-jre-headless
+    procps \
+    openjdk-17-jre-headless \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
     && unzip awscliv2.zip \
