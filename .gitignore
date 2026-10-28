@@ -20,3 +20,4 @@ scripts/
 _results_/
 perf-test-tmp/
 zap-report/
+logs/
