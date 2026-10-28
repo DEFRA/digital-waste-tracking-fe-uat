@@ -1,4 +1,3 @@
-import { ProxyAgent, setGlobalDispatcher } from 'undici'
 import { bootstrap } from 'global-agent'
 import { initialiseAccessibilityChecking } from './test/utils/accessibility-checking.js'
 import fs from 'node:fs'
@@ -123,15 +122,14 @@ const allCapabilities = [
 // const oneHour = 60 * 60 * 1000
 
 /**
- * Enable webdriver.io to use the outbound proxy.
- * This is required for the test suite to be able to talk to BrowserStack.
+ * CDP only allows outbound traffic through HTTP_PROXY.
+ * Webdriver and the BrowserStack service each open their own proxy from that
+ * variable. Do not install undici's ProxyAgent as the global dispatcher:
+ * Webdriver will send its session request through it, and undici 7 rejects the
+ * Content-Length header on that request.
  */
 // Only use proxy if HTTP_PROXY is set (for CDP environments)
 if (process.env.HTTP_PROXY) {
-  const dispatcher = new ProxyAgent({
-    uri: process.env.HTTP_PROXY || 'http://localhost:3128'
-  })
-  setGlobalDispatcher(dispatcher)
   bootstrap()
   global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
 }
