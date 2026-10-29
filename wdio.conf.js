@@ -52,7 +52,7 @@ export const config = {
   // gets prepended directly.
   baseUrl:
     process.env.ENVIRONMENT === 'ext-test'
-      ? `https://${process.env.httpsAuth}@waste-tracking.integration.defra.gov.uk`
+      ? 'https://waste-tracking.integration.defra.gov.uk'
       : process.env.ENVIRONMENT === 'local'
         ? 'http://waste-organisation-frontend:3000'
         : `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,

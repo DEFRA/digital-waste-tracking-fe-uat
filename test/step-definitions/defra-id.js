@@ -10,6 +10,7 @@ import HomePage from '../page-objects/home.page.js'
 import { getValueFromPool } from '@wdio/shared-store-service'
 import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import DefraIdOrgPickerPage from '../page-objects/defra-id-org-picker.page.js'
+import BasicAuthLoginPage from '../page-objects/basic-auth-login.page.js'
 
 Given(
   'user proceeds to login using a Government Gateway account',
@@ -214,8 +215,19 @@ async function loginOriginalUserToPortal(context) {
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 }
 
+async function loginThroughBasicAuthIfPresented(context) {
+  if (await BasicAuthLoginPage.isCurrentPage()){
+    await BasicAuthLoginPage.login(
+      context.env.BASIC_AUTH_USERNAME,
+      context.env.BASIC_AUTH_PASSWORD
+    )
+  }
+
+}
+
 async function navigateToPortalAndLogin(context, accountType) {
   await UKPermitPage.open()
+  await loginThroughBasicAuthIfPresented(context)
   await continueFromLocalAuthorityPage(context.isLocalAuthority)
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     context.testConfig.defraIdServiceUrl

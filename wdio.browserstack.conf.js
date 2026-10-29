@@ -150,7 +150,7 @@ export const config = {
   // gets prepended directly.
   baseUrl:
     process.env.ENVIRONMENT === 'ext-test'
-      ? `https://${process.env.httpsAuth}@waste-tracking.integration.defra.gov.uk`
+      ? 'https://waste-tracking.integration.defra.gov.uk'
       : `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
 
   // You will need to provide your own BrowserStack credentials.
