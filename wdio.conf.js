@@ -120,7 +120,9 @@ export const config = {
   bail: 0,
   waitforTimeout: 20000,
   waitforInterval: 200,
-  connectionRetryTimeout: 6000,
+  // How long a ChromeDriver request, including POST /session, may take.
+  // 120s is the WebdriverIO default. connectionRetryCount only repeats connection errors.
+  connectionRetryTimeout: 120000,
   connectionRetryCount: 3,
   services: ['shared-store'],
   framework: 'cucumber',
@@ -231,8 +233,8 @@ export const config = {
     cucumberWorld.browserInfo = browserInfo
     cucumberWorld.deviceInfo = deviceInfo
 
-    // Re-open a fresh browser session for each scenario
-    // This ensures test isolation - each scenario starts with a clean browser state
+    // Close the previous scenario's browser, then wait for the next session.
+    // POST /session uses connectionRetryTimeout.
     if (browser.sessionId) {
       await browser.reloadSession()
     }
