@@ -216,13 +216,12 @@ async function loginOriginalUserToPortal(context) {
 }
 
 async function loginThroughBasicAuthIfPresented(context) {
-  if (await BasicAuthLoginPage.isCurrentPage()){
+  if (await BasicAuthLoginPage.isCurrentPage()) {
     await BasicAuthLoginPage.login(
       context.env.BASIC_AUTH_USERNAME,
       context.env.BASIC_AUTH_PASSWORD
     )
   }
-
 }
 
 async function navigateToPortalAndLogin(context, accountType) {

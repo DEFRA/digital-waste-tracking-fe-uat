@@ -24,7 +24,9 @@ class BasicAuthLoginPage extends Page {
   }
 
   async login(username, password) {
-    await this.usernameInput.waitForDisplayed({ timeout: config.waitforTimeout })
+    await this.usernameInput.waitForDisplayed({
+      timeout: config.waitforTimeout
+    })
     await this.enterText(this.usernameInput, username)
     await this.enterText(this.passwordInput, password)
     await this.click(this.loginButton)
