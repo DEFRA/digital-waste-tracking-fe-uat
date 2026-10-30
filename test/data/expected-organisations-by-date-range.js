@@ -1,5 +1,23 @@
+// The names the seed script (test/utils/test-data-organisations.js) gives them
+const SEED_ORGANISATION_NAMES = {
+  '6d35c84d-b4f8-4f8d-84db-39f9894c1a6a': 'DWT admin test - 1',
+  'ec12b2d2-f7c6-40e9-a5ef-9bdb1c8d6581': 'DWT admin test - 2',
+  'bfc57d9f-9ef6-4c6d-a34e-0d69b79a4db0': 'DWT admin test - 3',
+  'c8cbe6cb-9af7-4b80-8b82-538d76ecad43': 'DWT admin test - 4',
+  'c1f1d0cf-5b95-4d0d-b8b3-0bc80b77b78f': 'DWT admin test - 5',
+  '74dc6d88-2816-4d39-b983-63d35f4cb9af': 'DWT admin test - 6',
+  '28c74af7-d1df-4c22-a4fc-6945d04bdce2': 'DWT admin test - 7',
+  '0dd9bcf4-1bd2-4c91-8b87-7b76b7a2d90c': 'DWT admin test - 8',
+  'f42bc5d3-2d0c-4b31-ae90-d44a472cf958': 'DWT admin test - 9',
+  'b8f90b0c-6156-4f58-8df5-b76e5ebcfd67': 'DWT admin test - 10',
+  'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f11': 'DWT admin test - 11',
+  'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a12': 'DWT admin test - 12',
+  'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b13': 'DWT admin test - 13'
+}
+
 const organisation = (organisationId, dateRegistered, activeApiCodeCount) => ({
   organisationId,
+  name: SEED_ORGANISATION_NAMES[organisationId],
   dateRegistered,
   activeApiCodeCount
 })
@@ -239,113 +257,77 @@ export const VALIDATION_ERROR_FIXTURES = {
   }
 }
 
+// Errors on the admin UI's search, one per date, From first (DWTSPI-480)
+const dateError = (errorField, message) => ({ message, errorField })
+
 export const FRONTEND_VALIDATION_FIXTURES = {
-  invalid_from_date: {
-    fromDate: {
-      day: '01',
-      month: '44',
-      year: '2024'
-    },
-    toDate: {
-      day: '31',
-      month: '7',
-      year: '2024'
-    },
+  nothing_entered: {
+    fromDate: { day: '', month: '', year: '' },
+    toDate: { day: '', month: '', year: '' },
     expectedErrors: [
-      {
-        message: 'From date must be a valid date',
-        errorField: 'date-from'
-      }
+      dateError('date-from', 'Enter a ‘From’ date'),
+      dateError('date-to', 'Enter a ‘To’ date')
     ]
   },
-  invalid_to_date: {
-    fromDate: {
-      day: '01',
-      month: '1',
-      year: '2024'
-    },
-    toDate: {
-      day: '01',
-      month: '44',
-      year: '2025'
-    },
+  missing_month: {
+    fromDate: { day: '17', month: '', year: '2024' },
+    toDate: { day: '31', month: '7', year: '2024' },
+    expectedErrors: [dateError('date-from', '‘From’ date must include a month')]
+  },
+  more_than_one_part_missing: {
+    fromDate: { day: '01', month: '1', year: '2024' },
+    toDate: { day: '', month: '', year: '2024' },
     expectedErrors: [
-      {
-        message: 'To date must be a valid date',
-        errorField: 'date-to'
-      }
+      dateError('date-to', '‘To’ date must include a day, month and year')
     ]
   },
   invalid_to_date_non_numeric: {
-    fromDate: {
-      day: '01',
-      month: '1',
-      year: '2024'
-    },
-    toDate: {
-      day: 'abc',
-      month: '1',
-      year: '2025'
-    },
+    fromDate: { day: '01', month: '1', year: '2024' },
+    toDate: { day: 'abc', month: '1', year: '2025' },
     expectedErrors: [
-      {
-        message: 'To date must be a valid date',
-        errorField: 'date-to'
-      }
+      dateError('date-to', 'Enter the ‘To’ date in the correct format')
     ]
   },
-  invalid_calendar_from_date: {
-    fromDate: {
-      day: '31',
-      month: '2',
-      year: '2024'
-    },
-    toDate: {
-      day: '31',
-      month: '7',
-      year: '2024'
-    },
+  two_digit_year: {
+    fromDate: { day: '01', month: '1', year: '24' },
+    toDate: { day: '31', month: '7', year: '2024' },
     expectedErrors: [
-      {
-        message: 'From date must be a valid date',
-        errorField: 'date-from'
-      }
+      dateError('date-from', 'Enter the ‘From’ date in the correct format')
+    ]
+  },
+  invalid_from_date: {
+    fromDate: { day: '01', month: '44', year: '2024' },
+    toDate: { day: '31', month: '7', year: '2024' },
+    expectedErrors: [dateError('date-from', '‘From’ date must be a real date')]
+  },
+  invalid_calendar_from_date: {
+    fromDate: { day: '31', month: '2', year: '2024' },
+    toDate: { day: '31', month: '7', year: '2024' },
+    expectedErrors: [dateError('date-from', '‘From’ date must be a real date')]
+  },
+  future_to_date: {
+    fromDate: { day: '01', month: '1', year: '2024' },
+    toDate: { day: '01', month: '1', year: '2099' },
+    expectedErrors: [
+      dateError('date-to', '‘To’ date must be today or in the past')
     ]
   },
   from_date_after_to_date: {
-    fromDate: {
-      day: '01',
-      month: '12',
-      year: '2024'
-    },
-    toDate: {
-      day: '01',
-      month: '1',
-      year: '2024'
-    },
+    fromDate: { day: '01', month: '12', year: '2024' },
+    toDate: { day: '01', month: '1', year: '2024' },
     expectedErrors: [
-      {
-        message: 'To date cannot be before the From date',
-        errorField: 'date-to'
-      }
+      dateError(
+        'date-to',
+        '‘To’ date must be the same as or after 1 December 2024'
+      )
     ]
   },
   both_dates_invalid: {
-    fromDate: {
-      day: '01',
-      month: '44',
-      year: '2024'
-    },
-    toDate: {
-      day: '01',
-      month: '55',
-      year: '2024'
-    },
+    fromDate: { day: '01', month: '44', year: '2024' },
+    toDate: { day: '01', month: '55', year: '2024' },
     expectedErrors: [
-      {
-        message: 'From date must be a valid date',
-        errorField: 'date-from'
-      }
+      dateError('date-from', '‘From’ date must be a real date'),
+      dateError('date-to', '‘To’ date must be a real date')
     ]
   }
 }
@@ -370,11 +352,13 @@ export function parseIsoDateToFormFields(isoDate) {
   return parseIsoDate(isoDate)
 }
 
+// The report lists organisations oldest first. Organisations registered at the
+// same moment keep the backend's order, organisation ID descending
 export function sortOrganisationsForReport(organisations) {
   return [...organisations].sort((a, b) => {
     const dateDifference =
-      new Date(b.dateRegistered).getTime() -
-      new Date(a.dateRegistered).getTime()
+      new Date(a.dateRegistered).getTime() -
+      new Date(b.dateRegistered).getTime()
 
     if (dateDifference !== 0) {
       return dateDifference
@@ -384,9 +368,11 @@ export function sortOrganisationsForReport(organisations) {
   })
 }
 
+// The page shows the date registered in the UK, for example "1 Jan 2024"
 export function formatRegisteredDateForDisplay(isoDate) {
   return formatDate(isoDate, {
-    day: '2-digit',
+    timeZone: 'Europe/London',
+    day: 'numeric',
     month: 'short',
     year: 'numeric'
   }).replace('Sept', 'Sep')
@@ -405,7 +391,7 @@ export function formatRegisteredDateForCsv(isoDate) {
 
 export function formatSearchDateForDisplay(isoDate) {
   return formatDate(`${isoDate}T00:00:00.000Z`, {
-    day: '2-digit',
+    day: 'numeric',
     month: 'long',
     year: 'numeric'
   })
@@ -424,7 +410,10 @@ export function buildExpectedCsvFilenameRegex(startDate, endDate) {
 
 export function mapExpectedCsvRows(expectedOrganisations) {
   return sortOrganisationsForReport(expectedOrganisations).map((org) => ({
+    name: org.name,
     organisationId: org.organisationId,
+    // The seed organisations don't say whether they're local authorities
+    localAuthority: 'Not known',
     registered: formatRegisteredDateForCsv(org.dateRegistered),
     activeApiCodeCount: org.activeApiCodeCount
   }))
