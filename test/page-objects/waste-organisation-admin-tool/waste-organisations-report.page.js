@@ -18,8 +18,8 @@ class WasteOrganisationsReportPage extends Page {
     return $('[data-testid="app-heading-title"]')
   }
 
-  get pageBody() {
-    return $('[data-testid="app-page-body"]')
+  get registrationDateGroup() {
+    return $('[data-testid="registration-date"]')
   }
 
   get fromDayInput() {
@@ -46,8 +46,12 @@ class WasteOrganisationsReportPage extends Page {
     return $('[data-testid="date-to-year"]')
   }
 
-  get showOrganisationsButton() {
-    return $('button[type="submit"]')
+  get searchButton() {
+    return $('[data-testid="search-button"]')
+  }
+
+  get clearLink() {
+    return $('[data-testid="clear-link"]')
   }
 
   get searchTimeframe() {
@@ -62,16 +66,21 @@ class WasteOrganisationsReportPage extends Page {
     return $('[data-testid="waste-organisations-list"]')
   }
 
-  get downloadCsvButton() {
-    return $('[data-testid="download-csv-button"]')
+  get downloadCsvLink() {
+    return $('[data-testid="download-csv-link"]')
+  }
+
+  get noResultsMessage() {
+    return $('[data-testid="no-results"]')
   }
 
   get errorSummary() {
     return $('.govuk-error-summary')
   }
 
+  // The errors are shown for the whole group, one for each date
   getInlineErrorForField(errorField) {
-    return $(`[data-testid="${errorField}"] .govuk-error-message`)
+    return $(`[data-testid="${errorField}-error"]`)
   }
 
   get rowElements() {
@@ -87,10 +96,8 @@ class WasteOrganisationsReportPage extends Page {
     await this.verifyPageTitle()
     await expect(browser).toHaveUrl(`${baseUrl}/reporting/waste-organisations`)
     await expect(this.heading).toHaveText('Waste organisations')
-    await expect(this.pageBody).toHaveText(
-      expect.stringContaining(
-        'Search waste organisations by DefraID registration date.'
-      )
+    await expect(this.registrationDateGroup).toHaveText(
+      expect.stringContaining('Registration date')
     )
   }
 
@@ -112,8 +119,8 @@ class WasteOrganisationsReportPage extends Page {
     await this.setDateInput(this.toYearInput, year)
   }
 
-  async clickShowOrganisations() {
-    await this.click(this.showOrganisationsButton)
+  async clickSearch() {
+    await this.click(this.searchButton)
   }
 
   async verifySearchFormIsDisplayed() {
@@ -123,7 +130,8 @@ class WasteOrganisationsReportPage extends Page {
     await expect(this.toDayInput).toBeDisplayed()
     await expect(this.toMonthInput).toBeDisplayed()
     await expect(this.toYearInput).toBeDisplayed()
-    await expect(this.showOrganisationsButton).toHaveText('Show organisations')
+    await expect(this.searchButton).toHaveText('Search')
+    await expect(this.clearLink).toHaveText('Clear')
   }
 
   async verifySearchTimeframe(expectedText) {
@@ -132,16 +140,21 @@ class WasteOrganisationsReportPage extends Page {
 
   async verifyResultsCount(expectedCount) {
     await expect(this.resultsCount).toHaveText(
-      `Organisations registered (in period): ${expectedCount}`
+      expect.stringContaining(
+        `Organisations registered in period: ${expectedCount}`
+      )
     )
   }
 
   async verifyTableHeaders() {
-    const headers = await $$('[data-testid="waste-organisations-list"] th')
-    await expect(headers).toBeElementsArrayOfSize(3)
-    await expect(await headers[0].getText()).toBe('Organisation ID')
-    await expect(await headers[1].getText()).toBe('Registered')
-    await expect(await headers[2].getText()).toBe('Active API Codes')
+    const headers = await $$(
+      '[data-testid="waste-organisations-list"] thead th'
+    )
+    await expect(headers).toBeElementsArrayOfSize(4)
+    await expect(await headers[0].getText()).toBe('Organisation name and ID')
+    await expect(await headers[1].getText()).toBe('Local authority')
+    await expect(await headers[2].getText()).toBe('Active API codes')
+    await expect(await headers[3].getText()).toBe('Registered')
   }
 
   async verifyTableRows(expectedRows) {
@@ -151,25 +164,32 @@ class WasteOrganisationsReportPage extends Page {
     await expect(rows).toBeElementsArrayOfSize(expectedRows.length)
 
     for (let i = 0; i < expectedRows.length; i++) {
-      const columns = await rows[i].$$('td')
-      await expect(columns).toBeElementsArrayOfSize(3)
-      await expect(await columns[0].getText()).toBe(
-        expectedRows[i].organisationId
+      // The first cell, the name and ID, is a row header
+      const columns = await rows[i].$$('th, td')
+      await expect(columns).toBeElementsArrayOfSize(4)
+      await expect(
+        await rows[i].$('[data-testid="organisation-name"]').getText()
+      ).toBe(expectedRows[i].name)
+      await expect(
+        await rows[i].$('[data-testid="organisation-id"]').getText()
+      ).toBe(expectedRows[i].organisationId)
+      await expect(await columns[1].getText()).toBe(
+        expectedRows[i].localAuthority
       )
-      await expect(await columns[1].getText()).toBe(expectedRows[i].registered)
       await expect(await columns[2].getText()).toBe(
         String(expectedRows[i].activeApiCodeCount)
       )
+      await expect(await columns[3].getText()).toBe(expectedRows[i].registered)
     }
   }
 
   async verifyResultsActionsAreDisplayed() {
-    await expect(this.downloadCsvButton).toBeDisplayed()
-    await expect(this.downloadCsvButton).toHaveText('Download CSV')
+    await expect(this.downloadCsvLink).toBeDisplayed()
+    await expect(this.downloadCsvLink).toHaveText('download CSV')
   }
 
-  async verifyDownloadCsvButtonIsNotDisplayed() {
-    await expect(this.downloadCsvButton).not.toBeExisting()
+  async verifyDownloadCsvLinkIsNotDisplayed() {
+    await expect(this.downloadCsvLink).not.toBeExisting()
   }
 
   buildFallbackCsvFilename(startDate, endDate) {
@@ -181,11 +201,11 @@ class WasteOrganisationsReportPage extends Page {
 
   async downloadCsvReport({ startDate, endDate }) {
     const filenamePattern = buildExpectedCsvFilenameRegex(startDate, endDate)
-    await expect(this.downloadCsvButton).toBeDisplayed()
+    await expect(this.downloadCsvLink).toBeDisplayed()
 
     if (supportsSeleniumFileDownloads()) {
       return downloadViaSelenium({
-        clickDownload: () => this.click(this.downloadCsvButton),
+        clickDownload: () => this.click(this.downloadCsvLink),
         filenamePattern,
         readContent: true,
         targetDir: path.join(os.tmpdir(), 'waste-organisations-csv')
@@ -193,7 +213,7 @@ class WasteOrganisationsReportPage extends Page {
     }
 
     const result = await downloadLinkViaBrowserFetch({
-      selector: '[data-testid="download-csv-button"]',
+      selector: '[data-testid="download-csv-link"]',
       responseType: 'text',
       hrefIncludes: 'download=csv'
     })
@@ -207,15 +227,13 @@ class WasteOrganisationsReportPage extends Page {
   }
 
   async verifyNoResultsDisplayed() {
-    await this.resultsCount.waitForDisplayed({ timeout: config.waitforTimeout })
-    await expect(this.resultsCount).toHaveText(
-      'Organisations registered (in period): 0'
+    await this.noResultsMessage.waitForDisplayed({
+      timeout: config.waitforTimeout
+    })
+    await expect(this.noResultsMessage).toHaveText(
+      'No organisations were registered in this period. Try a different date range, or select Clear.'
     )
-
-    if (await this.resultsTable.isExisting()) {
-      const rows = await this.rowElements
-      expect(rows).toHaveLength(0)
-    }
+    await expect(this.resultsTable).not.toBeExisting()
   }
 
   async verifyValidationErrors(expectedErrors) {

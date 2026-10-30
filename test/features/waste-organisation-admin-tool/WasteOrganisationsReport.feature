@@ -1,8 +1,8 @@
-@feature=AdminToolOrganisationReporting @issue=DWTA-241 @issue=DWTA-242 @issue=DWTA-248 @browserstack-admin-tool @env_local
+@feature=AdminToolOrganisationReporting @issue=DWTA-241 @issue=DWTA-242 @issue=DWTA-248 @issue=DWTSPI-480 @browserstack-admin-tool @env_local
 Feature: Waste organisations report
   As an internal user of the DWT Admin Portal
   I want to search waste organisations by registration date
-  So that I can view organisations and their active API code counts in a given period.
+  So that I can view organisations, their names and active API code counts in a given period.
 
   @accessibility
   Scenario: waste organisations report page generates accessibility tests
@@ -24,7 +24,7 @@ Feature: Waste organisations report
     Given the user navigates to the waste organisations report page
     When the user searches for organisations in the "empty_range" date range
     Then no waste organisations should be displayed
-    And the download CSV button should not be displayed
+    And the download CSV link should not be displayed
 
   Scenario: the downloaded CSV matches the report for a wide date range
     Given the user navigates to the waste organisations report page
@@ -40,9 +40,13 @@ Feature: Waste organisations report
 
     Examples:
       | fixture                     |
-      | invalid_from_date           |
-      | invalid_to_date             |
+      | nothing_entered             |
+      | missing_month               |
+      | more_than_one_part_missing  |
       | invalid_to_date_non_numeric |
+      | two_digit_year              |
+      | invalid_from_date           |
       | invalid_calendar_from_date  |
+      | future_to_date              |
       | from_date_after_to_date     |
       | both_dates_invalid          |
