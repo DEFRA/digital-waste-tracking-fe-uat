@@ -4,7 +4,7 @@ As a waste receiver
 I want to download the official spreadsheet template
 So that I can populate it with waste movement data before uploading.
 
-  @accessibility @env_dev @env_local
+  @accessibility @defra-id-stub
   Scenario: Waste receiver should be able to download the official spreadsheet template
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -12,7 +12,7 @@ So that I can populate it with waste movement data before uploading.
     When user clicks on the Download spreadsheet button
     Then the template must get downloaded to the user's local machine
 
-  @env_dev @env_test @issue=DR-60
+  @issue=DR-60 @defra-id-stub @defra-id-real
   Scenario: Local authority should be able to download the official spreadsheet template
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
     And the user navigates to report receipt of waste
@@ -20,7 +20,7 @@ So that I can populate it with waste movement data before uploading.
     When user clicks on the Download spreadsheet button
     Then the template must get downloaded to the user's local machine
 
-  @accessibility @env_test
+  @accessibility @defra-id-real
   Scenario Outline: Waste receiver should be able to login via "<account_type>" and download the official spreadsheet template
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
     And the user navigates to report receipt of waste

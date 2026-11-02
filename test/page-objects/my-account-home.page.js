@@ -1,7 +1,6 @@
 import { Page } from 'page-objects/page'
-import { $ } from '@wdio/globals'
-import { browser } from '~/node_modules/@wdio/globals/build/index'
-import { config } from '../../wdio.conf.js'
+import { $, browser } from '@wdio/globals'
+import { config } from '../../wdio.grid.conf.js'
 
 class MyAccountHomePage extends Page {
   // methods

@@ -12,15 +12,15 @@ import AllureReporter from '@wdio/allure-reporter'
 
 function isChromiumDesktop(context) {
   return (
-    !context.deviceInfo.includes('Samsung Galaxy') &&
-    (context.browserInfo.includes('chrome') ||
-      context.browserInfo.includes('MicrosoftEdge'))
+    !context.testMemory.deviceInfo.includes('Samsung Galaxy') &&
+    (context.testMemory.browserInfo.includes('chrome') ||
+      context.testMemory.browserInfo.includes('MicrosoftEdge'))
   )
 }
 
 function skipNonChromium(context) {
   AllureReporter.addStep(
-    `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${context.browserInfo}) — browser.uploadFile() is Chromium-only`,
+    `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${context.testMemory.browserInfo}) — browser.uploadFile() is Chromium-only`,
     {},
     'skipped'
   )
@@ -66,7 +66,7 @@ export const PAGE_REGISTRY = new Map([
       pageName: 'account-home-page',
       verify: async (context) => {
         await MyAccountHomePage.verifyUserIsOnMyAccountHomePage(
-          context.selectedOrganisation
+          context.testMemory.selectedOrganisation
         )
       }
     }
@@ -100,8 +100,8 @@ export const PAGE_REGISTRY = new Map([
         }
         const { organisationId, referenceNumber } =
           await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage()
-        context.organisationId = organisationId
-        context.referenceNumber = referenceNumber
+        context.testMemory.organisationId = organisationId
+        context.testMemory.referenceNumber = referenceNumber
       }
     }
   ],
@@ -118,8 +118,8 @@ export const PAGE_REGISTRY = new Map([
           await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(
             'update'
           )
-        context.organisationId = organisationId
-        context.referenceNumber = referenceNumber
+        context.testMemory.organisationId = organisationId
+        context.testMemory.referenceNumber = referenceNumber
       }
     }
   ],
@@ -129,7 +129,7 @@ export const PAGE_REGISTRY = new Map([
       pageName: 'confirm-disable-api-code-page',
       verify: async (context) => {
         await ConfirmDisableApiCodePage.verifyUserIsOnConfirmDisableApiCodePage(
-          context.activeApiCode
+          context.testMemory.activeApiCode
         )
       }
     }

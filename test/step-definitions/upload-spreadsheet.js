@@ -32,19 +32,19 @@ async function processSpreadsheetForBusiness(context, type) {
   await MyAccountHomePage.navigateToReportReceiptOfWasteOptionsPage()
   await NextActionPage.selectNextAction(action)
   await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage(mode)
-  context.uploadedFileName = await UploadSpreadsheetPage.uploadSpreadsheet(
-    file,
-    mode
-  )
+  context.testMemory.uploadedFileName =
+    await UploadSpreadsheetPage.uploadSpreadsheet(file, mode)
   const { organisationId, referenceNumber } =
     await UploadSuccessfulPage.verifyUserIsOnUploadSuccessfulPage(mode)
-  context.organisationId = organisationId
-  context.referenceNumber = referenceNumber
+  context.testMemory.organisationId = organisationId
+  context.testMemory.referenceNumber = referenceNumber
 }
 
 Given(
   /^the user successfully (uploads a waste movement spreadsheet|updates existing waste movements using a spreadsheet) for the selected business$/,
-  async function (action) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    action
+  ) {
     await processSpreadsheetForBusiness(
       this,
       action.startsWith('uploads') ? 'upload' : 'update'
@@ -54,7 +54,9 @@ Given(
 
 Then(
   /^the user should be able to successfully (upload a waste movement spreadsheet|update existing waste movements using a spreadsheet) for that business$/,
-  async function (action) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    action
+  ) {
     await processSpreadsheetForBusiness(
       this,
       action.startsWith('upload ') ? 'upload' : 'update'
@@ -64,22 +66,29 @@ Then(
 
 When(
   /^user selects copy of a( valid|) spreadsheet file "([^"]*)" to upload$/,
-  async function (flag, spreadsheetFile) {
-    this.spreadsheetFileName = spreadsheetFile
-    this.pageName = 'upload-spreadsheet-page'
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    flag,
+    spreadsheetFile
+  ) {
+    this.testMemory.spreadsheetFileName = spreadsheetFile
+    this.testMemory.pageName = 'upload-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage()
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+    await analyseAccessibility(
+      this.testMemory.tags,
+      this.testMemory.axeBuilder,
+      this.testMemory.pageName
+    )
     // skip this step for non-chromium browsers
     if (
-      !this.deviceInfo.includes('Samsung Galaxy') &&
-      (this.browserInfo.includes('chrome') ||
-        this.browserInfo.includes('MicrosoftEdge'))
+      !this.testMemory.deviceInfo.includes('Samsung Galaxy') &&
+      (this.testMemory.browserInfo.includes('chrome') ||
+        this.testMemory.browserInfo.includes('MicrosoftEdge'))
     ) {
-      this.uploadedFileName =
+      this.testMemory.uploadedFileName =
         await UploadSpreadsheetPage.uploadSpreadsheet(spreadsheetFile)
     } else {
       AllureReporter.addStep(
-        `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
+        `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.testMemory.browserInfo}) — browser.uploadFile() is Chromium-only`,
         {},
         'skipped'
       )
@@ -89,24 +98,34 @@ When(
 
 When(
   /^user selects copy of a (valid |)spreadsheet file "([^"]*)" to update existing waste movements$/,
-  async function (flag, spreadsheetFile) {
-    this.spreadsheetFileName = spreadsheetFile
-    this.pageName = 'update-spreadsheet-page'
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    flag,
+    spreadsheetFile
+  ) {
+    this.testMemory.spreadsheetFileName = spreadsheetFile
+    this.testMemory.pageName = 'update-spreadsheet-page'
     await UploadSpreadsheetPage.verifyUserIsOnUploadSpreadsheetPage('update')
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+    await analyseAccessibility(
+      this.testMemory.tags,
+      this.testMemory.axeBuilder,
+      this.testMemory.pageName
+    )
     if (
-      !this.deviceInfo.includes('Samsung Galaxy') &&
-      (this.browserInfo.includes('chrome') ||
-        this.browserInfo.includes('MicrosoftEdge'))
+      !this.testMemory.deviceInfo.includes('Samsung Galaxy') &&
+      (this.testMemory.browserInfo.includes('chrome') ||
+        this.testMemory.browserInfo.includes('MicrosoftEdge'))
     ) {
-      this.uploadedFileName = await UploadSpreadsheetPage.uploadSpreadsheet(
-        spreadsheetFile,
-        'update',
-        this.wtids && this.wtids.length > 0 ? [this.wtids[0].value] : []
-      )
+      this.testMemory.uploadedFileName =
+        await UploadSpreadsheetPage.uploadSpreadsheet(
+          spreadsheetFile,
+          'update',
+          this.testMemory.wtids && this.testMemory.wtids.length > 0
+            ? [this.testMemory.wtids[0].value]
+            : []
+        )
     } else {
       AllureReporter.addStep(
-        `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.browserInfo}) — browser.uploadFile() is Chromium-only`,
+        `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.testMemory.browserInfo}) — browser.uploadFile() is Chromium-only`,
         {},
         'skipped'
       )
@@ -114,24 +133,29 @@ When(
   }
 )
 
-Then('the file is successfully accepted for processing', async function () {
-  this.uploadId =
-    await UploadSuccessfulPage.verifyFileHasBeenUploadedSuccessfullyToTheS3(
-      this.apis.wasteOrganisationBackendAPI,
-      this.organisationId,
-      this.uploadedFileName
-    )
-  expect(this.uploadId).not.toBeNull()
-  expect(this.uploadId).toEqual(this.referenceNumber)
-})
+Then(
+  'the file is successfully accepted for processing',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.uploadId =
+      await UploadSuccessfulPage.verifyFileHasBeenUploadedSuccessfullyToTheS3(
+        this.testMemory.apis.wasteOrganisationBackendAPI,
+        this.testMemory.organisationId,
+        this.testMemory.uploadedFileName
+      )
+    expect(this.testMemory.uploadId).not.toBeNull()
+    expect(this.testMemory.uploadId).toEqual(this.testMemory.referenceNumber)
+  }
+)
 
 Then(
   /^all the waste movements should be successfully (created|updated)$/,
-  async function (action) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    action
+  ) {
     const wasteMovementRecords =
       await AsyncUploadProcessHandler.waitForWasteMovementRecords(
-        this.apis.wasteMovementBackendAPI,
-        this.uploadId
+        this.testMemory.apis.wasteMovementBackendAPI,
+        this.testMemory.uploadId
       )
 
     // assert the records are created/updated correctly
@@ -143,7 +167,7 @@ Then(
         ]
       expect(record.wasteTrackingId).not.toBeNull()
       expect(record.submittingOrganisation.defraCustomerOrganisationId).toBe(
-        this.organisationId
+        this.testMemory.organisationId
       )
       expect(record.createdAt).not.toBeNull()
       expect(record.lastUpdatedAt).not.toBeNull()
@@ -182,13 +206,13 @@ const PROCESSED_URL_POLL_TIMEOUT_MS = 60000
 Then(
   'the processed spreadsheet should contain valid WTIDs',
   { timeout: WTID_STEP_TIMEOUT_MS },
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     const stepStart = Date.now()
 
     const processedFileUrl = await UploadSuccessfulPage.getProcessedFileUrl(
-      this.apis.wasteOrganisationBackendAPI,
-      this.organisationId,
-      this.uploadedFileName,
+      this.testMemory.apis.wasteOrganisationBackendAPI,
+      this.testMemory.organisationId,
+      this.testMemory.uploadedFileName,
       PROCESSED_URL_POLL_TIMEOUT_MS
     )
 
@@ -197,7 +221,7 @@ Then(
 
     const workbook = await downloadAndParseSpreadsheet(
       processedFileUrl,
-      this.env.HTTP_PROXY,
+      this.testEnv.proxyMode === 'off' ? undefined : this.testEnv.httpProxy,
       downloadTimeout
     )
     const wtids = extractDataFromWorkbook(workbook).wtids
@@ -206,20 +230,20 @@ Then(
     for (const wtid of wtids) {
       expect(wtid.value).toMatch(/^[A-Z0-9]{8,}$/)
     }
-    this.wtids = wtids
+    this.testMemory.wtids = wtids
   }
 )
 
 Then(
   'the processed spreadsheet should contain error details',
   { timeout: WTID_STEP_TIMEOUT_MS },
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     const stepStart = Date.now()
 
     const processedFileUrl = await UploadSuccessfulPage.getProcessedFileUrl(
-      this.apis.wasteOrganisationBackendAPI,
-      this.organisationId,
-      this.uploadedFileName,
+      this.testMemory.apis.wasteOrganisationBackendAPI,
+      this.testMemory.organisationId,
+      this.testMemory.uploadedFileName,
       PROCESSED_URL_POLL_TIMEOUT_MS
     )
 
@@ -228,7 +252,7 @@ Then(
 
     const workbook = await downloadAndParseSpreadsheet(
       processedFileUrl,
-      this.env.HTTP_PROXY,
+      this.testEnv.proxyMode === 'off' ? undefined : this.testEnv.httpProxy,
       downloadTimeout
     )
 
@@ -238,7 +262,7 @@ Then(
       errorsWasteItemLevel: errorsData.errors_waste_item_level
     }
 
-    const expectedErrors = EXPECTED_ERRORS[this.spreadsheetFileName]
+    const expectedErrors = EXPECTED_ERRORS[this.testMemory.spreadsheetFileName]
 
     if (expectedErrors) {
       const actualMovementErrors = errorsWasteMovementLevel.filter(
@@ -285,30 +309,40 @@ Then(
   }
 )
 
-Then('no waste movements should be created', async function () {
-  const response = await AsyncUploadProcessHandler.waitForWasteMovementRecords(
-    this.apis.wasteMovementBackendAPI,
-    this.uploadId
-  )
-  expect(response.statusCode).toBe(404)
-  expect(response.message).toBe(
-    `Waste inputs with values {"bulkId":"${this.uploadId}"} not found`
-  )
-})
-
-Then('the spreadsheet must be rejected', { timeout: 30000 }, async function () {
-  const { uploadId, errorMessage: actualErrorMessage } =
-    await UploadSuccessfulPage.verifyFileHasBeenRejectedAndNotUploadedToS3(
-      this.apis.wasteOrganisationBackendAPI,
-      this.organisationId,
-      this.uploadedFileName
+Then(
+  'no waste movements should be created',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    const response =
+      await AsyncUploadProcessHandler.waitForWasteMovementRecords(
+        this.testMemory.apis.wasteMovementBackendAPI,
+        this.testMemory.uploadId
+      )
+    expect(response.statusCode).toBe(404)
+    expect(response.message).toBe(
+      `Waste inputs with values {"bulkId":"${this.testMemory.uploadId}"} not found`
     )
-  this.uploadId = uploadId
-  if (this.uploadedFileName.includes('File-size-greater-than-2MB')) {
-    expect(actualErrorMessage).toBe(
-      'The selected file must be smaller than 2 MB'
-    )
-  } else {
-    expect(actualErrorMessage).toBe('The selected file must be a XLSX')
   }
-})
+)
+
+Then(
+  'the spreadsheet must be rejected',
+  { timeout: 30000 },
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    const { uploadId, errorMessage: actualErrorMessage } =
+      await UploadSuccessfulPage.verifyFileHasBeenRejectedAndNotUploadedToS3(
+        this.testMemory.apis.wasteOrganisationBackendAPI,
+        this.testMemory.organisationId,
+        this.testMemory.uploadedFileName
+      )
+    this.testMemory.uploadId = uploadId
+    if (
+      this.testMemory.uploadedFileName.includes('File-size-greater-than-2MB')
+    ) {
+      expect(actualErrorMessage).toBe(
+        'The selected file must be smaller than 2 MB'
+      )
+    } else {
+      expect(actualErrorMessage).toBe('The selected file must be a XLSX')
+    }
+  }
+)

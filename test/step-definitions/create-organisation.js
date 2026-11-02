@@ -1,21 +1,25 @@
 import { Then } from '@wdio/cucumber-framework'
 
-Then('next payment period is calculated correctly', async function () {
-  const response =
-    await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
-      this.organisationId
-    )
-  expect(response.statusCode).toBe(200)
-  this.nextPaymentPeriod = response.json.organisation.paymentPeriods
+Then(
+  'next payment period is calculated correctly',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    const response =
+      await this.testMemory.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+        this.testMemory.organisationId
+      )
+    expect(response.statusCode).toBe(200)
+    this.testMemory.nextPaymentPeriod =
+      response.json.organisation.paymentPeriods
 
-  expect(this.nextPaymentPeriod[0].from).toBe(
-    process.env.GOVPAY_SERVICE_FREE_PERIOD_END
-  )
-})
+    expect(this.testMemory.nextPaymentPeriod[0].from).toBe(
+      this.testEnv.govPayServiceFreePeriodEnd
+    )
+  }
+)
 
 Then(
   'disableAfter attribute must be set to null for the organisation',
-  async function () {
-    expect(this.disableAfter).toBeNull()
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    expect(this.testMemory.disableAfter).toBeNull()
   }
 )
