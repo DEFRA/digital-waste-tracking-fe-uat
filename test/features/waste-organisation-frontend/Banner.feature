@@ -1,9 +1,10 @@
-@issue=DWT-2189 @env_test @env_dev
+@issue=DWT-2189
 Feature: Report receipt of waste service banner
     As a waste receiver user
     I want the Report receipt of waste banner link to take me to the correct page based on my sign-in status
     So that I can continue to the service if I am signed in, or be told what to do if my session has expired
     
+    @defra-id-stub @defra-id-real
     Scenario: "Report receipt of waste" banner link should take me to the account home page if user is signed in
         Given a user is logged in to the waste receiver registration portal
         And the user navigates to report receipt of waste
@@ -12,6 +13,7 @@ Feature: Report receipt of waste service banner
         When the user selects the "Report receipt of waste" banner link
         Then the user should be redirected to "account-home" page
 
+    @defra-id-stub @defra-id-real
     Scenario: "Report receipt of waste" banner link should take me to restricted access page if user is not signed in
         Given a user is not logged in to the waste receiver registration portal
         And a user is on are you a local authority page

@@ -63,17 +63,26 @@ Update `env.sh` with the values for the environment you want to test against. Us
 Start application you are testing on the url specified in `baseUrl` [wdio.local.conf.js](wdio.local.conf.js)
 
 ```bash
-npm run test:local
+PROFILE=local:smoke npm run source:clean:test:report
 ```
 
-By default, in the local environment, only the tests marked with the `@env_local` tag will run.
-You can run other tests by overriding the tags with --cucumberOpts.tags.
+Set `PROFILE` to the runner after `test:`. `source:clean:test:report` sources `env.sh` and then runs `npm test`. The test scripts do not source `env.sh`. CDP and GitHub set `PROFILE` and call `npm test`. `ENVIRONMENT` chooses the URLs. The runner chooses the driver and the suite. Local Chrome, the grid (`wdio.grid.conf.js`), and BrowserStack each have:
 
-### Debugging local tests
+- `regression:defra-id-stub` is `not @smoke and @defra-id-stub`
+- `regression:defra-id-real` is `not @smoke and @defra-id-real`
+- `smoke` is `@smoke`
+- `debug` sets `DEBUG=true` and does not add a tag. Pass one feature with `--spec`.
+- `admin-ui` runs the admin-tool features.
 
 ```bash
-npm run test:local:debug
+PROFILE=local:regression:defra-id-stub npm run source:clean:test:report
+PROFILE=grid:smoke npm run source:clean:test:report
+PROFILE=local:admin-ui npm run source:clean:test:report
 ```
+
+`npm test` is `test:${PROFILE}`. Set `PROFILE` to the runner after `test:`, for example `grid:smoke`. Pair a where that has the stub with `regression:defra-id-stub`, and a where that has real Defra ID with `regression:defra-id-real`.
+
+`PROFILE=zap` runs `AnalyseZapReport.feature` on the grid with `@zap`. That scenario attaches the saved ZAP files to the Allure report. GitHub CI is where this runs. On a laptop, after a scan has written `zap-report/`, use `PROFILE=zap npm run source:clean:test:report`.
 
 ### Running local tests against remote dev backend
 
@@ -105,15 +114,7 @@ And in [test/support/local.config.json] set:
   "adminUiUsername": "local"
 ```
 
-There is a convenience script to run local tests only against `digital-waste-tracking-admin-ui`:
-
-```bash
-npm run test:local-admin-ui
-```
-
-The admin UI's CI runs the same tests with `npm run test:admin-tool`, against its compose stack with Chrome
-in a container (see the admin UI's README). There, `ADMIN_UI_BASE_URL` points the tests at the admin UI's
-compose service name instead of `localhost`.
+Run the admin UI on local Chrome with `PROFILE=local:admin-ui npm run source:clean:test:report`. The admin UI's CI runs the same features with `PROFILE=grid:admin-ui npm test`, against its compose stack with Chrome in a container (see the admin UI's README). The admin UI address is `adminUiBaseUrl` in the support JSON.
 
 ## Production
 
@@ -144,8 +145,7 @@ Steps:
 
 1. Edit the compose.yml to include your services.
 2. Modify the scripts in docker/scripts to pre-populate the database, if required and create any localstack resources.
-3. Test the setup locally with `docker compose up` and `npm run test:github`
-4. Set up the workflow trigger in `.github/workflows/journey-tests`.
+3. Set up the workflow trigger in `.github/workflows/journey-tests`.
 
 By default, the provided workflow will run when triggered manually from GitHub or when triggered by another workflow.
 
@@ -153,16 +153,14 @@ If you want to use the repository exclusively for running docker composed based 
 
 ## BrowserStack
 
-Two wdio configuration files are provided to help run the tests using BrowserStack in both a GitHub workflow (`wdio.github.browserstack.conf.js`) and from the CDP Portal (`wdio.browserstack.conf.js`).
-They can be run from npm using the `npm run test:browserstack` (for running via portal) and `npm run test:github:browserstack` (from GitHib runner).
-See the CDP Documentation for more details.
+BrowserStack uses `wdio.browserstack.conf.js`. Set `PROFILE` to `browserstack:regression:defra-id-stub`, `browserstack:regression:defra-id-real`, `browserstack:smoke`, `browserstack:debug`, or `browserstack:admin-ui`. On a laptop, run `source:clean:test:report`. `@compatibility` selects the multi-browser set. `browserstack:admin-ui` keeps desktop browsers only. See the CDP Documentation for more details.
 
 ## DWT Admin tool UI
 
 - **Backend** (`GetOrganisationsByDateRange.feature`): tests the new Organisation Backend API that returns organisations registered between a start and end date.
 - **Admin tool UI**: `Login.feature` (admin portal sign-in) and `WasteOrganisationsReport.feature` (report that uses the organisations API to list organisations and download CSV for a date range).
   - The MongoDB seed script (`test/utils/test-data-organisations.js`) must be run before the report tests. In shared environments (dev, test) this only needs to be done once; for local runs, insert the data into MongoDB before running the tests.
-- **BrowserStack**: run all admin-tool UI features tagged `@browserstack-admin-tool` with `npm run test:browserstack:admin-tool` (desktop browsers only). Default `npm run test:browserstack` is unchanged.
+- **BrowserStack**: `PROFILE=browserstack:admin-ui npm run source:clean:test:report` runs the admin-tool features on desktop browsers only.
 
 ## Licence
 

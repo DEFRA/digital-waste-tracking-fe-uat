@@ -4,13 +4,13 @@ Feature: Restrict access to the service for unauthenticated users or users with 
     When user is not logged into the service or has session expired after a period of inactivity
     Then user should see clear message indicating the reasons and be able to sign back in
 
-  @env_dev @env_test @accessibility
+  @accessibility @defra-id-stub @defra-id-real
   Scenario: Unauthenticated user should be displayed with an appropriate message and be able to sign back in
     Given a user is not logged in to the waste receiver registration portal
     When the user navigates to any page on the portal
     Then the user should be redirected to "You do not have permission to view this page" page
 
-  @env_dev @env_test
+  @defra-id-stub @defra-id-real
   Scenario: User with invalid token should be displayed with an appropriate message when trying to access the service
     Given a user is logged in to the waste receiver registration portal
     And the user signs out of his existing session

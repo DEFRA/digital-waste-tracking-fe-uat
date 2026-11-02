@@ -46,19 +46,16 @@ function mapExpectedRows(expectedOrganisations) {
 
 Given(
   'the user navigates to the waste organisations report page',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     const baseUrl = this.testConfig.adminUiBaseUrl
-    const { username, password } = getAdminUiCredentials(
-      this.testConfig,
-      this.env
-    )
+    const { username, password } = getAdminUiCredentials(this)
 
     await WasteOrganisationsReportPage.open(baseUrl)
     await AdminToolLoginPage.verifyLoginPageIsDisplayed(
       baseUrl,
       WASTE_ORGANISATIONS_REPORT_PATH
     )
-    this.pageName = 'waste-organisations-report-page'
+    this.testMemory.pageName = 'waste-organisations-report-page'
     await AdminToolLoginPage.login(username, password)
     await WasteOrganisationsReportPage.verifyPageIsDisplayed(baseUrl)
   }
@@ -66,9 +63,11 @@ Given(
 
 When(
   'the user searches for organisations in the {string} date range',
-  async function (fixtureKey) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    fixtureKey
+  ) {
     const fixture = getDateRangeFixture(fixtureKey)
-    this.dateRangeFixtureKey = fixtureKey
+    this.testMemory.dateRangeFixtureKey = fixtureKey
 
     await WasteOrganisationsReportPage.enterFromDate(
       parseIsoDateToFormFields(fixture.startDate)
@@ -80,36 +79,46 @@ When(
   }
 )
 
-When('the user enters invalid dates for {string}', async function (fixtureKey) {
-  const fixture = getFrontendValidationFixture(fixtureKey)
-  this.frontendValidationFixtureKey = fixtureKey
+When(
+  'the user enters invalid dates for {string}',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    fixtureKey
+  ) {
+    const fixture = getFrontendValidationFixture(fixtureKey)
+    this.testMemory.frontendValidationFixtureKey = fixtureKey
 
-  await WasteOrganisationsReportPage.enterFromDate(fixture.fromDate)
-  await WasteOrganisationsReportPage.enterToDate(fixture.toDate)
-  await WasteOrganisationsReportPage.clickShowOrganisations()
-})
+    await WasteOrganisationsReportPage.enterFromDate(fixture.fromDate)
+    await WasteOrganisationsReportPage.enterToDate(fixture.toDate)
+    await WasteOrganisationsReportPage.clickShowOrganisations()
+  }
+)
 
 When(
   'the user downloads the waste organisations report CSV for the {string} date range',
-  async function (fixtureKey) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    fixtureKey
+  ) {
     const fixture = getDateRangeFixture(fixtureKey)
-    this.downloadedCsv = await WasteOrganisationsReportPage.downloadCsvReport({
-      startDate: fixture.startDate,
-      endDate: fixture.endDate
-    })
+    this.testMemory.downloadedCsv =
+      await WasteOrganisationsReportPage.downloadCsvReport({
+        startDate: fixture.startDate,
+        endDate: fixture.endDate
+      })
   }
 )
 
 Then(
   'the waste organisations report search form should be displayed',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await WasteOrganisationsReportPage.verifySearchFormIsDisplayed()
   }
 )
 
 Then(
   'the waste organisations report results should match the {string} fixture',
-  async function (fixtureKey) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    fixtureKey
+  ) {
     const fixture = getDateRangeFixture(fixtureKey)
     const expectedRows = mapExpectedRows(fixture.expectedOrganisations)
     const expectedTimeframe =
@@ -123,34 +132,46 @@ Then(
   }
 )
 
-Then('no waste organisations should be displayed', async function () {
-  await WasteOrganisationsReportPage.verifyNoResultsDisplayed()
-})
+Then(
+  'no waste organisations should be displayed',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await WasteOrganisationsReportPage.verifyNoResultsDisplayed()
+  }
+)
 
-Then('the download CSV button should not be displayed', async function () {
-  await WasteOrganisationsReportPage.verifyDownloadCsvButtonIsNotDisplayed()
-})
+Then(
+  'the download CSV button should not be displayed',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await WasteOrganisationsReportPage.verifyDownloadCsvButtonIsNotDisplayed()
+  }
+)
 
 Then(
   'the downloaded CSV filename should match the {string} fixture',
-  async function (fixtureKey) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    fixtureKey
+  ) {
     const fixture = getDateRangeFixture(fixtureKey)
     const filenamePattern = buildExpectedCsvFilenameRegex(
       fixture.startDate,
       fixture.endDate
     )
 
-    expect(this.downloadedCsv).toBeDefined()
-    expect(this.downloadedCsv.fileName).toMatch(filenamePattern)
+    expect(this.testMemory.downloadedCsv).toBeDefined()
+    expect(this.testMemory.downloadedCsv.fileName).toMatch(filenamePattern)
   }
 )
 
 Then(
   'the downloaded CSV contents should match the {string} fixture',
-  async function (fixtureKey) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    fixtureKey
+  ) {
     const fixture = getDateRangeFixture(fixtureKey)
     const expectedRows = mapExpectedCsvRows(fixture.expectedOrganisations)
-    const actualRows = parseWasteOrganisationsCsv(this.downloadedCsv.content)
+    const actualRows = parseWasteOrganisationsCsv(
+      this.testMemory.downloadedCsv.content
+    )
 
     assertWasteOrganisationsCsvMatches(actualRows, expectedRows)
   }
@@ -158,7 +179,9 @@ Then(
 
 Then(
   'a date validation error should be displayed for {string}',
-  async function (fixtureKey) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    fixtureKey
+  ) {
     const fixture = getFrontendValidationFixture(fixtureKey)
     await WasteOrganisationsReportPage.verifyValidationErrors(
       fixture.expectedErrors
@@ -168,7 +191,11 @@ Then(
 
 Then(
   'the waste organisations report page should generate accessibility tests',
-  async function () {
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await analyseAccessibility(
+      this.testMemory.tags,
+      this.testMemory.axeBuilder,
+      this.testMemory.pageName
+    )
   }
 )

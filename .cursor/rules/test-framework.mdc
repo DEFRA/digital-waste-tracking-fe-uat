@@ -1,0 +1,32 @@
+---
+description: Where, how, and what for this test suite. The refactor spec is frozen.
+alwaysApply: true
+---
+
+# Test framework
+
+Read `test-framework-refactor-plan.md` and `ai-revision-log.md` before changing how tests run. The plan is frozen. Record later changes in the log, and update a rule when a decision moves.
+
+A run is three choices:
+
+- **Where** is `ENVIRONMENT`: `local`, `dev`, `test`, `ext-test`, `perf-test`. URLs and other non-secret config. `local` is the Compose host for every driver.
+- **How** is the driver: grid `wdio.grid.conf.js`, BrowserStack `wdio.browserstack.conf.js`, local Chrome `wdio.local.conf.js`. The grid is the remote Chrome used by a laptop, CDP, and GitHub.
+- **What** is the suite: `regression:defra-id-stub`, `regression:defra-id-real`, `smoke`, `debug`, `admin-ui`. `@zap` is `test:zap`. `@compatibility` selects the BrowserStack browser list.
+
+Tags do not choose the driver. The driver does not choose the URL or the product area. `npm test` is `test:${PROFILE}`. `PROFILE` is the runner after `test:`, for example `local:smoke`. The test scripts do not source `env.sh`. On a laptop, `source:clean:test:report` sources `env.sh` and then runs `npm test`. CDP and GitHub set `PROFILE` and call `npm test`.
+
+`buildCucumberTagExpression` returns `CUCUMBER_EXTRA_TAGS` alone. An empty value runs every scenario. `@env_*` is not part of the filter. `defraIdServiceUrl` is the stub host or real Defra ID, and a mismatched pair is a config error.
+
+The runners set the suite. Local Chrome, BrowserStack, and the grid each have:
+
+- `regression:defra-id-stub` is `not @smoke and @defra-id-stub`
+- `regression:defra-id-real` is `not @smoke and @defra-id-real`
+- smoke is `@smoke`
+- debug is `DEBUG=true` and no tag of its own. One feature is `--spec`. No scenario is tagged `@debug`.
+- `admin-ui` is the admin-tool features. BrowserStack keeps `BROWSERSTACK_DESKTOP_ONLY`.
+
+There is no unfiltered runner. `test:zap` is the grid with `@zap` and `AnalyseZapReport.feature`.
+
+`DEBUG=true` adds `--inspect` and debug logs. Local Chrome also drops its sandbox arguments.
+
+Leave scenarios, step definitions, and page objects as they are, except the exceptions named in the plan. Do not rename `commom-step-defs.js`, delete `home.page.js`, or remove `@wdio/mocha-framework`.

@@ -17,69 +17,76 @@ import { ZapApi } from './zap-api.js'
  * @property {GovPayAPI} govPayAPI
  * @property {WasteOrganisationFrontendAPI} wasteOrganisationFrontendAPI
  * @property {ZapApi} [zapAPI]
+ * @property {() => Promise<void>} close
  */
 export class ApiFactory {
   /**
-   * @param {Object} testConfig - Parsed env config from test/support/<env>.config.json
-   * @param {NodeJS.ProcessEnv} [env=process.env]
+   * Builds API clients for one scenario.
+   * cdp proxies Cognito and GOV.UK Pay. zap proxies every service client.
+   * The ZAP client itself is not sent back through the proxy.
+   * @param {import('../../setup/test-env.js').TestEnv} testEnv
+   * @param {import('../../setup/test-config.js').TestConfig} testConfig
    * @returns {ApiInstances}
    */
-  static create(testConfig, env = process.env) {
-    const environment = env.ENVIRONMENT
-    const httpProxy = env.ZAP_PROXY_API_URL ?? env.HTTP_PROXY
+  static create(testEnv, testConfig) {
+    const environment = testEnv.environment
+    const mode = testEnv.proxyMode
+    const httpProxy = testEnv.httpProxy
+    const internalProxy = mode === 'zap' ? httpProxy : undefined
+    const externalProxy = mode === 'off' ? undefined : httpProxy
 
-    const wasteOrganisationBackendServiceUrl = env.xapikey
+    const wasteOrganisationBackendServiceUrl = testEnv.xApiKey
       ? `https://ephemeral-protected.api.${environment}.cdp-int.defra.cloud/waste-organisation-backend`
       : testConfig.wasteOrganisationBackendServiceUrl
 
-    const wasteMovementBackendServiceUrl = env.xapikey
+    const wasteMovementBackendServiceUrl = testEnv.xApiKey
       ? `https://ephemeral-protected.api.${environment}.cdp-int.defra.cloud/waste-movement-backend`
       : testConfig.wasteMovementBackendServiceUrl
 
-    const apiInstances = {
+    /** @type {Omit<ApiInstances, 'close'>} */
+    const clients = {
       wasteMovementBackendAPI: new WasteMovementBackendAPI(
         wasteMovementBackendServiceUrl,
-        httpProxy
+        internalProxy,
+        testEnv
       ),
       wasteOrganisationBackendAPI: new WasteOrganisationBackendAPI(
         wasteOrganisationBackendServiceUrl,
-        httpProxy
+        internalProxy,
+        testEnv
       ),
       wasteMovementExternalAPI: new WasteMovementExternalAPI(
         testConfig.wasteMovementExternalApiBaseUrl,
-        httpProxy
+        internalProxy
       ),
       cognitoOAuthApi: new CognitoOAuthApi(
         testConfig.cognitoOAuthBaseUrl,
-        httpProxy
+        externalProxy
       ),
       defraIdStubAPI: new DefraIdStubAPI(
         testConfig.defraIdServiceUrl,
-        httpProxy
+        internalProxy
       ),
-      govPayAPI: new GovPayAPI(testConfig.govPayBaseUrl, httpProxy),
+      govPayAPI: new GovPayAPI(testConfig.govPayBaseUrl, externalProxy),
       wasteOrganisationFrontendAPI: new WasteOrganisationFrontendAPI(
         testConfig.wasteOrganisationFrontendBaseUrl,
-        httpProxy
+        internalProxy
       )
     }
 
-    if (env.ZAP_PROXY_URL) {
-      apiInstances.zapAPI = new ZapApi(
-        env.ZAP_PROXY_API_URL,
-        null,
-        env.ZAP_PROXY_API_KEY
-      )
+    if (mode === 'zap') {
+      clients.zapAPI = new ZapApi(httpProxy, null, testEnv.zapApiKey)
     }
 
-    apiInstances.close = async () => {
-      await Promise.all(
-        Object.values(apiInstances)
-          .filter((api) => api?.close)
-          .map((api) => api.close())
-      )
+    return {
+      ...clients,
+      close: async () => {
+        await Promise.all(
+          Object.values(clients)
+            .filter((api) => api?.close)
+            .map((api) => api.close())
+        )
+      }
     }
-
-    return apiInstances
   }
 }

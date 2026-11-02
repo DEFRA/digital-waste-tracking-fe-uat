@@ -1,13 +1,11 @@
 /**
- * Builds the Cucumber tag filter: base `@env_*` from config, optionally ANDed with
- * `CUCUMBER_EXTRA_TAGS` (e.g. `@debug`, `@foo and @bar`).
+ * The suite filter from `CUCUMBER_EXTRA_TAGS`. An empty value runs every scenario.
  *
- * CLI `--cucumberOpts.tags=...` replaces `cucumberOpts.tags` entirely; use
- * `CUCUMBER_EXTRA_TAGS` when you need to narrow runs without losing the env tag.
+ * CLI `--cucumberOpts.tags=...` replaces `cucumberOpts.tags` entirely.
+ * @param {string} [extraTags]
+ * @returns {string|undefined}
  */
-export function buildCucumberTagExpression(envTagSuffix) {
-  const base = `@env_${envTagSuffix}`
-  const extra = process.env.CUCUMBER_EXTRA_TAGS?.trim()
-  if (!extra) return base
-  return `${base} and (${extra})`
+export function buildCucumberTagExpression(extraTags = '') {
+  const tags = extraTags.trim()
+  return tags || undefined
 }
