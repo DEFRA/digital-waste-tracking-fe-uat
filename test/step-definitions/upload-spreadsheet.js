@@ -1,4 +1,5 @@
 import { When, Then, Given } from '@wdio/cucumber-framework'
+import { Status } from 'allure-js-commons'
 import AllureReporter from '@wdio/allure-reporter'
 import UploadSpreadsheetPage from '../page-objects/upload-spreadsheet.page.js'
 import UploadSuccessfulPage from '../page-objects/upload-successful.page.js'
@@ -89,8 +90,8 @@ When(
     } else {
       AllureReporter.addStep(
         `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.testMemory.browserInfo}) — browser.uploadFile() is Chromium-only`,
-        {},
-        'skipped'
+        undefined,
+        Status.SKIPPED
       )
     }
   }
@@ -126,8 +127,8 @@ When(
     } else {
       AllureReporter.addStep(
         `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${this.testMemory.browserInfo}) — browser.uploadFile() is Chromium-only`,
-        {},
-        'skipped'
+        undefined,
+        Status.SKIPPED
       )
     }
   }
@@ -300,11 +301,7 @@ Then(
       const actualItemErrors = errorsWasteItemLevel.filter(
         (e) => typeof e.value === 'string'
       )
-      const totalErrors = actualMovementErrors.length + actualItemErrors.length
-      expect(totalErrors).toBe(
-        0,
-        `Expected no errors but found ${totalErrors}: ${JSON.stringify([...actualMovementErrors, ...actualItemErrors])}`
-      )
+      expect([...actualMovementErrors, ...actualItemErrors]).toEqual([])
     }
   }
 )

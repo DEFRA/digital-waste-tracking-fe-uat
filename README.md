@@ -153,7 +153,7 @@ If you want to use the repository exclusively for running docker composed based 
 
 ## BrowserStack
 
-BrowserStack uses `wdio.browserstack.conf.js`. Set `PROFILE` to `browserstack:regression:defra-id-stub`, `browserstack:regression:defra-id-real`, `browserstack:smoke`, `browserstack:debug`, or `browserstack:admin-ui`. On a laptop, run `source:clean:test:report`. `@compatibility` selects the multi-browser set. `browserstack:admin-ui` keeps desktop browsers only. See the CDP Documentation for more details.
+BrowserStack uses `wdio.browserstack.conf.js`. Set `PROFILE` to `browserstack:regression:defra-id-stub`, `browserstack:regression:defra-id-real`, `browserstack:smoke`, `browserstack:debug`, `browserstack:admin-ui`, or `browserstack:compatibility`. On a laptop, run `source:clean:test:report`. `browserstack:compatibility` is the multi-browser run and is BrowserStack only. `browserstack:admin-ui` keeps desktop browsers only. See the CDP Documentation for more details.
 
 ## DWT Admin tool UI
 

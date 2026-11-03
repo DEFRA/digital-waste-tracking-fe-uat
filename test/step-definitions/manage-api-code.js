@@ -120,13 +120,9 @@ When(
     option
   ) {
     if (option === 'Yes') {
-      await ConfirmDisableApiCodePage.userContinuesWithDisableApiCodeAction(
-        this.testMemory.activeApiCode
-      )
+      await ConfirmDisableApiCodePage.userContinuesWithDisableApiCodeAction()
     } else {
-      await ConfirmDisableApiCodePage.userDoesNotContinueWithDisableApiCodeAction(
-        this.testMemory.activeApiCode
-      )
+      await ConfirmDisableApiCodePage.userDoesNotContinueWithDisableApiCodeAction()
     }
   }
 )
@@ -251,9 +247,7 @@ When(
     await ManageApiCodePage.clickDisableButtonForAPICode(
       this.testMemory.activeApiCode
     )
-    await ConfirmDisableApiCodePage.userContinuesWithDisableApiCodeAction(
-      this.testMemory.activeApiCode
-    )
+    await ConfirmDisableApiCodePage.userContinuesWithDisableApiCodeAction()
     await ManageApiCodePage.verifyUserIsOnYourApiCodePage()
     await ManageApiCodePage.verifyAPICodeIsDisplayed(
       this.testMemory.activeApiCode,

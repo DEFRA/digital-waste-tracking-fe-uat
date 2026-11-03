@@ -318,10 +318,8 @@ async function navigateToPortalAndLogin(context, accountType) {
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal$/,
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
-    if (scenarioUsesDefraIdStub(this)) {
-      await registerAndLoginViaStub(this)
-    } else if (
-      this.testMemory.tags.includes('@compatibility') &&
+    if (
+      this.testEnv.cucumberExtraTags.includes('@compatibility') &&
       this.testEnv.environment !== 'ext-test'
     ) {
       // pick a user from default pool
@@ -333,6 +331,8 @@ Given(
         this.testMemory.govGatewayUser = user
         await navigateToPortalAndLogin(this, 'Government Gateway')
       }
+    } else if (scenarioUsesDefraIdStub(this)) {
+      await registerAndLoginViaStub(this)
     } else {
       // pick a default Gov UK or Govt gateway user and login with it
       // only use this step for test if parallel open sessions of a user does not effect the test

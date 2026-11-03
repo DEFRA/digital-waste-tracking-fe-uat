@@ -1,32 +1,37 @@
-import { createHooks } from './test/setup/hooks.js'
+import { browser } from '@wdio/globals'
+import { generateAccessibilityReportIndex } from './test/utils/accessibility-checking.js'
 import { TestConfig } from './test/setup/test-config.js'
 import { TestEnv } from './test/setup/test-env.js'
+import { openZapSession, publishZapReports } from './test/setup/zap-reports.js'
 import {
   browserProxyCapability,
   connectionRetryCount,
   cucumberOptions,
   execArgv,
-  timeouts,
+  expireDefraIdStubUsers,
+  prepareScenario,
+  recordChromeSession,
+  releasePooledUsers,
   reporters,
+  screenshotOnFailure,
+  seedUserPools,
   sidecarChromeArgs,
   sidecarChromePrefs,
-  sidecarPageTimeouts
+  sidecarPageTimeouts,
+  timeouts,
+  writeFailedFile
 } from './test/setup/wdio-shared.js'
 
 const testEnv = new TestEnv()
-if (!testEnv.environment) throw new Error('ENVIRONMENT is not set')
-
-const supportPrefix =
-  testEnv.proxyMode === 'zap'
-    ? `${testEnv.environment}.zap`
-    : testEnv.environment
-const testConfig = new TestConfig(supportPrefix)
+const testConfig = new TestConfig(testEnv.environment, testEnv.proxyMode)
 
 const debug = Boolean(testEnv.debug)
 const maxInstances = testEnv.maxInstances
 const workerArgv = [...execArgv]
 
 if (debug) workerArgv.push('--inspect')
+
+let scenarioSeen = false
 
 export const config = {
   runner: 'local',
@@ -63,5 +68,37 @@ export const config = {
   framework: 'cucumber',
   cucumberOpts: cucumberOptions({ timeout: timeouts.grid.cucumber, testEnv }),
   reporters: reporters({ detailedSpec: true }),
-  ...createHooks({ driver: 'grid', testEnv, testConfig })
+  /**
+   * @param {import('./test/types/globals.js').CucumberWorld} cucumberWorld
+   */
+  beforeScenario: async function (world, cucumberWorld) {
+    await prepareScenario(world, cucumberWorld, testEnv, testConfig)
+    recordChromeSession(cucumberWorld.testMemory)
+    if (scenarioSeen && browser.sessionId) {
+      await browser.reloadSession()
+    }
+    scenarioSeen = true
+  },
+  afterStep: async function (_step, _scenario, result) {
+    await screenshotOnFailure(result, 'afterStep')
+  },
+  /**
+   * @param {import('./test/types/globals.js').CucumberWorld} cucumberWorld
+   */
+  afterScenario: async function (_world, result, cucumberWorld) {
+    await releasePooledUsers(cucumberWorld.testMemory)
+    await screenshotOnFailure(result, 'afterScenario')
+    await expireDefraIdStubUsers(cucumberWorld.testMemory)
+  },
+  onPrepare: async function () {
+    if (testEnv.environment === 'test') {
+      await seedUserPools(new TestConfig('test'))
+    }
+    await openZapSession(testEnv, testConfig)
+  },
+  onComplete: async function (_exitCode, _config, _capabilities, results) {
+    generateAccessibilityReportIndex()
+    writeFailedFile(results)
+    await publishZapReports(testEnv)
+  }
 }

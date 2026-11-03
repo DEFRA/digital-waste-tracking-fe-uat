@@ -8,6 +8,7 @@ import PrivacyNoticePage from '../page-objects/privacy-notice.page.js'
 import CannotContinueOnThisServicePage from '../page-objects/cannot-continue-on-this-service.page.js'
 import ServiceChargePaymentDetailsPage from '../page-objects/service-charge-payment-details.page.js'
 import LocalAuthorityGuidancePage from '../page-objects/local-authority-guidance.page.js'
+import { Status } from 'allure-js-commons'
 import AllureReporter from '@wdio/allure-reporter'
 
 function isChromiumDesktop(context) {
@@ -21,8 +22,8 @@ function isChromiumDesktop(context) {
 function skipNonChromium(context) {
   AllureReporter.addStep(
     `⚠️ Skipped due to test limitation: file upload is not supported for non-Chromium browser (${context.testMemory.browserInfo}) — browser.uploadFile() is Chromium-only`,
-    {},
-    'skipped'
+    undefined,
+    Status.SKIPPED
   )
 }
 
