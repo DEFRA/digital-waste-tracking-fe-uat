@@ -4,7 +4,7 @@ As a waste receiver
 I want to update previously submitted waste movements by re-uploading a spreadsheet containing their WTIDs
 So that I can make corrections or changes after submission.
 
-  @env_dev 
+  @defra-id-stub
   Scenario: Waste receiver should be able to select an option to update waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste

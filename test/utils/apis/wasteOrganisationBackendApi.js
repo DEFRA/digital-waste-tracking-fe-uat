@@ -1,10 +1,16 @@
 import { BaseAPI } from './base-api.js'
 
 export class WasteOrganisationBackendAPI extends BaseAPI {
-  constructor(baseUrl, httpProxy) {
+  /**
+   * @param {string} baseUrl
+   * @param {string|undefined} httpProxy
+   * @param {import('../../setup/test-env.js').TestEnv} testEnv
+   */
+  constructor(baseUrl, httpProxy, testEnv) {
     super(baseUrl, httpProxy)
+    this.testEnv = testEnv
     // Create Basic Authorization header with base64 encoded credentials
-    const credentials = `WASTE_MOVEMENT_EXTERNAL_API:${process.env.ORGANISATION_BACKEND_PASSWORD}`
+    const credentials = `WASTE_MOVEMENT_EXTERNAL_API:${this.testEnv.organisationBackendPassword}`
     this.base64Credentials = Buffer.from(credentials).toString('base64')
   }
 
@@ -17,8 +23,8 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       'Content-Type': 'application/json'
     }
     // this will ever be added only when running test from local machine
-    if (process.env.xapikey) {
-      requestHeaders['x-api-key'] = process.env.xapikey
+    if (this.testEnv.xApiKey) {
+      requestHeaders['x-api-key'] = this.testEnv.xApiKey
     }
 
     const { statusCode, headers, json } = await this.get(
@@ -59,8 +65,8 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       'Content-Type': 'application/json'
     }
     // this will ever be added only when running test from local machine
-    if (process.env.xapikey) {
-      requestHeaders['x-api-key'] = process.env.xapikey
+    if (this.testEnv.xApiKey) {
+      requestHeaders['x-api-key'] = this.testEnv.xApiKey
     }
 
     const { statusCode, headers, json } = await this.post(
@@ -85,8 +91,8 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       'Content-Type': 'application/json'
     }
     // this will ever be added only when running test from local machine
-    if (process.env.xapikey) {
-      requestHeaders['x-api-key'] = process.env.xapikey
+    if (this.testEnv.xApiKey) {
+      requestHeaders['x-api-key'] = this.testEnv.xApiKey
     }
 
     // leaving the userId hardcoded to indicate it is from a auto test user and not a real user
@@ -115,8 +121,8 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       'Content-Type': 'application/json'
     }
     // this will ever be added only when running test from local machine
-    if (process.env.xapikey) {
-      requestHeaders['x-api-key'] = process.env.xapikey
+    if (this.testEnv.xApiKey) {
+      requestHeaders['x-api-key'] = this.testEnv.xApiKey
     }
 
     // leaving the userId hardcoded to indicate it is from a auto test user and not a real user
@@ -141,8 +147,8 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       'Content-Type': 'application/json'
     }
     // this will ever be added only when running test from local machine
-    if (process.env.xapikey) {
-      requestHeaders['x-api-key'] = process.env.xapikey
+    if (this.testEnv.xApiKey) {
+      requestHeaders['x-api-key'] = this.testEnv.xApiKey
     }
 
     const { statusCode, headers, json } = await this.put(
@@ -171,8 +177,8 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       'Content-Type': 'application/json'
     }
     // this will ever be added only when running test from local machine
-    if (process.env.xapikey) {
-      requestHeaders['x-api-key'] = process.env.xapikey
+    if (this.testEnv.xApiKey) {
+      requestHeaders['x-api-key'] = this.testEnv.xApiKey
     }
 
     const { statusCode, headers, json } = await this.get(
@@ -197,8 +203,8 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       'Content-Type': 'application/json',
       'Accept-Encoding': 'identity'
     }
-    if (process.env.xapikey) {
-      requestHeaders['x-api-key'] = process.env.xapikey
+    if (this.testEnv.xApiKey) {
+      requestHeaders['x-api-key'] = this.testEnv.xApiKey
     }
 
     const params = new URLSearchParams()
@@ -225,8 +231,8 @@ export class WasteOrganisationBackendAPI extends BaseAPI {
       'Content-Type': 'application/json'
     }
     // this will ever be added only when running test from local machine
-    if (process.env.xapikey) {
-      requestHeaders['x-api-key'] = process.env.xapikey
+    if (this.testEnv.xApiKey) {
+      requestHeaders['x-api-key'] = this.testEnv.xApiKey
     }
 
     const { statusCode, headers, json } = await this.get(

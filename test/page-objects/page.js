@@ -1,5 +1,5 @@
 import { browser, $ } from '@wdio/globals'
-import { config } from '../../wdio.conf.js'
+import { config } from '../../wdio.grid.conf.js'
 import { HEADINGS } from '../data/headings.js'
 
 // Shared across all Page subclasses (each page object is its own singleton)

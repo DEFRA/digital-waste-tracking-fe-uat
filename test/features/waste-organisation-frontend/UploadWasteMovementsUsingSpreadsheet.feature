@@ -4,7 +4,7 @@ As a waste receiver
 I want to upload a spreadsheet containing waste movement data for my selected organisation
 So that I can submit waste movement data, correctly linked to the business I have selected 
 
-  @env_dev @accessibility
+  @accessibility @defra-id-stub
   Scenario: Waste receiver should be able to upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -15,7 +15,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
-  @env_dev @env_test @issue=DR-60
+  @issue=DR-60 @defra-id-stub @defra-id-real
   Scenario: Local authority should be able to upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
     And the user navigates to report receipt of waste
@@ -25,7 +25,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the file is successfully accepted for processing
     And the processed spreadsheet should contain valid WTIDs
 
-  @env_dev @issue=DR-2
+  @issue=DR-2 @defra-id-stub
   Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -37,7 +37,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
-  @env_test @issue=DR-2
+  @issue=DR-2 @defra-id-real
   Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the user navigates to report receipt of waste
@@ -49,7 +49,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
-  @env_test @accessibility
+  @accessibility @defra-id-real
   Scenario Outline: Waste receiver should be able to login via "<account_type>" and upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
     And the user navigates to report receipt of waste
@@ -65,7 +65,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | Gov UK             |
       | Government Gateway |
 
-  @env_test
+  @defra-id-real
   Scenario: Waste receiver with multiple businesses can upload waste movements for each selected business
     Given a multi-business user is logged in via "Gov UK"
     And the user successfully uploads a waste movement spreadsheet for the selected business
@@ -74,7 +74,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     Then the user should be able to successfully upload a waste movement spreadsheet for that business
     And the file is successfully accepted for processing
 
-  @env_dev @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2
+  @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2 @defra-id-stub
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -92,7 +92,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | api validation           | Test1-api-errors-spreadsheet.xlsx    |
       | no waste movements       | Test1-empty-records-spreadsheet.xlsx |
 
-  @env_test @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2 @issue=DR-170
+  @issue=DWT-1465 @issue=DWT-2146 @issue=DR-2 @issue=DR-170 @defra-id-real
   Scenario Outline: Waste receiver uploads a spreadsheet that fails with "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
@@ -111,7 +111,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | no waste movements                                      | Test1-empty-records-spreadsheet.xlsx         |
       | invalid concentration operator for hazardous components | Test3-haz-components-errors-spreadsheet.xlsx |
 
-  @env_dev @env_test @issue=DWT-1431,DWT-1641
+  @issue=DWT-1431,DWT-1641 @defra-id-stub @defra-id-real
   Scenario Outline: Waste receiver uploads an unsupported file type "<file_type>"
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -130,7 +130,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
 #  --can be picked up after teamA completes the api development which can then be used to query waste movements using bulk upload id
 # | Invalid-template.xlsx        |
 
-  @env_dev @env_test @issue=DR-170
+  @issue=DR-170 @defra-id-stub @defra-id-real
   Scenario: Waste receiver uploads hazardous items with relative concentration values indicated using > only
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the user navigates to report receipt of waste
@@ -141,7 +141,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And all the waste movements should be successfully created
     And the processed spreadsheet should contain valid WTIDs
 
-  @env_dev @env_test @issue=DR-170
+  @issue=DR-170 @defra-id-stub @defra-id-real
   Scenario: Waste receiver uploads pops items with relative concentration values indicated using < or >
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the user navigates to report receipt of waste
@@ -152,7 +152,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And all the waste movements should be successfully created
     And the processed spreadsheet should contain valid WTIDs
 
-  @env_test @issue=DR-200
+  @issue=DR-200 @defra-id-real
   Scenario Outline: More error scenarios for waste receiver uploads a spreadsheet - <error_type>
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
@@ -168,7 +168,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | hazardousWasteConsignmentCode and reason missing, when hazardous ewc codes are present | Test2-spreadsheet-api-error-1.xlsx |
       | no carrier details provided, when carrier details are provided                         | Test2-spreadsheet-api-error-2.xlsx |
 
-  @env_test @issue=DR-205 @issue=DR-217
+  @issue=DR-205 @issue=DR-217 @defra-id-real
   Scenario Outline: Waste receiver uploads a spreadsheet <test_name> then all the waste movements should be successfully persisted
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the user navigates to report receipt of waste
@@ -184,7 +184,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
       | with 0 containers for a waste item                           | Test5-zero-containers.xlsx                 |
       | with date received in text format                            | Test6-spreadsheet-date-in-text-format.xlsx |
 
-  @env_test @issue=DR-205 @issue=DR-217
+  @issue=DR-205 @issue=DR-217 @defra-id-real
   Scenario Outline: Waste receiver uploads a spreadsheet <test_name> then upload must fail with errors returned in spreadsheet
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the user navigates to report receipt of waste

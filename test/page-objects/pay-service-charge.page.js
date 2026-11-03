@@ -1,8 +1,7 @@
 import { Page } from 'page-objects/page'
-import { $ } from '@wdio/globals'
-import { browser } from '~/node_modules/@wdio/globals/build/index'
+import { $, browser } from '@wdio/globals'
 import ReviewServiceChargePage from './review-service-charge.page.js'
-import { config } from '../../wdio.conf.js'
+import { config } from '../../wdio.grid.conf.js'
 
 class PayServiceChargePage extends Page {
   // methods

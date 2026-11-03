@@ -14,7 +14,7 @@ import BasicAuthLoginPage from '../page-objects/basic-auth-login.page.js'
 
 Given(
   'user proceeds to login using a Government Gateway account',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
     await DefraIdChooseSignInPage.selectSignInMethod('Government Gateway')
     await DefraIdChooseSignInPage.clickContinueButton()
@@ -23,59 +23,79 @@ Given(
   }
 )
 
-Given('user proceeds to login using a Gov.uk account', async function () {
-  await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
-  await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
-  await DefraIdChooseSignInPage.clickContinueButton()
-  await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
-  await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
-})
-
-When('user enters their Government user Id and password', async function () {
-  if (this.env.ENVIRONMENT === 'test') {
-    this.govGatewayUser = await getValueFromPool('availableGovGatewayUsers')
-    await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
-      this.govGatewayUser,
-      this.env.defraGovGatewayPassword
-    )
-  }
-})
-
-Then('they should be logged in successfully', async function () {
-  // just a place holder step, might have to introduce a static wait
-  // for the defra Id sync process to complete in future
-  // await browser.pause(10000) // ToDo:temporary wait , to be removed before checkin
-})
-
-When('user enters their Gov.uk email address and password', async function () {
-  this.govUKUser = await getValueFromPool('availableGovUKUsers')
-  await DefraIdGovUKPage.loginWithGovUK(
-    this.govUKUser,
-    this.env.defraGovUKPassword
-  )
-})
-
-Given('a user is registered in Defra Id mock service', async function () {
-  this.userEmail = `test${Date.now()}@test.com`
-  await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
-  const response = await this.apis.defraIdStubAPI.registerNewUser(
-    this.userEmail
-  )
-  this.defraIdMockUserId = response.json.userId
-  this.defraIdMockUser = this.userEmail
-  this.originalUserEmail = this.userEmail
-})
-
-When(
-  'user successfully logs in to the Defra Id mock service',
-  async function () {
-    await DefraIdStubPage.loginAsAUser(this.userEmail)
+Given(
+  'user proceeds to login using a Gov.uk account',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await DefraIdChooseSignInPage.verifyUserIsOnDefraIdChooseSignInPage()
+    await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
+    await DefraIdChooseSignInPage.clickContinueButton()
+    await DefraIdGovUKPage.setBaseUrl(this.testConfig.govUKBaseUrl)
+    await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
   }
 )
 
-When('user has selected a business', async function () {
-  await DefraIdStubPage.selectFirstOrganisation()
-})
+When(
+  'user enters their Government user Id and password',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    if (this.testEnv.environment === 'test') {
+      this.testMemory.govGatewayUser = await getValueFromPool(
+        'availableGovGatewayUsers'
+      )
+      await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
+        this.testMemory.govGatewayUser,
+        this.testEnv.defraGovGatewayPassword
+      )
+    }
+  }
+)
+
+Then(
+  'they should be logged in successfully',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    // just a place holder step, might have to introduce a static wait
+    // for the defra Id sync process to complete in future
+    // await browser.pause(10000) // ToDo:temporary wait , to be removed before checkin
+  }
+)
+
+When(
+  'user enters their Gov.uk email address and password',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.govUKUser = await getValueFromPool('availableGovUKUsers')
+    await DefraIdGovUKPage.loginWithGovUK(
+      this.testMemory.govUKUser,
+      this.testEnv.defraGovUkPassword
+    )
+  }
+)
+
+Given(
+  'a user is registered in Defra Id mock service',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.userEmail = `test${Date.now()}@test.com`
+    await DefraIdStubPage.open(this.testConfig.defraIdServiceUrl + '/register')
+    const response = await this.testMemory.apis.defraIdStubAPI.registerNewUser(
+      this.testMemory.userEmail
+    )
+    this.testMemory.defraIdMockUserId = response.json.userId
+    this.testMemory.defraIdMockUser = this.testMemory.userEmail
+    this.testMemory.originalUserEmail = this.testMemory.userEmail
+  }
+)
+
+When(
+  'user successfully logs in to the Defra Id mock service',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await DefraIdStubPage.loginAsAUser(this.testMemory.userEmail)
+  }
+)
+
+When(
+  'user has selected a business',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await DefraIdStubPage.selectFirstOrganisation()
+  }
+)
 
 async function continueFromLocalAuthorityPage(isLocalAuthority) {
   await UKPermitPage.verifyUserIsOnUKPermitPage()
@@ -94,11 +114,11 @@ async function continueFromLocalAuthorityPage(isLocalAuthority) {
 
 Then(
   'the organisation details should be available with local authority set to true',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     const organisationDetails =
-      await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
-        this.organisationId,
-        this.defraIdMockUserId
+      await this.testMemory.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+        this.testMemory.organisationId,
+        this.testMemory.defraIdMockUserId
       )
     expect(organisationDetails.statusCode).toBe(200)
     expect(organisationDetails.json.organisation.isLocalAuthority).toBe(true)
@@ -107,11 +127,11 @@ Then(
 
 Then(
   'my organisation record should not be updated with my response',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     const organisationDetails =
-      await this.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
-        this.organisationId,
-        this.defraIdMockUserId
+      await this.testMemory.apis.wasteOrganisationBackendAPI.getOrganisationDetails(
+        this.testMemory.organisationId,
+        this.testMemory.defraIdMockUserId
       )
     expect(organisationDetails.statusCode).toBe(200)
     expect(organisationDetails.json.organisation).not.toHaveProperty(
@@ -121,37 +141,37 @@ Then(
 )
 
 async function registerAndLoginViaStub(context) {
-  context.userEmail = `test${Date.now()}@test.com`
-  const response = await context.apis.defraIdStubAPI.registerNewUser(
-    context.userEmail
+  context.testMemory.userEmail = `test${Date.now()}@test.com`
+  const response = await context.testMemory.apis.defraIdStubAPI.registerNewUser(
+    context.testMemory.userEmail
   )
-  context.defraIdMockUserId = response.json.userId
-  context.defraIdMockUser = context.userEmail
-  context.originalUserEmail = context.userEmail
+  context.testMemory.defraIdMockUserId = response.json.userId
+  context.testMemory.defraIdMockUser = context.testMemory.userEmail
+  context.testMemory.originalUserEmail = context.testMemory.userEmail
 
   await UKPermitPage.open()
-  await continueFromLocalAuthorityPage(context.isLocalAuthority)
+  await continueFromLocalAuthorityPage(context.testMemory.isLocalAuthority)
 
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     context.testConfig.defraIdServiceUrl
   )
 
-  await DefraIdStubPage.loginAsAUser(context.userEmail)
+  await DefraIdStubPage.loginAsAUser(context.testMemory.userEmail)
 
   const organisationDetails =
     await DefraIdStubPage.getFirstOrganisationDetails()
-  context.organisationId = organisationDetails.organisationId
+  context.testMemory.organisationId = organisationDetails.organisationId
   context.relationshipId = organisationDetails.relationshipId
-  context.organisationName = 'Some Receiver Org'
+  context.testMemory.organisationName = 'Some Receiver Org'
   await DefraIdStubPage.selectFirstOrganisation()
 
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
   // ToDo: when the free period ends beyond september 30th 2026
   // below code needs to be uncommented
-  // if (!context.tags.includes('@serviceCharge')) {
+  // if (!context.testMemory.tags.includes('@serviceCharge')) {
   //   const response1 =
-  //     await context.apis.wasteOrganisationBackendAPI.updateOrganisationDetails(
-  //       context.organisationId, {
+  //     await context.testMemory.apis.wasteOrganisationBackendAPI.updateOrganisationDetails(
+  //       context.testMemory.organisationId, {
   //         "organisation": {
   //           "disableAfter": '2027-09-30T00:00:00.000Z',
   //         }
@@ -163,21 +183,21 @@ async function registerAndLoginViaStub(context) {
 }
 
 async function registerAnotherUserViaDefraIdStub(context) {
-  expect(context.organisationId).toBeDefined()
-  expect(context.organisationName).toBeDefined()
+  expect(context.testMemory.organisationId).toBeDefined()
+  expect(context.testMemory.organisationName).toBeDefined()
   expect(context.relationshipId).toBeDefined()
 
   context.differentUserEmail = `test${Date.now()}@test.com`
-  const response = await context.apis.defraIdStubAPI.registerNewUser(
+  const response = await context.testMemory.apis.defraIdStubAPI.registerNewUser(
     context.differentUserEmail,
     {
       organisationId: context.relationshipId,
-      relationshipId: context.organisationId,
-      organisationName: context.organisationName
+      relationshipId: context.testMemory.organisationId,
+      organisationName: context.testMemory.organisationName
     }
   )
   expect([200, 201]).toContain(response.statusCode)
-  context.differentDefraIdMockUserId = response.json.userId
+  context.testMemory.differentDefraIdMockUserId = response.json.userId
   context.differentUserOrganisationId = context.relationshipId
   context.differentUserRelationshipId = response.relationshipId
 }
@@ -196,11 +216,36 @@ async function registerAndLoginAnotherUserViaDefraIdStub(context) {
   await loginAnotherUserOfSameOrganisation(context)
 }
 
+function scenarioUsesDefraIdStub(world) {
+  const tags = world.testMemory.tags
+  const hasStub = tags.includes('@defra-id-stub')
+  const hasReal = tags.includes('@defra-id-real')
+  if (hasStub && !hasReal) return true
+  if (hasReal && !hasStub) return false
+
+  const extra = world.testEnv.cucumberExtraTags
+  const extraStub = extra.includes('@defra-id-stub')
+  const extraReal = extra.includes('@defra-id-real')
+  if (extraStub && !extraReal) return true
+  if (extraReal && !extraStub) return false
+
+  if (hasStub && hasReal) {
+    throw new Error(
+      'Scenario is tagged @defra-id-stub and @defra-id-real. Set CUCUMBER_EXTRA_TAGS to one of them.'
+    )
+  }
+
+  throw new Error(
+    'Scenario has no @defra-id-stub or @defra-id-real tag. Set CUCUMBER_EXTRA_TAGS to one of them.'
+  )
+}
+
 async function loginToPortalViaStub(context, email) {
-  // Start a clean browser session so relogin and user switching do not reuse existing auth cookies.
+  // Reloads the browser, then repeats the ext-test login form check.
   await UKPermitPage.browserReloadSession()
   await UKPermitPage.open()
-  await continueFromLocalAuthorityPage(context.isLocalAuthority)
+  await loginThroughBasicAuthIfPresented(context)
+  await continueFromLocalAuthorityPage(context.testMemory.isLocalAuthority)
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     context.testConfig.defraIdServiceUrl
   )
@@ -209,8 +254,8 @@ async function loginToPortalViaStub(context, email) {
 }
 
 async function loginOriginalUserToPortal(context) {
-  expect(context.originalUserEmail).toBeDefined()
-  await loginToPortalViaStub(context, context.originalUserEmail)
+  expect(context.testMemory.originalUserEmail).toBeDefined()
+  await loginToPortalViaStub(context, context.testMemory.originalUserEmail)
   await DefraIdStubPage.selectFirstOrganisation()
   await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
 }
@@ -218,8 +263,8 @@ async function loginOriginalUserToPortal(context) {
 async function loginThroughBasicAuthIfPresented(context) {
   if (await BasicAuthLoginPage.isCurrentPage()) {
     await BasicAuthLoginPage.login(
-      context.env.BASIC_AUTH_USERNAME,
-      context.env.BASIC_AUTH_PASSWORD
+      context.testEnv.basicAuthUsername,
+      context.testEnv.basicAuthPassword
     )
   }
 }
@@ -227,7 +272,7 @@ async function loginThroughBasicAuthIfPresented(context) {
 async function navigateToPortalAndLogin(context, accountType) {
   await UKPermitPage.open()
   await loginThroughBasicAuthIfPresented(context)
-  await continueFromLocalAuthorityPage(context.isLocalAuthority)
+  await continueFromLocalAuthorityPage(context.testMemory.isLocalAuthority)
   await HomePage.verifyUserNavigatedCorrectlyToDefraIdService(
     context.testConfig.defraIdServiceUrl
   )
@@ -242,14 +287,14 @@ async function navigateToPortalAndLogin(context, accountType) {
     )
     await DefraIdGovtGatewayPage.verifyUserIsOnGovernmentGatewayLoginPage()
 
-    if (context.govGatewayUser === undefined)
-      context.govGatewayUser = await getValueFromPool(
+    if (context.testMemory.govGatewayUser === undefined)
+      context.testMemory.govGatewayUser = await getValueFromPool(
         'availableGovGatewayUsers'
       )
-    allure.addArgument('Test User Email', context.govGatewayUser)
+    allure.addArgument('Test User Email', context.testMemory.govGatewayUser)
     await DefraIdGovtGatewayPage.loginWithGovernmentGateway(
-      context.govGatewayUser,
-      context.env.defraGovGatewayPassword
+      context.testMemory.govGatewayUser,
+      context.testEnv.defraGovGatewayPassword
     )
   } else {
     await DefraIdChooseSignInPage.selectSignInMethod('GOV.UK One Login')
@@ -257,44 +302,42 @@ async function navigateToPortalAndLogin(context, accountType) {
     await DefraIdGovUKPage.setBaseUrl(context.testConfig.govUKBaseUrl)
     await DefraIdGovUKPage.verifyUserIsOnGovUKLoginPage()
 
-    if (context.govUKUser === undefined)
-      context.govUKUser = await getValueFromPool('availableGovUKUsers')
+    if (context.testMemory.govUKUser === undefined)
+      context.testMemory.govUKUser = await getValueFromPool(
+        'availableGovUKUsers'
+      )
 
-    allure.addArgument('Test User Email', context.govUKUser)
+    allure.addArgument('Test User Email', context.testMemory.govUKUser)
     await DefraIdGovUKPage.loginWithGovUK(
-      context.govUKUser,
-      context.env.defraGovUKPassword
+      context.testMemory.govUKUser,
+      context.testEnv.defraGovUkPassword
     )
   }
 }
 
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal$/,
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     if (
-      this.env.ENVIRONMENT === 'dev' ||
-      this.env.ENVIRONMENT === 'local' ||
-      this.env.ENVIRONMENT === 'perf-test'
-    ) {
-      await registerAndLoginViaStub(this)
-    } else if (
-      this.tags.includes('@browserstack') &&
-      this.env.ENVIRONMENT !== 'ext-test'
+      this.testEnv.cucumberExtraTags.includes('@compatibility') &&
+      this.testEnv.environment !== 'ext-test'
     ) {
       // pick a user from default pool
       const user = await getValueFromPool('availableUsers')
       if (user.includes('@')) {
-        this.govUKUser = user
+        this.testMemory.govUKUser = user
         await navigateToPortalAndLogin(this, 'GOV.UK One Login')
       } else {
-        this.govGatewayUser = user
+        this.testMemory.govGatewayUser = user
         await navigateToPortalAndLogin(this, 'Government Gateway')
       }
+    } else if (scenarioUsesDefraIdStub(this)) {
+      await registerAndLoginViaStub(this)
     } else {
       // pick a default Gov UK or Govt gateway user and login with it
       // only use this step for test if parallel open sessions of a user does not effect the test
-      this.govUKUser = this.testConfig.defaultGovUKLogin
-      this.doNotAddUserToPool = true
+      this.testMemory.govUKUser = this.testConfig.defaultGovUKLogin
+      this.testMemory.doNotAddUserToPool = true
       await navigateToPortalAndLogin(this, 'GOV.UK One Login')
     }
   }
@@ -302,13 +345,13 @@ Given(
 
 Given(
   /^(?:a user is|I am) logged in to the waste receiver registration portal using a "([^"]*)" account( as a local authority)?$/,
-  async function (accountType, asLocalAuthority) {
-    this.isLocalAuthority = asLocalAuthority === ' as a local authority'
-    if (
-      this.env.ENVIRONMENT === 'dev' ||
-      this.env.ENVIRONMENT === 'local' ||
-      this.env.ENVIRONMENT === 'perf-test'
-    ) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    accountType,
+    asLocalAuthority
+  ) {
+    this.testMemory.isLocalAuthority =
+      asLocalAuthority === ' as a local authority'
+    if (scenarioUsesDefraIdStub(this)) {
       await registerAndLoginViaStub(this)
     } else {
       await navigateToPortalAndLogin(this, accountType)
@@ -318,9 +361,11 @@ Given(
 
 Given(
   /^the (?:same|original) user logs back in to the waste receiver registration portal(?: selecting "(Yes|No)" for local authority)?$/,
-  async function (localAuthorityOption) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    localAuthorityOption
+  ) {
     if (localAuthorityOption === 'Yes' || localAuthorityOption === 'No') {
-      this.isLocalAuthority = localAuthorityOption === 'Yes'
+      this.testMemory.isLocalAuthority = localAuthorityOption === 'Yes'
     }
     await loginOriginalUserToPortal(this)
   }
@@ -328,53 +373,62 @@ Given(
 
 When(
   'another user of the same organisation is registered and logged in to the waste receiver registration portal using the Defra ID mock service',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await registerAndLoginAnotherUserViaDefraIdStub(this)
   }
 )
 
 Given(
   'a multi-business user is logged in via {string}',
-  async function (accountType) {
-    this.govUKUser = await getValueFromPool(
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    accountType
+  ) {
+    this.testMemory.govUKUser = await getValueFromPool(
       'availableMultipleBusinessesGovUKUsers'
     )
-    this.userWithMultipleBusinesses = true
+    this.testMemory.userWithMultipleBusinesses = true
 
     await navigateToPortalAndLogin(this, accountType)
 
     await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
-    this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(0)
+    this.testMemory.selectedOrganisation =
+      await DefraIdOrgPickerPage.selectOrganisation(0)
   }
 )
 
-Given('a user is associated with multiple businesses', async function () {
-  this.govUKUser = await getValueFromPool(
-    'availableMultipleBusinessesGovUKUsers'
-  )
-  this.userWithMultipleBusinesses = true
-})
+Given(
+  'a user is associated with multiple businesses',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.govUKUser = await getValueFromPool(
+      'availableMultipleBusinessesGovUKUsers'
+    )
+    this.testMemory.userWithMultipleBusinesses = true
+  }
+)
 
 Given(
   'the user has selected a business that he wants to act on behalf of',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
-    this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(0)
+    this.testMemory.selectedOrganisation =
+      await DefraIdOrgPickerPage.selectOrganisation(0)
   }
 )
 
 Given(
   /^(?:a user is|I am) not logged in to the waste receiver registration portal$/,
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     // Do nothing as we want to ensure user is not logged in for this step. Step definition is here to improve readability of the scenario
   }
 )
 
 When(
   'a user is logged in to the waste receiver registration portal with a {string} account',
-  async function (s) {
-    this.govUKUser = this.testConfig.individualUserDefraAccLogin
-    this.doNotAddUserToPool = true
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    s
+  ) {
+    this.testMemory.govUKUser = this.testConfig.individualUserDefraAccLogin
+    this.testMemory.doNotAddUserToPool = true
     await navigateToPortalAndLogin(this, 'GOV.UK One Login')
   }
 )

@@ -1,6 +1,9 @@
-export function getAdminUiCredentials(testConfig, env) {
-  const username = testConfig.adminUiUsername
-  const password = env.adminUiPassword
+/**
+ * @param {import('../types/globals.js').CucumberWorld} world
+ */
+export function getAdminUiCredentials(world) {
+  const username = world.testConfig.adminUiUsername
+  const password = world.testEnv.adminUiPassword
 
   if (!username) {
     throw new Error('adminUiUsername is not set in the environment config file')

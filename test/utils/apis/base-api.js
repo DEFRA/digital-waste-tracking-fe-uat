@@ -39,7 +39,11 @@ export class BaseAPI {
     ) {
       this.agent = new ProxyAgent({
         uri: this.httpProxy.trim(),
-        ...baseOptions
+        ...baseOptions,
+        // The proxy presents its own certificate. Trust it on proxied calls only.
+        requestTls: {
+          rejectUnauthorized: false
+        }
       })
       this.usingProxy = true
     } else {

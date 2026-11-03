@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "baseUrl": "./",
+    "target": "es2024",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "checkJs": true,
+    "allowJs": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "types": ["node", "@wdio/globals/types"],
     "paths": {
       "~/*": ["./*"],
-      "page-objects/*": ["./test/page-objects/*"],
-      "components/*": ["./test/components/*"]
+      "page-objects/*": ["./test/page-objects/*.js"]
     }
   },
-  "exclude": ["node_modules", "build", "docker"]
+  "include": ["test/**/*.js", "wdio.grid.conf.js", "wdio.local.conf.js", "wdio.browserstack.conf.js"]
 }

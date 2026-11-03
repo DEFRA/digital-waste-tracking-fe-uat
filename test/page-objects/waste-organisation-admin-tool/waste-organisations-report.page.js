@@ -2,7 +2,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
-import { config } from '../../../wdio.conf.js'
+import { config } from '../../../wdio.grid.conf.js'
 import {
   buildExpectedCsvFilenameRegex,
   formatSearchDateAsYymmdd
