@@ -4,22 +4,26 @@ import logger from '@wdio/logger'
 const log = logger('test-config')
 
 /**
- * One support file. Getters read the file passed to the constructor.
+ * One support file. Getters read the file chosen by the constructor.
  */
 export class TestConfig {
   /** @type {string} */
   #prefix
 
-  #support
+  /** @type {object} */
+  #config
 
   /**
-   * Loads `test/support/<prefix>.config.json`.
-   * @param {string} prefix - File name without `.config.json`
+   * Loads `test/support/<prefix>.config.json`. zap loads `<prefix>.zap`.
+   * `proxyMode` is `off`, `cdp`, or `zap`. Unset means `cdp` when `HTTP_PROXY`
+   * is set, otherwise `off`. Any other set value throws.
+   * @param {string|undefined} prefix
+   * @param {'off'|'cdp'|'zap'} [proxyMode]
    */
-  constructor(prefix) {
-    this.#prefix = prefix
-    const file = `./test/support/${prefix}.config.json`
-    this.#support = JSON.parse(readFileSync(file, 'utf8'))
+  constructor(prefix, proxyMode) {
+    this.#prefix = proxyMode === 'zap' ? `${prefix}.zap` : prefix
+    const file = `./test/support/${this.#prefix}.config.json`
+    this.#config = JSON.parse(readFileSync(file, 'utf8'))
   }
 
   /** @returns {string} */
@@ -122,7 +126,7 @@ export class TestConfig {
    * @returns {string}
    */
   #string(key) {
-    const value = this.#support[key]
+    const value = this.#config[key]
     if (typeof value !== 'string') return this.#missing(key)
     return value
   }
@@ -132,7 +136,7 @@ export class TestConfig {
    * @returns {string[]}
    */
   #list(key) {
-    const value = this.#support[key]
+    const value = this.#config[key]
     if (!Array.isArray(value)) return this.#missing(key)
     return value
   }

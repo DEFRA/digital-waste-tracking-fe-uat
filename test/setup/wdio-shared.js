@@ -1,5 +1,18 @@
-import { ALLURE_ISSUE_LINK_TEMPLATE } from '../utils/allure-utils.js'
+import fs from 'node:fs'
+import { browser } from '@wdio/globals'
+import logger from '@wdio/logger'
+import { addStep } from '@wdio/allure-reporter'
+import { addValueToPool, setResourcePool } from '@wdio/shared-store-service'
+import { ApiFactory } from '../utils/apis/api-factory.js'
+import { initialiseAccessibilityChecking } from '../utils/accessibility-checking.js'
+import {
+  ALLURE_ISSUE_LINK_TEMPLATE,
+  addAllureIssueLinksFromPickleTags
+} from '../utils/allure-utils.js'
 import { buildCucumberTagExpression } from '../utils/cucumber-tag-expression.js'
+import { TestMemory } from './test-memory.js'
+
+const log = logger('wdio')
 
 export const execArgv = ['--loader', 'esm-module-alias/loader']
 
@@ -126,4 +139,143 @@ export function withMaxInstances(capabilities, testEnv) {
     ...capability,
     maxInstances
   }))
+}
+
+/**
+ * Attaches TestEnv, TestConfig, and a new TestMemory, then opens the API clients.
+ * @param {{ pickle: { tags: { name: string }[] } }} world
+ * @param {import('../types/globals.js').CucumberWorld} cucumberWorld
+ * @param {import('./test-env.js').TestEnv} testEnv
+ * @param {import('./test-config.js').TestConfig} testConfig
+ */
+export async function prepareScenario(
+  world,
+  cucumberWorld,
+  testEnv,
+  testConfig
+) {
+  const testMemory = new TestMemory()
+  cucumberWorld.testEnv = testEnv
+  cucumberWorld.testConfig = testConfig
+  cucumberWorld.testMemory = testMemory
+  await addAllureIssueLinksFromPickleTags(
+    world.pickle,
+    ALLURE_ISSUE_LINK_TEMPLATE
+  )
+  testMemory.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
+  testMemory.apis = ApiFactory.create(testEnv, testConfig)
+  testMemory.apis.govPayAPI.setAuthorizationHeader(testEnv.govPayApiKey)
+
+  if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
+    testMemory.axeBuilder = await initialiseAccessibilityChecking()
+  }
+}
+
+/**
+ * Stores this worker's Chrome name on the scenario.
+ * @param {import('./test-memory.js').TestMemory} testMemory
+ */
+export function recordChromeSession(testMemory) {
+  const capabilities =
+    /** @type {WebdriverIO.Capabilities & { deviceName?: string }} */ (
+      browser.capabilities
+    )
+  const browserName = capabilities.browserName ?? ''
+  const browserVersion = capabilities.browserVersion ?? ''
+  testMemory.browserInfo = `${browserName} ${browserVersion}`.trim()
+  testMemory.deviceInfo =
+    capabilities.deviceName ?? `OS: ${capabilities.platformName ?? 'local'}`
+}
+
+/**
+ * Saves a screenshot when the step or scenario failed.
+ * @param {{ passed?: boolean, error?: unknown }} result
+ * @param {string} where
+ */
+export async function screenshotOnFailure(result, where) {
+  if (result.passed !== false && !result.error) return
+  try {
+    await browser.takeScreenshot()
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    log.warn(`${where}: screenshot failed — ${message}`)
+  }
+}
+
+/**
+ * Returns Gov.UK and Government Gateway users this scenario checked out.
+ * @param {import('./test-memory.js').TestMemory} testMemory
+ */
+export async function releasePooledUsers(testMemory) {
+  if (testMemory.govUKUser !== undefined) {
+    if (testMemory.userWithMultipleBusinesses === true) {
+      addStep(
+        `adding multiple businesses gov uk user ${testMemory.govUKUser} to the pool`
+      )
+      await addValueToPool(
+        'availableMultipleBusinessesGovUKUsers',
+        testMemory.govUKUser
+      )
+    } else if (testMemory.doNotAddUserToPool === true) {
+      // This user is not returned to the pool.
+    } else {
+      addStep(`adding gov uk user ${testMemory.govUKUser} to the pool`)
+      await addValueToPool('availableGovUKUsers', testMemory.govUKUser)
+    }
+  }
+  if (testMemory.govGatewayUser !== undefined) {
+    addStep(`adding gov gateway user ${testMemory.govGatewayUser} to the pool`)
+    await addValueToPool('availableGovGatewayUsers', testMemory.govGatewayUser)
+  }
+  if (testMemory.multipleBusinessesGovUKUser !== undefined) {
+    await addValueToPool(
+      'availableMultipleBusinessesGovUKUsers',
+      testMemory.multipleBusinessesGovUKUser
+    )
+  }
+}
+
+/**
+ * Expires Defra ID stub users this scenario registered.
+ * @param {import('./test-memory.js').TestMemory} testMemory
+ */
+export async function expireDefraIdStubUsers(testMemory) {
+  const defraIdMockUserIds = [
+    testMemory.defraIdMockUserId,
+    testMemory.differentDefraIdMockUserId
+  ].filter(Boolean)
+  for (const defraIdMockUserId of defraIdMockUserIds) {
+    log.info(
+      `cleaning up the user from the defra id mock service: ${defraIdMockUserId}`
+    )
+    try {
+      await testMemory.apis.defraIdStubAPI.expireUser(defraIdMockUserId)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      log.warn(`afterScenario: defraId expireUser failed — ${message}`)
+    }
+  }
+}
+
+/**
+ * Fills the three account pools from the test support file.
+ * @param {import('./test-config.js').TestConfig} pools
+ */
+export async function seedUserPools(pools) {
+  await setResourcePool('availableGovUKUsers', pools.govUKLogin)
+  await setResourcePool('availableGovGatewayUsers', pools.govGatewayLogin)
+  await setResourcePool(
+    'availableMultipleBusinessesGovUKUsers',
+    pools.multipleBusinessesGovUKLogin
+  )
+}
+
+/**
+ * Writes FAILED when the run recorded failures. Portal reads this file.
+ * @param {{ failed?: number }} [results]
+ */
+export function writeFailedFile(results) {
+  if (results?.failed > 0) {
+    fs.writeFileSync('FAILED', JSON.stringify(results))
+  }
 }

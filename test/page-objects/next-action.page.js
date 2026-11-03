@@ -56,7 +56,7 @@ class NextActionPage extends Page {
   }
 
   /**
-   * @param {'connectYourSoftware' | 'uploadSpreadsheet' | 'downloadSpreadsheet'} option
+   * @param {'connectYourSoftware' | 'uploadSpreadsheet' | 'downloadSpreadsheet' | 'updateSpreadsheet'} option
    */
   async selectNextAction(option) {
     let radio

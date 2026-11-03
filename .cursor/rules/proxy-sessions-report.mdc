@@ -7,7 +7,7 @@ alwaysApply: true
 
 `HTTP_PROXY` is the one URL. `PROXY_MODE` is `off`, `cdp`, or `zap`. Any other set value throws. Unset means `cdp` when `HTTP_PROXY` is set, and `off` when it is not. CDP sets `HTTP_PROXY` and does not set `PROXY_MODE`. `off` ignores `HTTP_PROXY`. `ZAP_API_KEY` authenticates the ZAP API. Drop `ZAP_PROXY_URL` and `ZAP_PROXY_API_URL`.
 
-`zap` uses that URL as ZAP. Compose starts ZAP on port 8080. The journey-test workflow sets `HTTP_PROXY`, `PROXY_MODE=zap`, and `ZAP_API_KEY`. A local scan uses the same three values. `onPrepare` opens a ZAP session. The grid and local Chrome send page traffic through the proxy. API calls to the services under test go through it too. The ZAP REST client uses `HTTP_PROXY` as ZAP's address and is not sent back through the proxy. `npm run test:zap` runs `AnalyseZapReport.feature` on the grid with `CUCUMBER_EXTRA_TAGS='@zap'` and attaches those saved files to Allure. It does not set `ENVIRONMENT`. GitHub CI is that run, and a laptop runs the same command.
+`zap` uses that URL as ZAP. Compose starts ZAP on port 8080. The journey-test workflow sets `HTTP_PROXY`, `PROXY_MODE=zap`, and `ZAP_API_KEY`. A local scan uses the same three values. The grid and local Chrome `onPrepare` open a ZAP session. Those browsers send page traffic through the proxy. API calls to the services under test go through it too. The ZAP REST client uses `HTTP_PROXY` as ZAP's address and is not sent back through the proxy. `npm run test:zap` runs `AnalyseZapReport.feature` on the grid with `CUCUMBER_EXTRA_TAGS='@zap'` and attaches those saved files to Allure. It does not set `ENVIRONMENT`. GitHub CI is that run, and a laptop runs the same command.
 
 `cdp` has no ZAP. Traffic that leaves the platform uses the proxy: Cognito, GOV.UK Pay, and the browser started by the grid or local Chrome. Calls to services inside CDP stay direct.
 
@@ -17,4 +17,4 @@ BrowserStack's remote browser is not given `HTTP_PROXY`. The runner uses it to r
 
 `MAX_INSTANCES` sets runner and per-capability `maxInstances`, default 1. Each worker has its own browser. Skip `reloadSession()` only on the first scenario of a worker. Later scenarios reload. Do not add a cookie clear, a session-list cleaner, or a custom Cucumber retry.
 
-Screenshot a failed step or scenario only. Keep the `FAILED` file and `entrypoint.sh`. Do not backfill Allure results.
+Screenshot a failed step or scenario only. The Allure report is always generated and published after the run. Keep the `FAILED` file and `entrypoint.sh`.
