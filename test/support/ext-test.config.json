@@ -4,5 +4,5 @@
   "govtGatewayLoginUrl": "https://www.ete.access.service.gov.uk/login/signin/creds",
   "govUKBaseUrl": "https://signin.integration.account.gov.uk",
   "govPayBaseUrl": "https://publicapi.payments.service.gov.uk/v1/payments",
-  "wasteMovementClientSyncApiBaseUrl": "https://ephemeral-protected.api.ext-test.cdp-int.defra.cloud/dwt-client-sync"
+  "wasteMovementClientSyncApiBaseUrl": "https://dwt-client-sync.ext-test.cdp-int.defra.cloud"
 }
