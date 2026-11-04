@@ -4,5 +4,5 @@
   "wasteMovementBackendServiceUrl": "https://waste-movement-backend.perf-test.cdp-int.defra.cloud",
   "wasteMovementExternalApiBaseUrl": "https://waste-movement-external-api.api.perf-test.cdp-int.defra.cloud",
   "cognitoOAuthBaseUrl": "https://waste-movement-external-api-05244.auth.eu-west-2.amazoncognito.com",
-  "wasteMovementClientSyncApiBaseUrl": "https://ephemeral-protected.api.perf-test.cdp-int.defra.cloud/dwt-client-sync"
+  "wasteMovementClientSyncApiBaseUrl": "https://dwt-client-sync.perf-test.cdp-int.defra.cloud"
 }
