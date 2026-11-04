@@ -102,7 +102,9 @@ export const config = {
           // Use absolute path for download directory
           // 'download.default_directory': '/home/seluser/Downloads',
           'profile.default_content_settings.popups': 0, // Disable popup
-          'download.prompt_for_download': false // Auto-download
+          'download.prompt_for_download': false, // Auto-download
+          // Allow clipboard access so Chrome does not prompt during copy steps.
+          'profile.default_content_setting_values.clipboard': 1
         }
       }
     }
