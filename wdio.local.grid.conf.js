@@ -48,7 +48,11 @@ export const config = {
           '--disable-gpu',
           '--window-size=1920,1080',
           '--disable-dev-shm-usage'
-        ]
+        ],
+        prefs: {
+          // Allow clipboard access so Chrome does not prompt during copy steps.
+          'profile.default_content_setting_values.clipboard': 1
+        }
       }
     }
   ],

@@ -84,7 +84,17 @@ export const config = {
   //
 
   capabilities: debug
-    ? [{ browserName: 'chrome' }]
+    ? [
+        {
+          browserName: 'chrome',
+          'goog:chromeOptions': {
+            prefs: {
+              // Allow clipboard access so Chrome does not prompt during copy steps.
+              'profile.default_content_setting_values.clipboard': 1
+            }
+          }
+        }
+      ]
     : [
         {
           maxInstances: 1,
@@ -95,7 +105,11 @@ export const config = {
               '--disable-infobars',
               '--disable-gpu',
               '--window-size=1920,1080'
-            ]
+            ],
+            prefs: {
+              // Allow clipboard access so Chrome does not prompt during copy steps.
+              'profile.default_content_setting_values.clipboard': 1
+            }
           }
         }
       ],
