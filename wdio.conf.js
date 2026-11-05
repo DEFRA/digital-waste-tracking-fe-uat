@@ -214,9 +214,9 @@ export const config = {
     if (process.env.ADMIN_UI_BASE_URL) {
       cucumberWorld.testConfig.adminUiBaseUrl = process.env.ADMIN_UI_BASE_URL
     }
-    if (process.env.CLIENT_SYNC_BASE_URL) {
+    if (process.env.DWT_CLIENT_SYNC_SERVICE_URL) {
       cucumberWorld.testConfig.wasteMovementClientSyncApiBaseUrl =
-        process.env.CLIENT_SYNC_BASE_URL
+        process.env.DWT_CLIENT_SYNC_SERVICE_URL
     }
     cucumberWorld.env = process.env
     cucumberWorld.apis = ApiFactory.create(
