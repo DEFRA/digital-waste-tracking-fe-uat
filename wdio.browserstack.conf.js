@@ -23,6 +23,13 @@ const cucumberEnvTag =
 // const debug = process.env.DEBUG
 // const oneMinute = 60 * 1000
 
+// Allow clipboard access so Chromium browsers do not prompt during copy steps.
+const chromiumClipboardOptions = {
+  prefs: {
+    'profile.default_content_setting_values.clipboard': 1
+  }
+}
+
 // https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices
 const allCapabilities = [
   // windows
@@ -35,6 +42,7 @@ const allCapabilities = [
       os: 'Windows',
       osVersion: '11'
     },
+    'goog:chromeOptions': chromiumClipboardOptions,
     timeouts: {
       script: 120000, // 120 seconds for async script execution
       pageLoad: 120000, // 120 seconds for page load
@@ -50,6 +58,7 @@ const allCapabilities = [
       os: 'Windows',
       osVersion: '11'
     },
+    'ms:edgeOptions': chromiumClipboardOptions,
     timeouts: {
       script: 120000, // 120 seconds for async script execution
       pageLoad: 120000, // 120 seconds for page load
@@ -66,6 +75,7 @@ const allCapabilities = [
       os: 'OS X',
       osVersion: 'Sonoma' // Changed from 'Sequoia'
     },
+    'goog:chromeOptions': chromiumClipboardOptions,
     timeouts: {
       script: 120000, // 120 seconds for async script execution
       pageLoad: 120000, // 120 seconds for page load
@@ -97,6 +107,7 @@ const allCapabilities = [
       consoleLogs: 'info',
       idleTimeout: 300
     },
+    'goog:chromeOptions': chromiumClipboardOptions,
     timeouts: {
       script: 120000, // 120 seconds for async script execution
       pageLoad: 120000, // 120 seconds for page load
