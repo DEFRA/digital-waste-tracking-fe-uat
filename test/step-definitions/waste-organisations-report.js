@@ -38,7 +38,10 @@ function getFrontendValidationFixture(fixtureKey) {
 
 function mapExpectedRows(expectedOrganisations) {
   return sortOrganisationsForReport(expectedOrganisations).map((org) => ({
+    name: org.name,
     organisationId: org.organisationId,
+    // The seed organisations don't say whether they're local authorities
+    localAuthority: 'Not known',
     registered: formatRegisteredDateForDisplay(org.dateRegistered),
     activeApiCodeCount: org.activeApiCodeCount
   }))
@@ -76,7 +79,7 @@ When(
     await WasteOrganisationsReportPage.enterToDate(
       parseIsoDateToFormFields(fixture.endDate)
     )
-    await WasteOrganisationsReportPage.clickShowOrganisations()
+    await WasteOrganisationsReportPage.clickSearch()
   }
 )
 
@@ -86,7 +89,7 @@ When('the user enters invalid dates for {string}', async function (fixtureKey) {
 
   await WasteOrganisationsReportPage.enterFromDate(fixture.fromDate)
   await WasteOrganisationsReportPage.enterToDate(fixture.toDate)
-  await WasteOrganisationsReportPage.clickShowOrganisations()
+  await WasteOrganisationsReportPage.clickSearch()
 })
 
 When(
@@ -127,8 +130,8 @@ Then('no waste organisations should be displayed', async function () {
   await WasteOrganisationsReportPage.verifyNoResultsDisplayed()
 })
 
-Then('the download CSV button should not be displayed', async function () {
-  await WasteOrganisationsReportPage.verifyDownloadCsvButtonIsNotDisplayed()
+Then('the download CSV link should not be displayed', async function () {
+  await WasteOrganisationsReportPage.verifyDownloadCsvLinkIsNotDisplayed()
 })
 
 Then(
