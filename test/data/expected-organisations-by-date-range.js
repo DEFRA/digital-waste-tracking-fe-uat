@@ -258,7 +258,14 @@ export const VALIDATION_ERROR_FIXTURES = {
 }
 
 // Errors on the admin UI's search, one per date, From first (DWTSPI-480)
-const dateError = (errorField, message) => ({ message, errorField })
+// The page outlines only the date parts that are wrong: the missing one, or
+// those in the wrong format. Otherwise it outlines all three
+const allParts = ['day', 'month', 'year']
+const dateError = (errorField, message, parts = allParts) => ({
+  message,
+  errorField,
+  parts
+})
 
 export const FRONTEND_VALIDATION_FIXTURES = {
   nothing_entered: {
@@ -272,7 +279,9 @@ export const FRONTEND_VALIDATION_FIXTURES = {
   missing_month: {
     fromDate: { day: '17', month: '', year: '2024' },
     toDate: { day: '31', month: '7', year: '2024' },
-    expectedErrors: [dateError('date-from', '‘From’ date must include a month')]
+    expectedErrors: [
+      dateError('date-from', '‘From’ date must include a month', ['month'])
+    ]
   },
   more_than_one_part_missing: {
     fromDate: { day: '01', month: '1', year: '2024' },
@@ -285,14 +294,16 @@ export const FRONTEND_VALIDATION_FIXTURES = {
     fromDate: { day: '01', month: '1', year: '2024' },
     toDate: { day: 'abc', month: '1', year: '2025' },
     expectedErrors: [
-      dateError('date-to', 'Enter the ‘To’ date in the correct format')
+      dateError('date-to', 'Enter the ‘To’ date in the correct format', ['day'])
     ]
   },
   two_digit_year: {
     fromDate: { day: '01', month: '1', year: '24' },
     toDate: { day: '31', month: '7', year: '2024' },
     expectedErrors: [
-      dateError('date-from', 'Enter the ‘From’ date in the correct format')
+      dateError('date-from', 'Enter the ‘From’ date in the correct format', [
+        'year'
+      ])
     ]
   },
   invalid_from_date: {

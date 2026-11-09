@@ -139,10 +139,9 @@ class WasteOrganisationsReportPage extends Page {
   }
 
   async verifyResultsCount(expectedCount) {
+    // Matches the whole number, so 1 doesn't also match 13
     await expect(this.resultsCount).toHaveText(
-      expect.stringContaining(
-        `Organisations registered in period: ${expectedCount}`
-      )
+      new RegExp(`Organisations registered in period: ${expectedCount}\\b`)
     )
   }
 
@@ -241,6 +240,10 @@ class WasteOrganisationsReportPage extends Page {
     await expect(this.errorSummary).toHaveText(
       expect.stringContaining('There is a problem')
     )
+    // Only the expected errors, so an extra one fails
+    await expect($$('.govuk-error-summary__list li')).toBeElementsArrayOfSize(
+      expectedErrors.length
+    )
 
     for (const { message, errorField } of expectedErrors) {
       await expect(this.errorSummary).toHaveText(
@@ -249,6 +252,25 @@ class WasteOrganisationsReportPage extends Page {
       const inlineError = this.getInlineErrorForField(errorField)
       await expect(inlineError).toBeDisplayed()
       await expect(inlineError).toHaveText(expect.stringContaining(message))
+    }
+
+    // Exactly the wrong parts of each date are outlined, and none of a date
+    // without an error
+    for (const dateField of ['date-from', 'date-to']) {
+      const error = expectedErrors.find(
+        ({ errorField }) => errorField === dateField
+      )
+      if (!error) {
+        await expect(this.getInlineErrorForField(dateField)).not.toBeExisting()
+      }
+      for (const part of ['day', 'month', 'year']) {
+        const input = $(`[data-testid="${dateField}-${part}"]`)
+        if (error?.parts.includes(part)) {
+          await expect(input).toHaveElementClass('govuk-input--error')
+        } else {
+          await expect(input).not.toHaveElementClass('govuk-input--error')
+        }
+      }
     }
   }
 }

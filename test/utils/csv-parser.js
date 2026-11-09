@@ -13,7 +13,7 @@ const COLUMN_ALIASES = {
   organisationId: ['Organisation ID'],
   localAuthority: ['Local authority'],
   registered: ['Registered (UTC)'],
-  activeApiCodeCount: ['Active API codes', 'Active API Codes']
+  activeApiCodeCount: ['Active API codes']
 }
 
 function getColumnValue(row, aliases) {
