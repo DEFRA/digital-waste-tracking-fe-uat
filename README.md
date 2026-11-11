@@ -162,7 +162,7 @@ See the CDP Documentation for more details.
 - **Backend** (`GetOrganisationsByDateRange.feature`): tests the new Organisation Backend API that returns organisations registered between a start and end date.
 - **Admin tool UI**: `Login.feature` (admin portal sign-in) and `WasteOrganisationsReport.feature` (report that uses the organisations API to list organisations and download CSV for a date range).
   - The MongoDB seed script (`test/utils/test-data-organisations.js`) must be run before the report tests. In shared environments (dev, test) this only needs to be done once; for local runs, insert the data into MongoDB before running the tests.
-- **BrowserStack**: run all admin-tool UI features tagged `@browserstack-admin-tool` with `npm run test:browserstack:admin-tool` (desktop browsers only). Default `npm run test:browserstack` is unchanged.
+- **BrowserStack**: run all admin-ui features tagged `@browserstack-admin-ui` with `npm run test:browserstack:admin-ui` (same browser/device matrix as `npm run test:browserstack`).
 
 ## Licence
 
