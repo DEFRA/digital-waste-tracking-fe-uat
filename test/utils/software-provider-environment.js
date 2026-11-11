@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 
 const ENVIRONMENT_LABELS = {
-  local: 'local',
+  local: 'Local',
   dev: 'Dev',
   test: 'Test',
   'perf-test': 'Performance test',
