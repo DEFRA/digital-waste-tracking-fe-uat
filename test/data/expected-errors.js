@@ -212,7 +212,7 @@ export const EXPECTED_ERRORS = {
   'Test3-haz-components-errors-spreadsheet.xlsx': {
     errorsWasteMovementLevel: [],
     errorsWasteItemLevel: [
-      { row: 14, value: 'concentration operator must be [>] (P14)' }
+      { row: 14, value: "concentration operator must be '>' or '=' (P14)" }
     ]
   },
   'Test2-spreadsheet-api-error-1.xlsx': {
