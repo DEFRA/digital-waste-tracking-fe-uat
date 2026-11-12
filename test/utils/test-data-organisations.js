@@ -1,17 +1,19 @@
 // MongoDB seed script for DWT admin test organisations. Used by WasteOrganisationsReport and GetOrganisationsByDateRange features — run in the target test environment before those tests.
-// DWT admin test - 1  | orgID: 6d35c84d-b4f8-4f8d-84db-39f9894c1a6a  | Created: 2024-01-18 09:14:26 UTC | API Codes: 1  (1 active,  0 inactive, 0 null)
-// DWT admin test - 2  | orgID: ec12b2d2-f7c6-40e9-a5ef-9bdb1c8d6581  | Created: 2024-02-11 13:27:41 UTC | API Codes: 3  (0 active,  3 inactive, 0 null)
-// DWT admin test - 3  | orgID: bfc57d9f-9ef6-4c6d-a34e-0d69b79a4db0  | Created: 2024-03-10 16:45:12 UTC | API Codes: 11 (11 active, 0 inactive, 0 null)
-// DWT admin test - 4  | orgID: c8cbe6cb-9af7-4b80-8b82-538d76ecad43  | Created: 2024-03-18 08:30:55 UTC | API Codes: 4  (1 active,  3 inactive, 0 null)
-// DWT admin test - 5  | orgID: c1f1d0cf-5b95-4d0d-b8b3-0bc80b77b78f  | Created: 2024-03-24 21:15:09 UTC | API Codes: 2  (0 active,  0 inactive, 2 null)
-// DWT admin test - 6  | orgID: 74dc6d88-2816-4d39-b983-63d35f4cb9af  | Created: 2024-03-25 00:00:00 UTC | API Codes: 1  (1 active,  0 inactive, 0 null)
-// DWT admin test - 7  | orgID: 28c74af7-d1df-4c22-a4fc-6945d04bdce2  | Created: 2024-09-15 14:59:59 UTC | API Codes: 1  (1 active,  0 inactive, 0 null)
-// DWT admin test - 8  | orgID: 0dd9bcf4-1bd2-4c91-8b87-7b76b7a2d90c  | Created: 2024-03-25 00:00:00 UTC | API Codes: 4  (4 active,  0 inactive, 0 null)
-// DWT admin test - 9  | orgID: f42bc5d3-2d0c-4b31-ae90-d44a472cf958  | Created: 2024-03-25 00:00:00 UTC | API Codes: 9  (9 active,  0 inactive, 0 null)
-// DWT admin test - 10 | orgID: b8f90b0c-6156-4f58-8df5-b76e5ebcfd67  | Created: 2024-03-25 00:00:00 UTC | API Codes: 1  (1 active,  0 inactive, 0 null)
-// DWT admin test - 11 | orgID: d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f11  | Created: 2024-12-22 09:30:00 UTC | API Codes: 4  (2 active,  1 inactive, 1 null)
-// DWT admin test - 12 | orgID: e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a12  | Created: 2024-12-22 19:20:15 UTC | API Codes: 1  (0 active,  1 inactive, 0 null)
-// DWT admin test - 13 | orgID: f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b13  | Created: 2024-12-22 23:45:00 UTC | API Codes: 0  (0 active,  0 inactive, 0 null)
+// DWT admin test - 1  | orgID: 6d35c84d-b4f8-4f8d-84db-39f9894c1a6a  | Created: 2024-01-18 09:14:26 UTC | API Codes: 1  (1 active,  0 inactive, 0 null) | isLocalAuthority: false
+// DWT admin test - 2  | orgID: ec12b2d2-f7c6-40e9-a5ef-9bdb1c8d6581  | Created: 2024-02-11 13:27:41 UTC | API Codes: 3  (0 active,  3 inactive, 0 null) | isLocalAuthority: true
+// DWT admin test - 3  | orgID: bfc57d9f-9ef6-4c6d-a34e-0d69b79a4db0  | Created: 2024-03-10 16:45:12 UTC | API Codes: 11 (11 active, 0 inactive, 0 null) | isLocalAuthority: true
+// DWT admin test - 4  | orgID: c8cbe6cb-9af7-4b80-8b82-538d76ecad43  | Created: 2024-03-18 08:30:55 UTC | API Codes: 4  (1 active,  3 inactive, 0 null) | isLocalAuthority: (missing)
+// DWT admin test - 5  | orgID: c1f1d0cf-5b95-4d0d-b8b3-0bc80b77b78f  | Created: 2024-03-24 21:15:09 UTC | API Codes: 2  (0 active,  0 inactive, 2 null) | isLocalAuthority: (missing)
+// DWT admin test - 6  | orgID: 74dc6d88-2816-4d39-b983-63d35f4cb9af  | Created: 2024-03-25 00:00:00 UTC | API Codes: 1  (1 active,  0 inactive, 0 null) | isLocalAuthority: true
+// DWT admin test - 7  | orgID: 28c74af7-d1df-4c22-a4fc-6945d04bdce2  | Created: 2024-09-15 14:59:59 UTC | API Codes: 1  (1 active,  0 inactive, 0 null) | isLocalAuthority: (missing)
+// DWT admin test - 8  | orgID: 0dd9bcf4-1bd2-4c91-8b87-7b76b7a2d90c  | Created: 2024-03-25 00:00:00 UTC | API Codes: 4  (4 active,  0 inactive, 0 null) | isLocalAuthority: false
+// DWT admin test - 9  | orgID: f42bc5d3-2d0c-4b31-ae90-d44a472cf958  | Created: 2024-03-25 00:00:00 UTC | API Codes: 9  (9 active,  0 inactive, 0 null) | isLocalAuthority: true
+// DWT admin test - 10 | orgID: b8f90b0c-6156-4f58-8df5-b76e5ebcfd67  | Created: 2024-03-25 00:00:00 UTC | API Codes: 1  (1 active,  0 inactive, 0 null) | isLocalAuthority: true
+// DWT admin test - 11 | orgID: d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f11  | Created: 2024-12-22 09:30:00 UTC | API Codes: 4  (2 active,  1 inactive, 1 null) | isLocalAuthority: false
+// DWT admin test - 12 | orgID: e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a12  | Created: 2024-12-22 19:20:15 UTC | API Codes: 1  (0 active,  1 inactive, 0 null) | isLocalAuthority: false
+// DWT admin test - 13 | orgID: f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b13  | Created: 2024-12-22 23:45:00 UTC | API Codes: 0  (0 active,  0 inactive, 0 null) | isLocalAuthority: false
+// Random split: 5 true (2, 3, 6, 9, 10), 5 false (1, 8, 11, 12, 13), 3 missing (4, 5, 7).
+// When isLocalAuthority is missing from Mongo, the API omits it and the admin UI shows "Not known".
 
 // Delete any existing test documents if they exist
 db.organisations.deleteMany({
@@ -31,6 +33,7 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 1',
+    isLocalAuthority: false,
     users: ['ef6d8740-9447-47d6-9d4d-4e8d6b804b33'],
     createdAt: ISODate('2024-01-18T09:14:26.000Z'),
     updatedAt: ISODate('2024-01-18T09:14:26.000Z'),
@@ -58,6 +61,7 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 2',
+    isLocalAuthority: true,
     users: ['c2afed58-c84f-4cf0-865f-685a84fd80d8'],
     createdAt: ISODate('2024-02-11T13:27:41.000Z'),
     updatedAt: ISODate('2024-02-11T13:27:41.000Z'),
@@ -125,12 +129,13 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 3',
+    isLocalAuthority: true,
     users: ['fbc972b0-7581-43f6-bc0d-f76d8cb9b8af'],
     createdAt: ISODate('2024-03-10T16:45:12.000Z'),
     updatedAt: ISODate('2024-03-10T16:45:12.000Z'),
     disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
-  // Document 4 - 4 API codes (3 inactive, 1 active)
+  // Document 4 - 4 API codes (3 inactive, 1 active). isLocalAuthority omitted on purpose.
   {
     organisationId: 'c8cbe6cb-9af7-4b80-8b82-538d76ecad43',
     apiCodes: [
@@ -162,7 +167,7 @@ db.organisations.insertMany([
     updatedAt: ISODate('2024-03-18T08:30:55.000Z'),
     disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
-  // Document 5 - 2 API codes with null isDisabled
+  // Document 5 - 2 API codes with null isDisabled. isLocalAuthority omitted on purpose.
   {
     organisationId: 'c1f1d0cf-5b95-4d0d-b8b3-0bc80b77b78f',
     apiCodes: [
@@ -196,12 +201,13 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 6',
+    isLocalAuthority: true,
     users: ['f3d2f7ce-9436-4c84-a3d0-4bb3d9a8fd72'],
     createdAt: ISODate('2024-03-25T00:00:00.000Z'),
     updatedAt: ISODate('2024-03-25T00:00:00.000Z'),
     disableAfter: ISODate('2050-01-01T00:00:00.000Z')
   },
-  // Document 7 - 15 September 2024 14:59:59
+  // Document 7 - 15 September 2024 14:59:59. isLocalAuthority omitted on purpose.
   {
     organisationId: '28c74af7-d1df-4c22-a4fc-6945d04bdce2',
     apiCodes: [
@@ -245,6 +251,7 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 8',
+    isLocalAuthority: false,
     users: ['f54a09d3-8183-4547-b879-f856f12d75a0'],
     createdAt: ISODate('2024-03-25T00:00:00.000Z'),
     updatedAt: ISODate('2024-03-25T00:00:00.000Z'),
@@ -302,6 +309,7 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 9',
+    isLocalAuthority: true,
     users: ['fa7e3b89-80d2-47b7-8ff4-d0fd0fd9bc4f'],
     createdAt: ISODate('2024-03-25T00:00:00.000Z'),
     updatedAt: ISODate('2024-03-25T00:00:00.000Z'),
@@ -319,6 +327,7 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 10',
+    isLocalAuthority: true,
     users: ['84e88f03-c084-4cb0-a69f-3b63c7f1af2d'],
     createdAt: ISODate('2024-03-25T00:00:00.000Z'),
     updatedAt: ISODate('2024-03-25T00:00:00.000Z'),
@@ -351,6 +360,7 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 11',
+    isLocalAuthority: false,
     users: ['b1c2d3e4-1111-4111-8111-111111110011'],
     createdAt: ISODate('2024-12-22T09:30:00.000Z'),
     updatedAt: ISODate('2024-12-22T09:30:00.000Z'),
@@ -368,6 +378,7 @@ db.organisations.insertMany([
     ],
     version: 1,
     name: 'DWT admin test - 12',
+    isLocalAuthority: false,
     users: ['c2d3e4f5-1212-4121-8121-121212120012'],
     createdAt: ISODate('2024-12-22T19:20:15.000Z'),
     updatedAt: ISODate('2024-12-22T19:20:15.000Z'),
@@ -379,6 +390,7 @@ db.organisations.insertMany([
     apiCodes: [],
     version: 1,
     name: 'DWT admin test - 13',
+    isLocalAuthority: false,
     users: ['d3e4f5a6-1313-4131-8131-131313130013'],
     createdAt: ISODate('2024-12-22T23:45:00.000Z'),
     updatedAt: ISODate('2024-12-22T23:45:00.000Z'),

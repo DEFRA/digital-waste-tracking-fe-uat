@@ -6,6 +6,7 @@ import {
   DATE_RANGE_FIXTURES,
   FRONTEND_VALIDATION_FIXTURES,
   buildExpectedCsvFilenameRegex,
+  formatLocalAuthorityForDisplay,
   formatRegisteredDateForDisplay,
   formatSearchDateForDisplay,
   mapExpectedCsvRows,
@@ -40,8 +41,7 @@ function mapExpectedRows(expectedOrganisations) {
   return sortOrganisationsForReport(expectedOrganisations).map((org) => ({
     name: org.name,
     organisationId: org.organisationId,
-    // The seed organisations don't say whether they're local authorities
-    localAuthority: 'Not known',
+    localAuthority: formatLocalAuthorityForDisplay(org.isLocalAuthority),
     registered: formatRegisteredDateForDisplay(org.dateRegistered),
     activeApiCodeCount: org.activeApiCodeCount
   }))
@@ -93,6 +93,13 @@ When('the user enters invalid dates for {string}', async function (fixtureKey) {
 })
 
 When(
+  'the user selects Clear on the waste organisations report page',
+  async function () {
+    await WasteOrganisationsReportPage.clickClear()
+  }
+)
+
+When(
   'the user downloads the waste organisations report CSV for the {string} date range',
   async function (fixtureKey) {
     const fixture = getDateRangeFixture(fixtureKey)
@@ -129,6 +136,13 @@ Then(
 Then('no waste organisations should be displayed', async function () {
   await WasteOrganisationsReportPage.verifyNoResultsDisplayed()
 })
+
+Then(
+  'the waste organisations report should show no results section',
+  async function () {
+    await WasteOrganisationsReportPage.verifyNoResultsSectionDisplayed()
+  }
+)
 
 Then('the download CSV link should not be displayed', async function () {
   await WasteOrganisationsReportPage.verifyDownloadCsvLinkIsNotDisplayed()

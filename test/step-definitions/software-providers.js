@@ -5,7 +5,10 @@ import CreateClientCredentialsPage from '../page-objects/waste-organisation-admi
 import ClientCredentialsPage from '../page-objects/waste-organisation-admin-tool/client-credentials.page.js'
 import AdminToolLoginPage from '../page-objects/waste-organisation-admin-tool/login.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
-import { WasteMovementClientSyncAPI } from '../utils/apis/wasteMovementClientSyncApi.js'
+import {
+  WasteMovementClientSyncAPI,
+  resolveWasteMovementClientSyncBaseUrl
+} from '../utils/apis/wasteMovementClientSyncApi.js'
 import { CLIENT_NAME_VALIDATION_FIXTURES } from '../data/software-provider-fixtures.js'
 import { getAdminUiCredentials } from '../utils/admin-tool-credentials.js'
 import {
@@ -19,13 +22,17 @@ import {
 const SOFTWARE_PROVIDERS_PATH = '/software-providers'
 
 function createClientSyncApi(context) {
-  const baseUrl = context.testConfig.wasteMovementClientSyncApiBaseUrl
-  if (!baseUrl) {
+  const configBaseUrl = context.testConfig.wasteMovementClientSyncApiBaseUrl
+  if (!configBaseUrl) {
     throw new Error(
       'wasteMovementClientSyncApiBaseUrl is not set in the environment config file'
     )
   }
 
+  const baseUrl = resolveWasteMovementClientSyncBaseUrl(
+    configBaseUrl,
+    context.env
+  )
   const httpProxy = context.env.ZAP_PROXY_API_URL ?? context.env.HTTP_PROXY
   return new WasteMovementClientSyncAPI(baseUrl, httpProxy)
 }

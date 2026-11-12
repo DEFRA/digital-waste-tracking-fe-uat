@@ -1,4 +1,4 @@
-@feature=WasteOrganisationsByDateRange @issue=DWTA-238 @issue=DWTA-275 @env_dev @env_test @smoke
+@feature=WasteOrganisationsByDateRange @issue=DWTA-238 @issue=DWTA-504 @issue=DWTA-275 @env_dev @env_test @smoke
 Feature: Get organisations by date range endpoint validation
   As a consumer of the waste organisation backend API
   I need to retrieve organisations registered within a start and end date
@@ -26,6 +26,11 @@ Feature: Get organisations by date range endpoint validation
     When the get-organisations-by-date-range endpoint is called for "full_range" date range
     Then a successful response with matching organisations should be returned
     And only active API codes should be reflected in activeApiCodeCount
+
+  Scenario: isLocalAuthority is returned when set and omitted when missing
+    When the get-organisations-by-date-range endpoint is called for "full_range" date range
+    Then a successful response with matching organisations should be returned
+    And isLocalAuthority should be present only when set on the organisation
 
   Scenario: organisations with the same dateRegistered are ordered by organisationId descending
     When the get-organisations-by-date-range endpoint is called for "same_registered_timestamp" date range
