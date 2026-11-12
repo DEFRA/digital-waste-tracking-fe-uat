@@ -130,8 +130,39 @@ class WasteOrganisationsReportPage extends Page {
     await expect(this.toDayInput).toBeDisplayed()
     await expect(this.toMonthInput).toBeDisplayed()
     await expect(this.toYearInput).toBeDisplayed()
+    await expect(this.registrationDateGroup).toHaveText(
+      expect.stringContaining('From date')
+    )
+    await expect(this.registrationDateGroup).toHaveText(
+      expect.stringContaining('For example, 1 4 2025')
+    )
+    await expect(this.registrationDateGroup).toHaveText(
+      expect.stringContaining('To date')
+    )
+    await expect(this.registrationDateGroup).toHaveText(
+      expect.stringContaining('For example, 31 3 2026')
+    )
     await expect(this.searchButton).toHaveText('Search')
     await expect(this.clearLink).toHaveText('Clear')
+    await expect(this.clearLink).toHaveAttribute('aria-label', 'Clear search')
+  }
+
+  async clickClear() {
+    await this.click(this.clearLink)
+  }
+
+  async verifyNoResultsSectionDisplayed() {
+    await expect(this.searchTimeframe).not.toBeExisting()
+    await expect(this.resultsCount).not.toBeExisting()
+    await expect(this.resultsTable).not.toBeExisting()
+    await expect(this.noResultsMessage).not.toBeExisting()
+    await expect(this.downloadCsvLink).not.toBeExisting()
+    await expect(this.fromDayInput).toHaveValue('')
+    await expect(this.fromMonthInput).toHaveValue('')
+    await expect(this.fromYearInput).toHaveValue('')
+    await expect(this.toDayInput).toHaveValue('')
+    await expect(this.toMonthInput).toHaveValue('')
+    await expect(this.toYearInput).toHaveValue('')
   }
 
   async verifySearchTimeframe(expectedText) {

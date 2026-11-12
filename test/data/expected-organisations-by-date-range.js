@@ -15,12 +15,40 @@ const SEED_ORGANISATION_NAMES = {
   'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b13': 'DWT admin test - 13'
 }
 
-const organisation = (organisationId, dateRegistered, activeApiCodeCount) => ({
-  organisationId,
-  name: SEED_ORGANISATION_NAMES[organisationId],
-  dateRegistered,
-  activeApiCodeCount
-})
+// Matches the seed script. Orgs 4, 5 and 7 omit isLocalAuthority so the API
+// leaves the field out and the admin UI shows "Not known".
+const SEED_IS_LOCAL_AUTHORITY = {
+  '6d35c84d-b4f8-4f8d-84db-39f9894c1a6a': false,
+  'ec12b2d2-f7c6-40e9-a5ef-9bdb1c8d6581': true,
+  'bfc57d9f-9ef6-4c6d-a34e-0d69b79a4db0': true,
+  '74dc6d88-2816-4d39-b983-63d35f4cb9af': true,
+  '0dd9bcf4-1bd2-4c91-8b87-7b76b7a2d90c': false,
+  'f42bc5d3-2d0c-4b31-ae90-d44a472cf958': true,
+  'b8f90b0c-6156-4f58-8df5-b76e5ebcfd67': true,
+  'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f11': false,
+  'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a12': false,
+  'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b13': false
+}
+
+const organisation = (organisationId, dateRegistered, activeApiCodeCount) => {
+  const org = {
+    organisationId,
+    name: SEED_ORGANISATION_NAMES[organisationId],
+    dateRegistered,
+    activeApiCodeCount
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      SEED_IS_LOCAL_AUTHORITY,
+      organisationId
+    )
+  ) {
+    org.isLocalAuthority = SEED_IS_LOCAL_AUTHORITY[organisationId]
+  }
+
+  return org
+}
 
 export const DATE_RANGE_FIXTURES = {
   full_range: {
@@ -276,11 +304,25 @@ export const FRONTEND_VALIDATION_FIXTURES = {
       dateError('date-to', 'Enter a ‘To’ date')
     ]
   },
+  missing_day: {
+    fromDate: { day: '', month: '5', year: '2026' },
+    toDate: { day: '31', month: '7', year: '2024' },
+    expectedErrors: [
+      dateError('date-from', '‘From’ date must include a day', ['day'])
+    ]
+  },
   missing_month: {
     fromDate: { day: '17', month: '', year: '2024' },
     toDate: { day: '31', month: '7', year: '2024' },
     expectedErrors: [
       dateError('date-from', '‘From’ date must include a month', ['month'])
+    ]
+  },
+  missing_year: {
+    fromDate: { day: '17', month: '5', year: '' },
+    toDate: { day: '31', month: '7', year: '2024' },
+    expectedErrors: [
+      dateError('date-from', '‘From’ date must include a year', ['year'])
     ]
   },
   more_than_one_part_missing: {
@@ -419,12 +461,20 @@ export function buildExpectedCsvFilenameRegex(startDate, endDate) {
   return new RegExp(`^\\d{12}-orgs-${start}-${end}\\.csv$`)
 }
 
+// Matches admin-ui localAuthorityText: true → Yes, false → No, missing → Not known
+export function formatLocalAuthorityForDisplay(isLocalAuthority) {
+  if (isLocalAuthority === true) {
+    return 'Yes'
+  }
+
+  return isLocalAuthority === false ? 'No' : 'Not known'
+}
+
 export function mapExpectedCsvRows(expectedOrganisations) {
   return sortOrganisationsForReport(expectedOrganisations).map((org) => ({
     name: org.name,
     organisationId: org.organisationId,
-    // The seed organisations don't say whether they're local authorities
-    localAuthority: 'Not known',
+    localAuthority: formatLocalAuthorityForDisplay(org.isLocalAuthority),
     registered: formatRegisteredDateForCsv(org.dateRegistered),
     activeApiCodeCount: org.activeApiCodeCount
   }))
@@ -442,6 +492,25 @@ export function assertOrganisationsMatch(actual, expected) {
   expect(sortedActual).toHaveLength(sortedExpected.length)
   for (let i = 0; i < sortedExpected.length; i++) {
     expect(sortedActual[i]).toEqual(sortedExpected[i])
+  }
+}
+
+// When the Mongo field is missing the API omits isLocalAuthority entirely
+export function assertIsLocalAuthorityPresence(actual, expected) {
+  for (const expectedOrg of expected) {
+    const actualOrg = actual.find(
+      (org) => org.organisationId === expectedOrg.organisationId
+    )
+    expect(actualOrg).toBeDefined()
+
+    if (Object.prototype.hasOwnProperty.call(expectedOrg, 'isLocalAuthority')) {
+      expect(actualOrg).toHaveProperty(
+        'isLocalAuthority',
+        expectedOrg.isLocalAuthority
+      )
+    } else {
+      expect(actualOrg).not.toHaveProperty('isLocalAuthority')
+    }
   }
 }
 

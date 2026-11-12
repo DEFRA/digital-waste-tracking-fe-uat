@@ -5,6 +5,7 @@ import {
   VALIDATION_ERROR_FIXTURES,
   assertActiveApiCodeCounts,
   assertBadRequestResponse,
+  assertIsLocalAuthorityPresence,
   assertOrganisationsMatch,
   assertOrganisationsOrderedByOrganisationId,
   assertOrganisationsOrderedByDateRegisteredDesc
@@ -83,6 +84,16 @@ Then(
   'only active API codes should be reflected in activeApiCodeCount',
   async function () {
     assertActiveApiCodeCounts(this.response.json, ACTIVE_API_CODE_ORGANISATIONS)
+  }
+)
+
+Then(
+  'isLocalAuthority should be present only when set on the organisation',
+  async function () {
+    assertIsLocalAuthorityPresence(
+      this.response.json,
+      this.expectedOrganisations
+    )
   }
 )
 

@@ -26,6 +26,13 @@ Feature: Waste organisations report
     Then no waste organisations should be displayed
     And the download CSV link should not be displayed
 
+  Scenario: selecting Clear returns the page to its initial state
+    Given the user navigates to the waste organisations report page
+    When the user searches for organisations in the "full_range" date range
+    And the user selects Clear on the waste organisations report page
+    Then the waste organisations report search form should be displayed
+    And the waste organisations report should show no results section
+
   Scenario: the downloaded CSV matches the report for a wide date range
     Given the user navigates to the waste organisations report page
     When the user searches for organisations in the "full_range" date range
@@ -41,7 +48,9 @@ Feature: Waste organisations report
     Examples:
       | fixture                     |
       | nothing_entered             |
+      | missing_day                 |
       | missing_month               |
+      | missing_year                |
       | more_than_one_part_missing  |
       | invalid_to_date_non_numeric |
       | two_digit_year              |
