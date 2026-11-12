@@ -1,9 +1,10 @@
-@feature=AdminUiLogin @issue=DWTA-250 @browserstack-admin-ui @env_dev @env_test @env_local
+@feature=AdminUiLogin @issue=DWTA-250 @env_dev @env_test @env_local
 Feature: Login to the DWT Admin Portal
   As an internal user of the DWT Admin Portal
   I want to sign in with my username and password
   So that I can access admin reporting features.
 
+  @browserstack-admin-ui 
   Scenario: user can sign in with valid credentials
     Given the user navigates to the admin tool login page
     When the user signs in with valid admin credentials

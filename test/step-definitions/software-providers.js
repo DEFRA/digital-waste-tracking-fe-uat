@@ -15,6 +15,7 @@ import {
   createCredentialsCaption,
   credentialsPanelEnvironment,
   differentCase,
+  longWrappingClientName,
   softwareProviderEnvironmentLabel,
   uniqueClientName
 } from '../utils/software-provider-environment.js'
@@ -149,6 +150,17 @@ When('the user generates credentials for a new client', async function () {
   await CreateClientCredentialsPage.clickGenerateCredentials()
 })
 
+When(
+  'the user generates credentials for a long wrapping client name',
+  async function () {
+    this.createdClientName = longWrappingClientName()
+    await CreateClientCredentialsPage.enterClientName(this.createdClientName)
+    await CreateClientCredentialsPage.clickGenerateCredentials()
+    await ClientCredentialsPage.clientId.waitForDisplayed()
+    this.createdClientId = await ClientCredentialsPage.clientIdText()
+  }
+)
+
 When('the user copies the client credentials', async function () {
   await ClientCredentialsPage.clickCopy()
 })
@@ -229,6 +241,36 @@ Then(
       this.createdClientId
     )
     await expect($('[data-testid="client-secret"]')).not.toBeExisting()
+  }
+)
+
+Then(
+  'the long client name should be fully visible and wrap onto a second line',
+  async function () {
+    await SoftwareProvidersPage.verifyPageIsDisplayed(
+      this.testConfig.adminUiBaseUrl
+    )
+    await SoftwareProvidersPage.verifyClientIsListed(
+      this.createdClientName,
+      this.createdClientId
+    )
+    await SoftwareProvidersPage.verifyLongClientNameWraps(
+      this.createdClientName
+    )
+  }
+)
+
+Then(
+  'the software providers table should use the wrapping styles',
+  async function () {
+    await SoftwareProvidersPage.verifyWrappingStyles()
+  }
+)
+
+Then(
+  'the software providers page should not scroll sideways',
+  async function () {
+    await SoftwareProvidersPage.verifyPageDoesNotScrollHorizontally()
   }
 )
 

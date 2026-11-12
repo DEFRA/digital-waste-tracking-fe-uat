@@ -1,10 +1,10 @@
-@feature=AdminUiSoftwareProviders @browserstack-admin-ui @env_local @env_dev @env_test
+@feature=AdminUiSoftwareProviders @env_dev @env_test @env_local
 Feature: Software providers
   As an internal user of the DWT Admin Portal
   I want to see and create software provider credentials
   So that software providers can be easily managed
 
-  @issue=DWTSPI-456
+  @issue=DWTSPI-456 @browserstack-admin-ui
   Scenario: all clients from the client sync service are shown
     Given the user navigates to the software providers page
     When the get-all-clients endpoint is called
@@ -62,7 +62,7 @@ Feature: Software providers
     And the user generates credentials for an existing client name in a different case
     Then the client name error should be displayed
 
-  @issue=DWTSPI-458 @accessibility @skip
+  @issue=DWTSPI-458 @accessibility @browserstack-admin-ui
   Scenario: a new client can be created and its secret is shown once
     Given the user is on the create client credentials page
     Then the create client credentials page should generate accessibility tests
@@ -75,3 +75,12 @@ Feature: Software providers
     Then the new client should be listed on the software providers page
     When the user returns to the client credentials page
     Then the software providers page should be displayed
+
+  @issue=DWTSPI-512
+  Scenario: a long client name wraps onto a second line without sideways scrolling
+    Given the user is on the create client credentials page
+    When the user generates credentials for a long wrapping client name
+    And the user closes the client credentials page
+    Then the long client name should be fully visible and wrap onto a second line
+    And the software providers table should use the wrapping styles
+    And the software providers page should not scroll sideways
