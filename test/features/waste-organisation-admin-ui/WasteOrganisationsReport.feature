@@ -1,4 +1,4 @@
-@feature=AdminUiOrganisationReporting @issue=DWTA-241 @issue=DWTA-242 @issue=DWTA-248 @issue=DWTSPI-480 @browserstack-admin-ui @env_dev @env_test @env_local
+@feature=AdminUiOrganisationReporting @issue=DWTA-241 @issue=DWTA-242 @issue=DWTA-248 @issue=DWTSPI-480 @env_dev @env_test @env_local
 Feature: Waste organisations report
   As an internal user of the DWT Admin Portal
   I want to search waste organisations by registration date
@@ -10,6 +10,7 @@ Feature: Waste organisations report
     Then the waste organisations report search form should be displayed
     Then the waste organisations report page should generate accessibility tests
 
+  @browserstack-admin-ui
   Scenario: organisations are displayed for a wide date range
     Given the user navigates to the waste organisations report page
     When the user searches for organisations in the "full_range" date range
@@ -33,6 +34,7 @@ Feature: Waste organisations report
     Then the waste organisations report search form should be displayed
     And the waste organisations report should show no results section
 
+  @browserstack-admin-ui
   Scenario: the downloaded CSV matches the report for a wide date range
     Given the user navigates to the waste organisations report page
     When the user searches for organisations in the "full_range" date range

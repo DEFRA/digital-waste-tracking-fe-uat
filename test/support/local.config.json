@@ -3,5 +3,6 @@
   "wasteOrganisationBackendServiceUrl": "http://localhost:3001",
   "adminUiBaseUrl": "http://localhost:3000",
   "adminUiUsername": "local",
-  "wasteMovementClientSyncApiBaseUrl": "http://localhost:3005"
+  "wasteMovementClientSyncApiBaseUrl": "http://localhost:3005",
+  "wasteMovementExternalApiBaseUrl": "http://localhost:3001"
 }

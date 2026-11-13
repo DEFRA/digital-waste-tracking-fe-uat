@@ -62,3 +62,15 @@ export function uniqueClientName() {
     .join('')
   return `UatSoftwareProvider_${suffix}`
 }
+
+/** Max-length (128) no-space name for wrap UAT — unique prefix + padded body. */
+export function longWrappingClientName() {
+  const maxLength = 128
+  const prefix = `${uniqueClientName()}_`
+  if (prefix.length >= maxLength) {
+    throw new Error(
+      `uniqueClientName prefix is too long for a ${maxLength}-char wrap name`
+    )
+  }
+  return `${prefix}${'x'.repeat(maxLength - prefix.length)}`
+}
