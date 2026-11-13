@@ -55,14 +55,14 @@ export const sidecarChromeArgs = [
 
 export const sidecarChromePrefs = {
   'profile.default_content_settings.popups': 0,
-  'download.prompt_for_download': false
+  'download.prompt_for_download': false,
+  'profile.default_content_setting_values.clipboard': 1
 }
 
 /**
  * @param {{ timeout: number, retry?: number, testEnv: import('./test-env.js').TestEnv }} options
  */
 export function cucumberOptions({ timeout, retry, testEnv }) {
-  // const tags = buildCucumberTagExpression(testEnv.cucumberExtraTags)
   const tags = testEnv.cucumberExtraTags || undefined
   return {
     timeout,

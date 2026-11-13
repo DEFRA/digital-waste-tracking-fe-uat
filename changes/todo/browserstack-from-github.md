@@ -4,4 +4,4 @@ GitHub does not start a BrowserStack run. The refactor left this for later. Whic
 
 ## Done when
 
-A GitHub workflow can run `test:browserstack:compatibility` with the BrowserStack secrets, and it does not source `env.sh`.
+A GitHub workflow can run `test:browserstack:compatibility:defra-id-stub` or `test:browserstack:compatibility:defra-id-real` with the BrowserStack secrets, and it does not source `env.sh`.

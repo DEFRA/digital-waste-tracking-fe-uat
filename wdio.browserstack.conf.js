@@ -113,13 +113,19 @@ const allCapabilities = [
 const compatibilityRun = testEnv.cucumberExtraTags.includes('@compatibility')
 const environment = testEnv.environment
 
+const fullBrowserListScripts = new Set([
+  'test:browserstack:smoke:defra-id-stub',
+  'test:browserstack:smoke:defra-id-real',
+  'test:browserstack:compatibility:defra-id-stub',
+  'test:browserstack:compatibility:defra-id-real',
+  'test:browserstack:admin-ui'
+])
+
 function selectedCapabilities() {
-  if (testEnv.browserstackDesktopOnly) {
-    return allCapabilities.filter(
-      (capability) => !capability?.['bstack:options']?.deviceName
-    )
-  }
-  if (environment === 'ext-test' || !compatibilityRun) {
+  const fullBrowserList = fullBrowserListScripts.has(
+    process.env.npm_lifecycle_event ?? ''
+  )
+  if (environment === 'ext-test' || !fullBrowserList) {
     return [allCapabilities[0]]
   }
   return allCapabilities
@@ -236,7 +242,10 @@ export const config = {
   connectionRetryTimeout: timeouts.browserstack.connectionRetryTimeout,
   connectionRetryCount,
   framework: 'cucumber',
-  cucumberOpts: cucumberOptions({ timeout: timeouts.browserstack.cucumber, testEnv }),
+  cucumberOpts: cucumberOptions({
+    timeout: timeouts.browserstack.cucumber,
+    testEnv
+  }),
   reporters: reporters({ disableWebdriverStepsReporting: true }),
   /**
    * @param {import('./test/types/globals.js').CucumberWorld} cucumberWorld

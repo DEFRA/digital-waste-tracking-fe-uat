@@ -5,6 +5,7 @@ import { CognitoOAuthApi } from './cognitoOAuth.js'
 import { DefraIdStubAPI } from './defraIdStubApi.js'
 import { GovPayAPI } from './govpayApi.js'
 import { WasteOrganisationFrontendAPI } from './wasteOrganisationFrontendApi.js'
+import { WasteMovementClientSyncAPI } from './wasteMovementClientSyncApi.js'
 import { ZapApi } from './zap-api.js'
 
 /**
@@ -16,6 +17,7 @@ import { ZapApi } from './zap-api.js'
  * @property {DefraIdStubAPI} defraIdStubAPI
  * @property {GovPayAPI} govPayAPI
  * @property {WasteOrganisationFrontendAPI} wasteOrganisationFrontendAPI
+ * @property {WasteMovementClientSyncAPI} wasteMovementClientSyncAPI
  * @property {ZapApi} [zapAPI]
  * @property {() => Promise<void>} close
  */
@@ -42,6 +44,10 @@ export class ApiFactory {
     const wasteMovementBackendServiceUrl = testEnv.xApiKey
       ? `https://ephemeral-protected.api.${environment}.cdp-int.defra.cloud/waste-movement-backend`
       : testConfig.wasteMovementBackendServiceUrl
+
+    const wasteMovementClientSyncApiBaseUrl = testEnv.xApiKey
+      ? `https://ephemeral-protected.api.${environment}.cdp-int.defra.cloud/dwt-client-sync`
+      : testConfig.wasteMovementClientSyncApiBaseUrl
 
     /** @type {Omit<ApiInstances, 'close'>} */
     const clients = {
@@ -71,6 +77,11 @@ export class ApiFactory {
       wasteOrganisationFrontendAPI: new WasteOrganisationFrontendAPI(
         testConfig.wasteOrganisationFrontendBaseUrl,
         internalProxy
+      ),
+      wasteMovementClientSyncAPI: new WasteMovementClientSyncAPI(
+        wasteMovementClientSyncApiBaseUrl,
+        internalProxy,
+        testEnv
       )
     }
 

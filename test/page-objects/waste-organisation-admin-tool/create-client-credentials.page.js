@@ -1,6 +1,6 @@
 import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
-import { config } from '../../../wdio.conf.js'
+import { config } from '../../../wdio.grid.conf.js'
 
 class CreateClientCredentialsPage extends Page {
   get caption() {

@@ -25,6 +25,23 @@ import {
 const testEnv = new TestEnv()
 const testConfig = new TestConfig(testEnv.environment, testEnv.proxyMode)
 
+/**
+ * Adds the insecure-origin flag when the admin UI CI uses plain HTTP.
+ * @param {string|undefined} adminUiBaseUrl
+ * @returns {string[]}
+ */
+function gridChromeArgs(adminUiBaseUrl) {
+  if (!adminUiBaseUrl) return sidecarChromeArgs
+  const url = new URL(adminUiBaseUrl)
+  if (url.protocol !== 'http:' || url.hostname === 'localhost') {
+    return sidecarChromeArgs
+  }
+  return [
+    ...sidecarChromeArgs,
+    `--unsafely-treat-insecure-origin-as-secure=${url.origin}`
+  ]
+}
+
 const debug = Boolean(testEnv.debug)
 const maxInstances = testEnv.maxInstances
 const workerArgv = [...execArgv]
@@ -49,7 +66,7 @@ export const config = {
       'se:downloadsEnabled': true,
       timeouts: sidecarPageTimeouts,
       'goog:chromeOptions': {
-        args: sidecarChromeArgs,
+        args: gridChromeArgs(testEnv.adminUiBaseUrl),
         prefs: sidecarChromePrefs
       }
     }

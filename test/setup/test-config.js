@@ -26,9 +26,12 @@ export class TestConfig {
     this.#config = JSON.parse(readFileSync(file, 'utf8'))
   }
 
-  /** @returns {string} */
+  /**
+   * `ADMIN_UI_BASE_URL` when set, otherwise the support file.
+   * @returns {string}
+   */
   get adminUiBaseUrl() {
-    return this.#string('adminUiBaseUrl')
+    return this.#string('adminUiBaseUrl', process.env.ADMIN_UI_BASE_URL)
   }
 
   /** @returns {string} */
@@ -96,6 +99,17 @@ export class TestConfig {
     return this.#string('wasteMovementExternalApiBaseUrl')
   }
 
+  /**
+   * `DWT_CLIENT_SYNC_SERVICE_URL` when set, otherwise the support file.
+   * @returns {string}
+   */
+  get wasteMovementClientSyncApiBaseUrl() {
+    return this.#string(
+      'wasteMovementClientSyncApiBaseUrl',
+      process.env.DWT_CLIENT_SYNC_SERVICE_URL
+    )
+  }
+
   /** @returns {string} */
   get wasteOrganisationBackendServiceUrl() {
     return this.#string('wasteOrganisationBackendServiceUrl')
@@ -123,12 +137,13 @@ export class TestConfig {
 
   /**
    * @param {string} key
+   * @param {string|undefined} [override]
    * @returns {string}
    */
-  #string(key) {
+  #string(key, override) {
+    if (override) return override
     const value = this.#config[key]
-    // if (typeof value !== 'string') return this.#missing(key)
-    if (typeof value !== 'string') return ''
+    if (typeof value !== 'string') return this.#missing(key)
     return value
   }
 

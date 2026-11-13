@@ -63,6 +63,26 @@ export class TestEnv {
   }
 
   /** @returns {string|undefined} */
+  get adminUiBaseUrl() {
+    return process.env.ADMIN_UI_BASE_URL
+  }
+
+  /** @returns {string|undefined} */
+  get wasteMovementClientSyncServiceUrl() {
+    return process.env.DWT_CLIENT_SYNC_SERVICE_URL
+  }
+
+  /** @returns {string|undefined} */
+  get serviceAuthPassword() {
+    return process.env.SERVICE_AUTH_PASSWORD
+  }
+
+  /** @returns {string|undefined} */
+  get cdpDevApiKey() {
+    return process.env.CDP_DEV_API_KEY
+  }
+
+  /** @returns {string|undefined} */
   get basicAuthUsername() {
     return process.env.BASIC_AUTH_USERNAME
   }
@@ -100,11 +120,6 @@ export class TestEnv {
   /** @returns {string|undefined} */
   get browserstackKey() {
     return process.env.BROWSERSTACK_KEY
-  }
-
-  /** @returns {boolean} */
-  get browserstackDesktopOnly() {
-    return process.env.BROWSERSTACK_DESKTOP_ONLY === 'true'
   }
 
   /** @returns {string} */

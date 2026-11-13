@@ -176,4 +176,25 @@ export class TestMemory {
 
   /** @type {import('../page-objects/page.js').Page|undefined} */
   currentPage
+
+  /** @type {import('../utils/apis/base-api.js').JsonResponse|undefined} */
+  clientsResponse
+
+  /** @type {Array<{ clientName?: string, clientId?: string }>|undefined} */
+  expectedClients
+
+  /** @type {string|undefined} */
+  enteredClientName
+
+  /** @type {string|undefined} */
+  expectedClientNameError
+
+  /** @type {string|undefined} */
+  createdClientName
+
+  /** @type {string|undefined} */
+  createdClientId
+
+  /** @type {string|undefined} */
+  credentialsUrl
 }

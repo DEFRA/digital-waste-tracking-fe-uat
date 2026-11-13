@@ -423,3 +423,29 @@ Lewis Magri, 2026-11-03 14:38 UTC, on cd12b0e9dd4b
 Removed the `PROXY_MODE=zap` throw from `wdio.browserstack.conf.js`. BrowserStack passes `testEnv.environment` and `testEnv.proxyMode` to `TestConfig`, the same as the grid and local Chrome, so `zap` loads `<prefix>.zap`. The remote browser is still not given `HTTP_PROXY`. The runner still uses that URL to reach BrowserStack when the mode is not `off`.
 
 Covers: `.cursor/rules/config-and-paths.mdc`, `.cursor/rules/proxy-sessions-report.mdc`. Section 49 added the throw.
+
+## 65. QA tests on the refactor runners
+
+Lewis Magri, 2026-11-13 15:53 UTC, on 4db998faeda9
+
+Rebased `refactor` onto `46bfaff` and re-homed the admin UI and client-sync work. `@wdio/*` stays at 9.33.1. `undici` stays at 7.30.1. The lockfile is `main`'s.
+
+`ADMIN_UI_BASE_URL` and `DWT_CLIENT_SYNC_SERVICE_URL` are `TestEnv` getters. `TestConfig.adminUiBaseUrl` and `TestConfig.wasteMovementClientSyncApiBaseUrl` return those values when set, and the support file otherwise. This reverses the support-file-only decision for those two URLs. `SERVICE_AUTH_PASSWORD` is a `TestEnv` getter. `wasteMovementClientSyncApiBaseUrl` is in every support file. `local.zap.config.json` uses `http://dwt-client-sync:3001`. A missing support key throws again. `buildCucumberTagExpression` is back in `test/utils/cucumber-tag-expression.js`.
+
+Smoke and compatibility are `@defra-id-stub` or `@defra-id-real` on the grid, local Chrome, and BrowserStack. A bare `@smoke` throws on a scenario tagged with both login tags.
+
+BrowserStack smoke, compatibility, and admin-ui use every capability. Ext-test stays on Windows Chrome. The other BrowserStack runners use that first capability. The list is the npm script name, not a check that the extra tags are exactly `@smoke`. `BROWSERSTACK_DESKTOP_ONLY` is removed. BrowserStack admin-ui sets `CUCUMBER_EXTRA_TAGS` to `@browserstack-admin-ui` and specs `test/features/waste-organisation-admin-ui/`. Grid and local admin-ui run that spec without the tag filter. `@env_*` is not on the live admin feature lines.
+
+Clipboard is allowed on the grid Chrome prefs, local Chrome, and BrowserStack Chrome and Edge. When `ADMIN_UI_BASE_URL` is `http:` and not localhost, the grid Chrome args add `--unsafely-treat-insecure-origin-as-secure` for that origin.
+
+`WasteMovementClientSyncAPI` is built in `ApiFactory`. `zap` proxies it with the other service clients. `cdp` leaves it direct. `xapikey` rewrites it to the ephemeral protected host. The `x-api-key` header is `CDP_DEV_API_KEY` when set, otherwise `xapikey`. Software-provider steps read `this.testEnv`, `this.testConfig`, and `this.testMemory`. `create-client-credentials.page.js` imports `wdio.grid.conf.js`.
+
+Covers: `.cursor/rules/test-framework.mdc`, `.cursor/rules/config-and-paths.mdc`, `.cursor/rules/proxy-sessions-report.mdc`, `changes/done/test-framework.md`, `changes/todo/separate-runners.md`.
+
+## 66. The tag filter is the env getter
+
+Lewis Magri, 2026-11-13 15:58 UTC, on 4db998faeda9
+
+Deleted `test/utils/cucumber-tag-expression.js`. `cucumberOptions` uses `testEnv.cucumberExtraTags` directly. That getter trims `CUCUMBER_EXTRA_TAGS`, and an empty value omits `cucumberOpts.tags`, so every scenario runs. Section 65 had put the function back.
+
+Covers: `.cursor/rules/test-framework.mdc`, `changes/done/test-framework.md`.

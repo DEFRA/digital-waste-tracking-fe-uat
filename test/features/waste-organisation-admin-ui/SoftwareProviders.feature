@@ -1,4 +1,4 @@
-@feature=AdminUiSoftwareProviders @env_dev @env_test @env_local
+@feature=AdminUiSoftwareProviders
 Feature: Software providers
   As an internal user of the DWT Admin Portal
   I want to see and create software provider credentials

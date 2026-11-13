@@ -63,24 +63,24 @@ Update `env.sh` with the values for the environment you want to test against. Us
 Start application you are testing on the url specified in `baseUrl` [wdio.local.conf.js](wdio.local.conf.js)
 
 ```bash
-PROFILE=local:smoke npm run source:clean:test:report
+PROFILE=local:smoke:defra-id-stub npm run source:clean:test:report
 ```
 
 Set `PROFILE` to the runner after `test:`. `source:clean:test:report` sources `env.sh` and then runs `npm test`. The test scripts do not source `env.sh`. CDP and GitHub set `PROFILE` and call `npm test`. `ENVIRONMENT` chooses the URLs. The runner chooses the driver and the suite. Local Chrome, the grid (`wdio.grid.conf.js`), and BrowserStack each have:
 
 - `regression:defra-id-stub` is `not @smoke and @defra-id-stub`
 - `regression:defra-id-real` is `not @smoke and @defra-id-real`
-- `smoke` is `@smoke`
+- `smoke:defra-id-stub` is `@smoke and @defra-id-stub`, and `smoke:defra-id-real` is `@smoke and @defra-id-real`
 - `debug` sets `DEBUG=true` and does not add a tag. Pass one feature with `--spec`.
-- `admin-ui` runs the admin-tool features.
+- `admin-ui` runs `test/features/waste-organisation-admin-ui/`. BrowserStack also filters to `@browserstack-admin-ui`.
 
 ```bash
 PROFILE=local:regression:defra-id-stub npm run source:clean:test:report
-PROFILE=grid:smoke npm run source:clean:test:report
+PROFILE=grid:smoke:defra-id-stub npm run source:clean:test:report
 PROFILE=local:admin-ui npm run source:clean:test:report
 ```
 
-`npm test` is `test:${PROFILE}`. Set `PROFILE` to the runner after `test:`, for example `grid:smoke`. Pair a where that has the stub with `regression:defra-id-stub`, and a where that has real Defra ID with `regression:defra-id-real`.
+`npm test` is `test:${PROFILE}`. Set `PROFILE` to the runner after `test:`, for example `grid:smoke:defra-id-stub`. Pair a where that has the stub with `regression:defra-id-stub` or `smoke:defra-id-stub`, and a where that has real Defra ID with `regression:defra-id-real` or `smoke:defra-id-real`.
 
 `PROFILE=zap` runs `AnalyseZapReport.feature` on the grid with `@zap`. That scenario attaches the saved ZAP files to the Allure report. GitHub CI is where this runs. On a laptop, after a scan has written `zap-report/`, use `PROFILE=zap npm run source:clean:test:report`.
 
@@ -114,7 +114,7 @@ And in [test/support/local.config.json] set:
   "adminUiUsername": "local"
 ```
 
-Run the admin UI on local Chrome with `PROFILE=local:admin-ui npm run source:clean:test:report`. The admin UI's CI runs the same features with `PROFILE=grid:admin-ui npm test`, against its compose stack with Chrome in a container (see the admin UI's README). The admin UI address is `adminUiBaseUrl` in the support JSON.
+Run the admin UI on local Chrome with `PROFILE=local:admin-ui npm run source:clean:test:report`. The admin UI's CI runs the same features with `PROFILE=grid:admin-ui npm test`, against its compose stack with Chrome in a container (see the admin UI's README). The admin UI address is `adminUiBaseUrl` in the support JSON. `ADMIN_UI_BASE_URL` overrides it when set.
 
 ## Production
 
@@ -153,7 +153,7 @@ If you want to use the repository exclusively for running docker composed based 
 
 ## BrowserStack
 
-BrowserStack uses `wdio.browserstack.conf.js`. Set `PROFILE` to `browserstack:regression:defra-id-stub`, `browserstack:regression:defra-id-real`, `browserstack:smoke`, `browserstack:debug`, `browserstack:admin-ui`, or `browserstack:compatibility`. On a laptop, run `source:clean:test:report`. `browserstack:compatibility` is the multi-browser run and is BrowserStack only. `browserstack:admin-ui` keeps desktop browsers only. See the CDP Documentation for more details.
+BrowserStack uses `wdio.browserstack.conf.js`. Set `PROFILE` to `browserstack:regression:defra-id-stub`, `browserstack:regression:defra-id-real`, `browserstack:smoke:defra-id-stub`, `browserstack:smoke:defra-id-real`, `browserstack:debug`, `browserstack:admin-ui`, `browserstack:compatibility:defra-id-stub`, or `browserstack:compatibility:defra-id-real`. On a laptop, run `source:clean:test:report`. Smoke, compatibility, and admin-ui use the full browser list. Ext-test and the other BrowserStack runners use Windows Chrome. See the CDP Documentation for more details.
 
 ## DWT Admin tool UI
 

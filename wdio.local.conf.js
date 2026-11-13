@@ -50,6 +50,10 @@ function openAllureReport() {
   })
 }
 
+const clipboardPrefs = {
+  'profile.default_content_setting_values.clipboard': 1
+}
+
 const chromeOptions = {
   args: [
     '--no-sandbox',
@@ -57,9 +61,7 @@ const chromeOptions = {
     '--disable-gpu',
     '--window-size=1920,1080'
   ],
-  prefs: {
-    'profile.default_content_setting_values.clipboard': 1
-  }
+  prefs: clipboardPrefs
 }
 
 export const config = {
@@ -72,7 +74,9 @@ export const config = {
           maxInstances,
           browserName: 'chrome',
           ...browserProxyCapability(testEnv),
-          'goog:chromeOptions': chromeOptions
+          'goog:chromeOptions': {
+            prefs: clipboardPrefs
+          }
         }
       ]
     : [

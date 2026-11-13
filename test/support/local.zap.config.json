@@ -2,6 +2,7 @@
   "defraIdServiceUrl": "http://cdp-defra-id-stub:3200/cdp-defra-id-stub",
   "wasteOrganisationBackendServiceUrl": "http://waste-organisation-backend:3001",
   "wasteOrganisationFrontendBaseUrl": "http://waste-organisation-frontend:3000",
+  "wasteMovementClientSyncApiBaseUrl": "http://dwt-client-sync:3001",
   "zapProxyExcludeRegexes": [
     "https://.*\\.payments\\.service\\.gov\\.uk.*",
     "https://.*\\.b2clogin\\.com.*",
