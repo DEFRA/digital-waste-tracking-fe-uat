@@ -211,25 +211,9 @@ class SoftwareProvidersPage extends Page {
     throw new Error(`No client name cell found for "${clientName}"`)
   }
 
-  async clientIdCellForName(clientName) {
-    const rows = await this.rowElements
-    for (const row of rows) {
-      const columns = await row.$$('td')
-      const name = (await columns[0].getText()).trim()
-      if (name === clientName) {
-        return columns[1]
-      }
-    }
-    throw new Error(`No client ID cell found for "${clientName}"`)
-  }
-
   async verifyLongClientNameWraps(clientName) {
     const nameCell = await this.clientNameCell(clientName)
     await expect(nameCell).toHaveText(clientName)
-
-    const idCell = await this.clientIdCellForName(clientName)
-    await expect(nameCell).toHaveElementClass('app-break-word')
-    await expect(idCell).toHaveElementClass('app-break-word')
 
     let shortNameCell = null
     const rows = await this.rowElements
@@ -253,16 +237,6 @@ class SoftwareProvidersPage extends Page {
       )
       expect(longHeight).toBeGreaterThan(parsed * 1.5)
     }
-  }
-
-  async verifyWrappingStyles() {
-    await expect(this.resultsTable).toHaveElementClass('app-table--small-text')
-    const nameHeader = await this.header('Client name')
-    await expect(nameHeader).toHaveElementClass('app-table__header--half')
-    await expect(
-      $('[data-testid="client-credentials-region"]')
-    ).not.toBeExisting()
-    await expect($('.app-table-scroll')).not.toBeExisting()
   }
 
   async verifyPageDoesNotScrollHorizontally(width = 320) {

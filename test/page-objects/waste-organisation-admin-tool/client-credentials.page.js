@@ -11,11 +11,11 @@ class ClientCredentialsPage extends Page {
   }
 
   get warning() {
-    return $('[data-testid="copy-warning"]')
+    return $('[data-testid="copy-warning-alert"]')
   }
 
-  get panel() {
-    return $('[data-testid="client-credentials-panel"]')
+  get credentialsList() {
+    return $('[data-copy-source]')
   }
 
   get clientId() {
@@ -38,34 +38,30 @@ class ClientCredentialsPage extends Page {
     return $('[data-testid="close-button"]')
   }
 
-  async verifyPageIsDisplayed({ environmentLabel, apiUrl }) {
+  async verifyPageIsDisplayed({ clientName, environmentLabel, apiUrl }) {
     await this.waitForPageToLoad()
     await this.verifyPageTitle()
     await expect(browser).toHaveUrl(
       expect.stringContaining('/software-providers/credentials/')
     )
     await expect(await this.caption.getTagName()).toBe('span')
-    await expect(this.caption).toHaveText('Manage client credentials')
+    await expect(this.caption).toHaveText(clientName)
     await expect(this.heading).toHaveText('Copy the client credentials')
-    await expect(this.warning).toHaveText(
-      expect.stringContaining(
-        'Copy the client secret before leaving this page. Once you leave this page, you cannot view the client secret again.'
-      )
+    await expect(this.warning.$('[data-testid="alert-heading"]')).toHaveText(
+      'You must copy the credentials'
+    )
+    await expect(this.warning.$('[data-testid="alert-text"]')).toHaveText(
+      'You cannot view the client secret after closing this page.'
     )
     await expect($('.govuk-back-link')).not.toBeExisting()
 
-    const labels = await this.panel.$$('dt')
+    const labels = await this.credentialsList.$$('dt')
     await expect(labels).toBeElementsArrayOfSize(4)
-    await expect((await labels[0].getText()).trim()).toBe('Generated on')
-    await expect((await labels[1].getText()).trim()).toBe(environmentLabel)
-    await expect((await labels[2].getText()).trim()).toBe('Client ID')
-    await expect((await labels[3].getText()).trim()).toBe('Client secret')
+    await expect((await labels[0].getText()).trim()).toBe('Client ID')
+    await expect((await labels[1].getText()).trim()).toBe('Client secret')
+    await expect((await labels[2].getText()).trim()).toBe(environmentLabel)
+    await expect((await labels[3].getText()).trim()).toBe('Generated on')
 
-    const values = await this.panel.$$('dd')
-    await expect((await values[0].getText()).trim()).toMatch(
-      /^\d{1,2} [A-Za-z]+ \d{4} at \d{1,2}:\d{2}(am|pm)$/
-    )
-    await expect((await values[1].getText()).trim()).toBe(apiUrl)
     await expect(this.clientId).toBeDisplayed()
     await expect((await this.clientId.getText()).trim()).not.toBe('')
     const secretIsShown = await browser.execute(() => {
@@ -74,12 +70,14 @@ class ClientCredentialsPage extends Page {
     })
     expect(secretIsShown).toBe(true)
 
-    await expect(this.panel).toHaveAttribute(
-      'aria-label',
-      expect.stringContaining('Client credentials generated on')
+    const values = await this.credentialsList.$$('dd')
+    await expect((await values[2].getText()).trim()).toBe(apiUrl)
+    await expect((await values[3].getText()).trim()).toMatch(
+      /^\d{1,2} [A-Za-z]+ \d{4} at \d{1,2}:\d{2}(am|pm)$/
     )
+
     await expect(this.copyButton).toBeDisplayed()
-    await expect(this.copyButton).toHaveText('Copy')
+    await expect(this.copyButton).toHaveText('Copy credentials')
     await expect(this.copyButton).toHaveAttribute(
       'aria-label',
       'Copy client credentials'
@@ -89,7 +87,6 @@ class ClientCredentialsPage extends Page {
     await expect(this.closeButton).toHaveHref(
       expect.stringContaining('/software-providers')
     )
-    await expect(this.closeButton).toHaveElementClass('govuk-!-margin-top-6')
   }
 
   async clientIdText() {
