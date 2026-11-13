@@ -72,6 +72,8 @@ Feature: Software providers
     When the user copies the client credentials
     Then the client credentials should be copied
     When the user closes the client credentials page
+    Then the new client's software provider page should be displayed
+    When the user goes to the software providers page
     Then the new client should be listed on the software providers page
     When the user returns to the client credentials page
     Then the software providers page should be displayed
@@ -81,5 +83,6 @@ Feature: Software providers
     Given the user is on the create client credentials page
     When the user generates credentials for a long wrapping client name
     And the user closes the client credentials page
+    And the user goes to the software providers page
     Then the long client name should be fully visible and wrap onto a second line
     And the software providers page should not scroll sideways

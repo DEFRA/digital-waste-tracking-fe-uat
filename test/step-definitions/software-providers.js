@@ -3,6 +3,7 @@ import { $, browser } from '@wdio/globals'
 import SoftwareProvidersPage from '../page-objects/waste-organisation-admin-tool/software-providers.page.js'
 import CreateClientCredentialsPage from '../page-objects/waste-organisation-admin-tool/create-client-credentials.page.js'
 import ClientCredentialsPage from '../page-objects/waste-organisation-admin-tool/client-credentials.page.js'
+import SoftwareProviderPage from '../page-objects/waste-organisation-admin-tool/software-provider.page.js'
 import AdminToolLoginPage from '../page-objects/waste-organisation-admin-tool/login.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import {
@@ -174,6 +175,10 @@ When('the user sorts the {string} column', async function (columnName) {
   await SoftwareProvidersPage.sortBy(columnName)
 })
 
+When('the user goes to the software providers page', async function () {
+  await SoftwareProvidersPage.open(this.testConfig.adminUiBaseUrl)
+})
+
 When('the user returns to the client credentials page', async function () {
   await browser.url(this.credentialsUrl)
 })
@@ -230,6 +235,17 @@ Then('the new client credentials should be displayed', async function () {
 Then('the client credentials should be copied', async function () {
   await ClientCredentialsPage.verifyCredentialsWereCopied()
 })
+
+Then(
+  "the new client's software provider page should be displayed",
+  async function () {
+    await SoftwareProviderPage.verifyPageIsDisplayed(
+      this.testConfig.adminUiBaseUrl,
+      this.createdClientId,
+      this.createdClientName
+    )
+  }
+)
 
 Then(
   'the new client should be listed on the software providers page',
