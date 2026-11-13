@@ -269,10 +269,19 @@ class SoftwareProvidersPage extends Page {
     const previous = await browser.getWindowSize()
     try {
       await browser.setWindowSize(width, previous.height)
+      // The window includes the scrollbar, which takes 15px on Linux, so widen
+      // it until the page itself is the width being checked
+      const viewport = await browser.execute(
+        () => document.documentElement.clientWidth
+      )
+      if (viewport < width) {
+        await browser.setWindowSize(width + (width - viewport), previous.height)
+      }
       const { scrollWidth, clientWidth } = await browser.execute(() => ({
         scrollWidth: document.documentElement.scrollWidth,
         clientWidth: document.documentElement.clientWidth
       }))
+      expect(clientWidth).toEqual(width)
       expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
     } finally {
       await browser.setWindowSize(previous.width, previous.height)
