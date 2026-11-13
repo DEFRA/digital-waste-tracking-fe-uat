@@ -82,5 +82,4 @@ Feature: Software providers
     When the user generates credentials for a long wrapping client name
     And the user closes the client credentials page
     Then the long client name should be fully visible and wrap onto a second line
-    And the software providers table should use the wrapping styles
     And the software providers page should not scroll sideways

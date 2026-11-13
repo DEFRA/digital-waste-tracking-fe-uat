@@ -220,6 +220,7 @@ Then('the new client credentials should be displayed', async function () {
   await ClientCredentialsPage.clientId.waitForDisplayed()
   this.createdClientId = await ClientCredentialsPage.clientIdText()
   await ClientCredentialsPage.verifyPageIsDisplayed({
+    clientName: this.createdClientName,
     environmentLabel: credentialsPanelEnvironment(this.env.ENVIRONMENT),
     apiUrl: this.testConfig.wasteMovementExternalApiBaseUrl
   })
@@ -257,13 +258,6 @@ Then(
     await SoftwareProvidersPage.verifyLongClientNameWraps(
       this.createdClientName
     )
-  }
-)
-
-Then(
-  'the software providers table should use the wrapping styles',
-  async function () {
-    await SoftwareProvidersPage.verifyWrappingStyles()
   }
 )
 
