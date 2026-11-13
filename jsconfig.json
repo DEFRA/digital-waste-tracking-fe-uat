@@ -13,5 +13,10 @@
       "page-objects/*": ["./test/page-objects/*.js"]
     }
   },
-  "include": ["test/**/*.js", "wdio.grid.conf.js", "wdio.local.conf.js", "wdio.browserstack.conf.js"]
+  "include": [
+    "test/**/*.js",
+    "wdio.grid.conf.js",
+    "wdio.local.conf.js",
+    "wdio.browserstack.conf.js"
+  ]
 }
