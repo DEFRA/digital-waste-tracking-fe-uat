@@ -32,6 +32,7 @@ Feature: User Journeys
     And user selects option to upload waste movements using a spreadsheet
     When user selects copy of a valid spreadsheet file "Test1-spreadsheet.xlsx" to upload
     Then the user should be redirected to "Upload successful" page
+    And the user signs out of his existing session
 
   @defra-id-stub @defra-id-real
   Scenario: Waste receiver should be able to update waste movements using a spreadsheet
@@ -39,7 +40,8 @@ Feature: User Journeys
     And the user navigates to report receipt of waste
     And user selects option to update waste movements using a spreadsheet
     When user selects copy of a valid spreadsheet file "Test1-update-spreadsheet.xlsx" to update existing waste movements
-    Then user should be redirected to "Spreadsheet update successful" page  
+    Then user should be redirected to "Spreadsheet update successful" page
+    And the user signs out of his existing session
 
    @defra-id-real
    Scenario Outline: Waste receiver must not be able to pay service charge for an organisation with a card "<reason>" "<card_number>"
@@ -49,6 +51,7 @@ Feature: User Journeys
     Then the user should see an error message "<expected error message>"
     And the payment should be "unsuccessful"
     And the account page should reflect that the service charge is pending
+    And the user signs out of his existing session
 
     Examples:
       | card_brand | card_type | card_number      | reason                      | expected error message                             |
