@@ -1,0 +1,20 @@
+---
+description: Proxy mode, clean browsers, timeouts, and failure reporting.
+alwaysApply: true
+---
+
+# Proxy, sessions, and reports
+
+`HTTP_PROXY` is the one URL. `PROXY_MODE` is `off`, `cdp`, or `zap`. Any other set value throws. Unset means `cdp` when `HTTP_PROXY` is set, and `off` when it is not. CDP sets `HTTP_PROXY` and does not set `PROXY_MODE`. `off` ignores `HTTP_PROXY`. `ZAP_API_KEY` authenticates the ZAP API. Drop `ZAP_PROXY_URL` and `ZAP_PROXY_API_URL`.
+
+`zap` uses that URL as ZAP. Compose starts ZAP on port 8080. The journey-test workflow sets `HTTP_PROXY`, `PROXY_MODE=zap`, and `ZAP_API_KEY`. A local scan uses the same three values. The grid and local Chrome `onPrepare` open a ZAP session. Those browsers send page traffic through the proxy. API calls to the services under test go through it too. The ZAP REST client uses `HTTP_PROXY` as ZAP's address and is not sent back through the proxy. `npm run test:zap` runs `AnalyseZapReport.feature` on the grid with `CUCUMBER_EXTRA_TAGS='@zap'` and attaches those saved files to Allure. It does not set `ENVIRONMENT`. GitHub CI is that run, and a laptop runs the same command.
+
+`cdp` has no ZAP. Traffic that leaves the platform uses the proxy: Cognito, GOV.UK Pay, and the browser started by the grid or local Chrome. Calls to services inside CDP stay direct.
+
+BrowserStack's remote browser is not given `HTTP_PROXY`. The runner uses it to reach BrowserStack: `bootstrap()` for the Node client, and BrowserStack Local's host and port from that URL. Call `bootstrap()` only inside the `HTTP_PROXY` check, and only when the mode is not `off`. Do not import `undici` from a WebdriverIO config or call `setGlobalDispatcher`. Leave `@wdio/*` on 9.33.1 and `undici` on 7.30.1. Do not change the Portal Chrome image, `compose.yml` image pins, or the Dockerfile `node:22.23.4-slim` image.
+
+`connectionRetryTimeout` stays 120000 on the grid and BrowserStack, and 60000 on local Chrome. `connectionRetryCount` stays 3. Do not raise it to wait longer for session creation. The grid is also CDP and GitHub, so it keeps the longer timeout.
+
+`MAX_INSTANCES` sets runner and per-capability `maxInstances`, default 1. Each worker has its own browser. Skip `reloadSession()` only on the first scenario of a worker. Later scenarios reload. Do not add a cookie clear, a session-list cleaner, or a custom Cucumber retry.
+
+Screenshot a failed step or scenario only. The Allure report is always generated and published after the run. Keep the `FAILED` file and `entrypoint.sh`.

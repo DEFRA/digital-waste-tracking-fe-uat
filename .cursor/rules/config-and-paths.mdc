@@ -1,0 +1,16 @@
+---
+description: Config getters, secrets, module paths, and comment policy.
+alwaysApply: true
+---
+
+# Config and module paths
+
+`test/setup/test-env.js` is the `TestEnv` class. Its getters read `process.env` when called. `test/setup/test-config.js` is the `TestConfig` class. The constructor takes a prefix and `proxyMode`, and loads `test/support/<prefix>.config.json`. `proxyMode` `zap` loads `<prefix>.zap`. Each driver's `onPrepare` fills the Gov.UK and Government Gateway pools only when `ENVIRONMENT` is `test`, from `new TestConfig('test')`, so that seed reads `test.config.json`. BrowserStack also fills `availableUsers` in that hook. Support getters read the loaded file. A missing support key is logged and thrown, which fails the test. `ADMIN_UI_BASE_URL` overrides `adminUiBaseUrl` when set. `DWT_CLIENT_SYNC_SERVICE_URL` overrides `wasteMovementClientSyncApiBaseUrl` when set. `SERVICE_AUTH_PASSWORD` is a `TestEnv` getter. Secrets stay out of the JSON. The test user lists stay in `test.config.json`. Each WebdriverIO config defines its own hooks. Shared steps live in `test/setup/wdio-shared.js`. Those hooks put the `TestEnv` instance, the `TestConfig` instance, and a new `TestMemory` on the world. A step reads `this.testEnv.environment` and `this.testConfig.defraIdServiceUrl`.
+
+`@defra-id-stub` and `@defra-id-real` choose the login journey. A scenario tagged with one of them follows that tag. A scenario tagged with both follows `CUCUMBER_EXTRA_TAGS` when that chooses one of them, and throws when it does not. `test:browserstack:compatibility:defra-id-stub` and `test:browserstack:compatibility:defra-id-real` set `CUCUMBER_EXTRA_TAGS` to `@compatibility` and that login tag. When `@compatibility` is in the extra tags, outside ext-test, the generic login step takes a user from `availableUsers`. Ext-test basic auth is the login form (`BASIC_AUTH_USERNAME`, `BASIC_AUTH_PASSWORD`), including after a relogin.
+
+The suite is vanilla JavaScript with JSDoc. Do not add `.ts` or `.d.ts` files.
+
+`jsconfig.json` is editor-only: `es2024`, `nodenext`, `types` of `node` and `@wdio/globals/types`, `~/*`, and `page-objects/*` mapped to `./test/page-objects/*.js`. The `.js` suffix is required so `nodenext` can resolve `page-objects/page`. `@wdio/globals/types` is what tells the editor that `$`, `$$`, `browser`, and `expect` are the WebdriverIO globals. Do not install `@types/jquery`. Runtime aliases stay in `package.json` for `esm-module-alias` and stay extensionless. Keep `page-objects`. There is no `components` alias. New imports stay relative and include `.js`.
+
+Do not print or commit `env.sh`. CDP reads Portal config and secrets. Context belongs in these rules or the docs. A method note is one or two lines on what the method does.

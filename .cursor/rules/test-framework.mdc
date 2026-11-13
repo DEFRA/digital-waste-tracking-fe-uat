@@ -1,0 +1,32 @@
+---
+description: Where, how, and what for this test suite.
+alwaysApply: true
+---
+
+# Test framework
+
+This rule is how the suite is configured. The finished account is `changes/done/test-framework.md`.
+
+A run is three choices:
+
+- **Where** is `ENVIRONMENT`: `local`, `dev`, `test`, `ext-test`, `perf-test`. URLs and other non-secret config. `local` is the Compose host for every driver.
+- **How** is the driver: grid `wdio.grid.conf.js`, BrowserStack `wdio.browserstack.conf.js`, local Chrome `wdio.local.conf.js`. The grid is the remote Chrome used by a laptop, CDP, and GitHub. Its host is `GRID_HOST`, then `CHROMEDRIVER_URL`, then `127.0.0.1`. Its port is `GRID_PORT`, then `CHROMEDRIVER_PORT`, then `4444`.
+- **What** is the suite: `regression:defra-id-stub`, `regression:defra-id-real`, `smoke`, `debug`, `admin-ui`. `@zap` is `test:zap`. Compatibility is `test:browserstack:compatibility` only.
+
+Tags do not choose the driver. The driver does not choose the URL or the product area. `npm test` is `test:${PROFILE}`. `PROFILE` is the runner after `test:`, for example `local:smoke:defra-id-stub`. The test scripts do not source `env.sh`. On a laptop, `source:clean:test:report` sources `env.sh` and then runs `npm test`. CDP and GitHub set `PROFILE` and call `npm test`.
+
+`cucumberExtraTags` is `CUCUMBER_EXTRA_TAGS`, trimmed. An empty value runs every scenario. `@env_*` is not part of the filter. `defraIdServiceUrl` is the stub host or real Defra ID, and a mismatched pair is a config error.
+
+The runners set the suite. Local Chrome, BrowserStack, and the grid each have:
+
+- `regression:defra-id-stub` is `not @smoke and @defra-id-stub`
+- `regression:defra-id-real` is `not @smoke and @defra-id-real`
+- smoke is `@smoke and @defra-id-stub` or `@smoke and @defra-id-real`. A bare `@smoke` throws on a scenario tagged with both login tags.
+- debug is `DEBUG=true` and no tag of its own. One feature is `--spec`. No scenario is tagged `@debug`.
+- `admin-ui` is the features in `test/features/waste-organisation-admin-ui/`. Grid and local Chrome run that spec. BrowserStack admin-ui also sets `CUCUMBER_EXTRA_TAGS` to `@browserstack-admin-ui`.
+
+`test:browserstack:compatibility` is the only compatibility runner, split into `@compatibility and @defra-id-stub` and `@compatibility and @defra-id-real`. BrowserStack smoke, compatibility, and admin-ui use every capability. Ext-test stays on the first capability, Windows Chrome. The other BrowserStack runners use that first capability. The list is the runner. It is not a check that the extra tags are exactly `@smoke`. There is no unfiltered runner. `test:zap` is the grid with `@zap` and `AnalyseZapReport.feature`.
+
+`DEBUG=true` adds `--inspect` and debug logs. Local Chrome also drops its sandbox arguments.
+
+`entrypoint.sh` runs `npm test`, publishes the report, and exits 1 when `FAILED` exists. Leave scenarios, step definitions, and page objects as they are. Do not rename `commom-step-defs.js`, delete `home.page.js`, or remove `@wdio/mocha-framework`.

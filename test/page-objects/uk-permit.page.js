@@ -1,6 +1,6 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
-import { config } from '../../wdio.conf.js'
+import { config } from '../../wdio.grid.conf.js'
 
 class UKPermitPage extends Page {
   // locators

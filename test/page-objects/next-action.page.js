@@ -1,5 +1,5 @@
 import { Page } from 'page-objects/page'
-import { config } from '../../wdio.conf.js'
+import { config } from '../../wdio.grid.conf.js'
 import { browser, $ } from '@wdio/globals'
 
 class NextActionPage extends Page {
@@ -56,7 +56,7 @@ class NextActionPage extends Page {
   }
 
   /**
-   * @param {'connectYourSoftware' | 'uploadSpreadsheet' | 'downloadSpreadsheet'} option
+   * @param {'connectYourSoftware' | 'uploadSpreadsheet' | 'downloadSpreadsheet' | 'updateSpreadsheet'} option
    */
   async selectNextAction(option) {
     let radio

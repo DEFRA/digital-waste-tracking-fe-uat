@@ -4,7 +4,7 @@ As a waste receiver
 I want to upload a spreadsheet containing waste movement data for my selected organisation
 So that I can submit waste movement data, correctly linked to the business I have selected 
 
-  @env_dev @accessibility
+  @accessibility @defra-id-stub
   Scenario: Waste receiver should be able to upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -25,7 +25,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
 #     And the file is successfully accepted for processing
 #     And the processed spreadsheet should contain valid WTIDs
 
-  @env_dev
+  @defra-id-stub
   Scenario: Waste receiver uploads a valid spreadsheet then all the waste movements should be successfully persisted
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste

@@ -4,7 +4,7 @@ As a waste receiver using the DWT service
 I need to be able to get an additional API code for my organisation
 So that I can connect more than one system to the Receipt of Waste service.
 
-  @env_dev
+  @defra-id-stub
   Scenario: Waste receiver should be able to create an additional API code for their organisation
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -16,7 +16,7 @@ So that I can connect more than one system to the Receipt of Waste service.
     And display the new API code in the API code list
     And user should be able to use the new API code to submit waste movements
 
-  @env_dev @env_test @issue=DR-60
+  @issue=DR-60 @defra-id-stub @defra-id-real
   Scenario: Local authority should be able to create an additional API code for their organisation
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
     And the user navigates to report receipt of waste
@@ -29,7 +29,7 @@ So that I can connect more than one system to the Receipt of Waste service.
     And display the new API code in the API code list
     And user should be able to use the new API code to submit waste movements
 
-  @env_test
+  @defra-id-real
   Scenario Outline: account_type - Waste recevier should be able to create an additional API code
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
     And the user navigates to report receipt of waste

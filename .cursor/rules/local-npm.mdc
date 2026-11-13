@@ -1,0 +1,22 @@
+---
+description: This machine has no host npm. Run npm inside the project image.
+alwaysApply: true
+---
+
+# Running npm on this machine
+
+This checkout has no host `npm`. Do not add an npm script or a README step for this. Do not print or commit `env.sh`.
+
+Interactive:
+
+```bash
+alias dwtnpm='docker run --rm -it --network host -v "$PWD:$PWD" -w "$PWD" --entrypoint "" "$(docker build -q .)" npm'
+```
+
+Non-interactive shells omit `-it`:
+
+```bash
+docker run --rm --network host -v "$PWD:$PWD" -w "$PWD" --entrypoint "" "$(docker build -q .)" npm <args>
+```
+
+`env.sh` on this checkout is `ENVIRONMENT=dev` for CDP dev. Leave it, except the removed unused `USER_BASIC_AUTH_TEST1` export.

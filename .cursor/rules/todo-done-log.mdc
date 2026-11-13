@@ -1,0 +1,19 @@
+---
+description: Open work, finished work, and the revision log. Append the log when a decision moves.
+alwaysApply: true
+---
+
+# Todo, done, and the revision log
+
+`changes/` holds what is changing and why. `changes/todo/` is work that is not done. `changes/done/` is work that is finished. `changes/ai-revision-log.md` is why the suite changed. Read these before changing how the suite runs.
+
+`changes/done/test-framework-refactor-plan.md` is the finished refactor spec. Do not edit it. `changes/done/test-framework.md` is the suite that resulted. The Cursor rules state the current configuration.
+
+When a task is finished, move its note from `changes/todo/` to `changes/done/`. A new task starts as a note in `changes/todo/`.
+
+When a change moves a decision in a Cursor rule, or changes how the suite runs:
+
+- Append the next numbered section to `changes/ai-revision-log.md`, in the order the change happened. Leave older sections as they were. Name `git config --global user.name`, the UTC time from `date -u`, and the commit the change was made on top of (`git rev-parse --short=12 HEAD`). Then say what changed, concretely enough to unpick, and which rule or note it covers. For example: `Lewis Magri, 2026-11-03 14:16 UTC, on cd12b0e9dd4b`.
+- Update the Cursor rule that stated the old decision so the rule matches the repo.
+
+A code comment is not the record. The rule is.

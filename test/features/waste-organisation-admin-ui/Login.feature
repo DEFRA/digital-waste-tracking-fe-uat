@@ -1,4 +1,4 @@
-@feature=AdminUiLogin @issue=DWTA-250 @env_dev @env_test @env_local
+@feature=AdminUiLogin @issue=DWTA-250
 Feature: Login to the DWT Admin Portal
   As an internal user of the DWT Admin Portal
   I want to sign in with my username and password
