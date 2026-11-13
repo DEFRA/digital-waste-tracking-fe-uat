@@ -17,6 +17,17 @@ import { addStep } from '@wdio/allure-reporter'
 
 const log = logger('wdio.conf.js')
 
+// Chrome only offers the clipboard to secure origins: HTTPS or localhost. In
+// the admin UI's Docker stack (locally and in its CI) the browser reaches the
+// admin UI over plain HTTP by its service name, so treat that origin as secure
+const insecureAdminUiOrigin = (() => {
+  if (!process.env.ADMIN_UI_BASE_URL) {
+    return undefined
+  }
+  const { protocol, hostname, origin } = new URL(process.env.ADMIN_UI_BASE_URL)
+  return protocol === 'http:' && hostname !== 'localhost' ? origin : undefined
+})()
+
 /** Cucumber @env_* tag: dev and perf-test scenarios use @env_dev */
 const cucumberEnvTag =
   process.env.ENVIRONMENT === 'dev' || process.env.ENVIRONMENT === 'perf-test'
@@ -96,7 +107,12 @@ export const config = {
           '--disable-background-networking',
           '--disable-remote-fonts',
           '--ignore-certificate-errors',
-          '--disable-dev-shm-usage'
+          '--disable-dev-shm-usage',
+          ...(insecureAdminUiOrigin
+            ? [
+                `--unsafely-treat-insecure-origin-as-secure=${insecureAdminUiOrigin}`
+              ]
+            : [])
         ],
         prefs: {
           // Use absolute path for download directory
