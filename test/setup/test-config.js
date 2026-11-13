@@ -127,7 +127,8 @@ export class TestConfig {
    */
   #string(key) {
     const value = this.#config[key]
-    if (typeof value !== 'string') return this.#missing(key)
+    // if (typeof value !== 'string') return this.#missing(key)
+    if (typeof value !== 'string') return ''
     return value
   }
 

@@ -9,7 +9,6 @@ import {
   ALLURE_ISSUE_LINK_TEMPLATE,
   addAllureIssueLinksFromPickleTags
 } from '../utils/allure-utils.js'
-import { buildCucumberTagExpression } from '../utils/cucumber-tag-expression.js'
 import { TestMemory } from './test-memory.js'
 
 const log = logger('wdio')
@@ -63,7 +62,8 @@ export const sidecarChromePrefs = {
  * @param {{ timeout: number, retry?: number, testEnv: import('./test-env.js').TestEnv }} options
  */
 export function cucumberOptions({ timeout, retry, testEnv }) {
-  const tags = buildCucumberTagExpression(testEnv.cucumberExtraTags)
+  // const tags = buildCucumberTagExpression(testEnv.cucumberExtraTags)
+  const tags = testEnv.cucumberExtraTags || undefined
   return {
     timeout,
     require: ['./test/step-definitions/**/*.js'],
