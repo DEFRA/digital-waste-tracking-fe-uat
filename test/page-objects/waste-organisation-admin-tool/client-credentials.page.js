@@ -80,7 +80,7 @@ class ClientCredentialsPage extends Page {
     await expect(this.copyButton).toHaveText('Copy credentials')
     await expect(this.copyButton).toHaveAttribute(
       'aria-label',
-      'Copy client credentials'
+      'Copy credentials client ID and client secret'
     )
     await expect(this.copyStatus).toHaveAttribute('role', 'status')
     await expect(this.closeButton).toHaveText('Close')
@@ -111,7 +111,12 @@ class ClientCredentialsPage extends Page {
   }
 
   async verifyCredentialsWereCopied() {
-    await expect(this.copyStatus).toHaveText('Client credentials copied')
+    // The button says so, and the status, which is visually hidden, is read out
+    await expect(this.copyButton).toHaveText('Credentials copied')
+    await expect(this.copyStatus).toHaveElementProperty(
+      'textContent',
+      'Client credentials copied'
+    )
     await this.allowClipboardAccess()
     const { copied, expected } = await browser.execute(async () => {
       const normalize = (value) => value.replace(/\r\n/g, '\n')

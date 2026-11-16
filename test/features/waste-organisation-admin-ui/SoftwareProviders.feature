@@ -76,7 +76,7 @@ Feature: Software providers
     When the user goes to the software providers page
     Then the new client should be listed on the software providers page
     When the user returns to the client credentials page
-    Then the software providers page should be displayed
+    Then the new client's software provider page should be displayed
 
   @issue=DWTSPI-512
   Scenario: a long client name wraps onto a second line without sideways scrolling
