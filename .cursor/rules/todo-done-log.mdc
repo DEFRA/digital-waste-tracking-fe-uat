@@ -1,5 +1,5 @@
 ---
-description: Open work, finished work, and the revision log. Append the log when a decision moves.
+description: Open work, finished work, and the revision log. Always append the log when the suite changes.
 alwaysApply: true
 ---
 
@@ -9,11 +9,10 @@ alwaysApply: true
 
 `changes/done/test-framework-refactor-plan.md` is the finished refactor spec. Do not edit it. `changes/done/test-framework.md` is the suite that resulted. The Cursor rules state the current configuration.
 
-When a task is finished, move its note from `changes/todo/` to `changes/done/`. A new task starts as a note in `changes/todo/`.
+When a task is finished, move its note from `changes/todo/` to `changes/done/`. A new task starts as a note in `changes/todo/`. Opening a todo note alone does not need a revision-log section.
 
-When a change moves a decision in a Cursor rule, or changes how the suite runs:
+Always append the next numbered section to `changes/ai-revision-log.md` when a change alters how the suite runs or is configured. That includes drivers, hooks, timeouts, tags, scripts, proxy mode, support files, page-object contracts with the runner, world/config getters, and dependency pins the rules name. Do this even when no Cursor rule already stated the old decision. Leave older sections as they were. Name `git config --global user.name`, the UTC time from `date -u`, and the commit the change was made on top of (`git rev-parse --short=12 HEAD`). Then say what changed, concretely enough to unpick, and which rule or note it covers. For example: `Lewis Magri, 2026-11-03 14:16 UTC, on cd12b0e9dd4b`.
 
-- Append the next numbered section to `changes/ai-revision-log.md`, in the order the change happened. Leave older sections as they were. Name `git config --global user.name`, the UTC time from `date -u`, and the commit the change was made on top of (`git rev-parse --short=12 HEAD`). Then say what changed, concretely enough to unpick, and which rule or note it covers. For example: `Lewis Magri, 2026-11-03 14:16 UTC, on cd12b0e9dd4b`.
-- Update the Cursor rule that stated the old decision so the rule matches the repo.
+When that change settles a lasting decision, update the Cursor rule that should state it (add the line if the rule never named the old behaviour). Update `changes/done/test-framework.md` when the finished suite account should match.
 
-A code comment is not the record. The rule is.
+A code comment is not the record. The rule is. Do not skip the log because the change looks small, cosmetic, or only cleanup.

@@ -143,7 +143,8 @@ export class TestConfig {
   #string(key, override) {
     if (override) return override
     const value = this.#config[key]
-    if (typeof value !== 'string') return this.#missing(key)
+    // See changes/todo/api-clients-on-demand.md — restore when ApiFactory creates clients on demand.
+    // if (typeof value !== 'string') return this.#missing(key)
     return value
   }
 
@@ -153,7 +154,8 @@ export class TestConfig {
    */
   #list(key) {
     const value = this.#config[key]
-    if (!Array.isArray(value)) return this.#missing(key)
+    // See changes/todo/api-clients-on-demand.md — restore when ApiFactory creates clients on demand.
+    // if (!Array.isArray(value)) return this.#missing(key)
     return value
   }
 }

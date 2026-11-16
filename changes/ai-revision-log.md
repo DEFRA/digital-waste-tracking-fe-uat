@@ -449,3 +449,21 @@ Lewis Magri, 2026-11-13 15:58 UTC, on 4db998faeda9
 Deleted `test/utils/cucumber-tag-expression.js`. `cucumberOptions` uses `testEnv.cucumberExtraTags` directly. That getter trims `CUCUMBER_EXTRA_TAGS`, and an empty value omits `cucumberOpts.tags`, so every scenario runs. Section 65 had put the function back.
 
 Covers: `.cursor/rules/test-framework.mdc`, `changes/done/test-framework.md`.
+
+## 67. Page waits use the runner timeout
+
+Lewis Magri, 2026-11-16 13:38 UTC, on 5b09689dcbd6
+
+Page objects no longer import `config` from `wdio.grid.conf.js` for `waitforTimeout`. Element waits omit an explicit timeout so WebdriverIO uses the active runner's `waitforTimeout`. Frontend `baseUrl` on a page object is `browser.options.baseUrl`. Grid and local Cucumber step timeout is 120000. BrowserStack stays 180000. `clickJavascriptByPass` keeps a 60000 override. `changes/todo/page-headings.md` tracks standardising `heading` and `pageHeading`.
+
+The revision-log rule previously said to append when a change "moves a decision in a Cursor rule, or changes how the suite runs". That was read as optional when no rule already named the old behaviour. The rule now requires a log section whenever the suite's run or config changes, even for cleanup, and says to add the Cursor rule line when the decision should stick.
+
+Covers: `.cursor/rules/todo-done-log.mdc`, `.cursor/rules/proxy-sessions-report.mdc`, `changes/done/test-framework.md`, `changes/todo/README.md`.
+
+## 68. Missing support keys do not throw yet
+
+Lewis Magri, 2026-11-16 13:45 UTC, on 5b09689dcbd6
+
+Commented out the type checks in `TestConfig.#string` and `TestConfig.#list` that called `#missing`. `ApiFactory.create` still builds every client up front and reads every support URL, so environments without a URL for an unused API were failing. `changes/todo/api-clients-on-demand.md` is the work to create clients when first needed and restore the throw.
+
+Covers: `.cursor/rules/config-and-paths.mdc`, `changes/done/test-framework.md`.
