@@ -82,12 +82,17 @@ class ClientCredentialsPage extends Page {
 
     await expect(this.copyButton).toBeDisplayed()
     await expect(this.copyLabel).toHaveText('Copy credentials')
-    // Starts with the visible label, so speech users can say it. Spaces are
-    // collapsed, as the visually hidden part brings its own
-    const name = await this.copyButton.getComputedLabel()
+    // Its name is its text, including the visually hidden part, and starts
+    // with the visible label so speech users can say it. Read from the page,
+    // as not every BrowserStack driver can get the computed name
+    const name = await browser.execute(
+      (button) => button.textContent,
+      await this.copyButton
+    )
     expect(name.replace(/\s+/g, ' ').trim()).toBe(
       'Copy credentials client ID and client secret'
     )
+    await expect(this.copyButton).not.toHaveAttribute('aria-label')
     await expect(this.copyStatus).toHaveAttribute('role', 'status')
     await expect(this.closeButton).toHaveText('Close')
     await expect(this.closeButton).toHaveHref(
