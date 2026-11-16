@@ -109,10 +109,10 @@ Then(
 
 Then(
   'isLocalAuthority should be present only when set on the organisation',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     assertIsLocalAuthorityPresence(
-      this.response.json,
-      this.expectedOrganisations
+      this.testMemory.response.json,
+      this.testMemory.expectedOrganisations
     )
   }
 )

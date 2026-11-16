@@ -156,7 +156,7 @@ export class TestMemory {
   /** @type {{ fileName: string, content?: string }|undefined} */
   downloadedCsv
 
-  /** @type {Array<{ organisationId: string, dateRegistered: string, activeApiCodeCount: number }>|undefined} */
+  /** @type {Array<{ organisationId: string, name?: string, dateRegistered: string, activeApiCodeCount: number, isLocalAuthority?: boolean }>|undefined} */
   expectedOrganisations
 
   /** @type {{ status?: string, amount_available?: number }|undefined} */

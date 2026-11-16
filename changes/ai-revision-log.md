@@ -467,3 +467,11 @@ Lewis Magri, 2026-11-16 13:45 UTC, on 5b09689dcbd6
 Commented out the type checks in `TestConfig.#string` and `TestConfig.#list` that called `#missing`. `ApiFactory.create` still builds every client up front and reads every support URL, so environments without a URL for an unused API were failing. `changes/todo/api-clients-on-demand.md` is the work to create clients when first needed and restore the throw.
 
 Covers: `.cursor/rules/config-and-paths.mdc`, `changes/done/test-framework.md`.
+
+## 69. Date-range isLocalAuthority step uses testMemory
+
+Lewis Magri, 2026-11-16 15:24 UTC, on 05c4eeb0d963
+
+The Then step `isLocalAuthority should be present only when set on the organisation` still read `this.response` and `this.expectedOrganisations` after the re-home. It now reads `this.testMemory`. A pack scan found no other `this.response` / `this.apis` / `this.expectedOrganisations` / `this.expectedError` left under `test/`. `TestMemory.expectedOrganisations` also names optional `name` and `isLocalAuthority` to match the fixtures.
+
+Covers: `test/step-definitions/get-organisations-by-date-range.js`, `test/setup/test-memory.js`.
