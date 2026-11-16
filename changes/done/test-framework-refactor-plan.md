@@ -47,12 +47,12 @@ A new chat should already know:
 
 **How** is the driver:
 
-| How | Config today | Browser |
-| --- | --- | --- |
-| CDP sidecar | `wdio.conf.js` | Platform Chrome at `CHROMEDRIVER_URL`:`CHROMEDRIVER_PORT`, default `127.0.0.1:4444` |
+| How          | Config today                | Browser                                                                                         |
+| ------------ | --------------------------- | ----------------------------------------------------------------------------------------------- |
+| CDP sidecar  | `wdio.conf.js`              | Platform Chrome at `CHROMEDRIVER_URL`:`CHROMEDRIVER_PORT`, default `127.0.0.1:4444`             |
 | BrowserStack | `wdio.browserstack.conf.js` | BrowserStack hub. Local binary `/root/.browserstack/BrowserStackLocal` when `HTTP_PROXY` is set |
-| Local Chrome | `wdio.local.conf.js` | The developer's Chrome |
-| Local grid | `wdio.local.grid.conf.js` | `selenium/standalone-chrome` from `npm run local:grid:chrome:start` |
+| Local Chrome | `wdio.local.conf.js`        | The developer's Chrome                                                                          |
+| Local grid   | `wdio.local.grid.conf.js`   | `selenium/standalone-chrome` from `npm run local:grid:chrome:start`                             |
 
 **What** is Cucumber tags plus an optional `--spec` path. The admin tool is a what. Compatibility is a what. Stub versus real Defra ID is a what.
 
@@ -121,12 +121,12 @@ Also move into the setup folder the duplicated non-driver settings: Chrome argum
 
 Timeouts that differ by how must stay different. Do not copy one config's numbers onto the others.
 
-| Setting | Sidecar `wdio.conf.js` | Local and grid | BrowserStack |
-| --- | --- | --- | --- |
-| `waitforTimeout` | 20000 | 10000 | 120000 |
-| `cucumberOpts.timeout` | 60000 | 60000 | 180000 |
-| page load / script | 60000 / 30000 | (driver default unless set) | 120000 / 120000 |
-| `connectionRetryTimeout` | 120000 | 60000 | 120000 |
+| Setting                  | Sidecar `wdio.conf.js` | Local and grid              | BrowserStack    |
+| ------------------------ | ---------------------- | --------------------------- | --------------- |
+| `waitforTimeout`         | 20000                  | 10000                       | 120000          |
+| `cucumberOpts.timeout`   | 60000                  | 60000                       | 180000          |
+| page load / script       | 60000 / 30000          | (driver default unless set) | 120000 / 120000 |
+| `connectionRetryTimeout` | 120000                 | 60000                       | 120000          |
 
 `connectionRetryTimeout` is 120000 in `wdio.conf.js` and `wdio.browserstack.conf.js`, and 60000 in the two local configs. 120000 is the WebdriverIO default. The sidecar used to be 6000, which aborted `POST /session` while the driver was still coming up. Keep 120000 for the sidecar and BrowserStack. Do not lower it when the configs share code. `connectionRetryCount` is 3. It only repeats connection errors (`ETIMEDOUT`, `ECONNRESET`, and the other codes in Webdriver's list). An abort from `AbortSignal.timeout` is not in that list, so the count does not multiply the 120s clock. Do not raise the count to "make session create wait longer".
 
