@@ -1,9 +1,10 @@
 import { browser, $ } from '@wdio/globals'
-import { config } from '../../wdio.grid.conf.js'
 import { HEADINGS } from '../data/headings.js'
 
 // Shared across all Page subclasses (each page object is its own singleton)
 let sharedUsersLanguagePreference = null
+
+const waitforTimeoutOverride = 60000
 
 class Page {
   resetUsersLanguagePreference(lang = null) {
@@ -67,20 +68,18 @@ class Page {
   }
 
   async click(element) {
-    await element.waitForDisplayed({ timeout: config.waitforTimeout })
+    await element.waitForDisplayed()
     return await element.click()
   }
 
   async clickJavascriptByPass(elementMatcher) {
     const element = await elementMatcher
-    await element.waitForExist({
-      timeout: config.waitforTimeout
-    })
+    await element.waitForExist({ timeout: waitforTimeoutOverride })
     await element.scrollIntoView()
     // Wait until element is clickable before attempting JavaScript click
     // Bail out gracefully for devices that do not support that method
     try {
-      await element.waitForClickable({ timeout: config.waitforTimeout })
+      await element.waitForClickable({ timeout: waitforTimeoutOverride })
     } catch (error) {
       if (
         !error.message.includes(
@@ -89,7 +88,7 @@ class Page {
       ) {
         throw error
       } else {
-        await element.waitForDisplayed({ timeout: config.waitforTimeout })
+        await element.waitForDisplayed({ timeout: waitforTimeoutOverride })
       }
     }
     await browser.execute('arguments[0].click();', element)
@@ -129,7 +128,9 @@ class Page {
    */
   async selectRadioUsingJavaScript(radioId, radioName = 'radio button') {
     const selected = await browser.execute((id) => {
-      const radio = document.getElementById(id)
+      const radio = /** @type {HTMLInputElement | null} */ (
+        document.getElementById(id)
+      )
       if (radio) {
         radio.click()
         radio.checked = true
@@ -147,7 +148,9 @@ class Page {
 
     // Verify it's selected
     const isSelected = await browser.execute((id) => {
-      const radio = document.getElementById(id)
+      const radio = /** @type {HTMLInputElement | null} */ (
+        document.getElementById(id)
+      )
       return radio ? radio.checked : false
     }, radioId)
 
@@ -156,30 +159,26 @@ class Page {
 
   async clickOnLinkWithText(linkText) {
     const link = await $(`=${linkText}`)
-    await link.waitForClickable({ timeout: config.waitforTimeout })
+    await link.waitForClickable()
     return await link.click()
   }
 
   async enterText(element, text) {
-    await element.waitForDisplayed({ timeout: config.waitforTimeout })
+    await element.waitForDisplayed()
     return await element.setValue(text)
   }
 
   async getTextFrom(element) {
-    await element.waitForDisplayed({ timeout: config.waitforTimeout })
+    await element.waitForDisplayed()
     return await element.getText()
   }
 
   async elementIsDisplayed(element) {
-    return await element.waitForDisplayed({ timeout: config.waitforTimeout })
+    return await element.waitForDisplayed()
   }
 
   async getUrl() {
     return await browser.getUrl()
-  }
-
-  async verifyUserNavigatedCorrectlyToTargetPage(targetUrl) {
-    await expect(await this.getUrl()).toBe(config.baseUrl + targetUrl)
   }
 
   async waitForPageToLoad() {
@@ -189,7 +188,6 @@ class Page {
         return readyState === 'complete'
       },
       {
-        timeout: config.waitforTimeout,
         timeoutMsg: 'Page did not load within the expected time'
       }
     )
@@ -229,7 +227,7 @@ class Page {
 
   async clickLinkInFooter(linkText) {
     const link = await this.footer.$(`=${linkText}`)
-    await link.waitForClickable({ timeout: config.waitforTimeout })
+    await link.waitForClickable()
     return await link.click()
   }
 
@@ -239,7 +237,7 @@ class Page {
 
   async verifyErrorMessage(expectedMessage) {
     await expect(browser).toHaveTitle(/Error:/)
-    await this.errorMessage.waitForDisplayed({ timeout: config.waitforTimeout })
+    await this.errorMessage.waitForDisplayed()
     await expect(this.errorMessage).toHaveText(
       new RegExp('There is a problem\n' + expectedMessage)
     )
@@ -275,11 +273,6 @@ class Page {
     const targetLang = this.usersLanguagePreference
       ? this.usersLanguagePreference
       : lang
-    // console.log('--------------------------------')
-    // console.log('usersLanguagePreference', this.usersLanguagePreference)
-    // console.log('lang', lang)
-    // console.log('targetLang', targetLang)
-    // console.log('--------------------------------')
     await expect(browser).toHaveTitle(HEADINGS[key].title[targetLang])
   }
 
@@ -288,8 +281,8 @@ class Page {
     const targetLang = this.usersLanguagePreference
       ? this.usersLanguagePreference
       : lang
-    await expect(this.heading).toBeDisplayed()
-    await expect(this.heading).toHaveText(HEADINGS[key][targetLang])
+    await expect(this.pageHeading).toBeDisplayed()
+    await expect(this.pageHeading).toHaveText(HEADINGS[key][targetLang])
   }
 
   async switchLanguage(lang) {

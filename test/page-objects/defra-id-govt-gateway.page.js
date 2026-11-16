@@ -1,5 +1,4 @@
 import { Page } from 'page-objects/page'
-import { config } from '../../wdio.grid.conf.js'
 import { $ } from '@wdio/globals'
 import logger from '@wdio/logger'
 
@@ -32,9 +31,7 @@ class DefraIdGovtGatewayPage extends Page {
 
   async verifyUserIsOnGovernmentGatewayLoginPage() {
     await expect(browser).toHaveUrl(this.baseUrl)
-    await this.govGatewayLoginPageheading.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.govGatewayLoginPageheading.waitForDisplayed()
 
     // Wait for heading to be displayed
     await expect(this.govGatewayLoginPageheading).toBeDisplayed()
@@ -58,17 +55,11 @@ class DefraIdGovtGatewayPage extends Page {
     await this.waitForPageToLoad()
 
     // Wait for form to be displayed
-    await this.form.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.form.waitForDisplayed()
 
     // Verify fields exist and are ready
-    await this.govGatewayUserIdInput.waitForExist({
-      timeout: config.waitforTimeout
-    })
-    await this.govGatewayPasswordInput.waitForExist({
-      timeout: config.waitforTimeout
-    })
+    await this.govGatewayUserIdInput.waitForExist()
+    await this.govGatewayPasswordInput.waitForExist()
 
     await this.enterText(this.govGatewayUserIdInput, userId)
     await this.enterText(this.govGatewayPasswordInput, password)

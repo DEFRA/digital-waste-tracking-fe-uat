@@ -1,5 +1,4 @@
 import { Page } from 'page-objects/page'
-import { config } from '../../wdio.grid.conf.js'
 import { browser, $ } from '@wdio/globals'
 
 class NextActionPage extends Page {
@@ -36,7 +35,7 @@ class NextActionPage extends Page {
   // assertions
   async verifyUserIsOnChooseNextActionPage() {
     await this.verifyPageTitle()
-    await expect(browser).toHaveUrl(config.baseUrl + '/next-action')
+    await expect(browser).toHaveUrl(browser.options.baseUrl + '/next-action')
     await this.elementIsDisplayed(this.heading)
     await this.verifyPageHeading()
   }

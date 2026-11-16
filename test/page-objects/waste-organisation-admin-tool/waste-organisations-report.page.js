@@ -2,7 +2,6 @@ import path from 'node:path'
 import os from 'node:os'
 import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
-import { config } from '../../../wdio.grid.conf.js'
 import {
   buildExpectedCsvFilenameRegex,
   formatSearchDateAsYymmdd
@@ -102,7 +101,7 @@ class WasteOrganisationsReportPage extends Page {
   }
 
   async setDateInput(element, value) {
-    await element.waitForDisplayed({ timeout: config.waitforTimeout })
+    await element.waitForDisplayed()
     await element.clearValue()
     await element.setValue(value)
   }
@@ -257,9 +256,7 @@ class WasteOrganisationsReportPage extends Page {
   }
 
   async verifyNoResultsDisplayed() {
-    await this.noResultsMessage.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.noResultsMessage.waitForDisplayed()
     await expect(this.noResultsMessage).toHaveText(
       'No organisations were registered in this period. Try a different date range, or select Clear.'
     )
@@ -267,7 +264,7 @@ class WasteOrganisationsReportPage extends Page {
   }
 
   async verifyValidationErrors(expectedErrors) {
-    await this.errorSummary.waitForDisplayed({ timeout: config.waitforTimeout })
+    await this.errorSummary.waitForDisplayed()
     await expect(this.errorSummary).toHaveText(
       expect.stringContaining('There is a problem')
     )

@@ -1,6 +1,5 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
-import { config } from '../../wdio.grid.conf.js'
 
 class BasicAuthLoginPage extends Page {
   get heading() {
@@ -24,9 +23,7 @@ class BasicAuthLoginPage extends Page {
   }
 
   async login(username, password) {
-    await this.usernameInput.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.usernameInput.waitForDisplayed()
     await this.enterText(this.usernameInput, username)
     await this.enterText(this.passwordInput, password)
     await this.click(this.loginButton)

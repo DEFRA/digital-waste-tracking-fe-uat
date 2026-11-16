@@ -1,7 +1,6 @@
 import { Page } from 'page-objects/page'
 import { $, browser } from '@wdio/globals'
 import ReviewServiceChargePage from './review-service-charge.page.js'
-import { config } from '../../wdio.grid.conf.js'
 
 class PayServiceChargePage extends Page {
   // methods
@@ -10,7 +9,7 @@ class PayServiceChargePage extends Page {
   }
 
   async openInNewTab() {
-    await browser.newWindow(`${config.baseUrl}/service-charge`, {
+    await browser.newWindow(`${browser.options.baseUrl}/service-charge`, {
       type: 'tab'
     })
   }
@@ -30,7 +29,7 @@ class PayServiceChargePage extends Page {
 
   async verifyUserIsOnPayServiceChargePage() {
     await this.verifyPageTitle()
-    await this.elementIsDisplayed(this.heading)
+    await this.elementIsDisplayed(this.pageHeading)
     await this.verifyPageHeading()
     await expect(browser).toHaveUrl(/\/service-charge/)
   }

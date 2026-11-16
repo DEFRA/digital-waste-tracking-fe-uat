@@ -1,6 +1,5 @@
 import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
-import { config } from '../../wdio.grid.conf.js'
 
 class UKPermitPage extends Page {
   // locators
@@ -27,12 +26,12 @@ class UKPermitPage extends Page {
   }
 
   async selectYesOption() {
-    await this.yesOption.waitForExist({ timeout: config.waitforTimeout })
+    await this.yesOption.waitForExist()
     await this.yesOption.click()
   }
 
   async selectNoOption() {
-    await this.noOption.waitForExist({ timeout: config.waitforTimeout })
+    await this.noOption.waitForExist()
     await this.noOption.click()
   }
 

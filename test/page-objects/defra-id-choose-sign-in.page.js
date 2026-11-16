@@ -1,5 +1,4 @@
 import { Page } from 'page-objects/page'
-import { config } from '../../wdio.grid.conf.js'
 import { $ } from '@wdio/globals'
 
 class DefraIdChooseSignInPage extends Page {
@@ -29,9 +28,7 @@ class DefraIdChooseSignInPage extends Page {
     let radioElement
     let radioId
 
-    await this.replacementForm.waitForExist({
-      timeout: config.waitforTimeout
-    })
+    await this.replacementForm.waitForExist()
 
     if (methodName === 'Government Gateway') {
       radioElement = this.govGatewayRadio
@@ -42,7 +39,7 @@ class DefraIdChooseSignInPage extends Page {
     }
 
     // Wait for radio button to exist
-    await radioElement.waitForExist({ timeout: config.waitforTimeout })
+    await radioElement.waitForExist()
 
     // Use base class method to select radio button using JavaScript
     await this.selectRadioUsingJavaScript(radioId, `${methodName} radio button`)
@@ -53,7 +50,7 @@ class DefraIdChooseSignInPage extends Page {
   }
 
   async clickContinueButton() {
-    await this.continueButton.waitForExist({ timeout: config.waitforTimeout })
+    await this.continueButton.waitForExist()
 
     // Use base class method to click using JavaScript
     await this.continueButton.scrollIntoView()
@@ -64,9 +61,7 @@ class DefraIdChooseSignInPage extends Page {
   async verifyUserIsOnDefraIdChooseSignInPage() {
     // IMPORTANT: Wait for the replacement form to be visible first
     // The page loads a default Azure B2C form, then JavaScript swaps it with the GOV.UK styled form
-    await this.replacementForm.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.replacementForm.waitForDisplayed()
 
     // Wait for heading to be displayed
     await this.verifyPageHeading()

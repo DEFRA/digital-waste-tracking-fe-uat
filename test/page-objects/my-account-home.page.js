@@ -1,6 +1,5 @@
 import { Page } from 'page-objects/page'
 import { $, browser } from '@wdio/globals'
-import { config } from '../../wdio.grid.conf.js'
 
 class MyAccountHomePage extends Page {
   // methods
@@ -53,7 +52,7 @@ class MyAccountHomePage extends Page {
 
   async isUserOnMyAccountHomePage() {
     const currentUrl = await browser.getUrl()
-    return currentUrl.includes(config.baseUrl + '/account')
+    return currentUrl.includes(browser.options.baseUrl + '/account')
   }
 
   async verifyUserIsOnMyAccountHomePage(organisationName = undefined) {

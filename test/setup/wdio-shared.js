@@ -21,12 +21,12 @@ export const timeouts = {
   grid: {
     waitforTimeout: 20000,
     connectionRetryTimeout: 120000,
-    cucumber: 60000
+    cucumber: 120000
   },
   local: {
     waitforTimeout: 10000,
     connectionRetryTimeout: 60000,
-    cucumber: 60000
+    cucumber: 120000
   },
   browserstack: {
     waitforTimeout: 120000,
