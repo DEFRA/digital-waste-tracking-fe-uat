@@ -475,3 +475,27 @@ Lewis Magri, 2026-11-16 15:24 UTC, on 05c4eeb0d963
 The Then step `isLocalAuthority should be present only when set on the organisation` still read `this.response` and `this.expectedOrganisations` after the re-home. It now reads `this.testMemory`. A pack scan found no other `this.response` / `this.apis` / `this.expectedOrganisations` / `this.expectedError` left under `test/`. `TestMemory.expectedOrganisations` also names optional `name` and `isLocalAuthority` to match the fixtures.
 
 Covers: `test/step-definitions/get-organisations-by-date-range.js`, `test/setup/test-memory.js`.
+
+## 70. verifyPageHeading uses heading again
+
+Lewis Magri, 2026-11-16 16:24 UTC, on a83707ab51db
+
+Section 67's waitforTimeout cleanup had pointed `verifyPageHeading` at `pageHeading` (`$('h1')`). That skipped subclass getters such as Defra ID choose sign-in's `#replacementSelectIdentityProvider h1#header`, so real-IdP smoke failed after the replacement form appeared. Restored `this.heading`. `changes/todo/page-headings.md` notes not to switch it back until the getters are one name.
+
+Covers: `changes/todo/page-headings.md`.
+
+## 71. Page declares heading for the typechecker
+
+Lewis Magri, 2026-11-16 16:26 UTC, on a83707ab51db
+
+`verifyPageHeading` calls `this.heading`, but base `Page` only had `pageHeading`, so the editor reported `Property 'heading' does not exist on type 'Page'`. Added a default `heading` getter as `$('h1')` on `Page`. Subclasses that need a different selector still override it.
+
+Covers: `changes/todo/page-headings.md`.
+
+## 72. Duplicate h1 heading getters removed
+
+Lewis Magri, 2026-11-16 16:39 UTC, on a83707ab51db
+
+Base `Page` keeps `heading` as `$('h1')` only (no `pageHeading`). Removed the matching subclass getters. Non-`h1` overrides stay. `pay-service-charge` waits on `this.heading`. Moved `changes/todo/page-headings.md` to `changes/done/page-headings.md`.
+
+Covers: `changes/done/page-headings.md`, `changes/done/test-framework.md`.

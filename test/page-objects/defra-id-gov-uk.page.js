@@ -4,10 +4,6 @@ import logger from '@wdio/logger'
 
 const log = logger('defra-id-gov-uk-page')
 class DefraIdGovUKPage extends Page {
-  get heading() {
-    return $('h1')
-  }
-
   get signInButton() {
     return $('#sign-in-button')
   }

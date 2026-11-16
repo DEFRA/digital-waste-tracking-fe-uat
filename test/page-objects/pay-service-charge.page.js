@@ -15,10 +15,6 @@ class PayServiceChargePage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get payServiceChargeButton() {
     return $('a[data-testid="pay-service-charge-button"]')
   }
@@ -29,7 +25,7 @@ class PayServiceChargePage extends Page {
 
   async verifyUserIsOnPayServiceChargePage() {
     await this.verifyPageTitle()
-    await this.elementIsDisplayed(this.pageHeading)
+    await this.elementIsDisplayed(this.heading)
     await this.verifyPageHeading()
     await expect(browser).toHaveUrl(/\/service-charge/)
   }

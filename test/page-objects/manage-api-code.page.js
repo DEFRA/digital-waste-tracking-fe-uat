@@ -3,10 +3,6 @@ import { $, browser } from '@wdio/globals'
 
 class ManageApiCodePage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get apiCodeList() {
     return $$('.govuk-summary-list > .govuk-summary-list__row')
   }

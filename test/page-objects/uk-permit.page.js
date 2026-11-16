@@ -3,10 +3,6 @@ import { browser, $ } from '@wdio/globals'
 
 class UKPermitPage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get continueButton() {
     return $("button[type='submit']")
   }

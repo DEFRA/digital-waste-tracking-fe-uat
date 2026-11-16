@@ -7,10 +7,6 @@ class PrivacyNoticePage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   async verifyUserIsOnPrivacyNoticePage() {
     await this.verifyPageTitle()
     await this.verifyPageHeading()

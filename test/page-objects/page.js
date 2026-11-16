@@ -19,7 +19,8 @@ class Page {
     return sharedUsersLanguagePreference
   }
 
-  get pageHeading() {
+  // Subclasses override when the visible heading is not the first h1.
+  get heading() {
     return $('h1')
   }
 
@@ -281,8 +282,8 @@ class Page {
     const targetLang = this.usersLanguagePreference
       ? this.usersLanguagePreference
       : lang
-    await expect(this.pageHeading).toBeDisplayed()
-    await expect(this.pageHeading).toHaveText(HEADINGS[key][targetLang])
+    await expect(this.heading).toBeDisplayed()
+    await expect(this.heading).toHaveText(HEADINGS[key][targetLang])
   }
 
   async switchLanguage(lang) {

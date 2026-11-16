@@ -8,10 +8,6 @@ class ReviewServiceChargePage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get continueButton() {
     return $('a[data-testid="review-payment-continue-button"]')
   }

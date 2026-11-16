@@ -3,10 +3,6 @@ import { $ } from '@wdio/globals'
 
 class ConfirmDisableApiCodePage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get yesButton() {
     return $('#disableYes')
   }

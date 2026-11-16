@@ -3,10 +3,6 @@ import { $ } from '@wdio/globals'
 
 class ChangeApiCodeNamePage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get apiCodeNameInput() {
     return $('#name')
   }

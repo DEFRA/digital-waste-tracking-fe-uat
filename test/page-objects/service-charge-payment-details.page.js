@@ -8,10 +8,6 @@ class ServiceChargePaymentDetailsPage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get paymentReference() {
     return $('strong[data-testid="payment-reference"]')
   }

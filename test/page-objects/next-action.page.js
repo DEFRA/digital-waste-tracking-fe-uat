@@ -8,10 +8,6 @@ class NextActionPage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get connectYourSoftwareRadio() {
     return $('#connectYourSoftware')
   }

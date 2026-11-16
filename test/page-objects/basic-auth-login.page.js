@@ -2,10 +2,6 @@ import { Page } from 'page-objects/page'
 import { browser, $ } from '@wdio/globals'
 
 class BasicAuthLoginPage extends Page {
-  get heading() {
-    return $('h1')
-  }
-
   get usernameInput() {
     return $('#username')
   }

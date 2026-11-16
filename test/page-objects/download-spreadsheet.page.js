@@ -15,10 +15,6 @@ class DownloadSpreadsheetPage extends Page {
   downloadButtonSelector = 'a[data-testid="download-spreadsheet-button"]'
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get downloadButton() {
     return $(this.downloadButtonSelector)
   }

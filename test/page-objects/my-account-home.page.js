@@ -8,10 +8,6 @@ class MyAccountHomePage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get organisationName() {
     return $('p[data-testid="app-heading-organisation-name"]')
   }
