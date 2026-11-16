@@ -30,6 +30,10 @@ class ClientCredentialsPage extends Page {
     return $('[data-testid="copy-button"]')
   }
 
+  get copyLabel() {
+    return $('[data-testid="copy-button"] [data-copy-label]')
+  }
+
   get copyStatus() {
     return $('[data-testid="copy-status"]')
   }
@@ -77,9 +81,11 @@ class ClientCredentialsPage extends Page {
     )
 
     await expect(this.copyButton).toBeDisplayed()
-    await expect(this.copyButton).toHaveText('Copy credentials')
-    await expect(this.copyButton).toHaveAttribute(
-      'aria-label',
+    await expect(this.copyLabel).toHaveText('Copy credentials')
+    // Starts with the visible label, so speech users can say it. Spaces are
+    // collapsed, as the visually hidden part brings its own
+    const name = await this.copyButton.getComputedLabel()
+    expect(name.replace(/\s+/g, ' ').trim()).toBe(
       'Copy credentials client ID and client secret'
     )
     await expect(this.copyStatus).toHaveAttribute('role', 'status')
@@ -111,12 +117,29 @@ class ClientCredentialsPage extends Page {
   }
 
   async verifyCredentialsWereCopied() {
-    // The button says so, and the status, which is visually hidden, is read out
-    await expect(this.copyButton).toHaveText('Credentials copied')
-    await expect(this.copyStatus).toHaveElementProperty(
-      'textContent',
-      'Client credentials copied'
+    // The button says so, and the status, which is visually hidden, is read
+    // out. Both reset after four seconds, so they're read together, retried
+    // until the copy has finished
+    const copiedState = () =>
+      browser.execute(() => ({
+        label: document
+          .querySelector('[data-testid="copy-button"] [data-copy-label]')
+          .textContent.trim(),
+        status: document.querySelector('[data-testid="copy-status"]')
+          .textContent
+      }))
+    let state
+    await browser.waitUntil(
+      async () => {
+        state = await copiedState()
+        return state.label === 'Credentials copied'
+      },
+      {
+        timeout: 3000,
+        timeoutMsg: 'The Copy button never said "Credentials copied"'
+      }
     )
+    expect(state.status).toBe('Client credentials copied')
     await this.allowClipboardAccess()
     const { copied, expected } = await browser.execute(async () => {
       const normalize = (value) => value.replace(/\r\n/g, '\n')
