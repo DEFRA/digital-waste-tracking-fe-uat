@@ -116,7 +116,10 @@ export function reporters({
  */
 export function browserProxyCapability(testEnv) {
   if (testEnv.proxyMode === 'off' || !testEnv.httpProxy) return {}
-  const proxy = new URL(testEnv.httpProxy)
+  const proxy =
+    testEnv.proxyMode === 'zap'
+      ? new URL(testEnv.zapProxy)
+      : new URL(testEnv.httpProxy)
   const host = proxy.port ? `${proxy.hostname}:${proxy.port}` : proxy.hostname
   return {
     acceptInsecureCerts: true,

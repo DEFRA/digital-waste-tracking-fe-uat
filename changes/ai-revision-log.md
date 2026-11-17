@@ -507,3 +507,11 @@ Padmaja, 2026-11-17 11:57 UTC, on 88652c25baa0
 `test:grid:ci:waste-organisation-backend` sets `CUCUMBER_EXTRA_TAGS` to `@smoke and @defra-id-stub` and specs `test/features/waste-organisation-frontend/**/*.feature` and `test/features/waste-organisation-backend/**/*.feature`. The grid default spec list no longer applies to that script, so admin UI stays out. Nested frontend features under `compatability/` and `security/` are included. `test:grid:ci:waste-organisation-frontend` is unchanged: the same tags and only the top-level files in `test/features/waste-organisation-frontend/`.
 
 Covers: `.cursor/rules/test-framework.mdc`.
+
+## 74. Grid skips a new ZAP session for @zap
+
+Padmaja, 2026-11-17 16:30 UTC, on 21a0064cb27f
+
+The grid `onPrepare` opens a ZAP session only when `testEnv.cucumberExtraTags` does not include `@zap`. `test:zap` reads the saved scan, and `newSession` would replace it. An unset `CUCUMBER_EXTRA_TAGS` stays an empty string, so the check does not throw. Local Chrome still opens a session on every run.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`.

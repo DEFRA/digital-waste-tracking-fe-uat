@@ -13,6 +13,11 @@ export class TestEnv {
   }
 
   /** @returns {string|undefined} */
+  get zapProxy() {
+    return process.env.ZAP_PROXY_URL
+  }
+
+  /** @returns {string|undefined} */
   get zapApiKey() {
     return process.env.ZAP_API_KEY
   }

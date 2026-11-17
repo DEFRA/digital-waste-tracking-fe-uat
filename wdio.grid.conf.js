@@ -111,7 +111,9 @@ export const config = {
     if (testEnv.environment === 'test') {
       await seedUserPools(new TestConfig('test'))
     }
-    await openZapSession(testEnv, testConfig)
+    if (!testEnv.cucumberExtraTags.includes('@zap')) {
+      await openZapSession(testEnv, testConfig)
+    }
   },
   onComplete: async function (_exitCode, _config, _capabilities, results) {
     generateAccessibilityReportIndex()
