@@ -499,3 +499,11 @@ Lewis Magri, 2026-11-16 16:39 UTC, on a83707ab51db
 Base `Page` keeps `heading` as `$('h1')` only (no `pageHeading`). Removed the matching subclass getters. Non-`h1` overrides stay. `pay-service-charge` waits on `this.heading`. Moved `changes/todo/page-headings.md` to `changes/done/page-headings.md`.
 
 Covers: `changes/done/page-headings.md`, `changes/done/test-framework.md`.
+
+## 73. Grid CI specs for frontend and backend
+
+Padmaja, 2026-11-17 11:57 UTC, on 88652c25baa0
+
+`test:grid:ci:waste-organisation-backend` sets `CUCUMBER_EXTRA_TAGS` to `@smoke and @defra-id-stub` and specs `test/features/waste-organisation-frontend/**/*.feature` and `test/features/waste-organisation-backend/**/*.feature`. The grid default spec list no longer applies to that script, so admin UI stays out. Nested frontend features under `compatability/` and `security/` are included. `test:grid:ci:waste-organisation-frontend` is unchanged: the same tags and only the top-level files in `test/features/waste-organisation-frontend/`.
+
+Covers: `.cursor/rules/test-framework.mdc`.
