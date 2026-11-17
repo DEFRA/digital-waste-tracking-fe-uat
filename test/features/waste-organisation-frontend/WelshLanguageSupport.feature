@@ -4,20 +4,20 @@ Feature: Welsh Language Support
     I want the service to be available in the Welsh language
     So that I can use it more easily
 
-  @env_dev @env_test
+  @defra-id-stub @defra-id-real
   Scenario: Waste Receiver can select Welsh language
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     When user switches to "Welsh" language
     Then user should see his preference changed to "Welsh"
     And user should see the content in "Welsh" on "account-home" page
 
-  @env_dev @env_test
+  @defra-id-stub @defra-id-real
   Scenario: If language cookie is set to Welsh, when user launches the service, they should see the content in Welsh
     Given browsers language cookie is set to "Welsh"
     And user launches report receipt of waste service
     Then user should see the content in "Welsh" on "uk-permit" page
 
-  @env_dev @env_test
+  @defra-id-stub @defra-id-real
   Scenario: User must be able to switch back to English language
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And user switches to "Welsh" language
@@ -27,7 +27,7 @@ Feature: Welsh Language Support
     Then user should see his preference changed to "English"
     And user should see the content in "English" on "account-home" page
 
-  @env_dev
+  @defra-id-stub
   Scenario Outline: User must be displayed with Welsh content in gov pay, if users preference is Welsh
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And user switches to "Welsh" language
@@ -38,7 +38,7 @@ Feature: Welsh Language Support
     Then the payment should be "successful"
     And the account page should reflect that the service charge has been paid
 
-    @env_dev
+    @defra-id-stub
     Examples:
       | card_brand       | card_type        | card_number      |
       | Visa             | Credit           | 4444333322221111 |

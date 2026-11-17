@@ -6,10 +6,6 @@ import { updateWasteMovementLevelSheet } from '../utils/excel-spreadsheet-update
 
 class UploadSpreadsheetPage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get fileUploadInput() {
     return $('#file-upload-1')
   }

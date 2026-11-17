@@ -4,7 +4,7 @@ Feature: Report receipt of waste service charge
   I need to be able to pay the service charge for the service
   So that I can use the service.
 
-  @env_dev @env_test @accessibility @issue=DR-66
+  @accessibility @issue=DR-66 @defra-id-stub @defra-id-real
   Scenario: Waste receiver initiates to pay the service charge for the service
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     When the service charge is due
@@ -12,7 +12,7 @@ Feature: Report receipt of waste service charge
     And the user continues to pay the service charge
     And the user allowed to review the service charge details
 
-  @env_dev @issue=DWT-1967 
+  @issue=DWT-1967 @defra-id-stub
   Scenario: Waste receiver sees a notification when trying to pay an already paid service charge
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the service charge is due
@@ -23,7 +23,7 @@ Feature: Report receipt of waste service charge
       | heading | A payment has already been submitted                                                    |
       | body    | A service charge payment for this account has already been processed. Do not try again. |
 
-  @env_dev @env_test @accessibility 
+  @accessibility @defra-id-stub @defra-id-real
   Scenario: Waste receiver must be able to cancel payment process after the initiation of paying the service charge
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
@@ -31,7 +31,7 @@ Feature: Report receipt of waste service charge
     When user cancels the pay service charge
     And the user should be redirected to "account-home" page
 
-  @env_dev @env_test @accessibility 
+  @accessibility @defra-id-stub @defra-id-real
   Scenario: Waste receiver must be able to cancel payment process after reviewing the service charge details
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the service charge is due
@@ -50,7 +50,7 @@ Feature: Report receipt of waste service charge
     Then the payment should be "successful"
     And the account page should reflect that the service charge has been paid
 
-    @env_dev
+    @defra-id-stub
     Examples:
       | card_brand       | card_type        | card_number      |
       | Visa             | Credit           | 4444333322221111 |
@@ -64,7 +64,7 @@ Feature: Report receipt of waste service charge
     #   | card_brand | card_type | card_number      |
     #   | Visa       | Credit    | 4444333322221111 |
 
-  @env_dev @issue=DR-60
+  @issue=DR-60 @defra-id-stub
   Scenario: Local authority must be able to pay service charge for an organisation
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
     When the service charge is due
@@ -82,7 +82,7 @@ Feature: Report receipt of waste service charge
     And the payment should be "unsuccessful"
     And the account page should reflect that the service charge is pending
 
-    @env_dev
+    @defra-id-stub
     Examples:
       | card_brand | card_type | card_number      | reason                      | expected error message                             |
       | Visa       | Credit    | 4000000000000069 | that is expired             | There was a problem with your payment - GOV.UK Pay |
@@ -91,12 +91,12 @@ Feature: Report receipt of waste service charge
       | Visa       | Debit     | 4000000000000002 | which gets payment declined | There was a problem with your payment - GOV.UK Pay |
       # # | Maestro    | Debit     | 6759649826438453 | Card type not accepted | -- this returns an error on gov pay page
 
-    @env_test
+    @defra-id-real
     Examples:
     | card_brand | card_type | card_number      | reason                      | expected error message                             |
     | Visa       | Credit    | 4000000000000069 | that is expired             | There was a problem with your payment - GOV.UK Pay |
  
-  @env_dev @issue=DWT-2425
+  @issue=DWT-2425 @defra-id-stub
   Scenario: User must be able to continue after a payment error and retry the payment
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the service charge is due
@@ -106,7 +106,7 @@ Feature: Report receipt of waste service charge
     When user attempts to re-try the payment after the error
     Then the user is redirected to intiate payment page
 
-  @env_dev @issue=DR-56
+  @issue=DR-56 @defra-id-stub
   Scenario: Waste receiver must be prevented from initiating a new payment when a service charge payment is already in progress
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
@@ -118,7 +118,7 @@ Feature: Report receipt of waste service charge
       | body    | A service charge payment for this account is already in progress. Do not try again. |
 
   
-  @env_dev @issue=DR-56
+  @issue=DR-56 @defra-id-stub
   Scenario: Waste receiver resumes the existing payment window when a service charge payment is already in progress
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
@@ -126,7 +126,7 @@ Feature: Report receipt of waste service charge
     When user opens a new tab and navigates to pay service charge
     Then same payment session should be resumed and user should be redirected to GOV.UK Pay
 
-  @env_dev @issue=DR-56
+  @issue=DR-56 @defra-id-stub
   Scenario: Another user of the same organisation must be prevented from starting a new payment when one is already in progress
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
@@ -140,7 +140,7 @@ Feature: Report receipt of waste service charge
 #  webhook verified manually only in ext-test 
 #  background process verified manually only in dev and test
 
-  @env_dev @issue=DR-54 
+  @issue=DR-54 @defra-id-stub
   Scenario Outline: Waste receiver can request a full refund for a service charge payment using a valid payment reference
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due
@@ -155,7 +155,7 @@ Feature: Report receipt of waste service charge
       | card_brand | card_type | card_number      |
       | Visa       | Credit    | 4444333322221111 |
 
-  @env_dev @issue=DR-54
+  @issue=DR-54 @defra-id-stub
   Scenario Outline: Waste receiver can request a partial refund for a service charge payment using a valid payment reference
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the service charge is due

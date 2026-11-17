@@ -34,7 +34,7 @@ runs:
     - name: Run the tests
       shell: bash
       run: |
-        npm run test:github
+        npm test
         npm run report
     - name: debug
       if: always()

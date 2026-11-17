@@ -4,7 +4,7 @@ Feature: View API Code
   I want to manage the API code for the selected business
   So that I can use it to connect my software to the DWT service.
 
-  @env_dev @accessibility
+  @accessibility @defra-id-stub
   Scenario: Waste receiver logs in for the first time for a selected business and gets a new active API Code
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -13,7 +13,7 @@ Feature: View API Code
     Then user should see the "active" API Code for the selected business
     And user should be able to use the new API code to submit waste movements
 
-  @env_dev @env_test @issue=DR-60
+  @issue=DR-60 @defra-id-stub @defra-id-real
   Scenario: Local authority should be able to manage their API code
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
     And the user navigates to report receipt of waste
@@ -22,7 +22,7 @@ Feature: View API Code
     Then user should see the "active" API Code for the selected business
     And user should be able to use the new API code to submit waste movements
 
-  @env_test @accessibility
+  @accessibility @defra-id-real
   Scenario Outline: Waste receiver with a pre-existing active API Code logs in via "<account_type>" and gets the same active API Code
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
     And the user navigates to report receipt of waste
@@ -36,7 +36,7 @@ Feature: View API Code
       | Gov UK             |
       | Government Gateway |
 
-  @env_test
+  @defra-id-real
   Scenario: Waste receiver with multiple businesses can submit waste movements using each business's API code
     Given a multi-business user is logged in via "Gov UK"
     And the user views the API code for the selected business
@@ -45,7 +45,7 @@ Feature: View API Code
     Then the user should see a different "active" API code for that business
     And user should be able to use the API code to submit waste movements
 
-  @env_dev @accessibility @issue:DWT-1105
+  @accessibility @issue:DWT-1105 @defra-id-stub
   Scenario: Waste receiver user must be able to change api code name to name it appropriately
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -55,7 +55,7 @@ Feature: View API Code
     When the user gives the API code a meaningful name
     Then the API code should display the updated name in the API code list
 
-  @env_dev @issue:DWT-1105
+  @issue:DWT-1105 @defra-id-stub
   Scenario: Waste receiver changes the name and then disables the API Code
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -67,7 +67,7 @@ Feature: View API Code
     When user has disabled the active API Code
     Then the new name of the api code must be displayed in the disabled api code list
   
-  @env_dev @env_test @issue=DWT-2248
+  @issue=DWT-2248 @defra-id-stub @defra-id-real
   Scenario: User must be able to copy the api code to the clipboard
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste

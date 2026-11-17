@@ -6,10 +6,6 @@ import { browser, $ } from '@wdio/globals'
 // leaving it here for now and will be removed in the future
 class HomePage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get startNowButton() {
     return $('#start-now-button')
   }

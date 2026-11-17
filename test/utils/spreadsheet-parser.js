@@ -20,7 +20,11 @@ export async function downloadAndParseSpreadsheet(
 
   const baseDispatcher =
     httpProxy && typeof httpProxy === 'string' && httpProxy.trim().length > 0
-      ? new ProxyAgent({ uri: httpProxy.trim(), ...agentOptions })
+      ? new ProxyAgent({
+          uri: httpProxy.trim(),
+          ...agentOptions,
+          requestTls: { rejectUnauthorized: false }
+        })
       : new Agent(agentOptions)
 
   const dispatcher = baseDispatcher.compose(

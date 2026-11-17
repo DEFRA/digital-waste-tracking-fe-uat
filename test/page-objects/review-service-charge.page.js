@@ -1,6 +1,5 @@
 import { Page } from 'page-objects/page'
-import { $ } from '@wdio/globals'
-import { browser } from '~/node_modules/@wdio/globals/build/index'
+import { $, browser } from '@wdio/globals'
 
 class ReviewServiceChargePage extends Page {
   // methods
@@ -9,10 +8,6 @@ class ReviewServiceChargePage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get continueButton() {
     return $('a[data-testid="review-payment-continue-button"]')
   }

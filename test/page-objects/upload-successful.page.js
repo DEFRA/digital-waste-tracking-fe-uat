@@ -4,10 +4,6 @@ import AsyncUploadProcessHandler from '../utils/AsyncProcessHandler.js'
 
 class UploadSuccessfulPage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get referenceNumber() {
     return $('.govuk-body>strong')
   }

@@ -1,4 +1,4 @@
-@issue=DR-48 @env_local @zap
+@issue=DR-48 @zap
 Feature: Analyse security report
  
   Scenario: Analyse zap security report for any High risk issues

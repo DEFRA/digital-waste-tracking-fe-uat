@@ -1,8 +1,6 @@
 import { Page } from 'page-objects/page'
-import { $ } from '@wdio/globals'
-import { browser } from '~/node_modules/@wdio/globals/build/index'
+import { $, browser } from '@wdio/globals'
 import ReviewServiceChargePage from './review-service-charge.page.js'
-import { config } from '../../wdio.conf.js'
 
 class PayServiceChargePage extends Page {
   // methods
@@ -11,16 +9,12 @@ class PayServiceChargePage extends Page {
   }
 
   async openInNewTab() {
-    await browser.newWindow(`${config.baseUrl}/service-charge`, {
+    await browser.newWindow(`${browser.options.baseUrl}/service-charge`, {
       type: 'tab'
     })
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get payServiceChargeButton() {
     return $('a[data-testid="pay-service-charge-button"]')
   }

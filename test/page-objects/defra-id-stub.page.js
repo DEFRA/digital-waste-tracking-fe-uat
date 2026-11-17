@@ -1,5 +1,4 @@
 import { Page } from 'page-objects/page'
-import { config } from '../../wdio.conf.js'
 import { $, browser } from '@wdio/globals'
 import logger from '@wdio/logger'
 
@@ -83,9 +82,7 @@ class DefraIdStubPage extends Page {
   //   await expect(this.heading).toBeDisplayed()
   //   await expect(this.heading).toHaveText('DEFRA ID Stub User Set Up')
 
-  //   await this.emailInput.waitForExist({
-  //     timeout: config.waitforTimeout
-  //   })
+  //   await this.emailInput.waitForExist()
 
   //   const userId = await this.userIdInput.getValue()
 
@@ -94,44 +91,34 @@ class DefraIdStubPage extends Page {
   //   await this.enterText(this.lastNameInput, 'PLast')
   //   await this.enterText(this.enrolmentNumberInput, '1')
   //   await this.enterText(this.enrolmentRequestCountInput, '1')
-  //   await this.continueButton.waitForClickable({
-  //     timeout: config.waitforTimeout
-  //   })
+  //   await this.continueButton.waitForClickable()
   //   await this.click(this.continueButton)
 
   //   await expect(browser).toHaveUrl(
   //     `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
   //   )
 
-  //   await this.relationshipIdInput.waitForExist({
-  //     timeout: config.waitforTimeout
-  //   })
+  //   await this.relationshipIdInput.waitForExist()
 
   //   await this.enterText(this.relationshipIdInput, uuidv4())
   //   await this.enterText(this.organisationNameInput, 'POrganisation')
   //   await this.enterText(this.organisationIdInput, uuidv4())
 
-  //   await this.continueButton.waitForClickable({
-  //     timeout: config.waitforTimeout
-  //   })
+  //   await this.continueButton.waitForClickable()
   //   await this.click(this.continueButton)
 
   //   await expect(browser).toHaveUrl(
   //     `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/relationship`
   //   )
 
-  //   await this.finishLink.waitForExist({
-  //     timeout: config.waitforTimeout
-  //   })
+  //   await this.finishLink.waitForExist()
   //   await this.finishLink.click()
 
   //   await expect(browser).toHaveUrl(
   //     `https://cdp-defra-id-stub.${process.env.ENVIRONMENT}.cdp-int.defra.cloud/cdp-defra-id-stub/register/${userId}/summary`
   //   )
 
-  //   await this.loginLink.waitForExist({
-  //     timeout: config.waitforTimeout
-  //   })
+  //   await this.loginLink.waitForExist()
   //   await this.loginLink.click()
 
   //   // assert user was created successfully
@@ -166,9 +153,9 @@ class DefraIdStubPage extends Page {
     }
 
     // Wait for element to be displayed before scrolling
-    await userRow.waitForDisplayed({ timeout: config.waitforTimeout })
+    await userRow.waitForDisplayed()
     await userRow.scrollIntoView({ block: 'center', behavior: 'smooth' })
-    await userRow.waitForClickable({ timeout: config.waitforTimeout })
+    await userRow.waitForClickable()
     await userRow.click()
 
     // Path may be /organisations or /organisations/; stub may append ?sessionId=...

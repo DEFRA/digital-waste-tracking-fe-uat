@@ -1,38 +1,45 @@
 import { bootstrap } from 'global-agent'
-import { initialiseAccessibilityChecking } from './test/utils/accessibility-checking.js'
-import fs from 'node:fs'
-import { readFileSync } from 'fs'
-import { setResourcePool, addValueToPool } from '@wdio/shared-store-service'
-import AllureReporter, { addStep } from '@wdio/allure-reporter'
-import { ApiFactory } from './test/utils/apis/api-factory.js'
+import AllureReporter from '@wdio/allure-reporter'
+import { browser } from '@wdio/globals'
+import { addValueToPool, setResourcePool } from '@wdio/shared-store-service'
+import { TestConfig } from './test/setup/test-config.js'
+import { TestEnv } from './test/setup/test-env.js'
 import {
-  addAllureIssueLinksFromPickleTags,
-  ALLURE_ISSUE_LINK_TEMPLATE
-} from './test/utils/allure-utils.js'
-import logger from '@wdio/logger'
-import { buildCucumberTagExpression } from './test/utils/cucumber-tag-expression.js'
+  connectionRetryCount,
+  cucumberOptions,
+  execArgv,
+  expireDefraIdStubUsers,
+  prepareScenario,
+  releasePooledUsers,
+  reporters,
+  screenshotOnFailure,
+  seedUserPools,
+  timeouts,
+  withMaxInstances,
+  writeFailedFile
+} from './test/setup/wdio-shared.js'
 
-const log = logger('wdio.browserstack.conf.js')
+const testEnv = new TestEnv()
+const testConfig = new TestConfig(testEnv.environment, testEnv.proxyMode)
 
-/** Cucumber @env_* tag: dev and perf-test scenarios use @env_dev */
-const cucumberEnvTag =
-  process.env.ENVIRONMENT === 'dev' || process.env.ENVIRONMENT === 'perf-test'
-    ? 'dev'
-    : process.env.ENVIRONMENT
+if (testEnv.httpProxy && testEnv.proxyMode !== 'off') {
+  bootstrap()
+  global.GLOBAL_AGENT.HTTP_PROXY = testEnv.httpProxy
+}
 
-// const debug = process.env.DEBUG
-// const oneMinute = 60 * 1000
+const pageTimeouts = {
+  script: 120000,
+  pageLoad: 120000,
+  implicit: 0
+}
 
-// Allow clipboard access so Chromium browsers do not prompt during copy steps.
 const chromiumClipboardOptions = {
   prefs: {
     'profile.default_content_setting_values.clipboard': 1
   }
 }
 
-// https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices
 const allCapabilities = [
-  // windows
   {
     browserName: 'Chrome',
     'bstack:options': {
@@ -43,11 +50,7 @@ const allCapabilities = [
       osVersion: '11'
     },
     'goog:chromeOptions': chromiumClipboardOptions,
-    timeouts: {
-      script: 120000, // 120 seconds for async script execution
-      pageLoad: 120000, // 120 seconds for page load
-      implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    }
+    timeouts: pageTimeouts
   },
   {
     browserName: 'Edge',
@@ -59,13 +62,8 @@ const allCapabilities = [
       osVersion: '11'
     },
     'ms:edgeOptions': chromiumClipboardOptions,
-    timeouts: {
-      script: 120000, // 120 seconds for async script execution
-      pageLoad: 120000, // 120 seconds for page load
-      implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    }
+    timeouts: pageTimeouts
   },
-  // macOS
   {
     browserName: 'Chrome',
     'bstack:options': {
@@ -73,16 +71,11 @@ const allCapabilities = [
       resolution: '1920x1080',
       browserVersion: 'latest',
       os: 'OS X',
-      osVersion: 'Sonoma' // Changed from 'Sequoia'
+      osVersion: 'Sonoma'
     },
     'goog:chromeOptions': chromiumClipboardOptions,
-    timeouts: {
-      script: 120000, // 120 seconds for async script execution
-      pageLoad: 120000, // 120 seconds for page load
-      implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    }
+    timeouts: pageTimeouts
   },
-  // macOS Safari
   {
     browserName: 'Safari',
     'bstack:options': {
@@ -92,13 +85,8 @@ const allCapabilities = [
       osVersion: 'Sonoma',
       browserVersion: '17.3'
     },
-    timeouts: {
-      script: 120000, // 120 seconds for async script execution
-      pageLoad: 120000, // 120 seconds for page load
-      implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    }
+    timeouts: pageTimeouts
   },
-  // Android
   {
     browserName: 'chrome',
     'bstack:options': {
@@ -108,13 +96,8 @@ const allCapabilities = [
       idleTimeout: 300
     },
     'goog:chromeOptions': chromiumClipboardOptions,
-    timeouts: {
-      script: 120000, // 120 seconds for async script execution
-      pageLoad: 120000, // 120 seconds for page load
-      implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    }
+    timeouts: pageTimeouts
   },
-  // iOS
   {
     browserName: 'chromium',
     'bstack:options': {
@@ -123,309 +106,182 @@ const allCapabilities = [
       consoleLogs: 'info',
       idleTimeout: 300
     },
-    timeouts: {
-      script: 120000, // 120 seconds for async script execution
-      pageLoad: 120000, // 120 seconds for page load
-      implicit: 0 // Don't use implicit waits (use explicit waits instead)
-    }
+    timeouts: pageTimeouts
   }
 ]
-// const oneHour = 60 * 60 * 1000
 
-/**
- * CDP only allows outbound traffic through HTTP_PROXY.
- * Webdriver and the BrowserStack service each open their own proxy from that
- * variable. Do not install undici's ProxyAgent as the global dispatcher:
- * Webdriver will send its session request through it, and undici 7 rejects the
- * Content-Length header on that request.
- */
-// Only use proxy if HTTP_PROXY is set (for CDP environments)
-if (process.env.HTTP_PROXY) {
-  bootstrap()
-  global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY
+const compatibilityRun = testEnv.cucumberExtraTags.includes('@compatibility')
+const environment = testEnv.environment
+
+const fullBrowserListScripts = new Set([
+  'test:browserstack:smoke:defra-id-stub',
+  'test:browserstack:smoke:defra-id-real',
+  'test:browserstack:compatibility:defra-id-stub',
+  'test:browserstack:compatibility:defra-id-real',
+  'test:browserstack:admin-ui'
+])
+
+function selectedCapabilities() {
+  const fullBrowserList = fullBrowserListScripts.has(
+    process.env.npm_lifecycle_event ?? ''
+  )
+  if (environment === 'ext-test' || !fullBrowserList) {
+    return [allCapabilities[0]]
+  }
+  return allCapabilities
 }
 
-// const oneMinute = 60 * 1000
+const useProxy = Boolean(testEnv.httpProxy) && testEnv.proxyMode !== 'off'
+const browserstackProxy = useProxy ? new URL(testEnv.httpProxy) : null
+
+let scenarioSeen = false
+
+/**
+ * The runner config carries the requested capabilities. The browser client type omits them.
+ * @param {object} options
+ * @returns {WebdriverIO.Capabilities|undefined}
+ */
+function requestedCapabilities(options) {
+  if (!('capabilities' in options)) return undefined
+  const capabilities = /** @type {{ capabilities?: unknown }} */ (options)
+    .capabilities
+  if (
+    !capabilities ||
+    typeof capabilities !== 'object' ||
+    Array.isArray(capabilities)
+  ) {
+    return undefined
+  }
+  return /** @type {WebdriverIO.Capabilities} */ (capabilities)
+}
+
+/**
+ * Records the BrowserStack browser and device on the scenario.
+ * @param {import('./test/setup/test-memory.js').TestMemory} testMemory
+ */
+async function recordBrowserstackSession(testMemory) {
+  const capabilities = await browser.capabilities
+  const requestedBstackOptions =
+    requestedCapabilities(browser.options)?.['bstack:options'] ?? {}
+  const browserInfo =
+    `${capabilities.browserName} ${capabilities.browserVersion || ''}`.trim()
+  const deviceInfo = requestedBstackOptions.deviceName
+    ? `Device: ${requestedBstackOptions.deviceName}`
+    : `OS: ${requestedBstackOptions.os} ${requestedBstackOptions.osVersion}`
+
+  AllureReporter.addLabel('browser', browserInfo)
+  AllureReporter.addLabel('platform', deviceInfo)
+  AllureReporter.addDescription(
+    `**Browser:** ${browserInfo}<br>**${deviceInfo}**`
+  )
+  testMemory.browserstackSessionId = browser.sessionId
+  testMemory.browserInfo = browserInfo
+  testMemory.deviceInfo = deviceInfo
+}
+
+/**
+ * Returns the account to the combined BrowserStack pool.
+ * @param {import('./test/setup/test-memory.js').TestMemory} testMemory
+ */
+async function releaseBrowserstackUsers(testMemory) {
+  if (testMemory.govUKUser !== undefined) {
+    await addValueToPool('availableUsers', testMemory.govUKUser)
+  }
+  if (testMemory.govGatewayUser !== undefined) {
+    await addValueToPool('availableUsers', testMemory.govGatewayUser)
+  }
+}
 
 export const config = {
-  //
-  // ====================
-  // Runner Configuration
-  // ====================
-  // WebdriverIO supports running e2e tests as well as unit and component tests.
   runner: 'local',
-  //
-  // Set a base URL in order to shorten url command calls. If your `url` parameter starts
-  // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
-  // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
-  // gets prepended directly.
-  baseUrl:
-    process.env.ENVIRONMENT === 'ext-test'
-      ? 'https://waste-tracking.integration.defra.gov.uk'
-      : `https://waste-organisation-frontend.${process.env.ENVIRONMENT}.cdp-int.defra.cloud`,
-
-  // You will need to provide your own BrowserStack credentials.
-  // These should be added as secrets to the test suite.
-  user: process.env.BROWSERSTACK_USERNAME,
-  key: process.env.BROWSERSTACK_KEY,
-
-  // Tests to run
+  baseUrl: testConfig.wasteOrganisationFrontendBaseUrl,
+  user: testEnv.browserstackUsername,
+  key: testEnv.browserstackKey,
   specs: ['./test/features/waste-organisation-frontend/**/*.feature'],
-
-  // Tests to exclude
   exclude: [],
-  maxInstances: 1,
-
+  maxInstances: testEnv.maxInstances,
   commonCapabilities: {
     'bstack:options': {
-      // its preferable to run tests always on "test" or "ext-test" environment as they have real defraId integrations
-      // rather than mock defraId integrations
-      buildName:
-        process.env.CUCUMBER_EXTRA_TAGS === '@smoke'
-          ? `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}-smoke`
-          : `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}-regression`
+      buildName: compatibilityRun
+        ? `digital-waste-tracking-fe-uat-${environment}-compatibility`
+        : `digital-waste-tracking-fe-uat-${environment}`
     }
   },
-
-  capabilities: (() => {
-    if (
-      process.env.ENVIRONMENT === 'ext-test' ||
-      process.env.CUCUMBER_EXTRA_TAGS !== '@smoke'
-    ) {
-      return [allCapabilities[0]]
-    }
-
-    return allCapabilities
-  })(),
-
+  capabilities: withMaxInstances(selectedCapabilities(), testEnv),
   services: [
     'shared-store',
     [
       'browserstack',
       {
-        testObservability: true, // Disable if you do not want to use the browserstack test observer functionality
+        testObservability: true,
         testObservabilityOptions: {
-          user: process.env.BROWSERSTACK_USERNAME,
-          key: process.env.BROWSERSTACK_KEY,
-          projectName: 'digital-waste-tracking-fe', // should match project in browserstack
-          buildName: `digital-waste-tracking-fe-uat-${process.env.ENVIRONMENT}`
+          user: testEnv.browserstackUsername,
+          key: testEnv.browserstackKey,
+          projectName: 'digital-waste-tracking-fe',
+          buildName: `digital-waste-tracking-fe-uat-${environment}`
         },
         acceptInsecureCerts: true,
         forceLocal: false,
         browserstackLocal: true,
-        // **this is only needed for CDP runs with proxy
-        ...(process.env.HTTP_PROXY && {
+        ...(browserstackProxy && {
           opts: {
             binarypath: '/root/.browserstack/BrowserStackLocal',
             verbose: true,
-            proxyHost: 'localhost',
-            proxyPort: 3128
+            proxyHost: browserstackProxy.hostname,
+            proxyPort: Number(browserstackProxy.port || 80)
           }
         })
       }
     ]
   ],
-
-  execArgv: ['--loader', 'esm-module-alias/loader'],
-
-  logLevel: 'debug', // Changed from 'info' for better debugging
-
-  // Number of failures before the test suite bails.
+  execArgv: testEnv.debug ? [...execArgv, '--inspect'] : execArgv,
+  logLevel: 'debug',
   bail: 0,
-  waitforTimeout: 120000, // 120 seconds for element waits
+  waitforTimeout: timeouts.browserstack.waitforTimeout,
   waitforInterval: 200,
-  connectionRetryTimeout: 120000, // Increased from 6000 (6s) to 120000 (120s) for BrowserStack
-  connectionRetryCount: 3,
+  connectionRetryTimeout: timeouts.browserstack.connectionRetryTimeout,
+  connectionRetryCount,
   framework: 'cucumber',
-  cucumberOpts: {
-    timeout: 180000, // Increased from 120000 (120s) to 180000 (180s) for BrowserStack network latency
-    require: ['./test/step-definitions/**/*.js'],
-    tags: buildCucumberTagExpression(cucumberEnvTag),
-    // tags: '@local',
-    failAmbiguousDefinitions: true,
-    ignoreUndefinedDefinitions: false,
-    retry: 1
+  cucumberOpts: cucumberOptions({
+    timeout: timeouts.browserstack.cucumber,
+    testEnv
+  }),
+  reporters: reporters({ disableWebdriverStepsReporting: true }),
+  /**
+   * @param {import('./test/types/globals.js').CucumberWorld} cucumberWorld
+   */
+  beforeScenario: async function (world, cucumberWorld) {
+    await prepareScenario(world, cucumberWorld, testEnv, testConfig)
+    await recordBrowserstackSession(cucumberWorld.testMemory)
+    if (scenarioSeen && browser.sessionId) {
+      await browser.reloadSession()
+    }
+    scenarioSeen = true
   },
-
-  reporters: [
-    'spec',
-    [
-      'allure',
-      {
-        outputDir: 'allure-results',
-        issueLinkTemplate: ALLURE_ISSUE_LINK_TEMPLATE,
-        useCucumberStepReporter: true,
-        disableWebdriverStepsReporting: true,
-        disableWebdriverScreenshotsReporting: false
-      }
-    ]
-  ],
-
-  // Hooks
-  //
-  // =====
-  // Cucumber Hooks
-  // =====
-  onPrepare: async function (config, capabilities) {
-    if (process.env.ENVIRONMENT === 'test') {
-      // Load test configuration from <env>.config.json
-      const testConfigData = readFileSync(
-        `./test/support/${process.env.ENVIRONMENT}.config.json`,
-        'utf8'
-      )
-      const testConfig = JSON.parse(testConfigData)
-      await setResourcePool('availableGovUKUsers', testConfig.govUKLogin)
-      await setResourcePool(
-        'availableGovGatewayUsers',
-        testConfig.govGatewayLogin
-      )
-      await setResourcePool(
-        'availableMultipleBusinessesGovUKUsers',
-        testConfig.multipleBusinessesGovUKLogin
-      )
-      // create a common user pool of gov uk and govt gateway users
-      const users = testConfig.govUKLogin
-        .concat(testConfig.govGatewayLogin)
+  afterStep: async function (_step, _scenario, result) {
+    await screenshotOnFailure(result, 'afterStep')
+  },
+  /**
+   * @param {import('./test/types/globals.js').CucumberWorld} cucumberWorld
+   */
+  afterScenario: async function (_world, result, cucumberWorld) {
+    const testMemory = cucumberWorld.testMemory
+    await releasePooledUsers(testMemory)
+    await releaseBrowserstackUsers(testMemory)
+    await screenshotOnFailure(result, 'afterScenario')
+    await expireDefraIdStubUsers(testMemory)
+  },
+  onPrepare: async function () {
+    if (testEnv.environment === 'test') {
+      const pools = new TestConfig('test')
+      await seedUserPools(pools)
+      const users = pools.govUKLogin
+        .concat(pools.govGatewayLogin)
         .sort(() => Math.random() - 0.5)
       await setResourcePool('availableUsers', users)
     }
   },
-
-  beforeScenario: async function (world, cucumberWorld) {
-    await addAllureIssueLinksFromPickleTags(
-      world.pickle,
-      ALLURE_ISSUE_LINK_TEMPLATE
-    )
-    // IMPORTANT: In WebdriverIO, the world object in hooks may not be the same instance
-    // as 'this' in step definitions. We need to ensure properties are set on the world object
-    // that will be accessible in step definitions.
-
-    // Log BrowserStack session information
-    const sessionId = browser.sessionId
-    const capabilities = await browser.capabilities
-    const requestedBstackOptions =
-      browser.options.capabilities?.['bstack:options'] ?? {}
-    const browserInfo =
-      `${capabilities.browserName} ${capabilities.browserVersion || ''}`.trim()
-    const deviceInfo = requestedBstackOptions.deviceName
-      ? `Device: ${requestedBstackOptions.deviceName}`
-      : `OS: ${requestedBstackOptions.os} ${requestedBstackOptions.osVersion}`
-
-    AllureReporter.addLabel('browser', browserInfo)
-    AllureReporter.addLabel('platform', deviceInfo)
-    AllureReporter.addDescription(
-      `**Browser:** ${browserInfo}<br>**${deviceInfo}**`
-    )
-
-    // Initialize world object properties here
-    // These will be accessible in step definitions via 'this'
-    cucumberWorld.pageName = null // Initialize, will be set in step definitions
-    cucumberWorld.tags = world.pickle.tags.map((tag) => tag.name).join(', ')
-    cucumberWorld.axeBuilder = null
-    cucumberWorld.env = process.env
-    cucumberWorld.browserstackSessionId = sessionId // Make session ID accessible in steps
-    cucumberWorld.browserInfo = browserInfo // Make browser name accessible in steps
-    cucumberWorld.deviceInfo = deviceInfo // Make device name accessible in steps
-
-    // Load test configuration from <env>.config.json
-    const testConfigData = readFileSync(
-      `./test/support/${process.env.ENVIRONMENT}.config.json`,
-      'utf8'
-    )
-    cucumberWorld.testConfig = JSON.parse(testConfigData)
-    cucumberWorld.env = process.env
-    cucumberWorld.apis = ApiFactory.create(
-      cucumberWorld.testConfig,
-      cucumberWorld.env
-    )
-    cucumberWorld.apis.govPayAPI.setAuthorizationHeader(
-      process.env.GOV_PAY_API_KEY
-    )
-
-    if (world.pickle.tags.find((tag) => tag.name === '@accessibility')) {
-      cucumberWorld.axeBuilder = await initialiseAccessibilityChecking()
-    }
-
-    // Re-open a fresh browser session for each scenario
-    // This ensures test isolation - each scenario starts with a clean browser state
-    if (browser.sessionId) {
-      await browser.reloadSession()
-    }
-  },
-
-  afterStep: async function (step, scenario, result) {
-    try {
-      await browser.takeScreenshot()
-    } catch (error) {
-      log.error('Failed to take screenshot after step error:', error.message)
-    }
-  },
-
-  afterScenario: async function (world, result, cucumberWorld) {
-    try {
-      await browser.takeScreenshot()
-    } catch (error) {
-      log.error(
-        'Failed to take screenshot after scenario error:',
-        error.message
-      )
-    }
-    if (cucumberWorld.govUKUser !== undefined) {
-      if (cucumberWorld.userWithMultipleBusinesses === true) {
-        addStep(
-          `adding multiple businesses gov uk user ${cucumberWorld.govUKUser} to the pool`
-        )
-        await addValueToPool(
-          'availableMultipleBusinessesGovUKUsers',
-          cucumberWorld.govUKUser
-        )
-      } else if (cucumberWorld.doNotAddUserToPool === true) {
-        // do nothing
-      } else {
-        addStep(`adding gov uk user ${cucumberWorld.govUKUser} to the pool`)
-        await addValueToPool('availableGovUKUsers', cucumberWorld.govUKUser)
-      }
-    }
-    if (cucumberWorld.govGatewayUser !== undefined) {
-      addStep(
-        `adding gov gateway user ${cucumberWorld.govGatewayUser} to the pool`
-      )
-      await addValueToPool(
-        'availableGovGatewayUsers',
-        cucumberWorld.govGatewayUser
-      )
-    }
-
-    if (cucumberWorld.govUKUser !== undefined) {
-      await addValueToPool('availableUsers', cucumberWorld.govUKUser)
-    }
-    if (cucumberWorld.govGatewayUser !== undefined) {
-      await addValueToPool('availableUsers', cucumberWorld.govGatewayUser)
-    }
-    const defraIdMockUserIds = [
-      cucumberWorld.defraIdMockUserId,
-      cucumberWorld.differentDefraIdMockUserId
-    ].filter(Boolean)
-    for (const defraIdMockUserId of defraIdMockUserIds) {
-      // cleanup the user from the defra id mock service
-      log.info(
-        `cleaning up the user from the defra id mock service: ${defraIdMockUserId}`
-      )
-      await cucumberWorld.apis.defraIdStubAPI.expireUser(defraIdMockUserId)
-    }
-  },
-  /**
-   * Gets executed after all workers got shut down and the process is about to exit. An error
-   * thrown in the onComplete hook will result in the test run failing.
-   * @param {object} exitCode 0 - success, 1 - fail
-   * @param {object} config wdio configuration object
-   * @param {Array.<Object>} capabilities list of capabilities details
-   * @param {<Object>} results object containing test results
-   */
-  onComplete: function (exitCode, config, capabilities, results) {
-    // !Do Not Remove! Required for test status to show correctly in portal.
-    if (results?.failed && results.failed > 0) {
-      fs.writeFileSync('FAILED', JSON.stringify(results))
-    }
+  onComplete: async function (_exitCode, _config, _capabilities, results) {
+    writeFailedFile(results)
   }
 }

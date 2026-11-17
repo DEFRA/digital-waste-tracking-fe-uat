@@ -6,10 +6,6 @@ import logger from '@wdio/logger'
 const log = logger('gov-pay-page')
 class GovPayPage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get cardDetailsForm() {
     return $('#card-details')
   }

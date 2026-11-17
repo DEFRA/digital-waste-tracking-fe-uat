@@ -3,26 +3,32 @@ import MyAccountHomePage from '../page-objects/my-account-home.page.js'
 import DefraIdOrgPickerPage from '../page-objects/defra-id-org-picker.page.js'
 import PayServiceChargePage from '../page-objects/pay-service-charge.page.js'
 
-When('the user switches to a different business', async function () {
-  if (!(await MyAccountHomePage.isUserOnMyAccountHomePage())) {
-    await MyAccountHomePage.open()
-    await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+When(
+  'the user switches to a different business',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    if (!(await MyAccountHomePage.isUserOnMyAccountHomePage())) {
+      await MyAccountHomePage.open()
+      await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
+    }
+    await MyAccountHomePage.switchToDifferentBusiness()
+    await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
+    this.testMemory.selectedOrganisation =
+      await DefraIdOrgPickerPage.selectOrganisation(1)
   }
-  await MyAccountHomePage.switchToDifferentBusiness()
-  await DefraIdOrgPickerPage.verifyUserIsOnOrgPickerPage()
-  this.selectedOrganisation = await DefraIdOrgPickerPage.selectOrganisation(1)
-})
+)
 
 Then(
   'user should be redirected to the defra my account page',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await MyAccountHomePage.verifyUserIsOnDefraManageAccountPage()
   }
 )
 
 When(
   /^the user navigates to (manage account|report receipt of waste)$/,
-  async function (action) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    action
+  ) {
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
     if (action === 'manage account') {
       await MyAccountHomePage.navigateToManageAccountPage()
@@ -32,31 +38,35 @@ When(
   }
 )
 
-When('the user initiates to pay the service charge', async function () {
-  await MyAccountHomePage.navigateToPayServiceChargePage()
-  await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
-})
+When(
+  'the user initiates to pay the service charge',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await MyAccountHomePage.navigateToPayServiceChargePage()
+    await PayServiceChargePage.verifyUserIsOnPayServiceChargePage()
+  }
+)
 
 Then(
   'the account page should reflect that the service charge has been paid',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await MyAccountHomePage.open()
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
     const serviceChargeStatus =
       MyAccountHomePage.usersLanguagePreference === 'cy'
-        ? `Tâl gwasanaeth\nWedi talu\nTaliad nesaf yn ddyledus ym mis ${this.nextPaymentDueDate}.`
-        : `Service charge\nPaid\nNext payment due ${this.nextPaymentDueDate}.`
+        ? `Tâl gwasanaeth\nWedi talu\nTaliad nesaf yn ddyledus ym mis ${this.testMemory.nextPaymentDueDate}.`
+        : `Service charge\nPaid\nNext payment due ${this.testMemory.nextPaymentDueDate}.`
     await MyAccountHomePage.verifyServiceChargeStatus(serviceChargeStatus)
   }
 )
 
 Then(
   'the account page should reflect that the service charge is pending',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await MyAccountHomePage.open()
     await MyAccountHomePage.verifyUserIsOnMyAccountHomePage()
     const endDate = new Date(
-      this.serviceChargeDueDate ?? process.env.GOVPAY_SERVICE_FREE_PERIOD_END
+      this.testMemory.serviceChargeDueDate ??
+        this.testEnv.govPayServiceFreePeriodEnd
     )
     if (new Date() < endDate) {
       const month = endDate.toLocaleDateString('en-GB', { month: 'long' })

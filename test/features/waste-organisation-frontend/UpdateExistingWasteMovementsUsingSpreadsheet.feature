@@ -4,7 +4,7 @@ As a waste receiver
 I want to update previously submitted waste movements by re-uploading a spreadsheet containing their WTIDs
 So that I can make corrections or changes after submission.
 
-  @env_dev @accessibility
+  @accessibility @defra-id-stub
   Scenario: Waste receiver should be able to select an option to update waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -21,7 +21,7 @@ So that I can make corrections or changes after submission.
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
-  @env_dev @issue=DR-60
+  @issue=DR-60 @defra-id-stub
   Scenario: Local authority should be able to update waste movements using a spreadsheet with Waste tracking IDs
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
     And the user navigates to report receipt of waste
@@ -37,7 +37,7 @@ So that I can make corrections or changes after submission.
     And the file is successfully accepted for processing
     And the processed spreadsheet should contain valid WTIDs
 
-  @env_dev
+  @defra-id-stub
   Scenario: Waste receiver uploads a valid spreadsheet to update existing waste movements then the changes should be successfully persisted
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -54,7 +54,7 @@ So that I can make corrections or changes after submission.
     And all the waste movements should be successfully updated
     And the processed spreadsheet should contain valid WTIDs
 
-  @env_test
+  @defra-id-real
   Scenario: Waste receiver uploads a valid spreadsheet to update existing waste movements then the changes should be successfully persisted
     Given a user is logged in to the waste receiver registration portal using a "Government Gateway" account
     And the user navigates to report receipt of waste
@@ -71,7 +71,7 @@ So that I can make corrections or changes after submission.
     And all the waste movements should be successfully updated
     And the processed spreadsheet should contain valid WTIDs
 
-  @env_test @accessibility
+  @accessibility @defra-id-real
   Scenario Outline: Waste receiver should be able to login via "<account_type>" and upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal using a "<account_type>" account
     And the user navigates to report receipt of waste
@@ -93,7 +93,7 @@ So that I can make corrections or changes after submission.
       | Gov UK             |
       | Government Gateway |
 
-  @env_test
+  @defra-id-real
   Scenario: Waste receiver with multiple businesses can update existing waste movements for each selected business
     Given a multi-business user is logged in via "Gov UK"
     And the user successfully updates existing waste movements using a spreadsheet for the selected business
@@ -103,7 +103,7 @@ So that I can make corrections or changes after submission.
     And the user should be redirected to "Spreadsheet update successful" page
     And the file is successfully accepted for processing
 
-  @env_test @issue=DWT-1465 @issue=DWT-2146
+  @issue=DWT-1465 @issue=DWT-2146 @defra-id-real
   Scenario Outline: Waste receiver update waste movements by uploading a spreadsheet that has "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
@@ -121,7 +121,7 @@ So that I can make corrections or changes after submission.
       | api                      | Test1-update-api-errors-spreadsheet.xlsx    |
       | no waste movements       | Test1-empty-records-spreadsheet.xlsx        |
 
-  @env_dev @issue=DWT-1465 @issue=DWT-2146
+  @issue=DWT-1465 @issue=DWT-2146 @defra-id-stub
   Scenario Outline: Waste receiver update waste movements by uploading a spreadsheet that has "<error_type>" errors
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -139,7 +139,7 @@ So that I can make corrections or changes after submission.
       | api                      | Test1-update-api-errors-spreadsheet.xlsx    |
       | no waste movements       | Test1-empty-records-spreadsheet.xlsx        |
 
-  @env_dev @env_test @issue=DWT-1431,DWT-1641
+  @issue=DWT-1431,DWT-1641 @defra-id-stub @defra-id-real
   Scenario Outline: Waste receiver update waste movements by uploading an unsupported file type "<file_type>"
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste

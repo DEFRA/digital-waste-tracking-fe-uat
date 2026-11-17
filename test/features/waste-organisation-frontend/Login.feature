@@ -5,7 +5,7 @@ Feature: Login as a user for waste receiving organisation
   I want to login to the waste receiver registration portal using government gateway or gov.uk account
   so that I can report my waste movements.
 
-  @env_test
+  @defra-id-real
   Scenario: User should be able to login for the first time using a Government Gateway account
     Given a user has indicated that they are a permitted waste receiver
     And user proceeds to login using a Government Gateway account
@@ -13,7 +13,7 @@ Feature: Login as a user for waste receiving organisation
     Then they should be logged in successfully
     And the user should be redirected to "account-home" page
 
-  @env_test @accessibility
+  @accessibility @defra-id-real
   Scenario: User should be able to login for the first time using a Gov.uk account
     Given a user has indicated that they are a permitted waste receiver
     And user proceeds to login using a Gov.uk account
@@ -21,7 +21,7 @@ Feature: Login as a user for waste receiving organisation
     Then they should be logged in successfully
     And the user should be redirected to "account-home" page
 
-  @env_dev @issue=DWT-2283
+  @issue=DWT-2283 @defra-id-stub
   Scenario: User should be able to login [using defraId mock] and presented with different options to continue
     Given a user is registered in Defra Id mock service
     And a user is on are you a local authority page

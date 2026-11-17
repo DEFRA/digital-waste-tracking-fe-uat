@@ -7,10 +7,6 @@ class CookiesPage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get cookiesDescription() {
     return $('h1 + p.govuk-body')
   }

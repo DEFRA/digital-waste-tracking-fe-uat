@@ -1,0 +1,16 @@
+---
+description: JSDoc types for vanilla JavaScript. Go to definition opens the owning method.
+alwaysApply: true
+---
+
+# Vanilla JavaScript types
+
+The suite is JavaScript with JSDoc. Do not add `.ts` or `.d.ts` files, and do not use `declare module`.
+
+`jsconfig.json` typechecks the editor. `test/types/globals.js` names `CucumberWorld`. It is an ES module (`export {}`) so another file can link to it with `import('../types/globals.js').CucumberWorld`.
+
+Link a type that already exists. Do not copy its fields into a new `@typedef {Object}`. `test/types/globals.js` names `TestMemory`, `TestEnv`, and `TestConfig` at the same level. `CucumberWorld` is Cucumber's world with `testMemory`, `testEnv`, and `testConfig` on their own properties. Do not put `testEnv` or `testConfig` fields on `TestMemory`. `apis` is `ApiInstances`. Command-click on `testEnv.environment` opens the env getter. Command-click on `testConfig.defraIdServiceUrl` opens the support-file getter.
+
+Put `@returns` on the getter or method that owns the value. A method note is one or two lines, and only when the name does not say what it does.
+
+`CucumberWorld` is `@cucumber/cucumber`'s `World` with those three properties, so `this` also has `attach`, `log`, `link`, and `parameters`. A step reads `this.testEnv.environment`, `this.testConfig.defraIdServiceUrl`, and `this.testMemory.pageName`. A step callback names that type with `@this {import('../types/globals.js').CucumberWorld}`. A hook that receives the world uses the same type on its parameter. Step files still import `Given`, `When`, and `Then` from `@wdio/cucumber-framework`. `test/support/steps.js` exports those same three functions with the step `this` typed as `CucumberWorld`. Do not import it until a step file is switched. Do not add a custom world class, `setWorldConstructor`, or a wrapper around those functions.

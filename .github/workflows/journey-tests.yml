@@ -11,5 +11,9 @@ jobs:
   build:
     name: Run Journey Tests
     runs-on: ubuntu-latest
+    env:
+      HTTP_PROXY: http://localhost:8080
+      PROXY_MODE: zap
+      ZAP_API_KEY: local-zap-key
     steps:
       - uses: DEFRA/cdp-node-journey-test-suite-template/run-journey-tests@main

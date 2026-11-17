@@ -1,13 +1,8 @@
 import { Page } from 'page-objects/page'
-import { $ } from '@wdio/globals'
-import { browser } from '~/node_modules/@wdio/globals/build/index'
+import { $, browser } from '@wdio/globals'
 
 class ManageApiCodePage extends Page {
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get apiCodeList() {
     return $$('.govuk-summary-list > .govuk-summary-list__row')
   }

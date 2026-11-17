@@ -1,6 +1,5 @@
 import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
-import { config } from '../../../wdio.conf.js'
 
 class CreateClientCredentialsPage extends Page {
   get caption() {
@@ -70,9 +69,7 @@ class CreateClientCredentialsPage extends Page {
   }
 
   async enterClientName(clientName) {
-    await this.clientNameInput.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.clientNameInput.waitForDisplayed()
     await this.clientNameInput.clearValue()
     await this.clientNameInput.setValue(clientName)
   }

@@ -6,10 +6,6 @@ import ClientCredentialsPage from '../page-objects/waste-organisation-admin-tool
 import SoftwareProviderPage from '../page-objects/waste-organisation-admin-tool/software-provider.page.js'
 import AdminToolLoginPage from '../page-objects/waste-organisation-admin-tool/login.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
-import {
-  WasteMovementClientSyncAPI,
-  resolveWasteMovementClientSyncBaseUrl
-} from '../utils/apis/wasteMovementClientSyncApi.js'
 import { CLIENT_NAME_VALIDATION_FIXTURES } from '../data/software-provider-fixtures.js'
 import { getAdminUiCredentials } from '../utils/admin-tool-credentials.js'
 import {
@@ -23,28 +19,15 @@ import {
 
 const SOFTWARE_PROVIDERS_PATH = '/software-providers'
 
-function createClientSyncApi(context) {
-  const configBaseUrl = context.testConfig.wasteMovementClientSyncApiBaseUrl
-  if (!configBaseUrl) {
-    throw new Error(
-      'wasteMovementClientSyncApiBaseUrl is not set in the environment config file'
-    )
-  }
-
-  const baseUrl = resolveWasteMovementClientSyncBaseUrl(
-    configBaseUrl,
-    context.env
-  )
-  const httpProxy = context.env.ZAP_PROXY_API_URL ?? context.env.HTTP_PROXY
-  return new WasteMovementClientSyncAPI(baseUrl, httpProxy)
-}
-
-async function signInAndOpen(context, path, open, verify) {
-  const baseUrl = context.testConfig.adminUiBaseUrl
-  const { username, password } = getAdminUiCredentials(
-    context.testConfig,
-    context.env
-  )
+/**
+ * @param {import('../types/globals.js').CucumberWorld} world
+ * @param {string} path
+ * @param {(baseUrl: string) => Promise<unknown>} open
+ * @param {(baseUrl: string) => Promise<unknown>} verify
+ */
+async function signInAndOpen(world, path, open, verify) {
+  const baseUrl = world.testConfig.adminUiBaseUrl
+  const { username, password } = getAdminUiCredentials(world)
 
   await open(baseUrl)
   await AdminToolLoginPage.verifyLoginPageIsDisplayed(baseUrl, path)
@@ -60,64 +43,81 @@ function validationFixture(fixtureKey) {
   return fixture
 }
 
-async function fetchClients(context) {
-  const clientSyncApi = createClientSyncApi(context)
-  try {
-    context.clientsResponse = await clientSyncApi.getClients()
-  } finally {
-    await clientSyncApi.close()
-  }
+/**
+ * @param {import('../types/globals.js').CucumberWorld} world
+ */
+async function fetchClients(world) {
+  const response =
+    await world.testMemory.apis.wasteMovementClientSyncAPI.getClients()
+  world.testMemory.clientsResponse = response
 
-  if (context.clientsResponse.statusCode === 404) {
-    context.expectedClients = []
+  if (response.statusCode === 404) {
+    world.testMemory.expectedClients = []
     return
   }
 
-  expect(context.clientsResponse.statusCode).toBe(200)
-  expect(context.clientsResponse.json).toBeInstanceOf(Array)
-  context.expectedClients = context.clientsResponse.json
+  expect(response.statusCode).toBe(200)
+  expect(response.json).toBeInstanceOf(Array)
+  world.testMemory.expectedClients = response.json
 }
 
-Given('the user navigates to the software providers page', async function () {
-  this.pageName = 'software-providers-page'
-  await signInAndOpen(
-    this,
-    SOFTWARE_PROVIDERS_PATH,
-    (baseUrl) => SoftwareProvidersPage.open(baseUrl),
-    (baseUrl) => SoftwareProvidersPage.verifyPageIsDisplayed(baseUrl)
-  )
-})
+Given(
+  'the user navigates to the software providers page',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.pageName = 'software-providers-page'
+    await signInAndOpen(
+      this,
+      SOFTWARE_PROVIDERS_PATH,
+      (baseUrl) => SoftwareProvidersPage.open(baseUrl),
+      (baseUrl) => SoftwareProvidersPage.verifyPageIsDisplayed(baseUrl)
+    )
+  }
+)
 
-Given('the user is on the create client credentials page', async function () {
-  this.pageName = 'create-client-credentials-page'
-  const caption = createCredentialsCaption(this.env.ENVIRONMENT)
-  await signInAndOpen(
-    this,
-    '/software-providers/create',
-    (baseUrl) => CreateClientCredentialsPage.open(baseUrl),
-    (baseUrl) =>
-      CreateClientCredentialsPage.verifyPageIsDisplayed(baseUrl, caption)
-  )
-})
+Given(
+  'the user is on the create client credentials page',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.pageName = 'create-client-credentials-page'
+    const caption = createCredentialsCaption(this.testEnv.environment)
+    await signInAndOpen(
+      this,
+      '/software-providers/create',
+      (baseUrl) => CreateClientCredentialsPage.open(baseUrl),
+      (baseUrl) =>
+        CreateClientCredentialsPage.verifyPageIsDisplayed(baseUrl, caption)
+    )
+  }
+)
 
-When('the get-all-clients endpoint is called', async function () {
-  await fetchClients(this)
-})
+When(
+  'the get-all-clients endpoint is called',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await fetchClients(this)
+  }
+)
 
-When('the user selects create new credentials', async function () {
-  await SoftwareProvidersPage.clickCreateCredentials()
-})
+When(
+  'the user selects create new credentials',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await SoftwareProvidersPage.clickCreateCredentials()
+  }
+)
 
-When('the user selects cancel', async function () {
-  await CreateClientCredentialsPage.clickCancel()
-})
+When(
+  'the user selects cancel',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await CreateClientCredentialsPage.clickCancel()
+  }
+)
 
 When(
   'the user generates credentials for the {string} client name',
-  async function (fixtureKey) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    fixtureKey
+  ) {
     const fixture = validationFixture(fixtureKey)
-    this.enteredClientName = fixture.clientName
-    this.expectedClientNameError = fixture.error
+    this.testMemory.enteredClientName = fixture.clientName
+    this.testMemory.expectedClientNameError = fixture.error
     await CreateClientCredentialsPage.enterClientName(fixture.clientName)
     await CreateClientCredentialsPage.clickGenerateCredentials()
   }
@@ -125,137 +125,183 @@ When(
 
 When(
   'the user generates credentials for an existing client name in a different case',
-  async function () {
-    if (!this.expectedClients?.length) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    if (!this.testMemory.expectedClients?.length) {
       await fetchClients(this)
     }
-    const existing = this.expectedClients.find((client) => client.clientName)
-    if (!existing) {
+    const existing = this.testMemory.expectedClients.find(
+      (client) => client.clientName
+    )
+    if (!existing?.clientName) {
       throw new Error(
         'No existing client name is available for the duplicate check'
       )
     }
 
-    this.enteredClientName = differentCase(existing.clientName)
-    this.expectedClientNameError =
+    this.testMemory.enteredClientName = differentCase(existing.clientName)
+    this.testMemory.expectedClientNameError =
       'A client with this name already exists. Enter a different client name'
     await SoftwareProvidersPage.clickCreateCredentials()
-    await CreateClientCredentialsPage.enterClientName(this.enteredClientName)
+    await CreateClientCredentialsPage.enterClientName(
+      this.testMemory.enteredClientName
+    )
     await CreateClientCredentialsPage.clickGenerateCredentials()
   }
 )
 
-When('the user generates credentials for a new client', async function () {
-  this.createdClientName = uniqueClientName()
-  await CreateClientCredentialsPage.enterClientName(this.createdClientName)
-  await CreateClientCredentialsPage.clickGenerateCredentials()
-})
+When(
+  'the user generates credentials for a new client',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.createdClientName = uniqueClientName()
+    await CreateClientCredentialsPage.enterClientName(
+      this.testMemory.createdClientName
+    )
+    await CreateClientCredentialsPage.clickGenerateCredentials()
+  }
+)
 
 When(
   'the user generates credentials for a long wrapping client name',
-  async function () {
-    this.createdClientName = longWrappingClientName()
-    await CreateClientCredentialsPage.enterClientName(this.createdClientName)
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.createdClientName = longWrappingClientName()
+    await CreateClientCredentialsPage.enterClientName(
+      this.testMemory.createdClientName
+    )
     await CreateClientCredentialsPage.clickGenerateCredentials()
     await ClientCredentialsPage.clientId.waitForDisplayed()
-    this.createdClientId = await ClientCredentialsPage.clientIdText()
+    this.testMemory.createdClientId = await ClientCredentialsPage.clientIdText()
   }
 )
 
-When('the user copies the client credentials', async function () {
-  await ClientCredentialsPage.clickCopy()
-})
+When(
+  'the user copies the client credentials',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await ClientCredentialsPage.clickCopy()
+  }
+)
 
-When('the user closes the client credentials page', async function () {
-  this.credentialsUrl = await browser.getUrl()
-  await ClientCredentialsPage.clickClose()
-})
+When(
+  'the user closes the client credentials page',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    this.testMemory.credentialsUrl = await browser.getUrl()
+    await ClientCredentialsPage.clickClose()
+  }
+)
 
-When('the user sorts the {string} column', async function (columnName) {
-  await SoftwareProvidersPage.sortBy(columnName)
-})
+When(
+  'the user sorts the {string} column',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    columnName
+  ) {
+    await SoftwareProvidersPage.sortBy(columnName)
+  }
+)
 
-When('the user goes to the software providers page', async function () {
-  await SoftwareProvidersPage.open(this.testConfig.adminUiBaseUrl)
-})
+When(
+  'the user goes to the software providers page',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await SoftwareProvidersPage.open(this.testConfig.adminUiBaseUrl)
+  }
+)
 
-When('the user returns to the client credentials page', async function () {
-  await browser.url(this.credentialsUrl)
-})
+When(
+  'the user returns to the client credentials page',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await browser.url(this.testMemory.credentialsUrl)
+  }
+)
 
 Then(
   'the create client credentials page should be displayed',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await CreateClientCredentialsPage.verifyPageIsDisplayed(
       this.testConfig.adminUiBaseUrl,
-      createCredentialsCaption(this.env.ENVIRONMENT)
+      createCredentialsCaption(this.testEnv.environment)
     )
   }
 )
 
-Then('the software providers page should be displayed', async function () {
-  await SoftwareProvidersPage.verifyPageIsDisplayed(
-    this.testConfig.adminUiBaseUrl
-  )
-})
+Then(
+  'the software providers page should be displayed',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await SoftwareProvidersPage.verifyPageIsDisplayed(
+      this.testConfig.adminUiBaseUrl
+    )
+  }
+)
 
-Then('the software providers page should list every client', async function () {
-  await SoftwareProvidersPage.verifyCreateCredentialsButton()
-  await SoftwareProvidersPage.verifyClientsAreDisplayed(
-    this.expectedClients,
-    softwareProviderEnvironmentLabel(this.env.ENVIRONMENT)
-  )
-})
+Then(
+  'the software providers page should list every client',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await SoftwareProvidersPage.verifyCreateCredentialsButton()
+    await SoftwareProvidersPage.verifyClientsAreDisplayed(
+      this.testMemory.expectedClients,
+      softwareProviderEnvironmentLabel(this.testEnv.environment)
+    )
+  }
+)
 
 Then(
   'the {string} column should be sorted {string}',
-  async function (columnName, direction) {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function (
+    columnName,
+    direction
+  ) {
     await SoftwareProvidersPage.verifyColumnSort(columnName, direction)
   }
 )
 
-Then('the client name error should be displayed', async function () {
-  await CreateClientCredentialsPage.verifyClientNameError(
-    this.enteredClientName,
-    this.expectedClientNameError
-  )
-})
+Then(
+  'the client name error should be displayed',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await CreateClientCredentialsPage.verifyClientNameError(
+      this.testMemory.enteredClientName,
+      this.testMemory.expectedClientNameError
+    )
+  }
+)
 
-Then('the new client credentials should be displayed', async function () {
-  await ClientCredentialsPage.clientId.waitForDisplayed()
-  this.createdClientId = await ClientCredentialsPage.clientIdText()
-  await ClientCredentialsPage.verifyPageIsDisplayed({
-    clientName: this.createdClientName,
-    environmentLabel: credentialsPanelEnvironment(this.env.ENVIRONMENT),
-    apiUrl: this.testConfig.wasteMovementExternalApiBaseUrl
-  })
-  this.pageName = 'client-credentials-page'
-})
+Then(
+  'the new client credentials should be displayed',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await ClientCredentialsPage.clientId.waitForDisplayed()
+    this.testMemory.createdClientId = await ClientCredentialsPage.clientIdText()
+    await ClientCredentialsPage.verifyPageIsDisplayed({
+      clientName: this.testMemory.createdClientName,
+      environmentLabel: credentialsPanelEnvironment(this.testEnv.environment),
+      apiUrl: this.testConfig.wasteMovementExternalApiBaseUrl
+    })
+    this.testMemory.pageName = 'client-credentials-page'
+  }
+)
 
-Then('the client credentials should be copied', async function () {
-  await ClientCredentialsPage.verifyCredentialsWereCopied()
-})
+Then(
+  'the client credentials should be copied',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await ClientCredentialsPage.verifyCredentialsWereCopied()
+  }
+)
 
 Then(
   "the new client's software provider page should be displayed",
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await SoftwareProviderPage.verifyPageIsDisplayed(
       this.testConfig.adminUiBaseUrl,
-      this.createdClientId,
-      this.createdClientName
+      this.testMemory.createdClientId,
+      this.testMemory.createdClientName
     )
   }
 )
 
 Then(
   'the new client should be listed on the software providers page',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await SoftwareProvidersPage.verifyPageIsDisplayed(
       this.testConfig.adminUiBaseUrl
     )
     await SoftwareProvidersPage.verifyClientIsListed(
-      this.createdClientName,
-      this.createdClientId
+      this.testMemory.createdClientName,
+      this.testMemory.createdClientId
     )
     await expect($('[data-testid="client-secret"]')).not.toBeExisting()
   }
@@ -263,65 +309,71 @@ Then(
 
 Then(
   'the long client name should be fully visible and wrap onto a second line',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await SoftwareProvidersPage.verifyPageIsDisplayed(
       this.testConfig.adminUiBaseUrl
     )
     await SoftwareProvidersPage.verifyClientIsListed(
-      this.createdClientName,
-      this.createdClientId
+      this.testMemory.createdClientName,
+      this.testMemory.createdClientId
     )
     await SoftwareProvidersPage.verifyLongClientNameWraps(
-      this.createdClientName
+      this.testMemory.createdClientName
     )
   }
 )
 
 Then(
   'the software providers page should not scroll sideways',
-  async function () {
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await SoftwareProvidersPage.verifyPageDoesNotScrollHorizontally()
   }
 )
 
 Then(
   'the software providers page should generate accessibility tests',
-  async function () {
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await analyseAccessibility(
+      this.testMemory.tags,
+      this.testMemory.axeBuilder,
+      this.testMemory.pageName
+    )
   }
 )
 
 Then(
   'the create client credentials page should generate accessibility tests',
-  async function () {
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await analyseAccessibility(
+      this.testMemory.tags,
+      this.testMemory.axeBuilder,
+      this.testMemory.pageName
+    )
   }
 )
 
 Then(
   'the client credentials page should generate accessibility tests',
-  async function () {
-    await analyseAccessibility(this.tags, this.axeBuilder, this.pageName)
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await analyseAccessibility(
+      this.testMemory.tags,
+      this.testMemory.axeBuilder,
+      this.testMemory.pageName
+    )
   }
 )
 
-After(async function () {
-  if (!this.createdClientId) {
-    return
-  }
+After(
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    const clientId = this.testMemory?.createdClientId
+    const clientSyncApi = this.testMemory?.apis?.wasteMovementClientSyncAPI
+    if (!clientId || !clientSyncApi) return
 
-  const clientSyncApi = createClientSyncApi(this)
-  try {
-    const response = await clientSyncApi.deleteClient(
-      this.createdClientId,
-      true
-    )
+    const response = await clientSyncApi.deleteClient(clientId, true)
     if (![200, 204].includes(response.statusCode)) {
       throw new Error(
-        `Deleting client ${this.createdClientId} returned ${response.statusCode}`
+        `Deleting client ${clientId} returned ${response.statusCode}`
       )
     }
-  } finally {
-    await clientSyncApi.close()
   }
-})
+)

@@ -1,14 +1,9 @@
 import { Page } from 'page-objects/page'
-import { config } from '../../wdio.conf.js'
 import { $ } from '@wdio/globals'
 import logger from '@wdio/logger'
 
 const log = logger('defra-id-gov-uk-page')
 class DefraIdGovUKPage extends Page {
-  get heading() {
-    return $('h1')
-  }
-
   get signInButton() {
     return $('#sign-in-button')
   }
@@ -52,13 +47,9 @@ class DefraIdGovUKPage extends Page {
       `${process.env.WDIO_WORKER_ID} Logging in via Gov.uk with user: ${email}`
     )
     // Verify fields exist and are ready
-    await this.signInButton.waitForExist({
-      timeout: config.waitforTimeout
-    })
+    await this.signInButton.waitForExist()
 
-    await this.signInButton.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.signInButton.waitForDisplayed()
     await this.click(this.signInButton)
 
     await expect(browser).toHaveUrl(this.baseUrl + '/enter-email')
@@ -67,9 +58,7 @@ class DefraIdGovUKPage extends Page {
       'Enter your email address to sign in to your GOV.UK One Login'
     )
 
-    await this.emailInput.waitForExist({
-      timeout: config.waitforTimeout
-    })
+    await this.emailInput.waitForExist()
     await this.enterText(this.emailInput, email)
     await this.clickJavascriptByPass(this.continueButton)
 
@@ -77,9 +66,7 @@ class DefraIdGovUKPage extends Page {
     await expect(this.heading).toBeDisplayed()
     await expect(this.heading).toHaveText('Enter your password')
 
-    await this.passwordInput.waitForExist({
-      timeout: config.waitforTimeout
-    })
+    await this.passwordInput.waitForExist()
     await this.enterText(this.passwordInput, password)
     await this.clickJavascriptByPass(this.continueButton)
   }

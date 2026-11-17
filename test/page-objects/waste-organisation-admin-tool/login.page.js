@@ -1,6 +1,5 @@
 import { $, browser } from '@wdio/globals'
 import { Page } from '../page.js'
-import { config } from '../../../wdio.conf.js'
 
 class AdminToolLoginPage extends Page {
   get heading() {
@@ -57,17 +56,13 @@ class AdminToolLoginPage extends Page {
   }
 
   async enterUsername(username) {
-    await this.usernameInput.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.usernameInput.waitForDisplayed()
     await this.usernameInput.clearValue()
     await this.usernameInput.setValue(username)
   }
 
   async enterPassword(password) {
-    await this.passwordInput.waitForDisplayed({
-      timeout: config.waitforTimeout
-    })
+    await this.passwordInput.waitForDisplayed()
     await this.passwordInput.clearValue()
     await this.passwordInput.setValue(password)
   }
@@ -113,7 +108,6 @@ class AdminToolLoginPage extends Page {
         return !currentUrl.includes('/login')
       },
       {
-        timeout: config.waitforTimeout,
         timeoutMsg: 'User was not redirected away from the login page'
       }
     )
@@ -137,7 +131,7 @@ class AdminToolLoginPage extends Page {
     expectInlineErrors = false,
     expectedInlineError
   }) {
-    await this.errorSummary.waitForDisplayed({ timeout: config.waitforTimeout })
+    await this.errorSummary.waitForDisplayed()
     await expect(this.errorSummary).toHaveText(
       expect.stringContaining('There is a problem')
     )

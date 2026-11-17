@@ -7,10 +7,6 @@ class TermsPage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get declarationIntro() {
     return $('p.govuk-body')
   }

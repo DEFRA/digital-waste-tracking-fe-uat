@@ -4,7 +4,7 @@ As a waste receiver using the service
 I need to be able to disable an API code for my organisation
 So that I can prevent that API code from being used to access the DWT service.
 
-  @env_dev @accessibility
+  @accessibility @defra-id-stub
   Scenario: Waste receiver should be able to disable an API code for their organisation
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -17,7 +17,7 @@ So that I can prevent that API code from being used to access the DWT service.
     Then the API code should be disabled
     And user should not be able to submit movements using disabled API Code
 
-  @env_dev @issue=DR-60
+  @issue=DR-60 @defra-id-stub
   Scenario: Local authority should be able to disable an API code for their organisation
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account as a local authority
     And the user navigates to report receipt of waste
@@ -30,7 +30,7 @@ So that I can prevent that API code from being used to access the DWT service.
     Then the API code should be disabled
     And user should not be able to submit movements using disabled API Code
 
-  @env_dev
+  @defra-id-stub
   Scenario: Waste receiver should be able to select "No" on disable API code confirmation page
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -43,7 +43,7 @@ So that I can prevent that API code from being used to access the DWT service.
     Then the API code should not be disabled
     And user should be able to use the current API code to submit waste movements
    
-  @env_dev @accessibility
+  @accessibility @defra-id-stub
   Scenario: User should be able to create a new API code when all existing API codes are disabled
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste

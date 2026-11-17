@@ -1,7 +1,5 @@
 import { Page } from 'page-objects/page'
-import { $ } from '@wdio/globals'
-import { browser } from '~/node_modules/@wdio/globals/build/index'
-import { config } from '../../wdio.conf.js'
+import { $, browser } from '@wdio/globals'
 
 class MyAccountHomePage extends Page {
   // methods
@@ -10,10 +8,6 @@ class MyAccountHomePage extends Page {
   }
 
   // locators
-  get heading() {
-    return $('h1')
-  }
-
   get organisationName() {
     return $('p[data-testid="app-heading-organisation-name"]')
   }
@@ -54,7 +48,7 @@ class MyAccountHomePage extends Page {
 
   async isUserOnMyAccountHomePage() {
     const currentUrl = await browser.getUrl()
-    return currentUrl.includes(config.baseUrl + '/account')
+    return currentUrl.includes(browser.options.baseUrl + '/account')
   }
 
   async verifyUserIsOnMyAccountHomePage(organisationName = undefined) {
