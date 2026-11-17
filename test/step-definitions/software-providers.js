@@ -4,10 +4,8 @@ import SoftwareProvidersPage from '../page-objects/waste-organisation-admin-tool
 import CreateClientCredentialsPage from '../page-objects/waste-organisation-admin-tool/create-client-credentials.page.js'
 import ClientCredentialsPage from '../page-objects/waste-organisation-admin-tool/client-credentials.page.js'
 import SoftwareProviderPage from '../page-objects/waste-organisation-admin-tool/software-provider.page.js'
-import AdminToolLoginPage from '../page-objects/waste-organisation-admin-tool/login.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import { CLIENT_NAME_VALIDATION_FIXTURES } from '../data/software-provider-fixtures.js'
-import { getAdminUiCredentials } from '../utils/admin-tool-credentials.js'
 import {
   createCredentialsCaption,
   credentialsPanelEnvironment,
@@ -16,22 +14,20 @@ import {
   softwareProviderEnvironmentLabel,
   uniqueClientName
 } from '../utils/software-provider-environment.js'
-
-const SOFTWARE_PROVIDERS_PATH = '/software-providers'
+import { signInIfAsked } from '../utils/sign-in-to-admin-tool.js'
 
 /**
+ * Opening a page signs the user in with Entra ID first (see the login page)
+ *
  * @param {import('../types/globals.js').CucumberWorld} world
- * @param {string} path
  * @param {(baseUrl: string) => Promise<unknown>} open
  * @param {(baseUrl: string) => Promise<unknown>} verify
  */
-async function signInAndOpen(world, path, open, verify) {
+async function signInAndOpen(world, open, verify) {
   const baseUrl = world.testConfig.adminUiBaseUrl
-  const { username, password } = getAdminUiCredentials(world)
 
   await open(baseUrl)
-  await AdminToolLoginPage.verifyLoginPageIsDisplayed(baseUrl, path)
-  await AdminToolLoginPage.login(username, password)
+  await signInIfAsked(world)
   await verify(baseUrl)
 }
 
@@ -67,7 +63,6 @@ Given(
     this.testMemory.pageName = 'software-providers-page'
     await signInAndOpen(
       this,
-      SOFTWARE_PROVIDERS_PATH,
       (baseUrl) => SoftwareProvidersPage.open(baseUrl),
       (baseUrl) => SoftwareProvidersPage.verifyPageIsDisplayed(baseUrl)
     )
@@ -81,7 +76,6 @@ Given(
     const caption = createCredentialsCaption(this.testEnv.environment)
     await signInAndOpen(
       this,
-      '/software-providers/create',
       (baseUrl) => CreateClientCredentialsPage.open(baseUrl),
       (baseUrl) =>
         CreateClientCredentialsPage.verifyPageIsDisplayed(baseUrl, caption)

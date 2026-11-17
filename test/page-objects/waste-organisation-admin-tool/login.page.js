@@ -1,11 +1,13 @@
 import { $, browser } from '@wdio/globals'
 import { Page } from '../page.js'
 
+/**
+ * Signing in to the admin tool, with Entra ID. Locally, floci-az stands in for
+ * Entra ID and signs its dev user in without a form, so opening a page signs
+ * the user in and lands on it. Until DWTSPI-531, the admin tool has a login
+ * form instead (see signInIfAsked)
+ */
 class AdminToolLoginPage extends Page {
-  get heading() {
-    return $('[data-testid="app-heading-title"]')
-  }
-
   get usernameInput() {
     return $('#username')
   }
@@ -14,148 +16,35 @@ class AdminToolLoginPage extends Page {
     return $('#password')
   }
 
-  get showPasswordButton() {
-    return $('button.govuk-password-input__toggle')
-  }
-
   get signInButton() {
     return $('[data-testid="sign-in-button"]')
-  }
-
-  get errorSummary() {
-    return $('[data-testid="error-summary"]')
-  }
-
-  get usernameInlineError() {
-    return $('#username-error')
-  }
-
-  get passwordInlineError() {
-    return $('#password-error')
   }
 
   open(baseUrl) {
     return browser.url(baseUrl)
   }
 
-  async verifyLoginPageIsDisplayed(baseUrl, redirectPath) {
-    await this.waitForPageToLoad()
-    await expect(browser).toHaveUrl(expect.stringContaining(`${baseUrl}/login`))
-    if (redirectPath) {
-      await expect(browser).toHaveUrl(
-        expect.stringContaining(
-          `redirectTo=${encodeURIComponent(redirectPath)}`
-        )
-      )
-    }
-    await this.verifyPageTitle()
-    await expect(this.heading).toHaveText('User login')
-    await expect(this.usernameInput).toBeDisplayed()
-    await expect(this.passwordInput).toBeDisplayed()
-    await expect(this.signInButton).toHaveText('Sign in')
-  }
-
-  async enterUsername(username) {
-    await this.usernameInput.waitForDisplayed()
-    await this.usernameInput.clearValue()
-    await this.usernameInput.setValue(username)
-  }
-
-  async enterPassword(password) {
-    await this.passwordInput.waitForDisplayed()
-    await this.passwordInput.clearValue()
-    await this.passwordInput.setValue(password)
-  }
-
-  async clickSignIn() {
-    await this.click(this.signInButton)
+  isAskingForPassword() {
+    return this.passwordInput.isExisting()
   }
 
   async login(username, password) {
-    await this.enterUsername(username)
-    await this.enterPassword(password)
-    await this.clickSignIn()
+    await this.usernameInput.setValue(username)
+    await this.passwordInput.setValue(password)
+    await this.click(this.signInButton)
   }
 
-  async clickPasswordVisibilityToggle() {
-    await this.click(this.showPasswordButton)
-  }
-
-  async verifyPasswordIsHidden(expectedPassword) {
-    await expect(this.passwordInput).toHaveAttribute('type', 'password')
-    await expect(this.passwordInput).toHaveValue(expectedPassword)
-    await expect(this.showPasswordButton).toHaveText('Show')
-    await expect(this.showPasswordButton).toHaveAttribute(
-      'aria-label',
-      'Show password'
-    )
-  }
-
-  async verifyPasswordIsVisible(expectedPassword) {
-    await expect(this.passwordInput).toHaveAttribute('type', 'text')
-    await expect(this.passwordInput).toHaveValue(expectedPassword)
-    await expect(this.showPasswordButton).toHaveText('Hide')
-    await expect(this.showPasswordButton).toHaveAttribute(
-      'aria-label',
-      'Hide password'
-    )
-  }
-
-  async verifyUserIsLoggedIn(baseUrl) {
+  async verifyUserIsSignedIn(baseUrl) {
     await browser.waitUntil(
-      async () => {
-        const currentUrl = await browser.getUrl()
-        return !currentUrl.includes('/login')
-      },
+      async () => (await browser.getUrl()).startsWith(baseUrl),
       {
-        timeoutMsg: 'User was not redirected away from the login page'
+        timeoutMsg: 'User was not sent back to the admin tool after signing in'
       }
     )
-
     await this.waitForPageToLoad()
 
     const currentUrl = (await browser.getUrl()).replace(/\/$/, '')
-    const expectedUrl = baseUrl.replace(/\/$/, '')
-    expect(currentUrl).toBe(expectedUrl)
-    await expect(browser).not.toHaveTitle('User login - DWT admin portal')
-  }
-
-  async verifyStillOnLoginPage(baseUrl) {
-    await this.waitForPageToLoad()
-    await expect(browser).toHaveUrl(expect.stringContaining(`${baseUrl}/login`))
-    await expect(this.heading).toHaveText('User login')
-  }
-
-  async verifyLoginErrors({
-    expectedSummaryErrors,
-    expectInlineErrors = false,
-    expectedInlineError
-  }) {
-    await this.errorSummary.waitForDisplayed()
-    await expect(this.errorSummary).toHaveText(
-      expect.stringContaining('There is a problem')
-    )
-
-    for (const message of expectedSummaryErrors) {
-      await expect(this.errorSummary).toHaveText(
-        expect.stringContaining(message)
-      )
-    }
-
-    if (expectInlineErrors) {
-      await expect(this.usernameInlineError).toBeDisplayed()
-      await expect(this.usernameInlineError).toHaveText(
-        expect.stringContaining(expectedInlineError)
-      )
-      await expect(this.passwordInlineError).toBeDisplayed()
-      await expect(this.passwordInlineError).toHaveText(
-        expect.stringContaining(expectedInlineError)
-      )
-      return
-    }
-
-    await expect(this.usernameInlineError).not.toBeExisting()
-    await expect(this.passwordInlineError).not.toBeExisting()
+    expect(currentUrl).toBe(baseUrl.replace(/\/$/, ''))
   }
 }
 

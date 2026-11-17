@@ -1,6 +1,5 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
 import WasteOrganisationsReportPage from '../page-objects/waste-organisation-admin-tool/waste-organisations-report.page.js'
-import AdminToolLoginPage from '../page-objects/waste-organisation-admin-tool/login.page.js'
 import { analyseAccessibility } from '../utils/accessibility-checking.js'
 import {
   DATE_RANGE_FIXTURES,
@@ -17,9 +16,7 @@ import {
   assertWasteOrganisationsCsvMatches,
   parseWasteOrganisationsCsv
 } from '../utils/csv-parser.js'
-import { getAdminUiCredentials } from '../utils/admin-tool-credentials.js'
-
-const WASTE_ORGANISATIONS_REPORT_PATH = '/reporting/waste-organisations'
+import { signInIfAsked } from '../utils/sign-in-to-admin-tool.js'
 
 function getDateRangeFixture(fixtureKey) {
   const fixture = DATE_RANGE_FIXTURES[fixtureKey]
@@ -51,15 +48,11 @@ Given(
   'the user navigates to the waste organisations report page',
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     const baseUrl = this.testConfig.adminUiBaseUrl
-    const { username, password } = getAdminUiCredentials(this)
 
+    // Signs in with Entra ID first (see the login page)
     await WasteOrganisationsReportPage.open(baseUrl)
-    await AdminToolLoginPage.verifyLoginPageIsDisplayed(
-      baseUrl,
-      WASTE_ORGANISATIONS_REPORT_PATH
-    )
+    await signInIfAsked(this)
     this.testMemory.pageName = 'waste-organisations-report-page'
-    await AdminToolLoginPage.login(username, password)
     await WasteOrganisationsReportPage.verifyPageIsDisplayed(baseUrl)
   }
 )
