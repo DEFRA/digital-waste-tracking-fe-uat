@@ -507,3 +507,27 @@ Padmaja, 2026-11-17 11:57 UTC, on 88652c25baa0
 `test:grid:ci:waste-organisation-backend` sets `CUCUMBER_EXTRA_TAGS` to `@smoke and @defra-id-stub` and specs `test/features/waste-organisation-frontend/**/*.feature` and `test/features/waste-organisation-backend/**/*.feature`. The grid default spec list no longer applies to that script, so admin UI stays out. Nested frontend features under `compatability/` and `security/` are included. `test:grid:ci:waste-organisation-frontend` is unchanged: the same tags and only the top-level files in `test/features/waste-organisation-frontend/`.
 
 Covers: `.cursor/rules/test-framework.mdc`.
+
+## 74. Zap-mode browser proxy may differ from HTTP_PROXY
+
+Lewis Magri, 2026-11-17 20:39 UTC
+
+One `HTTP_PROXY` cannot serve both a host-network Node runner and Chrome inside compose selenium. `TestEnv.browserProxy` reads `ZAP_PROXY_URL` only when `PROXY_MODE` is `zap`, otherwise `HTTP_PROXY`. `browserProxyCapability` uses that value. CDP still gives Chrome `HTTP_PROXY` only. Local `env.sh` sets `HTTP_PROXY=http://127.0.0.1:8080`, `ZAP_PROXY_URL=http://zap:8080`, and `NO_PROXY=127.0.0.1,localhost` so WebDriver to the grid stays direct.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`, `.cursor/rules/local-npm.mdc`, `changes/done/test-framework.md`.
+
+## 75. ZapApi uses zapBaseUrl through HTTP_PROXY
+
+Lewis Magri, 2026-11-17 20:47 UTC
+
+`local.zap.config.json` has `zapBaseUrl` (`http://zap:8080`). `TestConfig.zapBaseUrl` reads it. `ZapApi`, `openZapSession`, `publishZapReports`, and `ApiFactory` construct `new ZapApi(zapBaseUrl, HTTP_PROXY, apiKey)` so REST calls go through the proxy to the compose hostname. `publishZapReports` takes `testConfig`.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`, `changes/done/test-framework.md`.
+
+## 76. Chrome uses zapBaseUrl; drop ZAP_PROXY_URL
+
+Lewis Magri, 2026-11-17 20:50 UTC
+
+`browserProxyCapability` takes `testConfig` and in zap mode uses `zapBaseUrl` for Chrome. Removed `TestEnv.browserProxy` and `ZAP_PROXY_URL`. Local `env.sh` keeps `HTTP_PROXY` and `NO_PROXY` only for Node reachability.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`, `.cursor/rules/local-npm.mdc`, `changes/done/test-framework.md`.

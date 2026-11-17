@@ -73,7 +73,7 @@ export const config = {
         {
           maxInstances,
           browserName: 'chrome',
-          ...browserProxyCapability(testEnv),
+          ...browserProxyCapability(testEnv, testConfig),
           'goog:chromeOptions': {
             prefs: clipboardPrefs
           }
@@ -83,7 +83,7 @@ export const config = {
         {
           maxInstances,
           browserName: 'chrome',
-          ...browserProxyCapability(testEnv),
+          ...browserProxyCapability(testEnv, testConfig),
           'goog:chromeOptions': chromeOptions
         }
       ],
@@ -131,7 +131,7 @@ export const config = {
     await openZapSession(testEnv, testConfig)
   },
   onComplete: async function () {
-    await publishZapReports(testEnv)
+    await publishZapReports(testEnv, testConfig)
     return openAllureReport()
   }
 }

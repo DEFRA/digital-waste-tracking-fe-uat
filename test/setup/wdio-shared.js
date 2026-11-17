@@ -108,15 +108,22 @@ export function reporters({
 }
 
 /**
- * Chrome proxy when this mode sends the browser through HTTP_PROXY.
+ * Chrome proxy when this mode sends the browser through a proxy.
  * cdp and zap do. off does not. Chrome wants host:port.
+ * zap uses `testConfig.zapBaseUrl` (compose hostname); cdp uses `HTTP_PROXY`.
  * The proxy certificate is trusted, the same as a proxied API call.
  * @param {import('./test-env.js').TestEnv} testEnv
+ * @param {import('./test-config.js').TestConfig} [testConfig]
  * @returns {object}
  */
-export function browserProxyCapability(testEnv) {
-  if (testEnv.proxyMode === 'off' || !testEnv.httpProxy) return {}
-  const proxy = new URL(testEnv.httpProxy)
+export function browserProxyCapability(testEnv, testConfig) {
+  if (testEnv.proxyMode === 'off') return {}
+  const proxyUrl =
+    testEnv.proxyMode === 'zap'
+      ? testConfig?.zapBaseUrl || testEnv.httpProxy
+      : testEnv.httpProxy
+  if (!proxyUrl) return {}
+  const proxy = new URL(proxyUrl)
   const host = proxy.port ? `${proxy.hostname}:${proxy.port}` : proxy.hostname
   return {
     acceptInsecureCerts: true,

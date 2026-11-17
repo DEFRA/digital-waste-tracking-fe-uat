@@ -120,6 +120,14 @@ export class TestConfig {
     return this.#string('wasteOrganisationFrontendBaseUrl')
   }
 
+  /**
+   * ZAP REST API base URL as seen through the proxy (compose hostname).
+   * @returns {string}
+   */
+  get zapBaseUrl() {
+    return this.#string('zapBaseUrl')
+  }
+
   /** @returns {string[]} */
   get zapProxyExcludeRegexes() {
     return this.#list('zapProxyExcludeRegexes')

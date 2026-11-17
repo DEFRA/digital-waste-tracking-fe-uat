@@ -5,9 +5,13 @@ alwaysApply: true
 
 # Proxy, sessions, and reports
 
-`HTTP_PROXY` is the one URL. `PROXY_MODE` is `off`, `cdp`, or `zap`. Any other set value throws. Unset means `cdp` when `HTTP_PROXY` is set, and `off` when it is not. CDP sets `HTTP_PROXY` and does not set `PROXY_MODE`. `off` ignores `HTTP_PROXY`. `ZAP_API_KEY` authenticates the ZAP API. Drop `ZAP_PROXY_URL` and `ZAP_PROXY_API_URL`.
+`HTTP_PROXY` is the Node proxy URL. `PROXY_MODE` is `off`, `cdp`, or `zap`. Any other set value throws. Unset means `cdp` when `HTTP_PROXY` is set, and `off` when it is not. CDP sets `HTTP_PROXY` and does not set `PROXY_MODE`. `off` ignores `HTTP_PROXY`. `ZAP_API_KEY` authenticates the ZAP API when the daemon requires a key. Do not bring back `ZAP_PROXY_URL` or `ZAP_PROXY_API_URL`.
 
-`zap` uses that URL as ZAP. Compose starts ZAP on port 8080. The journey-test workflow sets `HTTP_PROXY`, `PROXY_MODE=zap`, and `ZAP_API_KEY`. A local scan uses the same three values. The grid and local Chrome `onPrepare` open a ZAP session. Those browsers send page traffic through the proxy. API calls to the services under test go through it too. The ZAP REST client uses `HTTP_PROXY` as ZAP's address and is not sent back through the proxy. `npm run test:zap` runs `AnalyseZapReport.feature` on the grid with `CUCUMBER_EXTRA_TAGS='@zap'` and attaches those saved files to Allure. It does not set `ENVIRONMENT`. GitHub CI is that run, and a laptop runs the same command.
+`zap` uses `HTTP_PROXY` for service API clients and as the `ProxyAgent` for ZapApi. `TestConfig.zapBaseUrl` from the `.zap` support file is the compose hostname for ZAP (e.g. `http://zap:8080`): ZapApi uses it as its base URL (requests go through `HTTP_PROXY`), and Chrome uses it as the browser proxy. CDP always gives Chrome `HTTP_PROXY` (platform egress / squid) and never reads `zapBaseUrl`.
+
+Local grid + compose ZAP with a host-network runner typically sets `HTTP_PROXY=http://127.0.0.1:8080`, `NO_PROXY=127.0.0.1,localhost` (so WebDriver to the grid stays direct), and `GRID_HOST=127.0.0.1`. `local.zap.config.json` holds service URLs and `zapBaseUrl` as compose hostnames.
+
+A local or CI scan sets `HTTP_PROXY`, `PROXY_MODE=zap`, and optionally `ZAP_API_KEY`. The grid and local Chrome `onPrepare` open a ZAP session. Those browsers send page traffic through the proxy. API calls to the services under test go through it too. `onComplete` writes `zap-report/`. `npm run test:zap` runs `AnalyseZapReport.feature` on the grid with `CUCUMBER_EXTRA_TAGS='@zap'` and attaches those saved files to Allure. It does not set `ENVIRONMENT`.
 
 `cdp` has no ZAP. Traffic that leaves the platform uses the proxy: Cognito, GOV.UK Pay, and the browser started by the grid or local Chrome. Calls to services inside CDP stay direct.
 

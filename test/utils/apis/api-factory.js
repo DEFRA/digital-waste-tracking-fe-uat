@@ -86,7 +86,11 @@ export class ApiFactory {
     }
 
     if (mode === 'zap') {
-      clients.zapAPI = new ZapApi(httpProxy, null, testEnv.zapApiKey)
+      clients.zapAPI = new ZapApi(
+        testConfig.zapBaseUrl,
+        httpProxy,
+        testEnv.zapApiKey
+      )
     }
 
     return {

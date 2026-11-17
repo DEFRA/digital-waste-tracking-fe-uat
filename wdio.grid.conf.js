@@ -61,7 +61,7 @@ export const config = {
   capabilities: [
     {
       maxInstances,
-      ...browserProxyCapability(testEnv),
+      ...browserProxyCapability(testEnv, testConfig),
       browserName: 'chrome',
       'se:downloadsEnabled': true,
       timeouts: sidecarPageTimeouts,
@@ -116,6 +116,6 @@ export const config = {
   onComplete: async function (_exitCode, _config, _capabilities, results) {
     generateAccessibilityReportIndex()
     writeFailedFile(results)
-    await publishZapReports(testEnv)
+    await publishZapReports(testEnv, testConfig)
   }
 }
