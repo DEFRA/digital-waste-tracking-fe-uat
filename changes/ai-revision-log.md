@@ -531,3 +531,11 @@ Lewis Magri, 2026-11-17 20:50 UTC
 `browserProxyCapability` takes `testConfig` and in zap mode uses `zapBaseUrl` for Chrome. Removed `TestEnv.browserProxy` and `ZAP_PROXY_URL`. Local `env.sh` keeps `HTTP_PROXY` and `NO_PROXY` only for Node reachability.
 
 Covers: `.cursor/rules/proxy-sessions-report.mdc`, `.cursor/rules/local-npm.mdc`, `changes/done/test-framework.md`.
+
+## 77. GRID_HOST must be compose-visible when HTTP_PROXY is set
+
+Lewis Magri, 2026-11-17 21:14 UTC
+
+WebdriverIO sends hub requests through `HTTP_PROXY`. With ZAP, `GRID_HOST=127.0.0.1` fails because ZAP cannot reach host loopback; use `selenium-chrome` (or another compose DNS name). Dropped the `NO_PROXY` workaround from the local ZAP recipe. Rules and `env.sh` comments match that topology.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`, `.cursor/rules/local-npm.mdc`, `changes/done/test-framework.md`.
