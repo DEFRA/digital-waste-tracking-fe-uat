@@ -17,6 +17,8 @@
     "test": "npm run clean && npm run test:${PROFILE}",
     "test:grid:regression:defra-id-stub": "npm run clean && CUCUMBER_EXTRA_TAGS='not @smoke and @defra-id-stub' wdio run wdio.grid.conf.js",
     "test:grid:regression:defra-id-real": "npm run clean && CUCUMBER_EXTRA_TAGS='not @smoke and @defra-id-real' wdio run wdio.grid.conf.js",
+    "test:grid:ci:waste-organisation-backend": "npm run clean && CUCUMBER_EXTRA_TAGS='@smoke and @defra-id-stub' wdio run wdio.grid.conf.js --spec ./test/features/waste-organisation-frontend/**/*.feature --spec ./test/features/waste-organisation-backend/**/*.feature",
+    "test:grid:ci:waste-organisation-frontend": "npm run clean && CUCUMBER_EXTRA_TAGS='@smoke and @defra-id-stub' wdio run wdio.grid.conf.js --spec ./test/features/waste-organisation-frontend/**/*.feature",
     "test:grid:smoke:defra-id-stub": "npm run clean && CUCUMBER_EXTRA_TAGS='@smoke and @defra-id-stub' wdio run wdio.grid.conf.js",
     "test:grid:smoke:defra-id-real": "npm run clean && CUCUMBER_EXTRA_TAGS='@smoke and @defra-id-real' wdio run wdio.grid.conf.js",
     "test:grid:debug": "npm run clean && DEBUG=true wdio run wdio.grid.conf.js",
