@@ -35,16 +35,14 @@ class AdminToolLoginPage extends Page {
   }
 
   async verifyUserIsSignedIn(baseUrl) {
+    const home = baseUrl.replace(/\/$/, '')
     await browser.waitUntil(
-      async () => (await browser.getUrl()).startsWith(baseUrl),
+      async () => (await browser.getUrl()).replace(/\/$/, '') === home,
       {
-        timeoutMsg: 'User was not sent back to the admin tool after signing in'
+        timeoutMsg: `User was not signed in and sent to ${home}`
       }
     )
     await this.waitForPageToLoad()
-
-    const currentUrl = (await browser.getUrl()).replace(/\/$/, '')
-    expect(currentUrl).toBe(baseUrl.replace(/\/$/, ''))
   }
 }
 
