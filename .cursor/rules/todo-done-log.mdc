@@ -7,12 +7,12 @@ alwaysApply: true
 
 `changes/` holds what is changing and why. `changes/todo/` is work that is not done. `changes/done/` is work that is finished. `changes/ai-revision-log.md` is why the suite changed. Read these before changing how the suite runs.
 
-`changes/done/test-framework-refactor-plan.md` is the finished refactor spec. Do not edit it. `changes/done/test-framework.md` is the suite that resulted. The Cursor rules state the current configuration.
+`changes/done/test-framework-refactor-plan.md` is the finished refactor spec. `changes/done/test-framework.md` is the suite that resulted. The Cursor rules state the current configuration. Do not edit files in `changes/done/`.
 
 When a task is finished, move its note from `changes/todo/` to `changes/done/`. A new task starts as a note in `changes/todo/`. Opening a todo note alone does not need a revision-log section.
 
 Always append the next numbered section to `changes/ai-revision-log.md` when a change alters how the suite runs or is configured. That includes drivers, hooks, timeouts, tags, scripts, proxy mode, support files, page-object contracts with the runner, world/config getters, and dependency pins the rules name. Do this even when no Cursor rule already stated the old decision. Leave older sections as they were. Name `git config --global user.name`, the UTC time from `date -u`, and the commit the change was made on top of (`git rev-parse --short=12 HEAD`). Then say what changed, concretely enough to unpick, and which rule or note it covers. For example: `Lewis Magri, 2026-11-03 14:16 UTC, on cd12b0e9dd4b`.
 
-When that change settles a lasting decision, update the Cursor rule that should state it (add the line if the rule never named the old behaviour). Update `changes/done/test-framework.md` when the finished suite account should match.
+When that change settles a lasting decision, update the Cursor rule that should state it (add the line if the rule never named the old behaviour). Do not edit `changes/done/` to match.
 
 A code comment is not the record. The rule is. Do not skip the log because the change looks small, cosmetic, or only cleanup.

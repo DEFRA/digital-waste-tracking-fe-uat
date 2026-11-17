@@ -27,6 +27,8 @@ The runners set the suite. Local Chrome, BrowserStack, and the grid each have:
 
 `test:browserstack:compatibility` is the only compatibility runner, split into `@compatibility and @defra-id-stub` and `@compatibility and @defra-id-real`. BrowserStack smoke, compatibility, and admin-ui use every capability. Ext-test stays on the first capability, Windows Chrome. The other BrowserStack runners use that first capability. The list is the runner. It is not a check that the extra tags are exactly `@smoke`. There is no unfiltered runner. `test:zap` is the grid with `@zap` and `AnalyseZapReport.feature`.
 
+`test:grid:ci:waste-organisation-backend` is the grid with `@smoke and @defra-id-stub` and specs `test/features/waste-organisation-frontend/` and `test/features/waste-organisation-backend/`. `test:grid:ci:waste-organisation-frontend` is the same tags and specs only the top-level files in `test/features/waste-organisation-frontend/`.
+
 `DEBUG=true` adds `--inspect` and debug logs. Local Chrome also drops its sandbox arguments.
 
 `entrypoint.sh` runs `npm test`, publishes the report, and exits 1 when `FAILED` exists. Leave scenarios, step definitions, and page objects as they are. Do not rename `commom-step-defs.js`, delete `home.page.js`, or remove `@wdio/mocha-framework`.
