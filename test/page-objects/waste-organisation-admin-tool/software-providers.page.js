@@ -241,15 +241,21 @@ class SoftwareProvidersPage extends Page {
 
   async verifyPageDoesNotScrollHorizontally(width = 320) {
     const previous = await browser.getWindowSize()
+    // Chrome on a Mac won't make a window narrower than 500px, so set the
+    // viewport instead where WebDriver BiDi is connected (it isn't on the grid)
+    const resize = (to) =>
+      browser.isBidi
+        ? browser.setViewport({ width: to, height: previous.height })
+        : browser.setWindowSize(to, previous.height)
     try {
-      await browser.setWindowSize(width, previous.height)
-      // The window includes the scrollbar, which takes 15px on Linux, so widen
+      await resize(width)
+      // The width includes the scrollbar, which takes 15px on Linux, so widen
       // it until the page itself is the width being checked
       const viewport = await browser.execute(
         () => document.documentElement.clientWidth
       )
       if (viewport < width) {
-        await browser.setWindowSize(width + (width - viewport), previous.height)
+        await resize(width + (width - viewport))
       }
       const { scrollWidth, clientWidth } = await browser.execute(() => ({
         scrollWidth: document.documentElement.scrollWidth,
@@ -258,7 +264,15 @@ class SoftwareProvidersPage extends Page {
       expect(clientWidth).toEqual(width)
       expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
     } finally {
-      await browser.setWindowSize(previous.width, previous.height)
+      if (browser.isBidi) {
+        await browser.browsingContextSetViewport({
+          context: await browser.getWindowHandle(),
+          viewport: null,
+          devicePixelRatio: null
+        })
+      } else {
+        await browser.setWindowSize(previous.width, previous.height)
+      }
     }
   }
 }
