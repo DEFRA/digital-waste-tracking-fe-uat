@@ -269,12 +269,18 @@ class Page {
     return normalised.charAt(0).toLowerCase() + normalised.slice(1)
   }
 
-  async verifyPageTitle(pageKey = null, lang = 'en') {
+  /**
+   * @param {string|null} [pageKey] Defaults to the key for this class name
+   * @param {string} [lang]
+   * @param {string|null} [title] The whole expected title. Pass one for pages
+   * outside `HEADINGS`, such as the admin tool's `<page title> - <environment> - <service name>`
+   */
+  async verifyPageTitle(pageKey = null, lang = 'en', title = null) {
     const key = this.getPageKey(pageKey)
     const targetLang = this.usersLanguagePreference
       ? this.usersLanguagePreference
       : lang
-    await expect(browser).toHaveTitle(HEADINGS[key].title[targetLang])
+    await expect(browser).toHaveTitle(title ?? HEADINGS[key].title[targetLang])
   }
 
   async verifyPageHeading(pageKey, lang = 'en') {

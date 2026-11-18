@@ -1,5 +1,6 @@
 import { $, browser } from '@wdio/globals'
 import { Page } from '../page.js'
+import { adminUiPageTitle } from '../../utils/software-provider-environment.js'
 
 class ClientCredentialsPage extends Page {
   get caption() {
@@ -42,9 +43,18 @@ class ClientCredentialsPage extends Page {
     return $('[data-testid="close-button"]')
   }
 
-  async verifyPageIsDisplayed({ clientName, environmentLabel, apiUrl }) {
+  async verifyPageIsDisplayed({
+    clientName,
+    environmentLabel,
+    apiUrl,
+    environment
+  }) {
     await this.waitForPageToLoad()
-    await this.verifyPageTitle()
+    await this.verifyPageTitle(
+      null,
+      'en',
+      adminUiPageTitle('Copy the client credentials', environment)
+    )
     await expect(browser).toHaveUrl(
       expect.stringContaining('/software-providers/credentials/')
     )

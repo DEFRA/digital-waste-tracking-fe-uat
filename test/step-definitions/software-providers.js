@@ -64,7 +64,11 @@ Given(
     await signInAndOpen(
       this,
       (baseUrl) => SoftwareProvidersPage.open(baseUrl),
-      (baseUrl) => SoftwareProvidersPage.verifyPageIsDisplayed(baseUrl)
+      (baseUrl) =>
+        SoftwareProvidersPage.verifyPageIsDisplayed(
+          baseUrl,
+          this.testEnv.environment
+        )
     )
   }
 )
@@ -78,7 +82,11 @@ Given(
       this,
       (baseUrl) => CreateClientCredentialsPage.open(baseUrl),
       (baseUrl) =>
-        CreateClientCredentialsPage.verifyPageIsDisplayed(baseUrl, caption)
+        CreateClientCredentialsPage.verifyPageIsDisplayed(
+          baseUrl,
+          caption,
+          this.testEnv.environment
+        )
     )
   }
 )
@@ -210,7 +218,8 @@ Then(
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await CreateClientCredentialsPage.verifyPageIsDisplayed(
       this.testConfig.adminUiBaseUrl,
-      createCredentialsCaption(this.testEnv.environment)
+      createCredentialsCaption(this.testEnv.environment),
+      this.testEnv.environment
     )
   }
 )
@@ -219,7 +228,8 @@ Then(
   'the software providers page should be displayed',
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await SoftwareProvidersPage.verifyPageIsDisplayed(
-      this.testConfig.adminUiBaseUrl
+      this.testConfig.adminUiBaseUrl,
+      this.testEnv.environment
     )
   }
 )
@@ -263,7 +273,8 @@ Then(
     await ClientCredentialsPage.verifyPageIsDisplayed({
       clientName: this.testMemory.createdClientName,
       environmentLabel: credentialsPanelEnvironment(this.testEnv.environment),
-      apiUrl: this.testConfig.wasteMovementExternalApiBaseUrl
+      apiUrl: this.testConfig.wasteMovementExternalApiBaseUrl,
+      environment: this.testEnv.environment
     })
     this.testMemory.pageName = 'client-credentials-page'
   }
@@ -282,7 +293,8 @@ Then(
     await SoftwareProviderPage.verifyPageIsDisplayed(
       this.testConfig.adminUiBaseUrl,
       this.testMemory.createdClientId,
-      this.testMemory.createdClientName
+      this.testMemory.createdClientName,
+      this.testEnv.environment
     )
   }
 )
@@ -291,7 +303,8 @@ Then(
   'the new client should be listed on the software providers page',
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await SoftwareProvidersPage.verifyPageIsDisplayed(
-      this.testConfig.adminUiBaseUrl
+      this.testConfig.adminUiBaseUrl,
+      this.testEnv.environment
     )
     await SoftwareProvidersPage.verifyClientIsListed(
       this.testMemory.createdClientName,
@@ -305,7 +318,8 @@ Then(
   'the long client name should be fully visible and wrap onto a second line',
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await SoftwareProvidersPage.verifyPageIsDisplayed(
-      this.testConfig.adminUiBaseUrl
+      this.testConfig.adminUiBaseUrl,
+      this.testEnv.environment
     )
     await SoftwareProvidersPage.verifyClientIsListed(
       this.testMemory.createdClientName,

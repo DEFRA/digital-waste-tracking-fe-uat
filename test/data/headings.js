@@ -199,30 +199,5 @@ export const HEADINGS = {
   },
   defraIdGovUkPassword: {
     en: 'Enter your password'
-  },
-  adminToolLogin: {
-    title: {
-      en: 'User login - DWT admin portal'
-    }
-  },
-  wasteOrganisationsReport: {
-    title: {
-      en: 'Waste organisations - DWT admin portal'
-    }
-  },
-  softwareProviders: {
-    title: {
-      en: 'Software providers - DWT admin portal'
-    }
-  },
-  createClientCredentials: {
-    title: {
-      en: 'What is the name of the software provider and package? - DWT admin portal'
-    }
-  },
-  clientCredentials: {
-    title: {
-      en: 'Copy the client credentials - DWT admin portal'
-    }
   }
 }

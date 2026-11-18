@@ -15,6 +15,8 @@ export async function signInIfAsked(world) {
     return
   }
 
+  await AdminToolLoginPage.verifyPageIsDisplayed(world.testEnv.environment)
+
   const { username, password } = getAdminUiCredentials(world)
   await AdminToolLoginPage.login(username, password)
 }

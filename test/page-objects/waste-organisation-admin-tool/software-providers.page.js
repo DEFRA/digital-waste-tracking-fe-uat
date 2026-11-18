@@ -1,6 +1,9 @@
 import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
-import { sortClientsByName } from '../../utils/software-provider-environment.js'
+import {
+  adminUiPageTitle,
+  sortClientsByName
+} from '../../utils/software-provider-environment.js'
 
 const COLUMN_INDEX = {
   'Client name': 0,
@@ -49,9 +52,13 @@ class SoftwareProvidersPage extends Page {
     return browser.url(`${baseUrl}/software-providers`)
   }
 
-  async verifyPageIsDisplayed(baseUrl) {
+  async verifyPageIsDisplayed(baseUrl, environment) {
     await this.waitForPageToLoad()
-    await this.verifyPageTitle()
+    await this.verifyPageTitle(
+      null,
+      'en',
+      adminUiPageTitle('Software providers', environment)
+    )
     await expect(browser).toHaveUrl(`${baseUrl}/software-providers`)
     await expect(this.heading).toHaveText('Software providers')
     await expect(this.pageBody).toHaveText(

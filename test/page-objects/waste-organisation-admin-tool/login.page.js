@@ -1,5 +1,6 @@
 import { $, browser } from '@wdio/globals'
 import { Page } from '../page.js'
+import { adminUiPageTitle } from '../../utils/software-provider-environment.js'
 
 /**
  * Signing in to the admin tool, with Entra ID. Locally, floci-az stands in for
@@ -26,6 +27,17 @@ class AdminToolLoginPage extends Page {
 
   isAskingForPassword() {
     return this.passwordInput.isExisting()
+  }
+
+  async verifyPageIsDisplayed(environment) {
+    await this.waitForPageToLoad()
+    await this.verifyPageTitle(
+      null,
+      'en',
+      adminUiPageTitle('User login', environment)
+    )
+    await expect(this.usernameInput).toBeDisplayed()
+    await expect(this.passwordInput).toBeDisplayed()
   }
 
   async login(username, password) {
