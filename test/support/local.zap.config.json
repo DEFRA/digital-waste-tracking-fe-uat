@@ -11,6 +11,7 @@
     "https://.*\\.access\\.service\\.gov\\.uk.*",
     "https://.*\\.amazoncognito\\.com.*",
     "http://cdp-defra-id-stub:3200.*",
-    "http://cdp-uploader:7337.*"
+    "http://cdp-uploader:7337.*",
+    "http://selenium-chrome:4444.*"
   ]
 }
