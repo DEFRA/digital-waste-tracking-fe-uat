@@ -20,6 +20,13 @@ db.organisations.deleteMany({
   name: { $regex: 'DWT admin test', $options: 'i' }
 })
 
+// waste-organisation-backend has a unique index on apiCodes.code, so only one
+// document without an API code (null or []) can exist. Document 13 has apiCodes: []
+// to test the zero-codes case, so remove any leftover document blocking that slot.
+db.organisations.deleteMany({
+  'apiCodes.0': { $exists: false }
+})
+
 db.organisations.insertMany([
   // Document 1 - 1 active API code
   {
