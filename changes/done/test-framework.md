@@ -36,7 +36,7 @@ The grid host is `GRID_HOST`, then `CHROMEDRIVER_URL`, then `127.0.0.1`. The por
 
 ## Proxy
 
-`HTTP_PROXY` is the one URL. `PROXY_MODE` is `off`, `cdp`, or `zap`. Unset means `cdp` when `HTTP_PROXY` is set, and `off` when it is not. `off` ignores the proxy. `cdp` sends Cognito, GOV.UK Pay, and the grid or local Chrome through it. `zap` sends the grid and local Chrome, and the service clients, through ZAP. The ZAP client itself is not proxied. Compose starts ZAP on port 8080. BrowserStack's remote browser is not given the proxy. The runner uses it to reach BrowserStack.
+`HTTP_PROXY` is the Node proxy URL. `PROXY_MODE` is `off`, `cdp`, or `zap`. Unset means `cdp` when `HTTP_PROXY` is set, and `off` when it is not. `off` ignores the proxy. `cdp` sends Cognito, GOV.UK Pay, and the grid or local Chrome through it. `zap` sends the grid and local Chrome, and the service clients, through ZAP. WebdriverIO also proxies its hub calls through `HTTP_PROXY`, so `GRID_HOST` must be a compose hostname ZAP can resolve (e.g. `selenium-chrome`), not host loopback. `zapBaseUrl` in the `.zap` support file is the compose ZAP URL for Chrome and for ZapApi's base; ZapApi uses `HTTP_PROXY` as its `ProxyAgent`. CDP Chrome uses `HTTP_PROXY` only. Compose starts ZAP on port 8080. BrowserStack's remote browser is not given the proxy. The runner uses it to reach BrowserStack.
 
 ## Left open
 

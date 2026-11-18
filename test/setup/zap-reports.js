@@ -16,7 +16,11 @@ const log = logger('zap-reports')
 export async function openZapSession(testEnv, testConfig) {
   if (testEnv.proxyMode !== 'zap') return
 
-  const zap = new ZapApi(testEnv.httpProxy, null, testEnv.zapApiKey)
+  const zap = new ZapApi(
+    testConfig.zapBaseUrl,
+    testEnv.httpProxy,
+    testEnv.zapApiKey
+  )
   try {
     const sessionResponse = await zap.newSession()
     if (
@@ -42,10 +46,18 @@ export async function openZapSession(testEnv, testConfig) {
  * Writes zap-report/ from the current ZAP session when the mode is zap.
  * @param {import('./test-env.js').TestEnv} testEnv
  */
-export async function publishZapReports(testEnv) {
+/**
+ * @param {import('./test-env.js').TestEnv} testEnv
+ * @param {import('./test-config.js').TestConfig} testConfig
+ */
+export async function publishZapReports(testEnv, testConfig) {
   if (testEnv.proxyMode !== 'zap') return
 
-  const zap = new ZapApi(testEnv.httpProxy, null, testEnv.zapApiKey)
+  const zap = new ZapApi(
+    testConfig.zapBaseUrl,
+    testEnv.httpProxy,
+    testEnv.zapApiKey
+  )
   try {
     const jsonReport = await zap.jsonReport()
     await writeTextToFile(ZAP_JSON_REPORT_PATH, jsonReport.body)

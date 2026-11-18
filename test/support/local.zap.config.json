@@ -3,6 +3,7 @@
   "wasteOrganisationBackendServiceUrl": "http://waste-organisation-backend:3001",
   "wasteOrganisationFrontendBaseUrl": "http://waste-organisation-frontend:3000",
   "wasteMovementClientSyncApiBaseUrl": "http://dwt-client-sync:3001",
+  "zapBaseUrl": "http://zap:8080",
   "zapProxyExcludeRegexes": [
     "https://.*\\.payments\\.service\\.gov\\.uk.*",
     "https://.*\\.b2clogin\\.com.*",
@@ -10,6 +11,7 @@
     "https://.*\\.access\\.service\\.gov\\.uk.*",
     "https://.*\\.amazoncognito\\.com.*",
     "http://cdp-defra-id-stub:3200.*",
-    "http://cdp-uploader:7337.*"
+    "http://cdp-uploader:7337.*",
+    "http://selenium-chrome:4444.*"
   ]
 }

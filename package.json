@@ -37,7 +37,7 @@
     "test:local:smoke:defra-id-real": "npm run clean && CUCUMBER_EXTRA_TAGS='@smoke and @defra-id-real' wdio run wdio.local.conf.js",
     "test:local:debug": "npm run clean && DEBUG=true wdio run wdio.local.conf.js",
     "test:local:admin-ui": "npm run clean && wdio run wdio.local.conf.js --spec ./test/features/waste-organisation-admin-ui/*.feature",
-    "test:zap": "npm run clean && CUCUMBER_EXTRA_TAGS='@zap' wdio run wdio.grid.conf.js --spec ./test/features/waste-organisation-frontend/security/AnalyseZapReport.feature",
+    "test:zap": "CUCUMBER_EXTRA_TAGS='@zap' wdio run wdio.grid.conf.js --spec ./test/features/waste-organisation-frontend/security/AnalyseZapReport.feature",
     "local:grid:chrome:start": "npm run local:grid:chrome:stop ; docker run --rm -d --name selenium-chrome --network host -e SE_NODE_ENABLE_MANAGED_DOWNLOADS=true selenium/standalone-chrome:latest",
     "local:grid:chrome:stop": "docker stop selenium-chrome",
     "format": "prettier --write \"test/**/*.js\" \"**/*.{js,md,json,config.js}\"",

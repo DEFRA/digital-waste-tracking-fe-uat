@@ -1,9 +1,16 @@
 import { BaseAPI } from './base-api.js'
 
 /**
- * Client for the ZAP REST API (same host/port as HTTP_PROXY).
+ * Client for the ZAP REST API.
+ * `baseUrl` is `TestConfig.zapBaseUrl` (compose hostname). Requests go through
+ * `HTTP_PROXY` so Node on the host can reach that hostname via ZAP.
  */
 export class ZapApi extends BaseAPI {
+  /**
+   * @param {string} baseUrl - `zapBaseUrl` from the support file
+   * @param {string|undefined} httpProxy - `HTTP_PROXY`
+   * @param {string|undefined} apiKey - `ZAP_API_KEY`
+   */
   constructor(baseUrl, httpProxy, apiKey) {
     super(baseUrl, httpProxy)
     this.apiKey = apiKey
