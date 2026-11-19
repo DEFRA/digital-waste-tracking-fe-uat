@@ -2,9 +2,14 @@
  * Environment variables. Getters read process.env when called.
  */
 export class TestEnv {
-  /** @returns {string|undefined} */
+  /**
+   * `ENVIRONMENT`, trimmed. Unset or empty means `local`, which is what CI
+   * runs against, so the support file and the page titles match.
+   * @returns {string}
+   */
   get environment() {
-    return process.env.ENVIRONMENT
+    const environment = process.env.ENVIRONMENT?.trim()
+    return environment || 'local'
   }
 
   /** @returns {string|undefined} */

@@ -53,7 +53,10 @@ Given(
     await WasteOrganisationsReportPage.open(baseUrl)
     await signInIfAsked(this)
     this.testMemory.pageName = 'waste-organisations-report-page'
-    await WasteOrganisationsReportPage.verifyPageIsDisplayed(baseUrl)
+    await WasteOrganisationsReportPage.verifyPageIsDisplayed(
+      baseUrl,
+      this.testEnv.environment
+    )
   }
 )
 

@@ -1,5 +1,7 @@
 import { randomBytes } from 'node:crypto'
 
+const ADMIN_UI_SERVICE_NAME = 'DWT admin portal'
+
 const ENVIRONMENT_LABELS = {
   local: 'Local',
   dev: 'Dev',
@@ -9,6 +11,17 @@ const ENVIRONMENT_LABELS = {
   prod: 'Production'
 }
 
+/**
+ * A page title in the admin tool's `<page title> - <environment> - <service name>` format,
+ * for example `Software providers - External test - DWT admin portal`.
+ * @param {string} pageTitle
+ * @param {string} environment `ENVIRONMENT`, see `TestEnv.environment`
+ * @returns {string}
+ */
+export function adminUiPageTitle(pageTitle, environment) {
+  const label = softwareProviderEnvironmentLabel(environment)
+  return `${pageTitle} - ${label} - ${ADMIN_UI_SERVICE_NAME}`
+}
 export function softwareProviderEnvironmentLabel(environment) {
   const label = ENVIRONMENT_LABELS[environment]
   if (!label) {

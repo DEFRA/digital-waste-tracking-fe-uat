@@ -1,5 +1,6 @@
 import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
+import { adminUiPageTitle } from '../../utils/software-provider-environment.js'
 
 class CreateClientCredentialsPage extends Page {
   get caption() {
@@ -42,9 +43,16 @@ class CreateClientCredentialsPage extends Page {
     return browser.url(`${baseUrl}/software-providers/create`)
   }
 
-  async verifyPageIsDisplayed(baseUrl, caption) {
+  async verifyPageIsDisplayed(baseUrl, caption, environment) {
     await this.waitForPageToLoad()
-    await this.verifyPageTitle()
+    await this.verifyPageTitle(
+      null,
+      'en',
+      adminUiPageTitle(
+        'What is the name of the software provider and package?',
+        environment
+      )
+    )
     await expect(browser).toHaveUrl(`${baseUrl}/software-providers/create`)
     await expect($$('h1')).toBeElementsArrayOfSize(1)
     await expect(await this.caption.getTagName()).toBe('span')

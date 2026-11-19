@@ -2,6 +2,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
+import { adminUiPageTitle } from '../../utils/software-provider-environment.js'
 import {
   buildExpectedCsvFilenameRegex,
   formatSearchDateAsYymmdd
@@ -90,9 +91,13 @@ class WasteOrganisationsReportPage extends Page {
     return browser.url(`${baseUrl}/reporting/waste-organisations`)
   }
 
-  async verifyPageIsDisplayed(baseUrl) {
+  async verifyPageIsDisplayed(baseUrl, environment) {
     await this.waitForPageToLoad()
-    await this.verifyPageTitle()
+    await this.verifyPageTitle(
+      null,
+      'en',
+      adminUiPageTitle('Waste organisations', environment)
+    )
     await expect(browser).toHaveUrl(`${baseUrl}/reporting/waste-organisations`)
     await expect(this.heading).toHaveText('Waste organisations')
     await expect(this.registrationDateGroup).toHaveText(
