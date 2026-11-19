@@ -539,3 +539,43 @@ Lewis Magri, 2026-11-17 21:14 UTC
 WebdriverIO sends hub requests through `HTTP_PROXY`. With ZAP, `GRID_HOST=127.0.0.1` fails because ZAP cannot reach host loopback; use `selenium-chrome` (or another compose DNS name). Dropped the `NO_PROXY` workaround from the local ZAP recipe. Rules and `env.sh` comments match that topology.
 
 Covers: `.cursor/rules/proxy-sessions-report.mdc`, `.cursor/rules/local-npm.mdc`, `changes/done/test-framework.md`.
+
+## 78. Admin UI signs in with Entra ID
+
+Amir Intisar (Equal Experts), 2026-11-19 17:34 UTC, on 6bd16ce1c23e
+
+`signInIfAsked` waits until the browser is on `login.microsoftonline.com` or back on the admin UI and not on `/login` or `/auth`. Local Docker and the admin UI CI are already signed in, so it returns without reading a password. On Entra it types `adminUiUsername` into `#i0116`, clicks Next, waits until `#i0118` is displayed, types `adminUiPassword`, and clicks Sign in. If Entra asks to stay signed in, it clicks No. `dev.config.json` `adminUiUsername` is `SA-dwt-test-admin-dev@defra.onmicrosoft.com`. The password stays `adminUiPassword` in `env.sh`.
+
+Covers: `changes/ai-revision-log.md`.
+
+## 79. Entra password field is the visible input
+
+Amir Intisar (Equal Experts), 2026-11-19 17:43 UTC, on 6bd16ce1c23e
+
+The username page keeps a hidden `#i0118`, so waiting for `#i0118` to be displayed never reached the password box. The password step now waits for the "Enter password" heading and types into `input#i0118.form-control`.
+
+Covers: `changes/ai-revision-log.md`.
+
+## 80. Entra selectors follow the live sign-in page
+
+Amir Intisar (Equal Experts), 2026-11-19 21:54 UTC, on 6bd16ce1c23e
+
+The dev admin UI still redirects to `login.microsoftonline.com`, then the email page, then the password page, then the admin home. `signInIfAsked` still returns without a password when that redirect never happens, which is the local floci-az path. The email field is `input#i0116[name="loginfmt"]`. The password field is `input#i0118[name="passwd"]:not([aria-hidden="true"])`, because the username page keeps a hidden `#i0118`. Next is `input#idSIButton9[value="Next"]` and Sign in is `input#idSIButton9[value="Sign in"]`. Stay signed in uses `input#idBtn_Back[value="No"]`, which does not match the password page Back button `button#idBtn_Back`. A displayed `#usernameError` or `#passwordError` fails the step with that text.
+
+Covers: `changes/ai-revision-log.md`.
+
+## 81. Signed-in check is the admin home
+
+Amir Intisar (Equal Experts), 2026-11-19 22:06 UTC, on 6bd16ce1c23e
+
+`verifyUserIsSignedIn` still waits until the URL is the admin home. It then checks the document title with `adminUiPageTitle('Home', environment)` and that the service navigation shows DWT admin portal, Software providers, and Waste organisations. The login scenario still does not assert anything on the Entra pages. `signInIfAsked` is unchanged.
+
+Covers: `changes/ai-revision-log.md`.
+
+## 82. Sign-in returns to the software providers page
+
+Amir Intisar (Equal Experts), 2026-11-19 22:10 UTC, on 6bd16ce1c23e
+
+`Login.feature` has a scenario that opens `/software-providers` before signing in, then checks the software providers page is displayed. `signInIfAsked` is unchanged, so a local floci-az session still skips the Entra form. The scenario is tagged `@browserstack-admin-ui`.
+
+Covers: `changes/ai-revision-log.md`.
