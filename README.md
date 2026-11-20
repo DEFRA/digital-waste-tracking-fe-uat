@@ -94,27 +94,13 @@ export xapikey=<cdp-api-key>
 
 ### Running local tests with digital-waste-tracking-admin-ui
 
-To locally run tests against a locally hosted copy of `digital-waste-tracking-admin-ui`, ensure credentials match between environments.
+Local Docker and the admin UI CI sign in with floci-az when the browser opens the admin UI. No username or password is entered.
 
-If the `digital-waste-tracking-admin-ui` is running on `http://localhost:3000`, and the password and login are both `local`:
+On a CDP environment the browser is sent to Microsoft Entra ID. The username is `adminUiUsername` in that environment's support file. The password is `adminUiPassword` in `env.sh`.
 
-In the `digital-waste-tracking-admin-ui` `.env` file we should have `USER_BASIC_AUTH_LOCAL=bG9jYWw9bG9jYWw=`, which is the base64 encoding of `local=local`
+The admin UI address is `adminUiBaseUrl` in the support JSON. `ADMIN_UI_BASE_URL` overrides it when set.
 
-In the `digital-waste-tracking-fe-uat` repo, in `env.sh`,
-
-```bash
-export ENVIRONMENT=local
-export adminUiPassword=local
-```
-
-And in [test/support/local.config.json] set:
-
-```json
-  "adminUiBaseUrl": "http://localhost:3000",
-  "adminUiUsername": "local"
-```
-
-Run the admin UI on local Chrome with `PROFILE=local:admin-ui npm run source:clean:test:report`. The admin UI's CI runs the same features with `PROFILE=grid:admin-ui npm test`, against its compose stack with Chrome in a container (see the admin UI's README). The admin UI address is `adminUiBaseUrl` in the support JSON. `ADMIN_UI_BASE_URL` overrides it when set.
+Run the admin UI on local Chrome with `PROFILE=local:admin-ui npm run source:clean:test:report`. The admin UI's CI runs the same features with `PROFILE=grid:admin-ui npm test`, against its compose stack with Chrome in a container (see the admin UI's README).
 
 ## Production
 

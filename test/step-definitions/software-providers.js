@@ -17,7 +17,7 @@ import {
 import { signInIfAsked } from '../utils/sign-in-to-admin-tool.js'
 
 /**
- * Opening a page signs the user in with Entra ID first (see the login page)
+ * Opens the page, then signs in with Entra ID when the browser is sent there.
  *
  * @param {import('../types/globals.js').CucumberWorld} world
  * @param {(baseUrl: string) => Promise<unknown>} open

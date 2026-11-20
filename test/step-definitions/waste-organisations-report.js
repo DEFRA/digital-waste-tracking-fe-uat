@@ -49,7 +49,7 @@ Given(
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     const baseUrl = this.testConfig.adminUiBaseUrl
 
-    // Signs in with Entra ID first (see the login page)
+    // Signs in with Entra ID when the browser is sent there (see the login page)
     await WasteOrganisationsReportPage.open(baseUrl)
     await signInIfAsked(this)
     this.testMemory.pageName = 'waste-organisations-report-page'
