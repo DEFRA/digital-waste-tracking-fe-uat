@@ -62,7 +62,7 @@ Feature: Software providers
     And the user generates credentials for an existing client name in a different case
     Then the client name error should be displayed
 
-  @issue=DWTSPI-458 @accessibility @browserstack-admin-ui
+  @issue=DWTSPI-458 @issue=DWTSPI-536 @accessibility @browserstack-admin-ui
   Scenario: a new client can be created and its secret is shown once
     Given the user is on the create client credentials page
     Then the create client credentials page should generate accessibility tests

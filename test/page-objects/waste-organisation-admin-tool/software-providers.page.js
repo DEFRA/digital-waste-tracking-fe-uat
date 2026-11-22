@@ -40,6 +40,10 @@ class SoftwareProvidersPage extends Page {
     return $('[data-testid="client-credentials-empty"]')
   }
 
+  get deletedAlert() {
+    return $('[data-testid="deleted-alert"]')
+  }
+
   get rowElements() {
     return $$('[data-testid="client-credentials"] tbody tr')
   }
@@ -204,6 +208,29 @@ class SoftwareProvidersPage extends Page {
     const match = displayed.find((row) => row.clientId === clientId)
     expect(match).toBeDefined()
     expect(match.clientName).toBe(clientName)
+  }
+
+  async verifyClientIsNotListed(clientId) {
+    if (!(await this.resultsTable.isExisting())) {
+      return
+    }
+    const displayed = await this.readDisplayedClients()
+    expect(displayed.find((row) => row.clientId === clientId)).toBeUndefined()
+  }
+
+  async verifySoftwareProviderDeleted(clientName) {
+    await expect(this.deletedAlert).toBeDisplayed()
+    await expect(
+      this.deletedAlert.$('[data-testid="alert-heading"]')
+    ).toHaveText('Software provider deleted')
+    await expect(this.deletedAlert.$('[data-testid="alert-text"]')).toHaveText(
+      `${clientName} has been deleted.`
+    )
+  }
+
+  async verifySoftwareProviderDeletedIsGone() {
+    await this.waitForPageToLoad()
+    await expect(this.deletedAlert).not.toBeExisting()
   }
 
   async clientNameCell(clientName) {

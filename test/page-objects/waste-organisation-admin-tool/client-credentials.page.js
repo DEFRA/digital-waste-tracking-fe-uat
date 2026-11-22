@@ -43,6 +43,10 @@ class ClientCredentialsPage extends Page {
     return $('[data-testid="close-button"]')
   }
 
+  get oldSecretWarning() {
+    return $('[data-testid="old-secret-warning"]')
+  }
+
   async verifyPageIsDisplayed({
     clientName,
     environmentLabel,
@@ -112,6 +116,13 @@ class ClientCredentialsPage extends Page {
 
   async clientIdText() {
     return (await this.clientId.getText()).trim()
+  }
+
+  async verifyOldSecretIsNotShown() {
+    await expect(this.oldSecretWarning).not.toBeExisting()
+    await expect($('[data-testid="remove-old-secret"]')).not.toBeExisting()
+    const values = await this.credentialsList.$$('dd')
+    await expect(values).toBeElementsArrayOfSize(4)
   }
 
   async allowClipboardAccess() {
