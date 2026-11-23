@@ -378,7 +378,8 @@ After(
     if (!clientId || !clientSyncApi) return
 
     const response = await clientSyncApi.deleteClient(clientId, true)
-    if (![200, 204].includes(response.statusCode)) {
+    // 404 is a client the scenario already deleted in the browser
+    if (![200, 204, 404].includes(response.statusCode)) {
       throw new Error(
         `Deleting client ${clientId} returned ${response.statusCode}`
       )

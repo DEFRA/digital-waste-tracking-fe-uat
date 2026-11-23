@@ -197,4 +197,7 @@ export class TestMemory {
 
   /** @type {string|undefined} */
   credentialsUrl
+
+  /** @type {string|undefined} */
+  olderSecretGeneratedOn
 }

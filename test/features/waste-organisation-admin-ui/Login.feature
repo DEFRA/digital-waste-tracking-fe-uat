@@ -9,6 +9,6 @@ Feature: Sign in to the DWT Admin Portal
     Given the user opens the admin tool
     Then the user should be signed in to the admin tool
 
-  Scenario: user is returned to the software providers page after signing in
+  Scenario: user is redirected back to the url they requested in the admin-ui after signing in
     Given the user opens the software providers page before signing in
     Then the user should be on the software providers page
