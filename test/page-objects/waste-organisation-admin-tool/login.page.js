@@ -37,8 +37,29 @@ class AdminToolLoginPage extends Page {
     return $('input#idBtn_Back[value="No"]')
   }
 
+  get continueToSignInButton() {
+    return $('[data-testid="continue-to-sign-in-button"]')
+  }
+
   open(baseUrl) {
     return browser.url(baseUrl)
+  }
+
+  /**
+   * Selects "Continue to sign in" on the admin tool's own sign in page
+   * (DWTSPI-532), if it's on it, and waits to leave it.
+   * @param {string} baseUrl
+   * @returns {Promise<boolean>} Whether it was on the sign in page
+   */
+  async continueToSignInIfAsked(baseUrl) {
+    if (!this.#isOnSignInPage(await browser.getUrl(), baseUrl)) return false
+
+    await this.click(this.continueToSignInButton)
+    await browser.waitUntil(
+      async () => !this.#isOnSignInPage(await browser.getUrl(), baseUrl),
+      { timeoutMsg: 'Continue to sign in did not leave the sign in page' }
+    )
+    return true
   }
 
   /**
@@ -56,6 +77,7 @@ class AdminToolLoginPage extends Page {
   async hasSettled(baseUrl) {
     const url = await browser.getUrl()
     if (url.startsWith(entraOrigin)) return true
+    if (this.#isOnSignInPage(url, baseUrl)) return true
     return this.#isOnAdminApp(url, baseUrl)
   }
 
@@ -133,10 +155,27 @@ class AdminToolLoginPage extends Page {
       return false
     }
     if (parsed.origin !== admin.origin) return false
-    if (parsed.pathname === '/login' || parsed.pathname === '/auth') {
+    if (['/login', '/auth', '/sign-in'].includes(parsed.pathname)) {
       return false
     }
     return true
+  }
+
+  /**
+   * @param {string} url
+   * @param {string} baseUrl
+   * @returns {boolean}
+   */
+  #isOnSignInPage(url, baseUrl) {
+    try {
+      const parsed = new URL(url)
+      return (
+        parsed.origin === new URL(baseUrl).origin &&
+        parsed.pathname === '/sign-in'
+      )
+    } catch {
+      return false
+    }
   }
 
   /**
