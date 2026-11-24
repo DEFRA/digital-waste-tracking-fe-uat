@@ -4,10 +4,27 @@ import SoftwareProvidersPage from '../page-objects/waste-organisation-admin-tool
 import { signInIfAsked } from '../utils/sign-in-to-admin-tool.js'
 
 Given(
+  'the user opens the admin tool sign-in page',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await AdminToolLoginPage.open(this.testConfig.adminUiBaseUrl)
+  }
+)
+
+Given(
   'the user opens the admin tool',
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
     await AdminToolLoginPage.open(this.testConfig.adminUiBaseUrl)
     await signInIfAsked(this)
+  }
+)
+
+Then(
+  'the sign-in page should say what the portal is for',
+  /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
+    await AdminToolLoginPage.verifySignInPage(
+      this.testConfig.adminUiBaseUrl,
+      this.testEnv.environment
+    )
   }
 )
 
