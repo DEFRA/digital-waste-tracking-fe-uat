@@ -4,6 +4,11 @@ Feature: Sign in to the DWT Admin Portal
   I want to sign in with my Microsoft Entra ID account
   So that I can access admin reporting features.
 
+  @issue=DWTSPI-532 @browserstack-admin-ui
+  Scenario: the sign-in page says what the portal is for
+    Given the user opens the admin tool sign-in page
+    Then the sign-in page should say what the portal is for
+
   @browserstack-admin-ui
   Scenario: user is signed in with Entra ID
     Given the user opens the admin tool

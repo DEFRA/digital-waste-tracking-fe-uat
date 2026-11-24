@@ -1,4 +1,4 @@
-import { $, browser } from '@wdio/globals'
+import { $, $$, browser } from '@wdio/globals'
 import { Page } from '../page.js'
 import { adminUiPageTitle } from '../../utils/software-provider-environment.js'
 
@@ -115,6 +115,32 @@ class AdminToolLoginPage extends Page {
    * @param {string} baseUrl
    * @param {string} environment
    */
+  async verifySignInPage(baseUrl, environment) {
+    await browser.waitUntil(
+      async () => this.#isOnSignInPage(await browser.getUrl(), baseUrl),
+      { timeoutMsg: 'Admin tool did not open the sign in page' }
+    )
+    await this.waitForPageToLoad()
+    await this.verifyPageTitle(
+      null,
+      'en',
+      adminUiPageTitle('Sign in', environment)
+    )
+    await expect($('[data-testid="app-heading-title"]')).toHaveText(
+      'Sign in to DWT admin portal'
+    )
+    await expect($('main p.govuk-body')).toHaveText(
+      'DWT admin portal allows you to:'
+    )
+    await this.#verifyPurposeList()
+    await expect(this.continueToSignInButton).toHaveText('Continue to sign in')
+    await expect($('.govuk-service-navigation')).not.toBeExisting()
+  }
+
+  /**
+   * @param {string} baseUrl
+   * @param {string} environment
+   */
   async verifyUserIsSignedIn(baseUrl, environment) {
     const home = baseUrl.replace(/\/$/, '')
     await browser.waitUntil(
@@ -129,6 +155,13 @@ class AdminToolLoginPage extends Page {
       'en',
       adminUiPageTitle('Home', environment)
     )
+    await expect($('[data-testid="app-heading-title"]')).toHaveText(
+      'DWT admin portal'
+    )
+    await expect($('[data-testid="app-page-body"] > p')).toHaveText(
+      'This site allows the Digital waste tracking service team to:'
+    )
+    await this.#verifyPurposeList()
     await expect(
       $('.govuk-service-navigation__link=DWT admin portal')
     ).toBeDisplayed()
@@ -138,6 +171,16 @@ class AdminToolLoginPage extends Page {
     await expect(
       $('.govuk-service-navigation__link=Waste organisations')
     ).toBeDisplayed()
+  }
+
+  /**
+   * The two things the portal is for, in the order shown.
+   */
+  async #verifyPurposeList() {
+    const items = await $$('main ul.govuk-list--bullet li')
+    await expect(items).toBeElementsArrayOfSize(2)
+    await expect(items[0]).toHaveText('manage software provider credentials')
+    await expect(items[1]).toHaveText('search waste organisations')
   }
 
   /**
