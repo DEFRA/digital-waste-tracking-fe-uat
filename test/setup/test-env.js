@@ -170,4 +170,9 @@ export class TestEnv {
     if (value === 'off' || value === 'cdp' || value === 'zap') return value
     throw new Error(`Invalid PROXY_MODE "${value}"`)
   }
+
+  /** @returns {boolean} */
+  get isGoogleAnalyticsEnabled() {
+    return process.env.GA_ENABLED === 'true'
+  }
 }

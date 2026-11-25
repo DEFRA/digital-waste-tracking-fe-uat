@@ -8,7 +8,7 @@ class TermsPage extends Page {
 
   // locators
   get declarationIntro() {
-    return $('p.govuk-body')
+    return $('h1 + p.govuk-body')
   }
 
   get declarationListItems() {
