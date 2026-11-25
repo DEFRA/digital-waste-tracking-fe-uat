@@ -52,6 +52,8 @@ Given(
 Then(
   'the user should be able to see information about how cookies are used',
   /** @this {import('../types/globals.js').CucumberWorld} */ async function () {
-    await CookiesPage.verifyCookiesInformationIsDisplayed()
+    await CookiesPage.verifyCookiesInformationIsDisplayed(
+      this.testEnv.isGoogleAnalyticsEnabled
+    )
   }
 )

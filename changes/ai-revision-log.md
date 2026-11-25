@@ -579,3 +579,11 @@ Amir Intisar (Equal Experts), 2026-11-19 22:10 UTC, on 6bd16ce1c23e
 `Login.feature` has a scenario that opens `/software-providers` before signing in, then checks the software providers page is displayed. `signInIfAsked` is unchanged, so a local floci-az session still skips the Entra form. The scenario is tagged `@browserstack-admin-ui`.
 
 Covers: `changes/ai-revision-log.md`.
+
+## 83. Cookies page follows the analytics section
+
+Padmaja, 2026-11-25 12:02 UTC, on aaa22117debb
+
+`GA_ENABLED` `true` makes `TestEnv.isGoogleAnalyticsEnabled` true. The cookies step passes that flag into `verifyCookiesInformationIsDisplayed`. With analytics cookies on the page, Essential cookies is `h2.govuk-heading-m:nth-child(6)` and its paragraph is the next `p.govuk-body`. Without that section, the check uses the first `h2.govuk-heading-m` and `h2 + p.govuk-body`. The terms intro is the paragraph after the `h1`.
+
+Covers: `.cursor/rules/config-and-paths.mdc`.

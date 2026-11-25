@@ -19,6 +19,14 @@ class CookiesPage extends Page {
     return $('h2 + p.govuk-body')
   }
 
+  get essentialCookiesHeadingWithGA() {
+    return $('h2.govuk-heading-m:nth-child(6)')
+  }
+
+  get essentialCookiesDescriptionWithGA() {
+    return $('h2.govuk-heading-m:nth-child(6) + p.govuk-body')
+  }
+
   get cookiesTable() {
     return $('table.govuk-table')
   }
@@ -31,17 +39,23 @@ class CookiesPage extends Page {
     return this.cookiesTable.$$('tbody tr')
   }
 
-  async verifyCookiesInformationIsDisplayed() {
+  async verifyCookiesInformationIsDisplayed(isGoogleAnalyticsEnabled) {
     await this.verifyPageTitle()
     await this.verifyPageHeading()
     await expect(this.cookiesDescription).toBeDisplayed()
     await expect(this.cookiesDescription).toHaveText(
       'This service puts small files (known as cookies) onto your computer. These cookies are used to make the service work and cannot be turned off.'
     )
-    await expect(this.essentialCookiesHeading).toBeDisplayed()
-    await expect(this.essentialCookiesHeading).toHaveText('Essential cookies')
-    await expect(this.essentialCookiesDescription).toBeDisplayed()
-    await expect(this.essentialCookiesDescription).toHaveText(
+    const essentialCookiesHeading = isGoogleAnalyticsEnabled
+      ? this.essentialCookiesHeadingWithGA
+      : this.essentialCookiesHeading
+    const essentialCookiesDescription = isGoogleAnalyticsEnabled
+      ? this.essentialCookiesDescriptionWithGA
+      : this.essentialCookiesDescription
+    await expect(essentialCookiesHeading).toBeDisplayed()
+    await expect(essentialCookiesHeading).toHaveText('Essential cookies')
+    await expect(essentialCookiesDescription).toBeDisplayed()
+    await expect(essentialCookiesDescription).toHaveText(
       'Essential cookies keep your information secure while you use this service. We do not need to ask permission to use them.'
     )
     await expect(this.cookiesTable).toBeDisplayed()
