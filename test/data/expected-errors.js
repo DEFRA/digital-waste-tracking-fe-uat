@@ -8,6 +8,7 @@ const test2SpreadsheetApiError1 = {
   ],
   errorsWasteItemLevel: []
 }
+
 export const EXPECTED_ERRORS = {
   'Test1-update-format-errors-spreadsheet.xlsx': {
     errorsWasteMovementLevel: [

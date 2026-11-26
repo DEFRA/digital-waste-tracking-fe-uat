@@ -1,10 +1,10 @@
-@issue=DR-82 @debug
+@issue=DR-290
 Feature: Upload Waste Movements Using Spreadsheet v1.1
-As a waste receiver
-I want to upload a spreadsheet containing waste movement data for my selected organisation
-So that I can submit waste movement data, correctly linked to the business I have selected 
+  As a waste receiver
+  I want to upload a spreadsheet containing waste movement data for my selected organisation
+  So that I can submit waste movement data, correctly linked to the business I have selected
 
-  @accessibility @defra-id-stub
+  @defra-id-stub @defra-id-real
   Scenario: Waste receiver should be able to upload waste movements using a spreadsheet
     Given a user is logged in to the waste receiver registration portal
     And the user navigates to report receipt of waste
@@ -27,7 +27,7 @@ So that I can submit waste movement data, correctly linked to the business I hav
     And the processed spreadsheet should contain valid WTIDs
     # And email should sent to the user with the spreadsheet and WTIDs
 
-  @issue=DR-200 @defra-id-real @defra-id-stub
+  @defra-id-real @defra-id-stub
   Scenario Outline: More error scenarios for waste receiver uploads a spreadsheet - <error_type>
     Given a user is logged in to the waste receiver registration portal using a "Gov UK" account
     And the user navigates to report receipt of waste
