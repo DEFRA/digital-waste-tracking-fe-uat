@@ -587,3 +587,11 @@ Padmaja, 2026-11-25 12:02 UTC, on aaa22117debb
 `GA_ENABLED` `true` makes `TestEnv.isGoogleAnalyticsEnabled` true. The cookies step passes that flag into `verifyCookiesInformationIsDisplayed`. With analytics cookies on the page, Essential cookies is `h2.govuk-heading-m:nth-child(6)` and its paragraph is the next `p.govuk-body`. Without that section, the check uses the first `h2.govuk-heading-m` and `h2 + p.govuk-body`. The terms intro is the paragraph after the `h1`.
 
 Covers: `.cursor/rules/config-and-paths.mdc`.
+
+## 84. v1.1 spreadsheet scenarios follow the suite tags
+
+Padmaja, 2026-11-26 13:34 UTC, on e64bb37acaf6
+
+The v1.1 upload and update features no longer carry `@debug`. Debug runs stay `DEBUG=true` and one `--spec`. The update feature no longer keeps the commented `@env_dev` and `@env_test` scenarios. `@env_*` is not part of the filter. The live scenarios stay `@defra-id-stub`, with `@issue=DR-82` on the feature and `@issue=DR-200` on the upload error outline.
+
+Covers: `.cursor/rules/test-framework.mdc`.

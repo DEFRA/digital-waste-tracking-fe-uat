@@ -1,3 +1,14 @@
+const test2SpreadsheetApiError1 = {
+  errorsWasteMovementLevel: [
+    {
+      row: 9,
+      value:
+        'reason for no consignment code is required when wasteItems[*].ewcCodes contains a hazardous code and hazardousWasteConsignmentCode is not provided (M9)'
+    }
+  ],
+  errorsWasteItemLevel: []
+}
+
 export const EXPECTED_ERRORS = {
   'Test1-update-format-errors-spreadsheet.xlsx': {
     errorsWasteMovementLevel: [
@@ -215,16 +226,8 @@ export const EXPECTED_ERRORS = {
       { row: 14, value: "concentration operator must be '>' or '=' (P14)" }
     ]
   },
-  'Test2-spreadsheet-api-error-1.xlsx': {
-    errorsWasteMovementLevel: [
-      {
-        row: 9,
-        value:
-          'reason for no consignment code is required when wasteItems[*].ewcCodes contains a hazardous code and hazardousWasteConsignmentCode is not provided (M9)'
-      }
-    ],
-    errorsWasteItemLevel: []
-  },
+  'Test2-spreadsheet-api-error-1.xlsx': test2SpreadsheetApiError1,
+  'Test2-spreadsheet-api-error-1_v1.1.xlsx': test2SpreadsheetApiError1,
   'Test2-spreadsheet-api-error-2.xlsx': {
     errorsWasteMovementLevel: [{ row: 9, value: 'carrier is required (O9)' }],
     errorsWasteItemLevel: []
