@@ -595,3 +595,50 @@ Padmaja, 2026-11-26 13:34 UTC, on e64bb37acaf6
 The v1.1 upload and update features no longer carry `@debug`. Debug runs stay `DEBUG=true` and one `--spec`. The update feature no longer keeps the commented `@env_dev` and `@env_test` scenarios. `@env_*` is not part of the filter. The live scenarios stay `@defra-id-stub`, with `@issue=DR-82` on the feature and `@issue=DR-200` on the upload error outline.
 
 Covers: `.cursor/rules/test-framework.mdc`.
+## 83. Admin UI scan excludes client-sync and Floci
+
+Amir Intisar (Equal Experts), 2026-11-24 23:34 UTC, on aaa22117debb
+
+`local.zap.config.json` `zapProxyExcludeRegexes` also excludes `http://dwt-client-sync:3001`, `http://localhost:3005`, `http://127.0.0.1:3005`, `http://floci-az:4577`, and `http://floci-sts` on ports 4566 and 4599. An admin UI run with `PROXY_MODE=zap` still records the admin UI. Those hosts are left out of the report. The organisation-frontend scan does not call them, and `test:zap` is unchanged. The file also sets `adminUiBaseUrl` to `http://digital-waste-tracking-admin-ui:3000` and `adminUiUsername` to `local`. `ADMIN_UI_BASE_URL` still overrides `adminUiBaseUrl`.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`.
+
+## 84. ZAP config has the external API URL
+
+Amir Intisar (Equal Experts), 2026-11-25 09:09 UTC, on aaa22117debb
+
+`local.zap.config.json` `wasteMovementExternalApiBaseUrl` is `http://localhost:3001`, the same value as `local.config.json`. The copy-credentials check reads that getter, so a `PROXY_MODE=zap` run expected `undefined` while the page showed `http://localhost:3001`.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`.
+
+## 85. Client-sync stays off the ZAP proxy
+
+Amir Intisar (Equal Experts), 2026-11-25 09:29 UTC, on aaa22117debb
+
+`ApiFactory` builds `WasteMovementClientSyncAPI` with no proxy in every mode. `zap` still proxies the other service clients. `local.zap.config.json` `wasteMovementClientSyncApiBaseUrl` is `http://localhost:3005`, the same value as `local.config.json`. `DWT_CLIENT_SYNC_SERVICE_URL` still overrides it. The exclude list is unchanged. Client-sync is scanned in digital-waste-tracking-uat.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`.
+
+## 86. Local client-sync stays on the Compose URL
+
+Amir Intisar (Equal Experts), 2026-11-26 10:46 UTC, on aaa22117debb
+
+`ApiFactory` rewrites client-sync to `https://ephemeral-protected.api.<environment>.cdp-int.defra.cloud/dwt-client-sync` only when `xapikey` is set and `ENVIRONMENT` is not `local`. `local` uses `wasteMovementClientSyncApiBaseUrl` from the support file, which `DWT_CLIENT_SYNC_SERVICE_URL` still overrides. A laptop key no longer points a Compose run at `ephemeral-protected.api.local.cdp-int.defra.cloud`.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`.
+
+## 87. Client-sync goes through the ZAP proxy
+
+Amir Intisar (Equal Experts), 2026-11-26 22:30 UTC, on aaa22117debb
+
+`ApiFactory` gives `WasteMovementClientSyncAPI` the same proxy as the other service clients when `PROXY_MODE` is `zap`. `local.zap.config.json` `wasteMovementClientSyncApiBaseUrl` is `http://dwt-client-sync:3001`. `DWT_CLIENT_SYNC_SERVICE_URL` still overrides it. The `http://dwt-client-sync:3001` exclude stays, so those calls are left out of the report. `local.config.json` stays `http://localhost:3005` for a run that is not using the proxy.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`.
+
+## 88. Client-sync follows the same xapikey rewrite
+
+Amir Intisar (Equal Experts), 2026-11-26 22:50 UTC, on aaa22117debb
+
+`ApiFactory` rewrites client-sync to `https://ephemeral-protected.api.<environment>.cdp-int.defra.cloud/dwt-client-sync` whenever `xapikey` is set, including when `ENVIRONMENT` is `local`. That matches the organisation backend and movement backend URLs. `DWT_CLIENT_SYNC_SERVICE_URL` does not apply on that path.
+
+Covers: `.cursor/rules/proxy-sessions-report.mdc`.

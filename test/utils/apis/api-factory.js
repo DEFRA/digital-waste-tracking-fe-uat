@@ -24,7 +24,8 @@ import { ZapApi } from './zap-api.js'
 export class ApiFactory {
   /**
    * Builds API clients for one scenario.
-   * cdp proxies Cognito and GOV.UK Pay. zap proxies every service client.
+   * cdp proxies Cognito and GOV.UK Pay. zap proxies the service clients, including client-sync.
+   * The client-sync exclude keeps those calls out of the report. Its scan lives in digital-waste-tracking-uat.
    * The ZAP client itself is not sent back through the proxy.
    * @param {import('../../setup/test-env.js').TestEnv} testEnv
    * @param {import('../../setup/test-config.js').TestConfig} testConfig
