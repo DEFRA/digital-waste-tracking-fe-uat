@@ -595,7 +595,7 @@ Padmaja, 2026-11-26 13:34 UTC, on e64bb37acaf6
 The v1.1 upload and update features no longer carry `@debug`. Debug runs stay `DEBUG=true` and one `--spec`. The update feature no longer keeps the commented `@env_dev` and `@env_test` scenarios. `@env_*` is not part of the filter. The live scenarios stay `@defra-id-stub`, with `@issue=DR-82` on the feature and `@issue=DR-200` on the upload error outline.
 
 Covers: `.cursor/rules/test-framework.mdc`.
-## 83. Admin UI scan excludes client-sync and Floci
+## 85. Admin UI scan excludes client-sync and Floci
 
 Amir Intisar (Equal Experts), 2026-11-24 23:34 UTC, on aaa22117debb
 
@@ -603,7 +603,7 @@ Amir Intisar (Equal Experts), 2026-11-24 23:34 UTC, on aaa22117debb
 
 Covers: `.cursor/rules/proxy-sessions-report.mdc`.
 
-## 84. ZAP config has the external API URL
+## 86. ZAP config has the external API URL
 
 Amir Intisar (Equal Experts), 2026-11-25 09:09 UTC, on aaa22117debb
 
@@ -611,7 +611,7 @@ Amir Intisar (Equal Experts), 2026-11-25 09:09 UTC, on aaa22117debb
 
 Covers: `.cursor/rules/proxy-sessions-report.mdc`.
 
-## 85. Client-sync stays off the ZAP proxy
+## 87. Client-sync stays off the ZAP proxy
 
 Amir Intisar (Equal Experts), 2026-11-25 09:29 UTC, on aaa22117debb
 
@@ -619,7 +619,7 @@ Amir Intisar (Equal Experts), 2026-11-25 09:29 UTC, on aaa22117debb
 
 Covers: `.cursor/rules/proxy-sessions-report.mdc`.
 
-## 86. Local client-sync stays on the Compose URL
+## 88. Local client-sync stays on the Compose URL
 
 Amir Intisar (Equal Experts), 2026-11-26 10:46 UTC, on aaa22117debb
 
@@ -627,7 +627,7 @@ Amir Intisar (Equal Experts), 2026-11-26 10:46 UTC, on aaa22117debb
 
 Covers: `.cursor/rules/proxy-sessions-report.mdc`.
 
-## 87. Client-sync goes through the ZAP proxy
+## 89. Client-sync goes through the ZAP proxy
 
 Amir Intisar (Equal Experts), 2026-11-26 22:30 UTC, on aaa22117debb
 
@@ -635,7 +635,7 @@ Amir Intisar (Equal Experts), 2026-11-26 22:30 UTC, on aaa22117debb
 
 Covers: `.cursor/rules/proxy-sessions-report.mdc`.
 
-## 88. Client-sync follows the same xapikey rewrite
+## 90. Client-sync follows the same xapikey rewrite
 
 Amir Intisar (Equal Experts), 2026-11-26 22:50 UTC, on aaa22117debb
 
