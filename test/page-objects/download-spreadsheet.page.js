@@ -11,7 +11,7 @@ import {
 const log = logger('download-spreadsheet-page')
 
 class DownloadSpreadsheetPage extends Page {
-  expectedFileName = 'receipt-of-waste-template.xlsx'
+  expectedFileName = 'receipt-of-waste-template-v1.1.xlsx'
   downloadButtonSelector = 'a[data-testid="download-spreadsheet-button"]'
 
   // locators
