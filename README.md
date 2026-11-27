@@ -100,7 +100,7 @@ On a CDP environment the browser is sent to Microsoft Entra ID. The username is 
 
 The admin UI address is `adminUiBaseUrl` in the support JSON. `ADMIN_UI_BASE_URL` overrides it when set.
 
-Run the admin UI on local Chrome with `PROFILE=local:admin-ui npm run source:clean:test:report`. The admin UI's CI runs the same features with `PROFILE=grid:admin-ui npm test`, against its compose stack with Chrome in a container (see the admin UI's README).
+Run the admin UI on local Chrome with `PROFILE=local:admin-ui npm run source:clean:test:report`. The admin UI's CI runs the same features with `PROFILE=grid:admin-ui npm test`, against its compose stack with Chrome in a container, through ZAP, then `npm run test:zap` (see the admin UI's README).
 
 ## Production
 

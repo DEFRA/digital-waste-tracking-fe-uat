@@ -2,7 +2,10 @@
   "defraIdServiceUrl": "http://cdp-defra-id-stub:3200/cdp-defra-id-stub",
   "wasteOrganisationBackendServiceUrl": "http://waste-organisation-backend:3001",
   "wasteOrganisationFrontendBaseUrl": "http://waste-organisation-frontend:3000",
+  "adminUiBaseUrl": "http://digital-waste-tracking-admin-ui:3000",
+  "adminUiUsername": "local",
   "wasteMovementClientSyncApiBaseUrl": "http://dwt-client-sync:3001",
+  "wasteMovementExternalApiBaseUrl": "http://localhost:3001",
   "zapBaseUrl": "http://zap:8080",
   "zapProxyExcludeRegexes": [
     "https://.*\\.payments\\.service\\.gov\\.uk.*",
@@ -12,6 +15,12 @@
     "https://.*\\.amazoncognito\\.com.*",
     "http://cdp-defra-id-stub:3200.*",
     "http://cdp-uploader:7337.*",
-    "http://selenium-chrome:4444.*"
+    "http://selenium-chrome:4444.*",
+    "http://dwt-client-sync:3001.*",
+    "http://localhost:3005.*",
+    "http://127\\.0\\.0\\.1:3005.*",
+    "http://floci-az:4577.*",
+    "http://floci-sts:4566.*",
+    "http://floci-sts:4599.*"
   ]
 }
